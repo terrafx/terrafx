@@ -5,7 +5,7 @@
 
 using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -192,6 +192,20 @@ namespace TerraFX.Collections
             return item;
         }
 
+        /// <summary>Peeks at item at the specified index of the stack.</summary>
+        /// <param name="index">The index from the top of the stack of the item at which to peek.</param>
+        /// <returns>The item at the specified index of the stack.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is greater than or equal to <see cref="Count" />.</exception>
+        public readonly T Peek(nuint index)
+        {
+            if (!TryPeek(index, out var item))
+            {
+                ThrowIfNotInBounds(index, Count, nameof(index), nameof(Count));
+                Fail();
+            }
+            return item;
+        }
+
         /// <summary>Pops the item from the top of the stack.</summary>
         /// <returns>The item at the top of the stack.</returns>
         /// <exception cref="InvalidOperationException">The stack is empty.</exception>
@@ -234,6 +248,26 @@ namespace TerraFX.Collections
             if (count != 0)
             {
                 item = _items[count - 1];
+                return true;
+            }
+            else
+            {
+                item = default!;
+                return false;
+            }
+        }
+
+        /// <summary>Tries to peek the item at the head of the stack.</summary>
+        /// <param name="index">The index from the top of the stack of the item at which to peek.</param>
+        /// <param name="item">When <c>true</c> is returned, this contains the item at the head of the stack.</param>
+        /// <returns><c>true</c> if the stack was not empty and <paramref name="index" /> is less than <see cref="Count" />; otherwise, <c>false</c>.</returns>
+        public readonly bool TryPeek(nuint index, out T item)
+        {
+            var count = Count;
+
+            if (index < count)
+            {
+                item = _items[count - (index + 1)];
                 return true;
             }
             else

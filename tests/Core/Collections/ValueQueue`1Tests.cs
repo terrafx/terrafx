@@ -439,6 +439,63 @@ namespace TerraFX.UnitTests.Collections
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ValueQueue{T}.Peek(int)" /> method.</summary>
+        [Test]
+        public static void PeekInt32Test()
+        {
+            var valueQueue = new ValueQueue<int>(new int[] { 1, 2, 3 });
+
+            Assert.That(() => valueQueue.Peek(0),
+                Is.EqualTo(1)
+            );
+
+            valueQueue.Enqueue(4);
+
+            Assert.That(() => valueQueue.Peek(0),
+                Is.EqualTo(1)
+            );
+
+            Assert.That(() => valueQueue.Peek(3),
+                Is.EqualTo(4)
+            );
+
+            _ = valueQueue.Dequeue();
+            valueQueue.Enqueue(5);
+
+            Assert.That(() => valueQueue.Peek(0),
+                Is.EqualTo(2)
+            );
+
+            Assert.That(() => valueQueue.Peek(1),
+                Is.EqualTo(3)
+            );
+
+            _ = valueQueue.Dequeue();
+            valueQueue.Enqueue(6);
+            valueQueue.Enqueue(7);
+
+            Assert.That(() => valueQueue.Peek(0),
+                Is.EqualTo(3)
+            );
+
+            Assert.That(() => valueQueue.Peek(2),
+                Is.EqualTo(5)
+            );
+
+            Assert.That(() => valueQueue,
+                Has.Property("Capacity").EqualTo(6)
+                   .And.Count.EqualTo(5)
+            );
+
+            valueQueue = new ValueQueue<int>();
+
+            Assert.That(() => valueQueue.Peek(0),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo(0)
+                      .And.Property("ParamName").EqualTo("index")
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ValueQueue{T}.TryDequeue(out T)" /> method.</summary>
         [Test]
         public static void TryDequeueTest()
@@ -511,6 +568,54 @@ namespace TerraFX.UnitTests.Collections
             valueQueue = new ValueQueue<int>();
 
             Assert.That(() => valueQueue.TryPeek(out _),
+                Is.False
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ValueQueue{T}.TryPeek(int, out T)" /> method.</summary>
+        [Test]
+        public static void TryPeekInt32Test()
+        {
+            var valueQueue = new ValueQueue<int>(new int[] { 1, 2, 3 });
+            var result = valueQueue.TryPeek(0, out var value);
+
+            Assert.That(() => result,
+                Is.True
+            );
+
+            Assert.That(() => value,
+                Is.EqualTo(1)
+            );
+
+            valueQueue.Enqueue(4);
+            result = valueQueue.TryPeek(0, out value);
+
+            Assert.That(() => result,
+                Is.True
+            );
+
+            Assert.That(() => value,
+                Is.EqualTo(1)
+            );
+
+            result = valueQueue.TryPeek(3, out value);
+
+            Assert.That(() => result,
+                Is.True
+            );
+
+            Assert.That(() => value,
+                Is.EqualTo(4)
+            );
+
+            Assert.That(() => valueQueue,
+                Has.Property("Capacity").EqualTo(6)
+                   .And.Count.EqualTo(4)
+            );
+
+            valueQueue = new ValueQueue<int>();
+
+            Assert.That(() => valueQueue.TryPeek(0, out _),
                 Is.False
             );
         }

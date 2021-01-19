@@ -518,6 +518,71 @@ namespace TerraFX.UnitTests.Collections
             }
         }
 
+        /// <summary>Provides validation of the <see cref="UnmanagedValueStack{T}.Peek(nuint)" /> method.</summary>
+        [Test]
+        public static void PeekNUIntTest()
+        {
+            var array = new UnmanagedArray<int>(3);
+
+            array[0] = 1;
+            array[1] = 2;
+            array[2] = 3;
+
+            using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true))
+            {
+                Assert.That(() => valueStack.Peek(0),
+                    Is.EqualTo(3)
+                );
+
+                valueStack.Push(4);
+
+                Assert.That(() => valueStack.Peek(0),
+                    Is.EqualTo(4)
+                );
+
+                Assert.That(() => valueStack.Peek(3),
+                    Is.EqualTo(1)
+                );
+
+                _ = valueStack.Pop();
+                valueStack.Push(5);
+
+                Assert.That(() => valueStack.Peek(0),
+                    Is.EqualTo(5)
+                );
+
+                Assert.That(() => valueStack.Peek(1),
+                    Is.EqualTo(3)
+                );
+
+                _ = valueStack.Pop();
+                valueStack.Push(6);
+                valueStack.Push(7);
+
+                Assert.That(() => valueStack.Peek(0),
+                    Is.EqualTo(7)
+                );
+
+                Assert.That(() => valueStack.Peek(2),
+                    Is.EqualTo(3)
+                );
+
+                Assert.That(() => valueStack,
+                    Has.Property("Capacity").EqualTo((nuint)6)
+                       .And.Count.EqualTo((nuint)5)
+                );
+            }
+
+            using (var valueStack = new UnmanagedValueStack<int>())
+            {
+                Assert.That(() => valueStack.Peek(0),
+                    Throws.InstanceOf<ArgumentOutOfRangeException>()
+                          .And.Property("ActualValue").EqualTo((nuint)0)
+                          .And.Property("ParamName").EqualTo("index")
+                );
+            }
+        }
+
         /// <summary>Provides validation of the <see cref="UnmanagedValueStack{T}.Pop()" /> method.</summary>
         [Test]
         public static void PopTest()
@@ -682,6 +747,63 @@ namespace TerraFX.UnitTests.Collections
             using (var valueStack = new UnmanagedValueStack<int>())
             {
                 Assert.That(() => valueStack.TryPeek(out _),
+                    Is.False
+                );
+            }
+        }
+
+        /// <summary>Provides validation of the <see cref="UnmanagedValueStack{T}.TryPeek(nuint, out T)" /> method.</summary>
+        [Test]
+        public static void TryPeekNUIntTest()
+        {
+            var array = new UnmanagedArray<int>(3);
+
+            array[0] = 1;
+            array[1] = 2;
+            array[2] = 3;
+
+            using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true))
+            {
+                var result = valueStack.TryPeek(0, out var value);
+
+                Assert.That(() => result,
+                    Is.True
+                );
+
+                Assert.That(() => value,
+                    Is.EqualTo(3)
+                );
+
+                valueStack.Push(4);
+                result = valueStack.TryPeek(0, out value);
+
+                Assert.That(() => result,
+                    Is.True
+                );
+
+                Assert.That(() => value,
+                    Is.EqualTo(4)
+                );
+
+                result = valueStack.TryPeek(3, out value);
+
+                Assert.That(() => result,
+                    Is.True
+                );
+
+                Assert.That(() => value,
+                    Is.EqualTo(1)
+                );
+
+                Assert.That(() => valueStack,
+                    Has.Property("Capacity").EqualTo((nuint)6)
+                       .And.Count.EqualTo((nuint)4)
+                );
+            }
+
+            using (var valueStack = new UnmanagedValueStack<int>())
+            {
+                Assert.That(() => valueStack.TryPeek(0, out _),
                     Is.False
                 );
             }

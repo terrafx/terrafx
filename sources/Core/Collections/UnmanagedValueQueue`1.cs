@@ -5,7 +5,7 @@
 
 using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -271,6 +271,20 @@ namespace TerraFX.Collections
             return item;
         }
 
+        /// <summary>Peeks at item at the specified index of the queue.</summary>
+        /// <param name="index">The index from the head of the queue of the item at which to peek.</param>
+        /// <returns>The item at the specified index of the queue.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is greater than or equal to <see cref="Count" />.</exception>
+        public readonly T Peek(nuint index)
+        {
+            if (!TryPeek(index, out var item))
+            {
+                ThrowIfNotInBounds(index, Count, nameof(index), nameof(Count));
+                Fail();
+            }
+            return item;
+        }
+
         /// <summary>Tries to dequeue an item from the head of the queue.</summary>
         /// <param name="item">When <c>true</c> is returned, this contains the item from the head of the queue.</param>
         /// <returns><c>true</c> if the queue was not empty; otherwise, <c>false</c>.</returns>
@@ -312,6 +326,35 @@ namespace TerraFX.Collections
             if (Count != 0)
             {
                 item = _items[_head];
+                return true;
+            }
+            else
+            {
+                item = default!;
+                return false;
+            }
+        }
+
+        /// <summary>Tries to peek at the item at the head of the queue.</summary>
+        /// <param name="index">The index from the head of the queue of the item at which to peek.</param>
+        /// <param name="item">When <c>true</c> is returned, this contains the item at the head of the queue.</param>
+        /// <returns><c>true</c> if the queue was not empty and <paramref name="index" /> is less than <see cref="Count" />; otherwise, <c>false</c>.</returns>
+        public readonly bool TryPeek(nuint index, out T item)
+        {
+            var count = Count;
+
+            if (index < count)
+            {
+                var head = _head;
+
+                if ((head < _tail) || (index < (count - head)))
+                {
+                    item = _items[head + index];
+                }
+                else
+                {
+                    item = _items[index];
+                }
                 return true;
             }
             else

@@ -342,6 +342,63 @@ namespace TerraFX.UnitTests.Collections
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ValueStack{T}.Peek(int)" /> method.</summary>
+        [Test]
+        public static void PeekInt32Test()
+        {
+            var valueStack = new ValueStack<int>(new int[] { 1, 2, 3 });
+
+            Assert.That(() => valueStack.Peek(0),
+                Is.EqualTo(3)
+            );
+
+            valueStack.Push(4);
+
+            Assert.That(() => valueStack.Peek(0),
+                Is.EqualTo(4)
+            );
+
+            Assert.That(() => valueStack.Peek(3),
+                Is.EqualTo(1)
+            );
+
+            _ = valueStack.Pop();
+            valueStack.Push(5);
+
+            Assert.That(() => valueStack.Peek(0),
+                Is.EqualTo(5)
+            );
+
+            Assert.That(() => valueStack.Peek(1),
+                Is.EqualTo(3)
+            );
+
+            _ = valueStack.Pop();
+            valueStack.Push(6);
+            valueStack.Push(7);
+
+            Assert.That(() => valueStack.Peek(0),
+                Is.EqualTo(7)
+            );
+
+            Assert.That(() => valueStack.Peek(2),
+                Is.EqualTo(3)
+            );
+
+            Assert.That(() => valueStack,
+                Has.Property("Capacity").EqualTo(6)
+                   .And.Count.EqualTo(5)
+            );
+
+            valueStack = new ValueStack<int>();
+
+            Assert.That(() => valueStack.Peek(0),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo(0)
+                      .And.Property("ParamName").EqualTo("index")
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ValueStack{T}.Pop()" /> method.</summary>
         [Test]
         public static void PopTest()
@@ -473,6 +530,54 @@ namespace TerraFX.UnitTests.Collections
             valueStack = new ValueStack<int>();
 
             Assert.That(() => valueStack.TryPeek(out _),
+                Is.False
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ValueStack{T}.TryPeek(int, out T)" /> method.</summary>
+        [Test]
+        public static void TryPeekInt32Test()
+        {
+            var valueStack = new ValueStack<int>(new int[] { 1, 2, 3 });
+            var result = valueStack.TryPeek(0, out var value);
+
+            Assert.That(() => result,
+                Is.True
+            );
+
+            Assert.That(() => value,
+                Is.EqualTo(3)
+            );
+
+            valueStack.Push(4);
+            result = valueStack.TryPeek(0, out value);
+
+            Assert.That(() => result,
+                Is.True
+            );
+
+            Assert.That(() => value,
+                Is.EqualTo(4)
+            );
+
+            result = valueStack.TryPeek(3, out value);
+
+            Assert.That(() => result,
+                Is.True
+            );
+
+            Assert.That(() => value,
+                Is.EqualTo(1)
+            );
+
+            Assert.That(() => valueStack,
+                Has.Property("Capacity").EqualTo(6)
+                   .And.Count.EqualTo(4)
+            );
+
+            valueStack = new ValueStack<int>();
+
+            Assert.That(() => valueStack.TryPeek(0, out _),
                 Is.False
             );
         }
