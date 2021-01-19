@@ -36,6 +36,10 @@ namespace TerraFX.Runtime
         /// <remarks>This value is not configurable via an <see cref="AppContext" /> switch.</remarks>
         public static readonly bool IsWindows = OperatingSystem.IsWindows();
 
+        internal static readonly nuint s_maxArrayLength = 0X7FEFFFFF;
+
+        internal static readonly nuint s_maxByteArrayLength = 0x7FFFFFC7;
+
         /// <summary><c>true</c> if TerraFX based assertions are enabled; otherwise, <c>false</c>.</summary>
         /// <remarks>
         ///     <para>This defaults to <c>true</c> in debug builds of TerraFX; otherwise, it defaults to <c>false</c>.</para>
@@ -54,6 +58,16 @@ namespace TerraFX.Runtime
         public static readonly bool BreakOnFailedAssert = GetAppContextData(
             $"{typeof(Configuration).FullName}.{nameof(BreakOnFailedAssert)}",
             defaultValue: IsDebug
+        );
+
+        /// <summary><c>true</c> if TerraFX should break on a failed assert; otherwise, <c>false</c>.</summary>
+        /// <remarks>
+        ///     <para>This defaults to <c>true</c> in debug builds of TerraFX; otherwise, it defaults to <c>false</c>.</para>
+        ///     <para>Users can enable this via an <see cref="AppContext" /> switch to get additional validation in their own assemblies.</para>
+        /// </remarks>
+        public static readonly nuint DefaultAlignment = GetAppContextData(
+            $"{typeof(Configuration).FullName}.{nameof(DefaultAlignment)}",
+            defaultValue: (nuint)16
         );
 
         /// <summary><c>true</c> if TerraFX should use <see cref="CultureInfo.InvariantCulture" /> when resolving resources; otherwise, <c>false</c>.</summary>

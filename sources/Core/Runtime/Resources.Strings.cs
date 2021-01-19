@@ -11,7 +11,13 @@ namespace TerraFX.Runtime
         /// <summary>Gets a localized string similar to <c>The allocation of '{0}x{1}' bytes failed</c>.</summary>
         public static string ArrayAllocationFailedMessage => GetString(nameof(ArrayAllocationFailedMessage));
 
-        /// <summary>Gets a localized string similar to <c>'{0}' has an invalid flag combination</c>c>.</summary>
+        /// <summary>Gets a localized string similar to <c>The queue is empty</c>.</summary>
+        public static string EmptyQueueMessage => GetString(nameof(EmptyQueueMessage));
+
+        /// <summary>Gets a localized string similar to <c>The stack is empty</c>.</summary>
+        public static string EmptyStackMessage => GetString(nameof(EmptyStackMessage));
+
+        /// <summary>Gets a localized string similar to <c>'{0}' has an invalid flag combination</c>.</summary>
         public static string InvalidFlagCombinationMessage => GetString(nameof(InvalidFlagCombinationMessage));
 
         /// <summary>Gets a localized string similar to <c>'{0}' is not a valid key to '{1}'</c>.</summary>
@@ -65,8 +71,23 @@ namespace TerraFX.Runtime
         /// <summary>Gets a localized string similar to <c>'{0}' is negative</c>.</summary>
         public static string ValueIsNegativeMessage => GetString(nameof(ValueIsNegativeMessage));
 
+        /// <summary>Gets a localized string similar to <c>'{0}' is negative or greater than or equal to '{1}'</c>.</summary>
+        public static string ValueIsNotInSignedBoundsMessage => GetString(nameof(ValueIsNotInSignedBoundsMessage));
+
+        /// <summary>Gets a localized string similar to <c>'{0}' is negative or greater than '{1}'</c>.</summary>
+        public static string ValueIsNotInSignedInsertBoundsMessage => GetString(nameof(ValueIsNotInSignedInsertBoundsMessage));
+
+        /// <summary>Gets a localized string similar to <c>'{0}' is greater than or equal to '{1}'</c>.</summary>
+        public static string ValueIsNotInUnsignedBoundsMessage => GetString(nameof(ValueIsNotInUnsignedBoundsMessage));
+
+        /// <summary>Gets a localized string similar to <c>'{0}' is greater than '{1}'</c>.</summary>
+        public static string ValueIsNotInUnsignedInsertBoundsMessage => GetString(nameof(ValueIsNotInUnsignedInsertBoundsMessage));
+
         /// <summary>Gets a localized string similar to <c>'{0}' is not a power of two</c>.</summary>
         public static string ValueIsNotPow2Message => GetString(nameof(ValueIsNotPow2Message));
+
+        /// <summary>Gets a localized string similar to <c>'{0}' is not zero</c>.</summary>
+        public static string ValueIsNotZeroMessage => GetString(nameof(ValueIsNotZeroMessage));
 
         /// <summary>Gets a localized string similar to <c>'{0}' is null</c>.</summary>
         public static string ValueIsNullMessage => GetString(nameof(ValueIsNullMessage));

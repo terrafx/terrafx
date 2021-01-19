@@ -49,6 +49,13 @@ namespace TerraFX.Utilities
         public static void AssertNotNull<T>([NotNull] T? value)
             where T : class => Assert(AssertionsEnabled && (value is not null));
 
+        /// <summary>Asserts that <paramref name="array" /> is not <c>null</c>.</summary>
+        /// <typeparam name="T">The type of items in <paramref name="array" />.</typeparam>
+        /// <param name="array">The array to assert is not <c>null</c>.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void AssertNotNull<T>(UnmanagedArray<T> array)
+            where T : unmanaged => Assert(AssertionsEnabled && !array.IsNull);
+
         /// <summary>Asserts that <paramref name="value" /> is not <c>null</c>.</summary>
         /// <param name="value">The value to assert is not <c>null</c>.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

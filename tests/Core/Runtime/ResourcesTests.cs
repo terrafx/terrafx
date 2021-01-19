@@ -1,6 +1,5 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System;
 using System.Globalization;
 using NUnit.Framework;
 using TerraFX.Runtime;
@@ -29,6 +28,28 @@ namespace TerraFX.UnitTests.Runtime
             Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
             Assert.That(Resources.ArrayAllocationFailedMessage,
+                Is.EqualTo(expectedMessage)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="Resources.EmptyQueueMessage" /> property.</summary>
+        [TestCase("en", "The queue is empty")]
+        public static void EmptyQueueMessageTest(string cultureName, string expectedMessage)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
+
+            Assert.That(Resources.EmptyQueueMessage,
+                Is.EqualTo(expectedMessage)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="Resources.EmptyStackMessage" /> property.</summary>
+        [TestCase("en", "The stack is empty")]
+        public static void EmptyStackMessageTest(string cultureName, string expectedMessage)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
+
+            Assert.That(Resources.EmptyStackMessage,
                 Is.EqualTo(expectedMessage)
             );
         }
@@ -231,6 +252,50 @@ namespace TerraFX.UnitTests.Runtime
             );
         }
 
+        /// <summary>Provides validation of the <see cref="Resources.ValueIsNotInSignedBoundsMessage" /> property.</summary>
+        [TestCase("en", "'{0}' is negative or greater than or equal to '{1}'")]
+        public static void ValueIsNotInSignedBoundsMessageTest(string cultureName, string expectedMessage)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
+
+            Assert.That(Resources.ValueIsNotInSignedBoundsMessage,
+                Is.EqualTo(expectedMessage)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="Resources.ValueIsNotInSignedBoundsMessage" /> property.</summary>
+        [TestCase("en", "'{0}' is negative or greater than '{1}'")]
+        public static void ValueIsNotInSignedInsertBoundsMessage(string cultureName, string expectedMessage)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
+
+            Assert.That(Resources.ValueIsNotInSignedInsertBoundsMessage,
+                Is.EqualTo(expectedMessage)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="Resources.ValueIsNotInUnsignedBoundsMessage" /> property.</summary>
+        [TestCase("en", "'{0}' is greater than or equal to '{1}'")]
+        public static void ValueIsNotInUnsignedBoundsMessageTest(string cultureName, string expectedMessage)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
+
+            Assert.That(Resources.ValueIsNotInUnsignedBoundsMessage,
+                Is.EqualTo(expectedMessage)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="Resources.ValueIsNotInUnsignedBoundsMessage" /> property.</summary>
+        [TestCase("en", "'{0}' is greater than '{1}'")]
+        public static void ValueIsNotInUnsignedInsertBoundsMessage(string cultureName, string expectedMessage)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
+
+            Assert.That(Resources.ValueIsNotInUnsignedInsertBoundsMessage,
+                Is.EqualTo(expectedMessage)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="Resources.ValueIsNotPow2Message" /> property.</summary>
         [TestCase("en", "'{0}' is not a power of two")]
         public static void ValueIsNotPow2MessageTest(string cultureName, string expectedMessage)
@@ -238,6 +303,17 @@ namespace TerraFX.UnitTests.Runtime
             Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
             Assert.That(Resources.ValueIsNotPow2Message,
+                Is.EqualTo(expectedMessage)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="Resources.ValueIsNotZeroMessage" /> property.</summary>
+        [TestCase("en", "'{0}' is not zero")]
+        public static void ValueIsNotZeroMessageTest(string cultureName, string expectedMessage)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
+
+            Assert.That(Resources.ValueIsNotZeroMessage,
                 Is.EqualTo(expectedMessage)
             );
         }
