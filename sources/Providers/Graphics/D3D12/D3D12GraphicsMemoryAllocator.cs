@@ -34,20 +34,20 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             _blockCollections = supportsResourceHeapTier2
                 ? new D3D12GraphicsMemoryBlockCollection[3] {
-                    new D3D12GraphicsMemoryBlockCollection(this, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_DEFAULT),
-                    new D3D12GraphicsMemoryBlockCollection(this, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_UPLOAD),
-                    new D3D12GraphicsMemoryBlockCollection(this, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_READBACK),
+                    new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_DEFAULT),
+                    new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_UPLOAD),
+                    new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_READBACK),
                 }
                 : new D3D12GraphicsMemoryBlockCollection[9] {
-                    new D3D12GraphicsMemoryBlockCollection(this, D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
-                    new D3D12GraphicsMemoryBlockCollection(this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
-                    new D3D12GraphicsMemoryBlockCollection(this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
-                    new D3D12GraphicsMemoryBlockCollection(this, D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_UPLOAD),
-                    new D3D12GraphicsMemoryBlockCollection(this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES, D3D12_HEAP_TYPE_UPLOAD),
-                    new D3D12GraphicsMemoryBlockCollection(this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_UPLOAD),
-                    new D3D12GraphicsMemoryBlockCollection(this, D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_READBACK),
-                    new D3D12GraphicsMemoryBlockCollection(this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES, D3D12_HEAP_TYPE_READBACK),
-                    new D3D12GraphicsMemoryBlockCollection(this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_READBACK),
+                    new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
+                    new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
+                    new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
+                    new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_UPLOAD),
+                    new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES, D3D12_HEAP_TYPE_UPLOAD),
+                    new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_UPLOAD),
+                    new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_READBACK),
+                    new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES, D3D12_HEAP_TYPE_READBACK),
+                    new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_READBACK),
                 };
 
             _supportsResourceHeapTier2 = supportsResourceHeapTier2;
@@ -62,7 +62,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc />
         public override int Count => _blockCollections.Length;
 
-        /// <inheritdoc cref="GraphicsMemoryAllocator.Device" />
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
         public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
         /// <summary>Gets <c>true</c> if <see cref="Device" /> supports <see cref="D3D12_RESOURCE_HEAP_TIER_2" />; otherwise, <c>false</c>.</summary>
@@ -79,7 +79,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             ref readonly var blockCollection = ref _blockCollections[index];
 
             var memoryBlockRegion = blockCollection.Allocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags);
-            return new D3D12GraphicsBuffer<TMetadata>(kind, in memoryBlockRegion, cpuAccess);
+            return new D3D12GraphicsBuffer<TMetadata>(Device, kind, in memoryBlockRegion, cpuAccess);
         }
 
         /// <inheritdoc />
@@ -101,7 +101,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             ref readonly var blockCollection = ref _blockCollections[index];
 
             var memoryBlockRegion = blockCollection.Allocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags);
-            return new D3D12GraphicsTexture<TMetadata>(kind, in memoryBlockRegion, cpuAccess, width, height, depth);
+            return new D3D12GraphicsTexture<TMetadata>(Device, kind, in memoryBlockRegion, cpuAccess, width, height, depth);
         }
 
         /// <inheritdoc />

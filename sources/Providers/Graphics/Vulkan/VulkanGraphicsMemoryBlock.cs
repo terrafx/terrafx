@@ -19,8 +19,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private ValueLazy<VkDeviceMemory> _vulkanDeviceMemory;
         private protected VolatileState _state;
 
-        private protected VulkanGraphicsMemoryBlock(VulkanGraphicsMemoryBlockCollection collection)
-            : base(collection)
+        private protected VulkanGraphicsMemoryBlock(VulkanGraphicsDevice device, VulkanGraphicsMemoryBlockCollection collection)
+            : base(device, collection)
         {
             _vulkanDeviceMemory = new ValueLazy<VkDeviceMemory>(CreateVulkanDeviceMemory);
         }
@@ -28,11 +28,14 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsMemoryBlock{TMetadata}" /> class.</summary>
         ~VulkanGraphicsMemoryBlock() => Dispose(isDisposing: true);
 
-        /// <summary>Gets the <see cref="VkDeviceMemory" /> for the memory block.</summary>
-        public VkDeviceMemory VulkanDeviceMemory => _vulkanDeviceMemory.Value;
-
         /// <inheritdoc cref="GraphicsMemoryBlock.Collection" />
         public new VulkanGraphicsMemoryBlockCollection Collection => (VulkanGraphicsMemoryBlockCollection)base.Collection;
+
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
+        public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
+
+        /// <summary>Gets the <see cref="VkDeviceMemory" /> for the memory block.</summary>
+        public VkDeviceMemory VulkanDeviceMemory => _vulkanDeviceMemory.Value;
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)

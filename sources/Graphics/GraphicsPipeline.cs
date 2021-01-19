@@ -6,32 +6,31 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics
 {
     /// <summary>A graphics pipeline which defines how a graphics primitive should be rendered.</summary>
-    public abstract class GraphicsPipeline : IDisposable
+    public abstract class GraphicsPipeline : GraphicsDeviceObject
     {
-        private readonly GraphicsDevice _device;
         private readonly GraphicsPipelineSignature _signature;
         private readonly GraphicsShader? _vertexShader;
         private readonly GraphicsShader? _pixelShader;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsPipeline" /> class.</summary>
-        /// <param name="device">The device for which the pipeline was created.</param>
+        /// <param name="device">The device for which the pipeline is being created.</param>
         /// <param name="signature">The signature which details the inputs given and resources available to the pipeline.</param>
         /// <param name="vertexShader">The vertex shader for the pipeline or <c>null</c> if none exists.</param>
         /// <param name="pixelShader">The pixel shader for the pipeline or <c>null</c> if none exists.</param>
         /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="signature" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The kind of <paramref name="vertexShader" /> is not <see cref="GraphicsShaderKind.Vertex" />.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> is incompatible as it belongs to a different device.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> was not created for <paramref name="device" />.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The kind of <paramref name="pixelShader" /> is not <see cref="GraphicsShaderKind.Pixel" />.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> is incompatible as it belongs to a different device.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> was not created for <paramref name="device" />.</exception>
         protected GraphicsPipeline(GraphicsDevice device, GraphicsPipelineSignature signature, GraphicsShader? vertexShader, GraphicsShader? pixelShader)
+            : base(device)
         {
-            ThrowIfNull(device, nameof(device));
             ThrowIfNull(signature, nameof(signature));
 
             if (vertexShader is not null)
             {
-                if (vertexShader.Kind == GraphicsShaderKind.Vertex)
+                if (vertexShader.Kind != GraphicsShaderKind.Vertex)
                 {
                     ThrowForInvalidKind(vertexShader.Kind, nameof(vertexShader), GraphicsShaderKind.Vertex);
                 }
@@ -44,7 +43,7 @@ namespace TerraFX.Graphics
 
             if (pixelShader is not null)
             {
-                if (pixelShader.Kind == GraphicsShaderKind.Pixel)
+                if (pixelShader.Kind != GraphicsShaderKind.Pixel)
                 {
                     ThrowForInvalidKind(pixelShader.Kind, nameof(pixelShader), GraphicsShaderKind.Pixel);
                 }
@@ -55,14 +54,10 @@ namespace TerraFX.Graphics
                 }
             }
 
-            _device = device;
             _signature = signature;
             _vertexShader = vertexShader;
             _pixelShader = pixelShader;
         }
-
-        /// <summary>Gets the graphics device for which the pipeline was created.</summary>
-        public GraphicsDevice Device => _device;
 
         /// <summary>Gets <c>true</c> if the pipeline has a pixel shader; otherwise, <c>false</c>.</summary>
         public bool HasPixelShader => _pixelShader != null;
@@ -78,16 +73,5 @@ namespace TerraFX.Graphics
 
         /// <summary>Gets the vertex shader for the pipeline or <c>null</c> if none exists.</summary>
         public GraphicsShader? VertexShader => _vertexShader;
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <inheritdoc cref="Dispose()" />
-        /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        protected abstract void Dispose(bool isDisposing);
     }
 }

@@ -55,7 +55,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsContext" /> class.</summary>
         ~VulkanGraphicsContext() => Dispose(isDisposing: false);
 
-        /// <inheritdoc cref="GraphicsContext.Device" />
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
         public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
         /// <inheritdoc />

@@ -33,7 +33,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             for (uint memoryTypeIndex = 0; memoryTypeIndex < memoryTypeCount; memoryTypeIndex++)
             {
-                _blockCollections[memoryTypeIndex] = new VulkanGraphicsMemoryBlockCollection(this, memoryTypeIndex);
+                _blockCollections[memoryTypeIndex] = new VulkanGraphicsMemoryBlockCollection(Device, this, memoryTypeIndex);
             }
 
             // TODO: UpdateBudget
@@ -46,7 +46,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc />
         public override int Count => _blockCollections.Length;
 
-        /// <inheritdoc cref="GraphicsMemoryAllocator.Device" />
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
         public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
         /// <inheritdoc />
@@ -70,7 +70,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             ref readonly var blockCollection = ref _blockCollections[index];
 
             var blockRegion = blockCollection.Allocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags);
-            return new VulkanGraphicsBuffer<TMetadata>(kind, in blockRegion, cpuAccess, vulkanBuffer);
+            return new VulkanGraphicsBuffer<TMetadata>(Device, kind, in blockRegion, cpuAccess, vulkanBuffer);
         }
 
         /// <inheritdoc />
@@ -108,7 +108,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             ref readonly var blockCollection = ref _blockCollections[index];
 
             var blockRegion = blockCollection.Allocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags);
-            return new VulkanGraphicsTexture<TMetadata>(kind, in blockRegion, cpuAccess, width, height, depth, vulkanImage);
+            return new VulkanGraphicsTexture<TMetadata>(Device, kind, in blockRegion, cpuAccess, width, height, depth, vulkanImage);
         }
 
         /// <inheritdoc />

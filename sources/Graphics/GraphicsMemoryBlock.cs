@@ -14,16 +14,26 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics
 {
     /// <summary>Defines a single block of memory which can contain allocated or free regions.</summary>
-    public abstract partial class GraphicsMemoryBlock : IDisposable, IGraphicsMemoryRegionCollection<GraphicsMemoryBlock>
+    public abstract partial class GraphicsMemoryBlock : GraphicsDeviceObject, IGraphicsMemoryRegionCollection<GraphicsMemoryBlock>
     {
         private readonly GraphicsMemoryBlockCollection _collection;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryBlock" /> class.</summary>
+        /// <param name="device">The device for which the memory block is being created</param>
         /// <param name="collection">The memory block collection which contains the block.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <c>null</c>.</exception>
-        protected GraphicsMemoryBlock(GraphicsMemoryBlockCollection collection)
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="collection" /> was not created for <paramref name="device" />.</exception>
+        protected GraphicsMemoryBlock(GraphicsDevice device, GraphicsMemoryBlockCollection collection)
+            : base(device)
         {
             ThrowIfNull(collection, nameof(collection));
+
+            if (collection.Device != device)
+            {
+                ThrowForInvalidParent(collection.Device, nameof(collection));
+            }
+
             _collection = collection;
         }
 
@@ -61,13 +71,6 @@ namespace TerraFX.Graphics
         public abstract void Clear();
 
         /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <inheritdoc />
         public abstract void Free(in GraphicsMemoryRegion<GraphicsMemoryBlock> region);
 
         /// <summary>Gets an enumerator that can be used to iterate through the regions of the block.</summary>
@@ -76,9 +79,5 @@ namespace TerraFX.Graphics
 
         /// <inheritdoc />
         public abstract bool TryAllocate(ulong size, [Optional, DefaultParameterValue(1UL)] ulong alignment, out GraphicsMemoryRegion<GraphicsMemoryBlock> region);
-
-        /// <inheritdoc cref="Dispose()" />
-        /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        protected abstract void Dispose(bool isDisposing);
     }
 }

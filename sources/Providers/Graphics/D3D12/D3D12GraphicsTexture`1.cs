@@ -14,8 +14,8 @@ namespace TerraFX.Graphics.Providers.D3D12
         private TMetadata _metadata;
 #pragma warning restore IDE0044
 
-        internal D3D12GraphicsTexture(GraphicsTextureKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth)
-            : base(kind, in blockRegion, cpuAccess, width, height, depth)
+        internal D3D12GraphicsTexture(D3D12GraphicsDevice device, GraphicsTextureKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth)
+            : base(device, kind, in blockRegion, cpuAccess, width, height, depth)
         {
             var block = blockRegion.Collection;
 

@@ -21,8 +21,8 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private protected VolatileState _state;
 
-        internal D3D12GraphicsTexture(GraphicsTextureKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth)
-            : base(kind, in blockRegion, cpuAccess, width, height, depth)
+        internal D3D12GraphicsTexture(D3D12GraphicsDevice device, GraphicsTextureKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth)
+            : base(device, kind, in blockRegion, cpuAccess, width, height, depth)
         {
             _d3d12Resource = new ValueLazy<Pointer<ID3D12Resource>>(CreateD3D12Resource);
             _d3d12ResourceState = new ValueLazy<D3D12_RESOURCE_STATES>(GetD3D12ResourceState);
@@ -45,6 +45,9 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         /// <summary>Gets the default state of the underlying <see cref="ID3D12Resource" /> for the texture.</summary>
         public D3D12_RESOURCE_STATES D3D12ResourceState => _d3d12ResourceState.Value;
+
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
+        public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="ID3D12Resource.Map(uint, D3D12_RANGE*, void**)" /> failed.</exception>

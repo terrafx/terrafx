@@ -14,14 +14,17 @@ namespace TerraFX.Graphics.Providers.Vulkan
     {
         private readonly uint _vulkanMemoryTypeIndex;
 
-        internal VulkanGraphicsMemoryBlockCollection(VulkanGraphicsMemoryAllocator allocator, uint memoryTypeIndex)
-            : base(allocator)
+        internal VulkanGraphicsMemoryBlockCollection(VulkanGraphicsDevice device, VulkanGraphicsMemoryAllocator allocator, uint memoryTypeIndex)
+            : base(device, allocator)
         {
             _vulkanMemoryTypeIndex = memoryTypeIndex;
         }
 
         /// <inheritdoc cref="GraphicsMemoryBlockCollection.Allocator" />
         public new VulkanGraphicsMemoryAllocator Allocator => (VulkanGraphicsMemoryAllocator)base.Allocator;
+
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
+        public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
         /// <summary>Gets the memory type index used when creating the <see cref="VkDeviceMemory" /> instance for a memory block.</summary>
         public uint VulkanMemoryTypeIndex => _vulkanMemoryTypeIndex;
@@ -31,7 +34,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             typeof(VulkanGraphicsMemoryBlock<>).MakeGenericType(Allocator.Settings.RegionCollectionMetadataType!),
             bindingAttr: BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.CreateInstance,
             binder: null,
-            args: new object[] { this, size },
+            args: new object[] { Device, this, size },
             culture: null,
             activationAttributes: null
         )!;

@@ -38,6 +38,9 @@ namespace TerraFX.Graphics
             public int Count => _regions.Count;
 
             /// <inheritdoc />
+            public GraphicsDevice Device => _collection.Device;
+
+            /// <inheritdoc />
             public bool IsEmpty => (_regions.Count == 1) && (_freeRegionCount == 1);
 
             /// <inheritdoc />
@@ -188,7 +191,7 @@ namespace TerraFX.Graphics
             [Conditional("DEBUG")]
             public void Validate()
             {
-                Assert(AssertionsEnabled && (_regions.Count == 0));
+                Assert(AssertionsEnabled && (_regions.Count != 0));
 
                 var calculatedSize = 0UL;
                 var calculatedTotalFreeRegionSize = 0UL;

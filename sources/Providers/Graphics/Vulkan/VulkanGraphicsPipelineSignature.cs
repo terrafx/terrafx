@@ -39,7 +39,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPipelineSignature" /> class.</summary>
         ~VulkanGraphicsPipelineSignature() => Dispose(isDisposing: true);
 
-        /// <inheritdoc cref="GraphicsPipeline.Device" />
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
         public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
         /// <summary>Gets the <see cref="VkDescriptorPool" /> for the pipeline.</summary>

@@ -6,9 +6,8 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics
 {
     /// <summary>A graphics shader which performs a transformation for a graphics device.</summary>
-    public abstract class GraphicsShader : IDisposable
+    public abstract class GraphicsShader : GraphicsDeviceObject
     {
-        private readonly GraphicsDevice _device;
         private readonly string _entryPointName;
         private readonly GraphicsShaderKind _kind;
 
@@ -19,11 +18,10 @@ namespace TerraFX.Graphics
         /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="entryPointName" /> is <c>null</c>.</exception>
         protected GraphicsShader(GraphicsDevice device, GraphicsShaderKind kind, string entryPointName)
+            : base(device)
         {
-            ThrowIfNull(device, nameof(device));
             ThrowIfNull(entryPointName, nameof(entryPointName));
 
-            _device = device;
             _entryPointName = entryPointName;
             _kind = kind;
         }
@@ -31,24 +29,10 @@ namespace TerraFX.Graphics
         /// <summary>Gets the underlying bytecode for the shader.</summary>
         public abstract ReadOnlySpan<byte> Bytecode { get; }
 
-        /// <summary>Gets the device for which the shader was created.</summary>
-        public GraphicsDevice Device => _device;
-
         /// <summary>Gets the name of the entry point for the shader.</summary>
         public string EntryPointName => _entryPointName;
 
         /// <summary>Gets the kind of shader.</summary>
         public GraphicsShaderKind Kind => _kind;
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <inheritdoc cref="Dispose()" />
-        /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        protected abstract void Dispose(bool isDisposing);
     }
 }

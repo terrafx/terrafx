@@ -19,8 +19,8 @@ namespace TerraFX.Graphics.Providers.D3D12
         private ValueLazy<Pointer<ID3D12Heap>> _d3d12Heap;
         private protected VolatileState _state;
 
-        private protected D3D12GraphicsMemoryBlock(D3D12GraphicsMemoryBlockCollection collection)
-            : base(collection)
+        private protected D3D12GraphicsMemoryBlock(D3D12GraphicsDevice device, D3D12GraphicsMemoryBlockCollection collection)
+            : base(device, collection)
         {
             _d3d12Heap = new ValueLazy<Pointer<ID3D12Heap>>(CreateD3D12Heap);
         }
@@ -29,12 +29,15 @@ namespace TerraFX.Graphics.Providers.D3D12
         ~D3D12GraphicsMemoryBlock()
             => Dispose(isDisposing: true);
 
-        /// <summary>Gets the <see cref="ID3D12Heap" /> for the memory block.</summary>
-        public ID3D12Heap* D3D12Heap => _d3d12Heap.Value;
-
         /// <inheritdoc cref="GraphicsMemoryBlock.Collection" />
         public new D3D12GraphicsMemoryBlockCollection Collection
             => (D3D12GraphicsMemoryBlockCollection)base.Collection;
+
+        /// <summary>Gets the <see cref="ID3D12Heap" /> for the memory block.</summary>
+        public ID3D12Heap* D3D12Heap => _d3d12Heap.Value;
+
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
+        public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
         private static ulong GetAlignment(D3D12_HEAP_FLAGS heapFlags)
         {

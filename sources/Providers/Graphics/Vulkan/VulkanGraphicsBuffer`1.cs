@@ -15,8 +15,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private TMetadata _metadata;
 #pragma warning restore IDE0044
 
-        internal VulkanGraphicsBuffer(GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, VkBuffer vulkanBuffer)
-            : base(kind, in blockRegion, cpuAccess, vulkanBuffer)
+        internal VulkanGraphicsBuffer(VulkanGraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, VkBuffer vulkanBuffer)
+            : base(device, kind, in blockRegion, cpuAccess, vulkanBuffer)
         {
             var block = blockRegion.Collection;
 

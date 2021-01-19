@@ -18,8 +18,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private VkBuffer _vulkanBuffer;
         private protected VolatileState _state;
 
-        private protected VulkanGraphicsBuffer(GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, VkBuffer vulkanBuffer)
-            : base(kind, in blockRegion, cpuAccess)
+        private protected VulkanGraphicsBuffer(VulkanGraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, VkBuffer vulkanBuffer)
+            : base(device, kind, in blockRegion, cpuAccess)
         {
             _vulkanBuffer = vulkanBuffer;
             ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(Allocator.Device.VulkanDevice, vulkanBuffer, Block.VulkanDeviceMemory, blockRegion.Offset), nameof(vkBindBufferMemory));
@@ -33,6 +33,9 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         /// <inheritdoc />
         public new VulkanGraphicsMemoryBlock Block => (VulkanGraphicsMemoryBlock)base.Block;
+
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
+        public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
         /// <summary>Gets the underlying <see cref="VkBuffer" /> for the buffer.</summary>
         /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>

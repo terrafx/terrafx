@@ -22,6 +22,9 @@ namespace TerraFX.Graphics
         /// <summary>Gets the collection which contains the region.</summary>
         public TCollection Collection { get; init; }
 
+        /// <summary>Gets the device for which the memory region was created.</summary>
+        public GraphicsDevice Device => Collection.Device;
+
         /// <summary>Gets <c>true</c> if the region is allocated; otherwise, <c>false</c>.</summary>
         public bool IsAllocated { get; init; }
 

@@ -6,9 +6,8 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics
 {
     /// <summary>A graphics primitive which represents the most basic renderable object.</summary>
-    public abstract class GraphicsPrimitive : IDisposable
+    public abstract class GraphicsPrimitive : GraphicsDeviceObject
     {
-        private readonly GraphicsDevice _device;
         private readonly GraphicsPipeline _pipeline;
         private readonly GraphicsMemoryRegion<GraphicsResource> _vertexBufferRegion;
         private readonly GraphicsMemoryRegion<GraphicsResource> _indexBufferRegion;
@@ -17,7 +16,7 @@ namespace TerraFX.Graphics
         private readonly uint _indexBufferStride;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsPrimitive" /> class.</summary>
-        /// <param name="device">The device for which the primitive was created.</param>
+        /// <param name="device">The device which manages the primitive.</param>
         /// <param name="pipeline">The pipeline used for rendering the primitive.</param>
         /// <param name="vertexBufferRegion">The buffer region which holds the vertices for the primitive.</param>
         /// <param name="vertexBufferStride">The stride of the vertices in <paramref name="vertexBufferRegion" />.</param>
@@ -28,9 +27,10 @@ namespace TerraFX.Graphics
         /// <exception cref="ArgumentNullException"><paramref name="pipeline" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="vertexBufferRegion" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="pipeline" /> is incompatible as it belongs to a different device.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBufferRegion" /> is incompatible as it belongs to a different device.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBufferRegion" /> is incompatible as it belongs to a different device.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBufferRegion" /> was not created for <paramref name="device" />.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBufferRegion" /> was not created for <paramref name="device" />.</exception>
         protected GraphicsPrimitive(GraphicsDevice device, GraphicsPipeline pipeline, in GraphicsMemoryRegion<GraphicsResource> vertexBufferRegion, uint vertexBufferStride, in GraphicsMemoryRegion<GraphicsResource> indexBufferRegion, uint indexBufferStride, ReadOnlySpan<GraphicsMemoryRegion<GraphicsResource>> inputResourceRegions)
+            : base(device)
         {
             ThrowIfNull(pipeline, nameof(pipeline));
             ThrowIfNull(vertexBufferRegion.Collection, nameof(vertexBufferRegion));
@@ -40,17 +40,16 @@ namespace TerraFX.Graphics
                 ThrowForInvalidParent(pipeline.Device, nameof(pipeline));
             }
 
-            if (vertexBufferRegion.Collection.Allocator.Device != device)
+            if (vertexBufferRegion.Device != device)
             {
-                ThrowForInvalidParent(vertexBufferRegion.Collection.Allocator.Device, nameof(vertexBufferRegion));
+                ThrowForInvalidParent(vertexBufferRegion.Device, nameof(vertexBufferRegion));
             }
 
-            if ((indexBufferRegion.Collection is not null) && (indexBufferRegion.Collection.Allocator.Device != device))
+            if ((indexBufferRegion.Collection is not null) && (indexBufferRegion.Device != device))
             {
-                ThrowForInvalidParent(indexBufferRegion.Collection.Allocator.Device, nameof(indexBufferRegion));
+                ThrowForInvalidParent(indexBufferRegion.Device, nameof(indexBufferRegion));
             }
 
-            _device = device;
             _pipeline = pipeline;
 
             _vertexBufferRegion = vertexBufferRegion;
@@ -60,9 +59,6 @@ namespace TerraFX.Graphics
             _vertexBufferStride = vertexBufferStride;
             _indexBufferStride = indexBufferStride;
         }
-
-        /// <summary>Gets the device for which the pipeline was created.</summary>
-        public GraphicsDevice Device => _device;
 
         /// <summary>Gets the buffer region which holds the indices for the primitive or <c>default</c> if none exists.</summary>
         public ref readonly GraphicsMemoryRegion<GraphicsResource> IndexBufferRegion => ref _indexBufferRegion;
@@ -81,16 +77,5 @@ namespace TerraFX.Graphics
 
         /// <summary>Gets the stride of the vertex buffer region, in bytes.</summary>
         public uint VertexBufferStride => _vertexBufferStride;
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <inheritdoc cref="Dispose()" />
-        /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        protected abstract void Dispose(bool isDisposing);
     }
 }

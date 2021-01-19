@@ -17,8 +17,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private TMetadata _metadata;
 #pragma warning restore IDE0044
 
-        internal VulkanGraphicsMemoryBlock(VulkanGraphicsMemoryBlockCollection collection, ulong size)
-            : base(collection)
+        internal VulkanGraphicsMemoryBlock(VulkanGraphicsDevice device, VulkanGraphicsMemoryBlockCollection collection, ulong size)
+            : base(device, collection)
         {
             ref readonly var allocatorSettings = ref collection.Allocator.Settings;
 

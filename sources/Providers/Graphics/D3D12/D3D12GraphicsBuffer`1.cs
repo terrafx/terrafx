@@ -14,8 +14,8 @@ namespace TerraFX.Graphics.Providers.D3D12
         private TMetadata _metadata;
 #pragma warning restore IDE0044
 
-        internal D3D12GraphicsBuffer(GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess)
-            : base(kind, in blockRegion, cpuAccess)
+        internal D3D12GraphicsBuffer(D3D12GraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess)
+            : base(device, kind, in blockRegion, cpuAccess)
         {
             var block = blockRegion.Collection;
 

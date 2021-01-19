@@ -21,8 +21,8 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private protected VolatileState _state;
 
-        private protected D3D12GraphicsBuffer(GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess)
-            : base(kind, in blockRegion, cpuAccess)
+        private protected D3D12GraphicsBuffer(D3D12GraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess)
+            : base(device, kind, in blockRegion, cpuAccess)
         {
             _d3d12Resource = new ValueLazy<Pointer<ID3D12Resource>>(CreateD3D12Resource);
             _d3d12ResourceState = new ValueLazy<D3D12_RESOURCE_STATES>(GetD3D12ResourceState);
@@ -38,8 +38,6 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc cref="GraphicsResource.Block" />
         public new D3D12GraphicsMemoryBlock Block => (D3D12GraphicsMemoryBlock)base.Block;
 
-        
-
         /// <summary>Gets the underlying <see cref="ID3D12Resource" /> for the buffer.</summary>
         /// <exception cref="ExternalException">The call to <see cref="ID3D12Device.CreateCommittedResource(D3D12_HEAP_PROPERTIES*, D3D12_HEAP_FLAGS, D3D12_RESOURCE_DESC*, D3D12_RESOURCE_STATES, D3D12_CLEAR_VALUE*, Guid*, void**)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
@@ -47,6 +45,9 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         /// <summary>Gets the default state of the underlying <see cref="ID3D12Resource" /> for the buffer.</summary>
         public D3D12_RESOURCE_STATES D3D12ResourceState => _d3d12ResourceState.Value;
+
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
+        public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="ID3D12Resource.Map(uint, D3D12_RANGE*, void**)" /> failed.</exception>

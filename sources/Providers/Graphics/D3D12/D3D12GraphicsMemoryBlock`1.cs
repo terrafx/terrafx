@@ -17,8 +17,8 @@ namespace TerraFX.Graphics.Providers.D3D12
         private TMetadata _metadata;
 #pragma warning restore IDE0044
 
-        internal D3D12GraphicsMemoryBlock(D3D12GraphicsMemoryBlockCollection collection, ulong size)
-            : base(collection)
+        internal D3D12GraphicsMemoryBlock(D3D12GraphicsDevice device, D3D12GraphicsMemoryBlockCollection collection, ulong size)
+            : base(device, collection)
         {
             ref readonly var allocatorSettings = ref collection.Allocator.Settings;
 

@@ -35,7 +35,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <summary>Gets the underlying <see cref="ID3D12RootSignature" /> for the pipeline.</summary>
         public ID3D12RootSignature* D3D12RootSignature => _d3d12RootSignature.Value;
 
-        /// <inheritdoc cref="GraphicsPipeline.Device" />
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
         public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
         /// <inheritdoc />

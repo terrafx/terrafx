@@ -7,21 +7,13 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics
 {
     /// <summary>A graphics fence which can be used to synchronize the processor and a graphics context.</summary>
-    public abstract class GraphicsFence : IDisposable
+    public abstract class GraphicsFence : GraphicsDeviceObject
     {
-        private readonly GraphicsDevice _device;
-
         /// <summary>Initializes a new instance of the <see cref="GraphicsFence" /> class.</summary>
-        /// <param name="device">The device for which the fence provides synchronization.</param>
+        /// <param name="device">The device for which the fence is being created.</param>
         /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
         protected GraphicsFence(GraphicsDevice device)
-        {
-            ThrowIfNull(device, nameof(device));
-            _device = device;
-        }
-
-        /// <summary>Gets the device for which the fence provides synchronization.</summary>
-        public GraphicsDevice Device => _device;
+            : base(device) { }
 
         /// <summary>Gets <c>true</c> if the fence is in the signalled state; otherwise, <c>false</c>.</summary>
         /// <exception cref="ObjectDisposedException">The fence has been disposed.</exception>
@@ -74,16 +66,5 @@ namespace TerraFX.Graphics
         /// <exception cref="ObjectDisposedException">The fence has been disposed.</exception>
         /// <remarks>This method treats <see cref="Timeout.InfiniteTimeSpan" /> as having no timeout.</remarks>
         public abstract bool TryWait(TimeSpan timeout);
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <inheritdoc cref="Dispose()" />
-        /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        protected abstract void Dispose(bool isDisposing);
     }
 }

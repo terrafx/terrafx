@@ -30,8 +30,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private ValueLazy<VkSampler> _vulkanSampler;
         private protected VolatileState _state;
 
-        private protected VulkanGraphicsTexture(GraphicsTextureKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth, VkImage vulkanImage)
-            : base(kind, in blockRegion, cpuAccess, width, height, depth)
+        private protected VulkanGraphicsTexture(VulkanGraphicsDevice device, GraphicsTextureKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth, VkImage vulkanImage)
+            : base(device, kind, in blockRegion, cpuAccess, width, height, depth)
         {
             _vulkanImage = vulkanImage;
             ThrowExternalExceptionIfNotSuccess(vkBindImageMemory(Allocator.Device.VulkanDevice, vulkanImage, Block.VulkanDeviceMemory, blockRegion.Offset), nameof(vkBindImageMemory));
@@ -48,6 +48,9 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         /// <inheritdoc />
         public new VulkanGraphicsMemoryBlock Block => (VulkanGraphicsMemoryBlock)base.Block;
+
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
+        public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
         /// <summary>Gets the underlying <see cref="VkImage" /> for the buffer.</summary>
         /// <exception cref="ExternalException">The call to <see cref="vkBindImageMemory(IntPtr, ulong, ulong, ulong)" /> failed.</exception>

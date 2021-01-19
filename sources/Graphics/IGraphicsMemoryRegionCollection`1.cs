@@ -21,6 +21,9 @@ namespace TerraFX.Graphics
         /// <summary>Gets the number of allocated regions in the collection.</summary>
         int AllocatedRegionCount { get; }
 
+        /// <summary>Gets the device for which the memory region collection was created.</summary>
+        public GraphicsDevice Device { get; }
+
         /// <summary>Gets <c>true</c> if the collection contains no allocated regions; otherwise, <c>false</c>.</summary>
         bool IsEmpty { get; }
 

@@ -34,7 +34,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public ID3D12DescriptorHeap* D3D12CbvSrvUavDescriptorHeap => _d3d12CbvSrvUavDescriptorHeap.Value;
 
-        /// <inheritdoc cref="GraphicsPrimitive.Device" />
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
         public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
         /// <inheritdoc cref="GraphicsPrimitive.Pipeline" />

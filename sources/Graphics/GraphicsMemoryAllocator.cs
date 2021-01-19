@@ -9,26 +9,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics
 {
     /// <summary>A memory allocator which manages memory for a graphics device.</summary>
-    public abstract class GraphicsMemoryAllocator : IDisposable, IReadOnlyCollection<GraphicsMemoryBlockCollection>
+    public abstract class GraphicsMemoryAllocator : GraphicsDeviceObject, IReadOnlyCollection<GraphicsMemoryBlockCollection>
     {
-        private readonly GraphicsDevice _device;
         private readonly GraphicsMemoryAllocatorSettings _settings;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryAllocator" /> class.</summary>
-        /// <param name="device">The device for which the allocator will manage memory.</param>
+        /// <param name="device">The device for which the memory allocator is being created.</param>
         /// <param name="settings">The settings used by the allocator.</param>
         /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
         protected GraphicsMemoryAllocator(GraphicsDevice device, in GraphicsMemoryAllocatorSettings settings)
+            : base(device)
         {
-            ThrowIfNull(device, nameof(device));
-
-            _device = device;
-
             // Default to no external synchronization
             var isExternallySynchronized = GetDataNameValue(
                 GraphicsMemoryAllocatorSettings.IsExternallySynchronizedDataName,
@@ -103,9 +98,6 @@ namespace TerraFX.Graphics
         /// <summary>Gets the number of block collections in the allocator.</summary>
         public abstract int Count { get; }
 
-        /// <summary>Gets the device for which the allocator will manage memory.</summary>
-        public GraphicsDevice Device => _device;
-
         /// <summary>Gets a <c>true</c> if the memory allocator should be externally synchronized; otherwise, <c>false</c>.</summary>
         public bool IsExternallySynchronized => _settings.IsExternallySynchronized.GetValueOrDefault();
 
@@ -161,17 +153,6 @@ namespace TerraFX.Graphics
         /// <summary>Gets an enumerator that can be used to iterate through the block collections of the allocator.</summary>
         /// <returns>An enumerator that can be used to iterate through the block collections of the allocator.</returns>
         public abstract IEnumerator<GraphicsMemoryBlockCollection> GetEnumerator();
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <inheritdoc cref="Dispose()" />
-        /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        protected abstract void Dispose(bool isDisposing);
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }

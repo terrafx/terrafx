@@ -8,19 +8,28 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics
 {
     /// <summary>A graphics resource bound to a graphics device.</summary>
-    public abstract unsafe partial class GraphicsResource : IDisposable, IGraphicsMemoryRegionCollection<GraphicsResource>
+    public abstract unsafe partial class GraphicsResource : GraphicsDeviceObject, IGraphicsMemoryRegionCollection<GraphicsResource>
     {
         private readonly GraphicsMemoryAllocator _allocator;
         private readonly GraphicsMemoryRegion<GraphicsMemoryBlock> _blockRegion;
         private readonly GraphicsResourceCpuAccess _cpuAccess;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsResource" /> class.</summary>
+        /// <param name="device">The device for which the resource was created.</param>
         /// <param name="blockRegion">The memory block region in which the resource exists.</param>
         /// <param name="cpuAccess">The CPU access capabilities of the resource.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c></exception>
         /// <exception cref="ArgumentNullException"><paramref name="blockRegion" />.<see cref="GraphicsMemoryRegion{TCollection}.Collection"/> is <c>null</c>.</exception>
-        protected GraphicsResource(in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess)
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="blockRegion" /> was not created for <paramref name="device" />.</exception>
+        protected GraphicsResource(GraphicsDevice device, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess)
+            : base(device)
         {
             ThrowIfNull(blockRegion.Collection, nameof(blockRegion));
+
+            if (blockRegion.Device != device)
+            {
+                ThrowForInvalidParent(blockRegion.Device, nameof(blockRegion));
+            }
 
             _allocator = blockRegion.Collection.Collection.Allocator;
             _blockRegion = blockRegion;
@@ -74,13 +83,6 @@ namespace TerraFX.Graphics
 
         /// <inheritdoc />
         public abstract void Clear();
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
 
         /// <inheritdoc />
         public abstract void Free(in GraphicsMemoryRegion<GraphicsResource> region);
@@ -186,9 +188,5 @@ namespace TerraFX.Graphics
         /// <param name="writtenRangeOffset">The offset into the resource at which memory started being written.</param>
         /// <param name="writtenRangeLength">The amount of memory which was written.</param>
         public abstract void UnmapAndWrite(nuint writtenRangeOffset, nuint writtenRangeLength);
-
-        /// <inheritdoc cref="Dispose()" />
-        /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        protected abstract void Dispose(bool isDisposing);
     }
 }

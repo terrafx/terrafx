@@ -48,7 +48,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <exception cref="ObjectDisposedException">The fence has been disposed.</exception>
         public ulong D3D12FenceSignalValue => _d3d12FenceSignalValue;
 
-        /// <inheritdoc cref="GraphicsFence.Device" />
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
         public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
         /// <inheritdoc />

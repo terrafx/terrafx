@@ -65,7 +65,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
         public D3D12_CPU_DESCRIPTOR_HANDLE D3D12RenderTargetView => _d3d12RenderTargetView.Value;
 
-        /// <inheritdoc cref="GraphicsContext.Device" />
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
         public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
         /// <inheritdoc />

@@ -34,7 +34,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsFence" /> class.</summary>
         ~VulkanGraphicsFence() => Dispose(isDisposing: false);
 
-        /// <inheritdoc cref="GraphicsFence.Device" />
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
         public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
         /// <summary>Gets the underlying <see cref="VkFence" /> for the fence.</summary>

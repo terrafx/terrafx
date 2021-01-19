@@ -42,7 +42,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         // TEXCOORD
         private static ReadOnlySpan<sbyte> TEXCOORD_SEMANTIC_NAME => new sbyte[] { 0x54, 0x45, 0x58, 0x43, 0x4F, 0x4F, 0x52, 0x44, 0x00 };
 
-        /// <inheritdoc cref="GraphicsPipeline.Device" />
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
         public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
         /// <summary>Gets the underlying <see cref="ID3D12PipelineState" /> for the pipeline.</summary>

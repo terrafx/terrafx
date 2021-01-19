@@ -38,7 +38,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <summary>Gets the underlying <see cref="D3D12_SHADER_BYTECODE" /> for the shader.</summary>
         public ref readonly D3D12_SHADER_BYTECODE D3D12ShaderBytecode => ref _d3d12ShaderBytecode;
 
-        /// <inheritdoc cref="GraphicsShader.Device" />
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
         public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
         /// <inheritdoc />

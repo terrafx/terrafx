@@ -45,7 +45,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc />
         public override ReadOnlySpan<byte> Bytecode => new ReadOnlySpan<byte>(_vulkanShaderModuleCreateInfo.pCode, (int)_vulkanShaderModuleCreateInfo.codeSize);
 
-        /// <inheritdoc cref="GraphicsShader.Device" />
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
         public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
         /// <summary>Gets the underlying <see cref="VkShaderModule" /> for the shader.</summary>

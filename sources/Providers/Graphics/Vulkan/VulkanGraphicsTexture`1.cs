@@ -15,8 +15,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private TMetadata _metadata;
 #pragma warning restore IDE0044
 
-        internal VulkanGraphicsTexture(GraphicsTextureKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth, VkImage vulkanImage)
-            : base(kind, in blockRegion, cpuAccess, width, height, depth, vulkanImage)
+        internal VulkanGraphicsTexture(VulkanGraphicsDevice device, GraphicsTextureKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth, VkImage vulkanImage)
+            : base(device, kind, in blockRegion, cpuAccess, width, height, depth, vulkanImage)
         {
             var block = blockRegion.Collection;
 

@@ -20,7 +20,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPrimitive" /> class.</summary>
         ~VulkanGraphicsPrimitive() => Dispose(isDisposing: true);
 
-        /// <inheritdoc cref="GraphicsPrimitive.Device" />
+        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
         public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
         /// <inheritdoc cref="GraphicsPrimitive.Pipeline" />

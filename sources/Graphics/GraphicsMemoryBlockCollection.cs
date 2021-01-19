@@ -20,7 +20,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics
 {
     /// <summary>Represents a collection of memory blocks.</summary>
-    public abstract class GraphicsMemoryBlockCollection : IDisposable, IReadOnlyCollection<GraphicsMemoryBlock>
+    public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IReadOnlyCollection<GraphicsMemoryBlock>
     {
         private readonly GraphicsMemoryAllocator _allocator;
 
@@ -35,11 +35,20 @@ namespace TerraFX.Graphics
         private VolatileState _state;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryBlockCollection" /> class.</summary>
+        /// <param name="device">The device for which the memory block collection is being created</param>
         /// <param name="allocator">The allocator that manages the collection.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="allocator" /> is <c>null</c>.</exception>
-        protected GraphicsMemoryBlockCollection(GraphicsMemoryAllocator allocator)
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="allocator" /> was not created for <paramref name="device" />.</exception>
+        protected GraphicsMemoryBlockCollection(GraphicsDevice device, GraphicsMemoryAllocator allocator)
+            : base(device)
         {
             ThrowIfNull(allocator, nameof(allocator));
+
+            if (allocator.Device != device)
+            {
+                ThrowForInvalidParent(allocator.Device, nameof(allocator));
+            }
 
             _allocator = allocator;
 
@@ -112,13 +121,6 @@ namespace TerraFX.Graphics
                 ThrowOutOfMemoryException(size);
             }
             return region;
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>Frees a region of memory from the collection.</summary>
@@ -370,7 +372,7 @@ namespace TerraFX.Graphics
         protected abstract GraphicsMemoryBlock CreateBlock(ulong size);
 
         /// <inheritdoc />
-        protected virtual void Dispose(bool isDisposing)
+        protected override void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
