@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Composition" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\UI\Core\TerraFX.UI.csproj" />
+    <ProjectReference Include="..\..\Graphics\Core\TerraFX.Graphics.csproj" />
   </ItemGroup>
 
 </Project>

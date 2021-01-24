@@ -3,15 +3,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Composition" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\UI\Core\TerraFX.UI.csproj" />
+    <ProjectReference Include="..\..\..\sources\UI\WinForms\TerraFX.UI.WinForms.csproj" />
   </ItemGroup>
 
 </Project>

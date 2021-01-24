@@ -8,10 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="System.Composition" />
+    <PackageReference Include="TerraFX.Interop.Libc" />
+    <PackageReference Include="TerraFX.Interop.Xlib" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UI\Core\TerraFX.UI.csproj" />
+    <ProjectReference Include="..\Core\TerraFX.UI.csproj" />
   </ItemGroup>
 
 </Project>

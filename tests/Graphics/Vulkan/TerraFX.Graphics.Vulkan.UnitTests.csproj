@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Composition" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\UI\Core\TerraFX.UI.csproj" />
+    <ProjectReference Include="..\..\..\sources\Graphics\Vulkan\TerraFX.Graphics.Vulkan.csproj" />
   </ItemGroup>
 
 </Project>

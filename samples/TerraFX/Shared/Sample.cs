@@ -18,8 +18,8 @@ namespace TerraFX.Samples
 {
     public abstract class Sample : IDisposable
     {
-        internal static readonly Assembly s_uiProviderWin32 = Assembly.LoadFrom("TerraFX.UI.Providers.Win32.dll");
-        internal static readonly Assembly s_uiProviderXlib = Assembly.LoadFrom("TerraFX.UI.Providers.Xlib.dll");
+        internal static readonly Assembly s_uiProviderWin32 = Assembly.LoadFrom("TerraFX.UI.Win32.dll");
+        internal static readonly Assembly s_uiProviderXlib = Assembly.LoadFrom("TerraFX.UI.Xlib.dll");
 
         private readonly string _assemblyPath;
         private readonly string _name;

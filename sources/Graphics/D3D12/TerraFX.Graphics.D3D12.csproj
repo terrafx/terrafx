@@ -8,10 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="System.Composition" />
+    <PackageReference Include="TerraFX.Interop.Windows" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UI\Core\TerraFX.UI.csproj" />
+    <ProjectReference Include="..\Core\TerraFX.Graphics.csproj" />
   </ItemGroup>
 
 </Project>
