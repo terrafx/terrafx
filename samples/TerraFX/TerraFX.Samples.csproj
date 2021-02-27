@@ -13,11 +13,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\sources\ApplicationModel\TerraFX.ApplicationModel.csproj" />
-    <ProjectReference Include="..\..\sources\Providers\Audio\PulseAudio\TerraFX.Audio.Providers.PulseAudio.csproj" />
-    <ProjectReference Include="..\..\sources\Providers\Graphics\D3D12\TerraFX.Graphics.Providers.D3D12.csproj" />
-    <ProjectReference Include="..\..\sources\Providers\Graphics\Vulkan\TerraFX.Graphics.Providers.Vulkan.csproj" />
-    <ProjectReference Include="..\..\sources\Providers\UI\Win32\TerraFX.UI.Providers.Win32.csproj" />
-    <ProjectReference Include="..\..\sources\Providers\UI\Xlib\TerraFX.UI.Providers.Xlib.csproj" />
+    <ProjectReference Include="..\..\sources\Audio\PulseAudio\TerraFX.Audio.PulseAudio.csproj" />
+    <ProjectReference Include="..\..\sources\Graphics\D3D12\TerraFX.Graphics.D3D12.csproj" />
+    <ProjectReference Include="..\..\sources\Graphics\Vulkan\TerraFX.Graphics.Vulkan.csproj" />
+    <ProjectReference Include="..\..\sources\UI\Win32\TerraFX.UI.Win32.csproj" />
+    <ProjectReference Include="..\..\sources\UI\Xlib\TerraFX.UI.Xlib.csproj" />
   </ItemGroup>
 
 </Project>

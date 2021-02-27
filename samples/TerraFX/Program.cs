@@ -15,10 +15,10 @@ namespace TerraFX.Samples
 {
     public static unsafe class Program
     {
-        internal static readonly Assembly s_audioProviderPulseAudio = Assembly.LoadFrom("TerraFX.Audio.Providers.PulseAudio.dll");
+        internal static readonly Assembly s_audioProviderPulseAudio = Assembly.LoadFrom("TerraFX.Audio.PulseAudio.dll");
 
-        internal static readonly Assembly s_graphicsProviderD3D12 = Assembly.LoadFrom("TerraFX.Graphics.Providers.D3D12.dll");
-        internal static readonly Assembly s_graphicsProviderVulkan = Assembly.LoadFrom("TerraFX.Graphics.Providers.Vulkan.dll");
+        internal static readonly Assembly s_graphicsProviderD3D12 = Assembly.LoadFrom("TerraFX.Graphics.D3D12.dll");
+        internal static readonly Assembly s_graphicsProviderVulkan = Assembly.LoadFrom("TerraFX.Graphics.Vulkan.dll");
 
         private static readonly Sample[] s_samples = {
             new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_graphicsProviderD3D12),

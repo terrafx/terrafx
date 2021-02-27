@@ -23,17 +23,17 @@
 
   <!-- Package versions for package references across all projects -->
   <ItemGroup>
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.8.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.8.3" />
     <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.0.0" />
-    <PackageReference Update="NUnit" Version="3.12.0" />
+    <PackageReference Update="NUnit" Version="3.13.1" />
     <PackageReference Update="NUnit3TestAdapter" Version="3.17.0" />
     <PackageReference Update="System.Composition" Version="5.0.0" />
     <PackageReference Update="System.IO.Pipelines" Version="5.0.0" />
     <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-beta1" />
-    <PackageReference Update="TerraFX.Interop.Mimalloc" Version="1.6.0-beta1-476348989" />
+    <PackageReference Update="TerraFX.Interop.Mimalloc" Version="1.6.0-beta1" />
     <PackageReference Update="TerraFX.Interop.PulseAudio" Version="13.0.0-beta1" />
-    <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.154-beta1" />
-    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.19041-beta1" />
+    <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.162-beta2" />
+    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.19041-beta2" />
     <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-beta1" />
   </ItemGroup>
 

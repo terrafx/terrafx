@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UI\TerraFX.UI.csproj" />
+    <ProjectReference Include="..\UI\Core\TerraFX.UI.csproj" />
   </ItemGroup>
 
 </Project>
