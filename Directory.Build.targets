@@ -30,7 +30,7 @@
     <PackageReference Update="System.Composition" Version="5.0.0" />
     <PackageReference Update="System.IO.Pipelines" Version="5.0.0" />
     <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-beta1" />
-    <PackageReference Update="TerraFX.Interop.Mimalloc" Version="1.6.0-beta1-476348989" />
+    <PackageReference Update="TerraFX.Interop.Mimalloc" Version="1.6.0-beta1" />
     <PackageReference Update="TerraFX.Interop.PulseAudio" Version="13.0.0-beta1" />
     <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.162-beta2" />
     <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.19041-beta2" />

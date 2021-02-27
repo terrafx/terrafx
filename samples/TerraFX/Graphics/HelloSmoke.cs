@@ -151,9 +151,9 @@ namespace TerraFX.Samples.Graphics
 
             GraphicsMemoryRegion<GraphicsResource> CreateTexture3DRegion(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer, bool isQuickAndDirty)
             {
-                uint textureWidth = isQuickAndDirty ? 64 : 256;
-                uint textureHeight = isQuickAndDirty ? 64 : 256;
-                ushort textureDepth = isQuickAndDirty ? 64 : 256;
+                var textureWidth = isQuickAndDirty ? 64u : 256u;
+                var textureHeight = isQuickAndDirty ? 64u : 256u;
+                var textureDepth = isQuickAndDirty ? (ushort)64 : (ushort)256;
                 var textureDz = textureWidth * textureHeight;
                 var texturePixels = textureDz * textureDepth;
 
