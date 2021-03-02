@@ -6,7 +6,7 @@ using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Graphics.Geometry2D;
 using TerraFX.Numerics;
-using static TerraFX.Utilities.InteropUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics
 {
