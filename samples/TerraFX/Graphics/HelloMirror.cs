@@ -5,14 +5,14 @@ using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
-using static TerraFX.Utilities.InteropUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics
 {
     /// <summary>
     /// This sample demonstrates the use of two rendering passes of a simple scene with a triangle in front of a mirror.
     /// 1) the scene is rendered as seen in the mirror and with a render target that is an off-screen texture
-    /// 2) the scene is rendered 'normal' as seen from the main camera and into the framebuffer.
+    /// 2) the scene is rendered 'normal' as seen from the main camera and into the frame buffer.
     ///      There are two objects, the triangle from the first pass and a mirror - a quad with the first pass render result as a texture.
     /// </summary>
     public sealed class HelloMirror : HelloWindow
