@@ -204,6 +204,18 @@ namespace TerraFX.Numerics
         /// <inheritdoc />
         public bool Equals(Quaternion other) => this == other;
 
+        /// <summary>Tests if two <see cref="Quaternion" /> instances (this and right) have sufficiently similar values to see them as equivalent.
+        /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
+        /// <param name="right">The right instance to compare.</param>
+        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
+        /// <returns>True if similar, false otherwise.</returns>
+        public bool EqualEstimate(Quaternion right, Quaternion epsilon) => _value.EqualEstimate(right._value, epsilon._value);
+
+        /// <summary>The inverse of this <see cref="Quaternion" /> with the given other one.</summary>
+        /// <param name="value">The Quaternion for this operation.</param>
+        /// <returns>The resulting inverse <see cref="Quaternion" />.</returns>
+        public static Quaternion Invert(Quaternion value) => Quaternion.Conjugate(value) / value.LengthSquared;
+
         /// <inheritdoc />
         public override int GetHashCode() => _value.GetHashCode();
 

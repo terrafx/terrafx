@@ -11,7 +11,7 @@ using TerraFX.Utilities;
 namespace TerraFX.Numerics
 {
     /// <summary>Defines a three-dimensional Euclidean vector.</summary>
-    public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
+    public readonly struct Vector3 : IEquatable<Vector3>, IEqualEstimate<Vector3>, IFormattable
     {
         /// <summary>Defines a <see cref="Vector3" /> where all components are zero.</summary>
         public static readonly Vector3 Zero = new Vector3(0.0f, 0.0f, 0.0f);
@@ -200,15 +200,17 @@ namespace TerraFX.Numerics
             MathUtilities.Max(left.Z, right.Z)
         );
 
-        /// <summary>Compares two vectors to determine the combined minimum.</summary>
-        /// <param name="left">The vector to compare with <paramref name="right" />.</param>
-        /// <param name="right">The vector to compare with <paramref name="left" />.</param>
-        /// <returns>The combined minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
-        public static Vector3 Min(Vector3 left, Vector3 right) => new Vector3(
-            MathUtilities.Min(left.X, right.X),
-            MathUtilities.Min(left.Y, right.Y),
-            MathUtilities.Min(left.Z, right.Z)
-        );
+        /// <summary>Tests if two <see cref="Vector3" /> instances (this and right) have sufficiently similar values to see them as equivalent.
+        /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
+        /// <param name="right">The right instance to compare.</param>
+        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
+        /// <returns><c>True</c> if similar, <c>False</c> otherwise.</returns>
+        public bool EqualEstimate(Vector3 right, Vector3 epsilon)
+        {
+            return FloatUtilities.EqualEstimate(X, right.X, epsilon.X)
+                && FloatUtilities.EqualEstimate(Y, right.Y, epsilon.Y)
+                && FloatUtilities.EqualEstimate(Z, right.Z, epsilon.Z);
+        }
 
         /// <summary>Computes the normalized form of a vector.</summary>
         /// <param name="value">The vector to normalized.</param>
