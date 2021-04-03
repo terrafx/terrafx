@@ -116,10 +116,7 @@ jobs:
     - uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '5.0.x'
-        source-url: https://pkgs.terrafx.dev/index.json
-      env:
-        NUGET_AUTH_TOKEN: ${{ secrets.AZURE_DEVOPS_PAT }}
-    - run: dotnet nuget push "./artifacts/pkg/Release/*.nupkg" --api-key AzureDevOps
+    - run: dotnet nuget push "./artifacts/pkg/Release/*.nupkg" --source https://pkgs.terrafx.dev/index.json --api-key ${{ secrets.AZURE_DEVOPS_PAT }}
   publish-nightlies-github:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' }}
@@ -132,7 +129,4 @@ jobs:
     - uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '5.0.x'
-        source-url: https://nuget.pkg.github.com/terrafx/index.json
-      env:
-        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - run: dotnet nuget push "./artifacts/pkg/Release/*.nupkg"
+    - run: dotnet nuget push "./artifacts/pkg/Release/*.nupkg" --source https://nuget.pkg.github.com/terrafx/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
