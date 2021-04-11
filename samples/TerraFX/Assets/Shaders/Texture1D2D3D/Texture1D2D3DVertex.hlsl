@@ -1,6 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-#include "Texture3DTypes.hlsl"
+#include "Texture1D2D3DTypes.hlsl"
 
 cbuffer PerFrameInput : register(b0)
 {
