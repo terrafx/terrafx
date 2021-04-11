@@ -23,6 +23,7 @@ namespace TerraFX.Samples.Graphics
         private GraphicsBuffer _indexBuffer = null!;
         private GraphicsBuffer _vertexBuffer = null!;
         private float _texturePosition;
+        private const uint TEXTURE3D_SIDE_LENGTH = 64; // this results in a RowPitch of 256, the minimum allowed
 
         public HelloTexture3D(string name, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
@@ -50,9 +51,10 @@ namespace TerraFX.Samples.Graphics
             var graphicsDevice = GraphicsDevice;
             var currentGraphicsContext = graphicsDevice.CurrentContext;
 
+            var textureSize = 4u * TEXTURE3D_SIDE_LENGTH * TEXTURE3D_SIDE_LENGTH * TEXTURE3D_SIDE_LENGTH;
             using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
             using var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
-            using var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024 * 1024);
+            using var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, textureSize);
 
             _constantBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Constant, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
             _indexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
@@ -163,13 +165,13 @@ namespace TerraFX.Samples.Graphics
 
             static GraphicsMemoryRegion<GraphicsResource> CreateTexture3DRegion(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
             {
-                const uint TextureWidth = 256;
-                const uint TextureHeight = 256;
-                const ushort TextureDepth = 256;
+                const uint TextureWidth = TEXTURE3D_SIDE_LENGTH;
+                const uint TextureHeight = TEXTURE3D_SIDE_LENGTH;
+                const uint TextureDepth = TEXTURE3D_SIDE_LENGTH;
                 const uint TextureDz = TextureWidth * TextureHeight;
                 const uint TexturePixels = TextureDz * TextureDepth;
 
-                var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight, TextureDepth);
+                var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight, (ushort)TextureDepth);
                 var texture3DRegion = texture3D.Allocate(texture3D.Size, alignment: 4);
                 var pTextureData = textureStagingBuffer.Map<uint>(in texture3DRegion);
 
@@ -178,6 +180,9 @@ namespace TerraFX.Samples.Graphics
                     var x = n % TextureWidth;
                     var y = n % TextureDz / TextureWidth;
                     var z = n / TextureDz;
+                    x = x * 256 / TextureWidth;
+                    y = y * 256 / TextureHeight;
+                    z = z * 256 / TextureDepth;
 
                     pTextureData[n] = 0xFF000000 | (z << 16) | (y << 8) | (x << 0);
                 }
