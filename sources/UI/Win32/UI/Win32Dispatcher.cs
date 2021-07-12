@@ -11,8 +11,8 @@ namespace TerraFX.UI
     /// <summary>Provides a means of dispatching events for a thread.</summary>
     public sealed unsafe class Win32Dispatcher : Dispatcher
     {
-        internal Win32Dispatcher(Win32DispatchProvider dispatchProvider, Thread parentThread)
-            : base(dispatchProvider, parentThread) { }
+        internal Win32Dispatcher(Win32DispatchService dispatchService, Thread parentThread)
+            : base(dispatchService, parentThread) { }
 
         /// <inheritdoc />
         public override event EventHandler? ExitRequested;

@@ -12,21 +12,21 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.UI
 {
     /// <summary>Provides access to a Win32 based dispatch subsystem.</summary>
-    public sealed unsafe class Win32DispatchProvider : DispatchProvider
+    public sealed unsafe class Win32DispatchService : DispatchService
     {
-        private static ValueLazy<Win32DispatchProvider> s_instance = new ValueLazy<Win32DispatchProvider>(CreateDispatchProvider);
+        private static ValueLazy<Win32DispatchService> s_instance = new ValueLazy<Win32DispatchService>(CreateDispatchService);
 
         private readonly double _tickFrequency;
         private readonly ConcurrentDictionary<Thread, Dispatcher> _dispatchers;
 
-        private Win32DispatchProvider()
+        private Win32DispatchService()
         {
             _tickFrequency = GetTickFrequency();
             _dispatchers = new ConcurrentDictionary<Thread, Dispatcher>();
         }
 
-        /// <summary>Gets the <see cref="Win32DispatchProvider" /> instance for the current program.</summary>
-        public static Win32DispatchProvider Instance => s_instance.Value;
+        /// <summary>Gets the <see cref="Win32DispatchService" /> instance for the current program.</summary>
+        public static Win32DispatchService Instance => s_instance.Value;
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceCounter(LARGE_INTEGER*)" /> failed.</exception>
@@ -62,7 +62,7 @@ namespace TerraFX.UI
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing) { }
 
-        private static Win32DispatchProvider CreateDispatchProvider() => new Win32DispatchProvider();
+        private static Win32DispatchService CreateDispatchService() => new Win32DispatchService();
 
         private static double GetTickFrequency()
         {

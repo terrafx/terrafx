@@ -7,16 +7,16 @@ using TerraFX.Threading;
 using static TerraFX.Utilities.VulkanUtilities;
 using static TerraFX.Interop.VkAttachmentLoadOp;
 using static TerraFX.Interop.VkAttachmentStoreOp;
-using static TerraFX.Interop.VkCompositeAlphaFlagBitsKHR;
+using static TerraFX.Interop.VkCompositeAlphaFlagsKHR;
 using static TerraFX.Interop.VkFormat;
 using static TerraFX.Interop.VkImageLayout;
-using static TerraFX.Interop.VkImageUsageFlagBits;
+using static TerraFX.Interop.VkImageUsageFlags;
 using static TerraFX.Interop.VkPipelineBindPoint;
 using static TerraFX.Interop.VkPresentModeKHR;
-using static TerraFX.Interop.VkQueueFlagBits;
-using static TerraFX.Interop.VkSampleCountFlagBits;
+using static TerraFX.Interop.VkQueueFlags;
+using static TerraFX.Interop.VkSampleCountFlags;
 using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Interop.VkSurfaceTransformFlagBitsKHR;
+using static TerraFX.Interop.VkSurfaceTransformFlagsKHR;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -319,7 +319,7 @@ namespace TerraFX.Graphics
             VkSurfaceKHR vulkanSurface;
 
             var adapter = Adapter;
-            var vulkanInstance = adapter.Provider.VulkanInstance;
+            var vulkanInstance = adapter.Service.VulkanInstance;
 
             switch (Surface.Kind)
             {
@@ -398,14 +398,14 @@ namespace TerraFX.Graphics
                     height = (uint)surface.Height,
                 },
                 imageArrayLayers = 1,
-                imageUsage = (uint)(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT),
+                imageUsage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
                 preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
                 compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
                 presentMode = VK_PRESENT_MODE_FIFO_KHR,
                 clipped = VK_TRUE,
             };
 
-            if ((surfaceCapabilities.supportedTransforms & (uint)VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) == 0)
+            if ((surfaceCapabilities.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) == 0)
             {
                 swapChainCreateInfo.preTransform = surfaceCapabilities.currentTransform;
             }
@@ -459,7 +459,7 @@ namespace TerraFX.Graphics
 
             if (vulkanSurface != VK_NULL_HANDLE)
             {
-                vkDestroySurfaceKHR(Adapter.Provider.VulkanInstance, vulkanSurface, pAllocator: null);
+                vkDestroySurfaceKHR(Adapter.Service.VulkanInstance, vulkanSurface, pAllocator: null);
             }
         }
 
@@ -494,7 +494,7 @@ namespace TerraFX.Graphics
 
             for (uint i = 0; i < queueFamilyPropertyCount; i++)
             {
-                if ((queueFamilyProperties[i].queueFlags & (uint)VK_QUEUE_GRAPHICS_BIT) != 0)
+                if ((queueFamilyProperties[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0)
                 {
                     vulkanCommandQueueFamilyIndex = i;
                     break;

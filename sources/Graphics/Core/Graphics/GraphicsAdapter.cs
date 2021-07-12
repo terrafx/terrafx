@@ -8,15 +8,15 @@ namespace TerraFX.Graphics
     /// <summary>A graphics adapter which can be used for computational or graphical operations.</summary>
     public abstract class GraphicsAdapter : IDisposable
     {
-        private readonly GraphicsProvider _provider;
+        private readonly GraphicsService _service;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsAdapter" /> class.</summary>
-        /// <param name="provider">The provider which enumerated the adapter.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="provider" /> is <c>null</c>.</exception>
-        protected GraphicsAdapter(GraphicsProvider provider)
+        /// <param name="service">The service which enumerated the adapter.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="service" /> is <c>null</c>.</exception>
+        protected GraphicsAdapter(GraphicsService service)
         {
-            ThrowIfNull(provider, nameof(provider));
-            _provider = provider;
+            ThrowIfNull(service, nameof(service));
+            _service = service;
         }
 
         /// <summary>Gets the PCI Device ID (DID) for the adapter.</summary>
@@ -27,8 +27,8 @@ namespace TerraFX.Graphics
         /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
         public abstract string Name { get; }
 
-        /// <summary>Gets the provider which enumerated the adapter.</summary>
-        public GraphicsProvider Provider => _provider;
+        /// <summary>Gets the service which enumerated the adapter.</summary>
+        public GraphicsService Service => _service;
 
         /// <summary>Gets the PCI Vendor ID (VID) for the adapter.</summary>
         /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>

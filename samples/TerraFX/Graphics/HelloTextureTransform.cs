@@ -1,7 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
@@ -22,8 +21,8 @@ namespace TerraFX.Samples.Graphics
         private GraphicsBuffer _vertexBuffer = null!;
         private float _trianglePrimitiveTranslationAngle;
 
-        public HelloTextureTransform(string name, params Assembly[] compositionAssemblies)
-            : base(name, compositionAssemblies)
+        public HelloTextureTransform(string name, ApplicationServiceProvider serviceProvider)
+            : base(name, serviceProvider)
         {
         }
 

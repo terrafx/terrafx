@@ -9,27 +9,27 @@ namespace TerraFX.UI
     /// <summary>Provides a means of dispatching events for a thread.</summary>
     public abstract class Dispatcher : IDisposable
     {
-        private readonly DispatchProvider _dispatchProvider;
+        private readonly DispatchService _dispatchService;
         private readonly Thread _parentThread;
 
         /// <summary>Initializes a new instance of the <see cref="Dispatcher" /> class.</summary>
-        /// <param name="dispatchProvider">The dispatch provider which created the dispatcher.</param>
+        /// <param name="dispatchService">The dispatch service which created the dispatcher.</param>
         /// <param name="parentThread">The thread on which the dispatcher operates.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="dispatchProvider" /> is <c>null</c>.</exception>
-        protected Dispatcher(DispatchProvider dispatchProvider, Thread parentThread)
+        /// <exception cref="ArgumentNullException"><paramref name="dispatchService" /> is <c>null</c>.</exception>
+        protected Dispatcher(DispatchService dispatchService, Thread parentThread)
         {
-            ThrowIfNull(dispatchProvider, nameof(dispatchProvider));
+            ThrowIfNull(dispatchService, nameof(dispatchService));
             ThrowIfNull(parentThread, nameof(parentThread));
 
-            _dispatchProvider = dispatchProvider;
+            _dispatchService = dispatchService;
             _parentThread = parentThread;
         }
 
         /// <summary>Occurs when an exit event is dispatched from the queue.</summary>
         public abstract event EventHandler ExitRequested;
 
-        /// <summary>Gets the <see cref="UI.DispatchProvider" /> for the instance.</summary>
-        public DispatchProvider DispatchProvider => _dispatchProvider;
+        /// <summary>Gets the <see cref="UI.DispatchService" /> for the instance.</summary>
+        public DispatchService DispatchService => _dispatchService;
 
         /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
         public Thread ParentThread => _parentThread;

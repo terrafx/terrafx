@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Composition;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -11,7 +10,7 @@ using System.Text;
 using TerraFX.Interop;
 using TerraFX.Threading;
 using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkDebugReportFlagBitsEXT;
+using static TerraFX.Interop.VkDebugReportFlagsEXT;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Threading.VolatileState;
@@ -24,9 +23,7 @@ using static TerraFX.Utilities.UnsafeUtilities;
 namespace TerraFX.Graphics
 {
     /// <inheritdoc />
-    [Export(typeof(GraphicsProvider))]
-    [Shared]
-    public sealed unsafe class VulkanGraphicsProvider : GraphicsProvider
+    public sealed unsafe class VulkanGraphicsService : GraphicsService
     {
         /// <summary>The default engine name used if <see cref="EngineNameDataName" /> was not set.</summary>
         public const string DefaultEngineName = "TerraFX";
@@ -34,42 +31,42 @@ namespace TerraFX.Graphics
         /// <summary>The name of a data value that controls the engine name for <see cref="VulkanInstance" />.</summary>
         /// <remarks>
         ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
-        ///     <para>Setting this data value has no affect on providers that have already been created.</para>
+        ///     <para>Setting this data value has no affect on services thathave already been created.</para>
         ///     <para>This data value is interpreted as a string.</para>
         /// </remarks>
-        public const string EngineNameDataName = "TerraFX.Graphics.VulkanGraphicsProvider.EngineName";
+        public const string EngineNameDataName = "TerraFX.Graphics.VulkanGraphicsService.EngineName";
 
         /// <summary>The name of a data value that controls the optional extensions for <see cref="VulkanInstance" />.</summary>
         /// <remarks>
         ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
-        ///     <para>Setting this data value has no affect on providers that have already been created.</para>
+        ///     <para>Setting this data value has no affect on services thathave already been created.</para>
         ///     <para>This data value is interpreted as a string of semicolon separated values.</para>
         /// </remarks>
-        public const string OptionalExtensionNamesDataName = "TerraFX.Graphics.VulkanGraphicsProvider.OptionalExtensionNames";
+        public const string OptionalExtensionNamesDataName = "TerraFX.Graphics.VulkanGraphicsService.OptionalExtensionNames";
 
         /// <summary>The name of a data value that controls the optional layers for <see cref="VulkanInstance" />.</summary>
         /// <remarks>
         ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
-        ///     <para>Setting this data value has no affect on providers that have already been created.</para>
+        ///     <para>Setting this data value has no affect on services thathave already been created.</para>
         ///     <para>This data value is interpreted as a string of semicolon separated values.</para>
         /// </remarks>
-        public const string OptionalLayerNamesDataName = "TerraFX.Graphics.VulkanGraphicsProvider.OptionalLayerNames";
+        public const string OptionalLayerNamesDataName = "TerraFX.Graphics.VulkanGraphicsService.OptionalLayerNames";
 
         /// <summary>The name of a data value that controls the required extensions for <see cref="VulkanInstance" />.</summary>
         /// <remarks>
         ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
-        ///     <para>Setting this data value has no affect on providers that have already been created.</para>
+        ///     <para>Setting this data value has no affect on services thathave already been created.</para>
         ///     <para>This data value is interpreted as a string of semicolon separated values.</para>
         /// </remarks>
-        public const string RequiredExtensionNamesDataName = "TerraFX.Graphics.VulkanGraphicsProvider.RequiredExtensionNames";
+        public const string RequiredExtensionNamesDataName = "TerraFX.Graphics.VulkanGraphicsService.RequiredExtensionNames";
 
         /// <summary>The name of a data value that controls the required layers for <see cref="VulkanInstance" />.</summary>
         /// <remarks>
         ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
-        ///     <para>Setting this data value has no affect on providers that have already been created.</para>
+        ///     <para>Setting this data value has no affect on services thathave already been created.</para>
         ///     <para>This data value is interpreted as a string of semicolon separated values.</para>
         /// </remarks>
-        public const string RequiredLayerNamesDataName = "TerraFX.Graphics.VulkanGraphicsProvider.RequiredLayerNames";
+        public const string RequiredLayerNamesDataName = "TerraFX.Graphics.VulkanGraphicsService.RequiredLayerNames";
 
         private readonly string _engineName;
         private readonly string[] _requiredExtensionNames;
@@ -84,9 +81,8 @@ namespace TerraFX.Graphics
 
         private VolatileState _state;
 
-        /// <summary>Initializes a new instance of the <see cref="VulkanGraphicsProvider" /> class.</summary>
-        [ImportingConstructor]
-        public VulkanGraphicsProvider()
+        /// <summary>Initializes a new instance of the <see cref="VulkanGraphicsService" /> class.</summary>
+        public VulkanGraphicsService()
         {
             if (DebugModeEnabled)
             {
@@ -133,8 +129,8 @@ namespace TerraFX.Graphics
             }
         }
 
-        /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsProvider" /> class.</summary>
-        ~VulkanGraphicsProvider() => Dispose(isDisposing: false);
+        /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsService" /> class.</summary>
+        ~VulkanGraphicsService() => Dispose(isDisposing: false);
 
         // vkCreateDebugReportCallbackEXT
         private static ReadOnlySpan<sbyte> VKCREATEDEBUGREPORTCALLBACKEXT_FUNCTION_NAME => new sbyte[] { 0x76, 0x6B, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x44, 0x65, 0x62, 0x75, 0x67, 0x52, 0x65, 0x70, 0x6F, 0x72, 0x74, 0x43, 0x61, 0x6C, 0x6C, 0x62, 0x61, 0x63, 0x6B, 0x45, 0x58, 0x54, 0x00 };
@@ -146,13 +142,13 @@ namespace TerraFX.Graphics
         /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(IntPtr, uint*, IntPtr*)" /> failed.</exception>
         public override IEnumerable<VulkanGraphicsAdapter> Adapters => _adapters.Value;
 
-        /// <summary>Gets the underlying <see cref="VkInstance" /> for the provider.</summary>
+        /// <summary>Gets the underlying <see cref="VkInstance" /> for the service.</summary>
         /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, IntPtr*)" /> failed.</exception>
-        /// <exception cref="ObjectDisposedException">The provider has been disposed.</exception>
+        /// <exception cref="ObjectDisposedException">The service has been disposed.</exception>
         public VkInstance VulkanInstance => _vulkanInstance.Value;
 
         [UnmanagedCallersOnly]
-        private static uint VulkanDebugReportCallback(uint flags, VkDebugReportObjectTypeEXT objectType, ulong @object, nuint location, int messageCode, sbyte* pLayerPrefix, sbyte* pMessage, void* pUserData)
+        private static uint VulkanDebugReportCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, ulong @object, nuint location, int messageCode, sbyte* pLayerPrefix, sbyte* pMessage, void* pUserData)
         {
             var message = GetUtf8Span(pMessage).GetString();
             Debug.WriteLine(message);
@@ -174,7 +170,7 @@ namespace TerraFX.Graphics
 
         private VkInstance CreateVulkanInstance()
         {
-            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsProvider));
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsService));
 
             sbyte* requiredExtensionNamesBuffer = null;
             sbyte* optionalExtensionNamesBuffer = null;
@@ -350,7 +346,7 @@ namespace TerraFX.Graphics
 
                 var debugReportCallbackCreateInfo = new VkDebugReportCallbackCreateInfoEXT {
                     sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT,
-                    flags = (uint)(VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT),
+                    flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT,
                     pfnCallback = &VulkanDebugReportCallback,
                 };
 
@@ -377,7 +373,7 @@ namespace TerraFX.Graphics
 
         private ImmutableArray<VulkanGraphicsAdapter> GetGraphicsAdapters()
         {
-            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsProvider));
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsService));
 
             var instance = VulkanInstance;
 

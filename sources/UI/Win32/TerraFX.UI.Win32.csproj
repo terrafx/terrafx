@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Composition" />
     <PackageReference Include="TerraFX.Interop.Windows" />
   </ItemGroup>
 

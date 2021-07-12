@@ -3,7 +3,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using TerraFX.ApplicationModel;
@@ -18,25 +17,18 @@ namespace TerraFX.Samples
 {
     public abstract class Sample : IDisposable
     {
-        internal static readonly Assembly s_uiProviderWin32 = Assembly.LoadFrom("TerraFX.UI.Win32.dll");
-        internal static readonly Assembly s_uiProviderXlib = Assembly.LoadFrom("TerraFX.UI.Xlib.dll");
-
         private readonly string _assemblyPath;
         private readonly string _name;
-        private readonly Assembly[] _compositionAssemblies;
+        private readonly ApplicationServiceProvider _serviceProvider;
         private TimeSpan _timeout;
 
-        protected Sample(string name, Assembly[] compositionAssemblies)
+        protected Sample(string name, ApplicationServiceProvider serviceProvider)
         {
             var entryAssembly = Assembly.GetEntryAssembly()!;
             _assemblyPath = Path.GetDirectoryName(entryAssembly.Location)!;
 
             _name = name;
-
-            _compositionAssemblies = new Assembly[compositionAssemblies.Length + 1];
-            _compositionAssemblies[0] = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? s_uiProviderWin32 : s_uiProviderXlib;
-
-            Array.Copy(compositionAssemblies, 0, _compositionAssemblies, 1, compositionAssemblies.Length);
+            _serviceProvider = serviceProvider;
         }
 
         ~Sample() => Dispose(isDisposing: false);
@@ -47,7 +39,7 @@ namespace TerraFX.Samples
         // vs_5_0
         private static ReadOnlySpan<sbyte> D3D12CompileTarget_vs_5_0 => new sbyte[] { 0x76, 0x73, 0x5F, 0x35, 0x5F, 0x30, 0x00 };
 
-        public Assembly[] CompositionAssemblies => _compositionAssemblies;
+        public ApplicationServiceProvider ServiceProvider => _serviceProvider;
 
         public string Name => _name;
 
@@ -69,7 +61,7 @@ namespace TerraFX.Samples
 
         protected unsafe GraphicsShader CompileShader(GraphicsDevice graphicsDevice, GraphicsShaderKind kind, string shaderName, string entryPointName)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && _compositionAssemblies.Contains(Program.s_graphicsProviderD3D12))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && (_serviceProvider == Program.s_d3d12GraphicsServiceProvider))
             {
                 var assetName = $"{shaderName}{kind}.hlsl";
 

@@ -6,19 +6,19 @@ using System.Collections.Generic;
 namespace TerraFX.Graphics
 {
     /// <summary>Provides the base access required for interacting with a graphics subsystem.</summary>
-    public abstract class GraphicsProvider : IDisposable
+    public abstract class GraphicsService : IDisposable
     {
-        /// <summary>The name of a switch that controls whether debug mode should be enabled for the provider.</summary>
+        /// <summary>The name of a switch that controls whether debug mode should be enabled for the service.</summary>
         /// <remarks>
         ///     <para>This name is meant to be used with <see cref="AppContext.SetSwitch(string, bool)" />.</para>
-        ///     <para>Setting this switch has no affect on providers that have already been created.</para>
+        ///     <para>Setting this switch has no affect on services that have already been created.</para>
         /// </remarks>
-        public const string EnableDebugModeSwitchName = "TerraFX.Graphics.GraphicsProvider.EnableDebugMode";
+        public const string EnableDebugModeSwitchName = "TerraFX.Graphics.GraphicsService.EnableDebugMode";
 
         private readonly bool _debugModeEnabled;
 
-        /// <summary>Initializes a new instance of the <see cref="GraphicsProvider" /> class.</summary>
-        protected GraphicsProvider()
+        /// <summary>Initializes a new instance of the <see cref="GraphicsService" /> class.</summary>
+        protected GraphicsService()
         {
             _debugModeEnabled = GetDebugModeEnabled();
 
@@ -36,12 +36,12 @@ namespace TerraFX.Graphics
             }
         }
 
-        /// <summary>Gets the adapters available to the provider.</summary>
-        /// <exception cref="ObjectDisposedException">The provider has been disposed.</exception>
+        /// <summary>Gets the adapters available to the service.</summary>
+        /// <exception cref="ObjectDisposedException">The service has been disposed.</exception>
         public abstract IEnumerable<GraphicsAdapter> Adapters { get; }
 
-        /// <summary>Gets the value of the <see cref="EnableDebugModeSwitchName" /> switch from when the provider was created.</summary>
-        /// <remarks>The exact behavior of debug mode may vary based on the provider and configuration of the host machine.</remarks>
+        /// <summary>Gets the value of the <see cref="EnableDebugModeSwitchName" /> switch from when the service was created.</summary>
+        /// <remarks>The exact behavior of debug mode may vary based on the service and configuration of the host machine.</remarks>
         public bool DebugModeEnabled => _debugModeEnabled;
 
         /// <inheritdoc />

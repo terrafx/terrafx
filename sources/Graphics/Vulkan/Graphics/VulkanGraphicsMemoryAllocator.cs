@@ -10,9 +10,9 @@ using TerraFX.Interop;
 using TerraFX.Threading;
 using static TerraFX.Utilities.VulkanUtilities;
 using static TerraFX.Interop.VkImageType;
-using static TerraFX.Interop.VkMemoryPropertyFlagBits;
+using static TerraFX.Interop.VkMemoryPropertyFlags;
 using static TerraFX.Interop.VkPhysicalDeviceType;
-using static TerraFX.Interop.VkSampleCountFlagBits;
+using static TerraFX.Interop.VkSampleCountFlags;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Threading.VolatileState;
@@ -145,9 +145,9 @@ namespace TerraFX.Graphics
         {
             var isIntegratedGpu = Device.Adapter.VulkanPhysicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU;
 
-            VkMemoryPropertyFlagBits requiredMemoryPropertyFlags = 0;
-            VkMemoryPropertyFlagBits preferredMemoryPropertyFlags = 0;
-            VkMemoryPropertyFlagBits unpreferredMemoryPropertyFlags = 0;
+            VkMemoryPropertyFlags requiredMemoryPropertyFlags = 0;
+            VkMemoryPropertyFlags preferredMemoryPropertyFlags = 0;
+            VkMemoryPropertyFlags unpreferredMemoryPropertyFlags = 0;
 
             switch (cpuAccess)
             {
@@ -186,7 +186,7 @@ namespace TerraFX.Graphics
 
                 var memoryPropertyFlags = memoryProperties.memoryTypes[i].propertyFlags;
 
-                if (((uint)requiredMemoryPropertyFlags & ~memoryPropertyFlags) != 0)
+                if ((requiredMemoryPropertyFlags & ~memoryPropertyFlags) != 0)
                 {
                     continue;
                 }
@@ -195,8 +195,8 @@ namespace TerraFX.Graphics
                 // added to the the number of unpreferred bits that are present. A value
                 // of zero represents an ideal match and allows us to return early.
 
-                var cost = BitOperations.PopCount((uint)preferredMemoryPropertyFlags & ~memoryPropertyFlags)
-                         + BitOperations.PopCount((uint)unpreferredMemoryPropertyFlags & memoryPropertyFlags);
+                var cost = BitOperations.PopCount((uint)(preferredMemoryPropertyFlags & ~memoryPropertyFlags))
+                         + BitOperations.PopCount((uint)(unpreferredMemoryPropertyFlags & memoryPropertyFlags));
 
                 if (cost >= lowestCost)
                 {

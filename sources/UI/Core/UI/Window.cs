@@ -13,20 +13,20 @@ namespace TerraFX.UI
     /// <summary>Defines a window.</summary>
     public abstract class Window : IGraphicsSurface
     {
-        private readonly WindowProvider _windowProvider;
+        private readonly WindowService _windowService;
         private readonly Thread _parentThread;
 
         /// <summary>Initializes a new instance of the <see cref="Window" /> class.</summary>
-        /// <param name="windowProvider">The window provider which created the window.</param>
+        /// <param name="windowService">The window service which created the window.</param>
         /// <param name="parentThread">The thread on which window operates.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="windowProvider" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="windowService" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="parentThread" /> is <c>null</c>.</exception>
-        protected Window(WindowProvider windowProvider, Thread parentThread)
+        protected Window(WindowService windowService, Thread parentThread)
         {
-            ThrowIfNull(windowProvider, nameof(windowProvider));
+            ThrowIfNull(windowService, nameof(windowService));
             ThrowIfNull(parentThread, nameof(parentThread));
 
-            _windowProvider = windowProvider;
+            _windowService = windowService;
             _parentThread = parentThread;
         }
 
@@ -97,8 +97,8 @@ namespace TerraFX.UI
         /// <summary>Gets the title for the window.</summary>
         public abstract string Title { get; }
 
-        /// <summary>Gets the <see cref="UI.WindowProvider" /> for the window.</summary>
-        public WindowProvider WindowProvider => _windowProvider;
+        /// <summary>Gets the <see cref="UI.WindowService" /> for the window.</summary>
+        public WindowService WindowService => _windowService;
 
         /// <summary>Gets the <see cref="WindowState" /> for the window.</summary>
         public abstract WindowState WindowState { get; }

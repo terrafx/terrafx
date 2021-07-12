@@ -1,7 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
@@ -19,8 +18,8 @@ namespace TerraFX.Samples.Graphics
         private GraphicsBuffer _vertexBuffer = null!;
         private float _texturePosition;
 
-        public HelloSmoke(string name, bool isQuickAndDirty, params Assembly[] compositionAssemblies)
-            : base(name, compositionAssemblies)
+        public HelloSmoke(string name, bool isQuickAndDirty, ApplicationServiceProvider serviceProvider)
+            : base(name, serviceProvider)
         {
             _isQuickAndDirty = isQuickAndDirty;
         }

@@ -22,8 +22,8 @@ namespace TerraFX.Graphics
 
         private VolatileState _state;
 
-        internal D3D12GraphicsAdapter(D3D12GraphicsProvider provider, IDXGIAdapter1* dxgiAdapter)
-            : base(provider)
+        internal D3D12GraphicsAdapter(D3D12GraphicsService service, IDXGIAdapter1* dxgiAdapter)
+            : base(service)
         {
             ThrowIfNull(dxgiAdapter, nameof(dxgiAdapter));
 
@@ -60,8 +60,8 @@ namespace TerraFX.Graphics
         /// <inheritdoc />
         public override string Name => _name.Value;
 
-        /// <inheritdoc cref="GraphicsAdapter.Provider" />
-        public new D3D12GraphicsProvider Provider => (D3D12GraphicsProvider)base.Provider;
+        /// <inheritdoc cref="GraphicsAdapter.Service" />
+        public new D3D12GraphicsService Service => (D3D12GraphicsService)base.Service;
 
         /// <inheritdoc />
         public override uint VendorId => DxgiAdapterDesc.VendorId;

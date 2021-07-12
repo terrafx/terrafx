@@ -5,10 +5,10 @@ using TerraFX.Interop;
 using TerraFX.Numerics;
 using TerraFX.Threading;
 using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkDescriptorPoolCreateFlagBits;
+using static TerraFX.Interop.VkDescriptorPoolCreateFlags;
 using static TerraFX.Interop.VkDescriptorType;
 using static TerraFX.Interop.VkFormat;
-using static TerraFX.Interop.VkShaderStageFlagBits;
+using static TerraFX.Interop.VkShaderStageFlags;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Threading.VolatileState;
@@ -77,7 +77,7 @@ namespace TerraFX.Graphics
 
             var descriptorPoolCreateInfo = new VkDescriptorPoolCreateInfo {
                 sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
-                flags = (uint)VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
+                flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
                 maxSets = 1,
             };
 
@@ -254,7 +254,7 @@ namespace TerraFX.Graphics
 
             return vulkanDescriptorSetLayout;
 
-            static uint GetVulkanShaderStageFlags(GraphicsShaderVisibility shaderVisibility)
+            static VkShaderStageFlags GetVulkanShaderStageFlags(GraphicsShaderVisibility shaderVisibility)
             {
                 var stageFlags = VK_SHADER_STAGE_ALL;
 
@@ -271,7 +271,7 @@ namespace TerraFX.Graphics
                     }
                 }
 
-                return (uint)stageFlags;
+                return stageFlags;
             }
         }
 

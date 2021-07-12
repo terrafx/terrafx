@@ -6,7 +6,6 @@ using TerraFX.UI;
 using static TerraFX.Interop.Xlib;
 using static TerraFX.UI.XlibAtomId;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.MarshalUtilities;
 
 namespace TerraFX.Utilities
 {
@@ -67,9 +66,9 @@ namespace TerraFX.Utilities
             ), nameof(XSendEvent));
         }
 
-        public static void SetWindowTitle(XlibDispatchProvider dispatchProvider, IntPtr display, nuint window, string value)
+        public static void SetWindowTitle(XlibDispatchService dispatchService, IntPtr display, nuint window, string value)
         {
-            if (dispatchProvider.GetAtomIsSupported(_NET_WM_NAME))
+            if (dispatchService.GetAtomIsSupported(_NET_WM_NAME))
             {
                 var utf8Title = value.GetUtf8Span();
 
@@ -78,8 +77,8 @@ namespace TerraFX.Utilities
                     _ = XChangeProperty(
                         display,
                         window,
-                        dispatchProvider.GetAtom(_NET_WM_NAME),
-                        dispatchProvider.GetAtom(UTF8_STRING),
+                        dispatchService.GetAtom(_NET_WM_NAME),
+                        dispatchService.GetAtom(UTF8_STRING),
                         8,
                         PropModeReplace,
                         (byte*)pUtf8Title,

@@ -4,12 +4,12 @@ TerraFX aims, first and foremost, to be composable and lightweight. That is, it
 aims to provide a lot of possible functionality, but users should not be forced
 to pick up more than necessary.
 
-Most of this composability is built around the concept of providers and consumers.
+Most of this composability is built around the concept of services and consumers.
 TerraFX will be defining the general contract for a given component and that will
 itself not provide any functionality outside some of the "primitive" concepts. We
-will then expose a set of default providers that users can pick from that provide
+will then expose a set of default services that users can pick from that provide
 different implementations for a given component. These could be implemented by an
-existing framework, in managed code, or some new framework of the providers choosing.
+existing framework, in managed code, or some new framework of the services choosing.
 
 The contract defined by TerraFX aims to be general-purpose where possible and to
 not dive down into framework specific functionality. Where something is commonly
@@ -19,7 +19,7 @@ extension point that can light up via feature detection.
 
 ## Core Concepts
 
-TerraFX aims to allow the application and provider to decide how things function
+TerraFX aims to allow the application and service to decide how things function
 where possible. This also applies for concepts like memory management and I/O.
 
 As such, components should be taking a `System.Buffers.MemoryManager<T>` and
@@ -32,16 +32,9 @@ applications to provide a customized environment where that is important.
 
 Interop should be explicitly blittable to avoid runtime overhead and any implicit
 costs associated with marshalling. Interop should also be isolated to interop
-specific projects and should not live in the providers themselves. This allows
+specific projects and should not live in the services themselves. This allows
 better reuse and for the interop functionality to be changed without updating
-the provider.
-
-Components should generally be defined in terms of interfaces as this allows the
-provider to determine how they want to implement while still minimizing overhead.
-For example, writing a provider in native code or via structs should be a completely
-valid option and interfaces allow this without having wrappers on the manager side.
-Future extensibility is going to likely be addressed via default interface methods
-(DIMs).
+the service.
 
 ## General Structure
 

@@ -1,12 +1,13 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace TerraFX.Audio
 {
     /// <summary>Provides access to an audio subsystem.</summary>
-    public interface IAudioProvider
+    public interface IAudioService
     {
         /// <summary>Enumerates the available audio adapters reported by the underlying subsystem.</summary>
         IAudioAdapterEnumerable EnumerateAudioDevices();

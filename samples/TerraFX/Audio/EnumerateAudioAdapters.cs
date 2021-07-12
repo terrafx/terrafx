@@ -1,7 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Reflection;
 using System.Threading.Tasks;
 using TerraFX.ApplicationModel;
 using TerraFX.Audio;
@@ -12,20 +11,20 @@ namespace TerraFX.Samples.Audio
     public sealed class EnumerateAudioAdapters : Sample
     {
         private readonly bool _async = false;
-        private IAudioProvider? _provider;
+        private IAudioService? _service;
 
-        public EnumerateAudioAdapters(string name, bool @async, params Assembly[] compositionAssemblies)
-            : base(name, compositionAssemblies)
+        public EnumerateAudioAdapters(string name, bool @async, ApplicationServiceProvider serviceProvider)
+            : base(name, serviceProvider)
         {
             _async = @async;
-            _provider = null;
+            _service = null;
         }
 
         public override void Initialize(Application application, TimeSpan timeout)
         {
-            _provider = application.GetService<IAudioProvider>();
+            _service = application.ServiceProvider.AudioService;
 
-            var task = _provider.StartAsync();
+            var task = _service.StartAsync();
             if (!task.IsCompleted)
             {
                 task.AsTask().Wait();
@@ -36,9 +35,9 @@ namespace TerraFX.Samples.Audio
 
         public override void Cleanup()
         {
-            ExceptionUtilities.ThrowIfNull(_provider, nameof(_provider));
+            ExceptionUtilities.ThrowIfNull(_service, nameof(_service));
 
-            var task = _provider.StopAsync();
+            var task = _service.StopAsync();
             if (!task.IsCompleted)
             {
                 task.AsTask().Wait();
@@ -57,18 +56,18 @@ namespace TerraFX.Samples.Audio
 
         private async Task RunAsync(Application application)
         {
-            ExceptionUtilities.ThrowIfNull(_provider, nameof(_provider));
+            ExceptionUtilities.ThrowIfNull(_service, nameof(_service));
 
             if (_async)
             {
-                await foreach (var audioAdapter in _provider.EnumerateAudioDevices())
+                await foreach (var audioAdapter in _service.EnumerateAudioDevices())
                 {
                     PrintAudioAdapter(audioAdapter);
                 }
             }
             else
             {
-                foreach (var audioAdapter in _provider.EnumerateAudioDevices())
+                foreach (var audioAdapter in _service.EnumerateAudioDevices())
                 {
                     PrintAudioAdapter(audioAdapter);
                 }

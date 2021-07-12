@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Composition;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -19,20 +18,17 @@ using static TerraFX.Utilities.UnsafeUtilities;
 namespace TerraFX.UI
 {
     /// <summary>Provides access to an X11 based window subsystem.</summary>
-    [Export(typeof(WindowProvider))]
-    [Shared]
-    public sealed unsafe class XlibWindowProvider : WindowProvider
+    public sealed unsafe class XlibWindowService : WindowService
     {
-        private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.VulkanGraphicsProvider.RequiredExtensionNames";
+        private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.VulkanGraphicsService.RequiredExtensionNames";
 
         private readonly ThreadLocal<Dictionary<nuint, XlibWindow>> _windows;
 
         private ValueLazy<GCHandle> _nativeHandle;
         private VolatileState _state;
 
-        /// <summary>Initializes a new instance of the <see cref="XlibWindowProvider" /> class.</summary>
-        [ImportingConstructor]
-        public XlibWindowProvider()
+        /// <summary>Initializes a new instance of the <see cref="XlibWindowService" /> class.</summary>
+        public XlibWindowService()
         {
             var vulkanRequiredExtensionNamesDataName = AppContext.GetData(VulkanRequiredExtensionNamesDataName) as string;
             vulkanRequiredExtensionNamesDataName += ";VK_KHR_surface;VK_KHR_xlib_surface";
@@ -44,11 +40,11 @@ namespace TerraFX.UI
             _ = _state.Transition(to: Initialized);
         }
 
-        /// <summary>Finalizes an instance of the <see cref="XlibWindowProvider" /> class.</summary>
-        ~XlibWindowProvider() => Dispose(isDisposing: false);
+        /// <summary>Finalizes an instance of the <see cref="XlibWindowService" /> class.</summary>
+        ~XlibWindowService() => Dispose(isDisposing: false);
 
         /// <inheritdoc />
-        public override DispatchProvider DispatchProvider => XlibDispatchProvider.Instance;
+        public override DispatchService DispatchService => XlibDispatchService.Instance;
 
         /// <summary>Gets the <see cref="GCHandle" /> containing the native handle for the instance.</summary>
         public GCHandle NativeHandle
@@ -66,7 +62,7 @@ namespace TerraFX.UI
         {
             get
             {
-                ThrowIfDisposedOrDisposing(_state, nameof(XlibWindowProvider));
+                ThrowIfDisposedOrDisposing(_state, nameof(XlibWindowService));
                 return _windows.Value?.Values ?? Enumerable.Empty<XlibWindow>();
             }
         }
@@ -75,7 +71,7 @@ namespace TerraFX.UI
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public override Window CreateWindow()
         {
-            ThrowIfDisposedOrDisposing(_state, nameof(XlibWindowProvider));
+            ThrowIfDisposedOrDisposing(_state, nameof(XlibWindowService));
             return new XlibWindow(this);
         }
 
@@ -83,14 +79,14 @@ namespace TerraFX.UI
         {
             nint userData;
             GCHandle gcHandle;
-            XlibWindowProvider windowProvider;
+            XlibWindowService windowService;
             Dictionary<nuint, XlibWindow>? windows;
             XlibWindow? window;
             bool forwardMessage;
 
-            var dispatchProvider = XlibDispatchProvider.Instance;
+            var dispatchService = XlibDispatchService.Instance;
 
-            if ((xevent->type == ClientMessage) && (xevent->xclient.format == 32) && ((xevent->xclient.message_type == dispatchProvider.GetAtom(_TERRAFX_CREATE_WINDOW)) || (xevent->xclient.message_type == dispatchProvider.GetAtom(_TERRAFX_DISPOSE_WINDOW))))
+            if ((xevent->type == ClientMessage) && (xevent->xclient.format == 32) && ((xevent->xclient.message_type == dispatchService.GetAtom(_TERRAFX_CREATE_WINDOW)) || (xevent->xclient.message_type == dispatchService.GetAtom(_TERRAFX_DISPOSE_WINDOW))))
             {
                 // We allow the create and dispose message to be forwarded to the Window instance for xevent->xany.window.
                 // This allows some delayed initialization to occur since most of the fields in Window are lazy.
@@ -99,37 +95,37 @@ namespace TerraFX.UI
                          ? (xevent->xclient.data.l[1] << 32) | unchecked((nint)(uint)xevent->xclient.data.l[0])
                          : xevent->xclient.data.l[0];
 
-                // Unlike the WindowProvider GCHandle, the Window GCHandle is short lived and
+                // Unlike the WindowService GCHandle, the Window GCHandle is short lived and
                 // we want to free it after we add the relevant entries to the window map.
 
                 gcHandle = GCHandle.FromIntPtr(userData);
                 {
                     window = (XlibWindow)gcHandle.Target!;
-                    windowProvider = window.WindowProvider;
-                    windows = windowProvider._windows.Value!;
+                    windowService = window.WindowService;
+                    windows = windowService._windows.Value!;
                 }
                 gcHandle.Free();
 
-                if (xevent->xclient.message_type == dispatchProvider.GetAtom(_TERRAFX_CREATE_WINDOW))
+                if (xevent->xclient.message_type == dispatchService.GetAtom(_TERRAFX_CREATE_WINDOW))
                 {
                     if (windows is null)
                     {
                         windows = new Dictionary<nuint, XlibWindow>(capacity: 4);
-                        windowProvider._windows.Value = windows;
+                        windowService._windows.Value = windows;
                     }
                     windows.Add(xevent->xany.window, window);
 
-                    // We then want to ensure the window provider is registered as a property for fast
+                    // We then want to ensure the window service is registered as a property for fast
                     // subsequent lookups. This proocess also allows everything to be lazily initialized.
 
-                    gcHandle = windowProvider.NativeHandle;
+                    gcHandle = windowService.NativeHandle;
                     userData = GCHandle.ToIntPtr(gcHandle);
 
                     _ = XChangeProperty(
                         xevent->xany.display,
                         xevent->xany.window,
-                        dispatchProvider.GetAtom(_TERRAFX_WINDOWPROVIDER),
-                        dispatchProvider.GetAtom(_TERRAFX_NATIVE_INT),
+                        dispatchService.GetAtom(_TERRAFX_WINDOWSERVICE),
+                        dispatchService.GetAtom(_TERRAFX_NATIVE_INT),
                         8,
                         PropModeReplace,
                         (byte*)&userData,
@@ -138,8 +134,8 @@ namespace TerraFX.UI
                 }
                 else
                 {
-                    Assert(AssertionsEnabled && (xevent->xclient.message_type == dispatchProvider.GetAtom(_TERRAFX_DISPOSE_WINDOW)));
-                    _ = RemoveWindow(windows, xevent->xany.display, xevent->xany.window, dispatchProvider);
+                    Assert(AssertionsEnabled && (xevent->xclient.message_type == dispatchService.GetAtom(_TERRAFX_DISPOSE_WINDOW)));
+                    _ = RemoveWindow(windows, xevent->xany.display, xevent->xany.window, dispatchService);
                 }
 
                 forwardMessage = true;
@@ -158,11 +154,11 @@ namespace TerraFX.UI
                 _ = XGetWindowProperty(
                     xevent->xany.display,
                     xevent->xany.window,
-                    dispatchProvider.GetAtom(_TERRAFX_WINDOWPROVIDER),
+                    dispatchService.GetAtom(_TERRAFX_WINDOWSERVICE),
                     0,
                     sizeof(nint) / sizeof(int),
                     False,
-                    dispatchProvider.GetAtom(_TERRAFX_NATIVE_INT),
+                    dispatchService.GetAtom(_TERRAFX_NATIVE_INT),
                     &actualType,
                     &actualFormat,
                     &itemCount,
@@ -170,13 +166,13 @@ namespace TerraFX.UI
                     (byte**)&pUserData
                 );
 
-                if ((actualType == dispatchProvider.GetAtom(_TERRAFX_NATIVE_INT)) && (actualFormat == 8) && (itemCount == SizeOf<nuint>()) && (bytesRemaining == 0))
+                if ((actualType == dispatchService.GetAtom(_TERRAFX_NATIVE_INT)) && (actualFormat == 8) && (itemCount == SizeOf<nuint>()) && (bytesRemaining == 0))
                 {
                     userData = pUserData[0];
                     gcHandle = GCHandle.FromIntPtr(userData);
 
-                    windowProvider = (XlibWindowProvider)gcHandle.Target!;
-                    windows = windowProvider._windows.Value!;
+                    windowService = (XlibWindowService)gcHandle.Target!;
+                    windows = windowService._windows.Value!;
 
                     forwardMessage = windows.TryGetValue(xevent->xany.window, out window);
                 }
@@ -197,19 +193,19 @@ namespace TerraFX.UI
 
                 if (xevent->type == DestroyNotify)
                 {
-                    _ = RemoveWindow(windows, xevent->xany.display, xevent->xany.window, dispatchProvider);
+                    _ = RemoveWindow(windows, xevent->xany.display, xevent->xany.window, dispatchService);
                 }
             }
         }
 
-        private static XlibWindow RemoveWindow(Dictionary<nuint, XlibWindow> windows, IntPtr display, nuint windowHandle, XlibDispatchProvider dispatchProvider)
+        private static XlibWindow RemoveWindow(Dictionary<nuint, XlibWindow> windows, IntPtr display, nuint windowHandle, XlibDispatchService dispatchService)
         {
             _ = windows.Remove(windowHandle, out var window);
             AssertNotNull(window);
 
             if (windows.Count == 0)
             {
-                dispatchProvider.DispatcherForCurrentThread.OnExitRequested();
+                dispatchService.DispatcherForCurrentThread.OnExitRequested();
             }
 
             return window;
@@ -246,8 +242,8 @@ namespace TerraFX.UI
 
                         foreach (var windowHandle in windowHandles)
                         {
-                            var dispatchProvider = XlibDispatchProvider.Instance;
-                            var window = RemoveWindow(windows, dispatchProvider.Display, windowHandle, dispatchProvider);
+                            var dispatchService = XlibDispatchService.Instance;
+                            var window = RemoveWindow(windows, dispatchService.Display, windowHandle, dispatchService);
                             window.Dispose();
                         }
 

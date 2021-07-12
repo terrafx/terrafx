@@ -7,10 +7,10 @@ using System.Threading;
 namespace TerraFX.UI
 {
     /// <summary>Provides access to a dispatch subsystem.</summary>
-    public abstract class DispatchProvider : IDisposable
+    public abstract class DispatchService : IDisposable
     {
-        /// <summary>Initializes a new instance of the <see cref="DispatchProvider" /> class.</summary>
-        protected DispatchProvider() { }
+        /// <summary>Initializes a new instance of the <see cref="DispatchService" /> class.</summary>
+        protected DispatchService() { }
 
         /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
         public abstract Timestamp CurrentTimestamp { get; }
