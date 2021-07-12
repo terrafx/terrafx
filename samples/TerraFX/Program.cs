@@ -10,54 +10,58 @@ using TerraFX.ApplicationModel;
 using TerraFX.Numerics;
 using TerraFX.Samples.Audio;
 using TerraFX.Samples.Graphics;
+using TerraFX.Samples.ServiceProviders;
 
 namespace TerraFX.Samples
 {
     public static unsafe class Program
     {
-        internal static readonly Assembly s_audioProviderPulseAudio = Assembly.LoadFrom("TerraFX.Audio.PulseAudio.dll");
+        internal static readonly ApplicationServiceProvider s_pulseAudioServiceProvider = new PulseAudioServiceProvider();
 
-        internal static readonly Assembly s_graphicsProviderD3D12 = Assembly.LoadFrom("TerraFX.Graphics.D3D12.dll");
-        internal static readonly Assembly s_graphicsProviderVulkan = Assembly.LoadFrom("TerraFX.Graphics.Vulkan.dll");
+        internal static readonly ApplicationServiceProvider s_uiServiceProvider = OperatingSystem.IsWindows() ? new Win32WindowServiceProvider() : new XlibWindowServiceProvider();
+
+        internal static readonly ApplicationServiceProvider s_d3d12GraphicsServiceProvider = new D3D12GraphicsServiceProvider();
+
+        internal static readonly ApplicationServiceProvider s_vulkanGraphicsServiceProvider = new VulkanGraphicsServiceProvider(s_uiServiceProvider);
 
         private static readonly Sample[] s_samples = {
-            new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_graphicsProviderD3D12),
-            new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapters", s_graphicsProviderVulkan),
+            new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_d3d12GraphicsServiceProvider),
+            new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapters", s_vulkanGraphicsServiceProvider),
 
-            new HelloWindow("D3D12.HelloWindow", s_graphicsProviderD3D12),
-            new HelloWindow("Vulkan.HelloWindow", s_graphicsProviderVulkan),
+            new HelloWindow("D3D12.HelloWindow", s_d3d12GraphicsServiceProvider),
+            new HelloWindow("Vulkan.HelloWindow", s_vulkanGraphicsServiceProvider),
 
-            new HelloTriangle("D3D12.HelloTriangle", s_graphicsProviderD3D12),
-            new HelloTriangle("Vulkan.HelloTriangle", s_graphicsProviderVulkan),
+            new HelloTriangle("D3D12.HelloTriangle", s_d3d12GraphicsServiceProvider),
+            new HelloTriangle("Vulkan.HelloTriangle", s_vulkanGraphicsServiceProvider),
 
-            new HelloQuad("D3D12.HelloQuad", s_graphicsProviderD3D12),
-            new HelloQuad("Vulkan.HelloQuad", s_graphicsProviderVulkan),
+            new HelloQuad("D3D12.HelloQuad", s_d3d12GraphicsServiceProvider),
+            new HelloQuad("Vulkan.HelloQuad", s_vulkanGraphicsServiceProvider),
 
-            new HelloTransform("D3D12.HelloTransform", s_graphicsProviderD3D12),
-            new HelloTransform("Vulkan.HelloTransform", s_graphicsProviderVulkan),
+            new HelloTransform("D3D12.HelloTransform", s_d3d12GraphicsServiceProvider),
+            new HelloTransform("Vulkan.HelloTransform", s_vulkanGraphicsServiceProvider),
 
-            new HelloTexture("D3D12.HelloTexture", s_graphicsProviderD3D12),
-            new HelloTexture("Vulkan.HelloTexture", s_graphicsProviderVulkan),
+            new HelloTexture("D3D12.HelloTexture", s_d3d12GraphicsServiceProvider),
+            new HelloTexture("Vulkan.HelloTexture", s_vulkanGraphicsServiceProvider),
 
-            new HelloTextureTransform("D3D12.HelloTextureTransform", s_graphicsProviderD3D12),
-            new HelloTextureTransform("Vulkan.HelloTextureTransform", s_graphicsProviderVulkan),
+            new HelloTextureTransform("D3D12.HelloTextureTransform", s_d3d12GraphicsServiceProvider),
+            new HelloTextureTransform("Vulkan.HelloTextureTransform", s_vulkanGraphicsServiceProvider),
 
-            new HelloTexture3D("D3D12.HelloTexture3D", s_graphicsProviderD3D12),
-            new HelloTexture3D("Vulkan.HelloTexture3D", s_graphicsProviderVulkan),
+            new HelloTexture3D("D3D12.HelloTexture3D", s_d3d12GraphicsServiceProvider),
+            new HelloTexture3D("Vulkan.HelloTexture3D", s_vulkanGraphicsServiceProvider),
 
-            new HelloSmoke("D3D12.HelloSmoke", true, s_graphicsProviderD3D12),
-            new HelloSmoke("Vulkan.HelloSmoke", true, s_graphicsProviderVulkan),
+            new HelloSmoke("D3D12.HelloSmoke", true, s_d3d12GraphicsServiceProvider),
+            new HelloSmoke("Vulkan.HelloSmoke", true, s_vulkanGraphicsServiceProvider),
 
-            new HelloSierpinskiPyramid("D3D12.HelloSierpinskiPyramid", 5, s_graphicsProviderD3D12),
-            new HelloSierpinskiPyramid("Vulkan.HelloSierpinskiPyramid", 5, s_graphicsProviderVulkan),
+            new HelloSierpinskiPyramid("D3D12.HelloSierpinskiPyramid", 5, s_d3d12GraphicsServiceProvider),
+            new HelloSierpinskiPyramid("Vulkan.HelloSierpinskiPyramid", 5, s_vulkanGraphicsServiceProvider),
 
-            new HelloSierpinskiQuad("D3D12.HelloSierpinskiQuad", 6, s_graphicsProviderD3D12),
-            new HelloSierpinskiQuad("Vulkan.HelloSierpinskiQuad", 6, s_graphicsProviderVulkan),
+            new HelloSierpinskiQuad("D3D12.HelloSierpinskiQuad", 6, s_d3d12GraphicsServiceProvider),
+            new HelloSierpinskiQuad("Vulkan.HelloSierpinskiQuad", 6, s_vulkanGraphicsServiceProvider),
 
-            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Sync", false, s_audioProviderPulseAudio),
-            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Async", true, s_audioProviderPulseAudio),
+            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Sync", false, s_pulseAudioServiceProvider),
+            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Async", true, s_pulseAudioServiceProvider),
 
-            new PlaySampleAudio("PulseAudio.PlaySampleAudio", s_audioProviderPulseAudio),
+            new PlaySampleAudio("PulseAudio.PlaySampleAudio", s_pulseAudioServiceProvider),
         };
 
         public static void Main(string[] args)
@@ -77,8 +81,8 @@ namespace TerraFX.Samples
         private static bool IsSupported(Sample sample)
         {
             return RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                 ? !sample.CompositionAssemblies.Contains(s_audioProviderPulseAudio)
-                 : RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && !sample.CompositionAssemblies.Contains(s_graphicsProviderD3D12);
+                 ? (sample.ServiceProvider != s_pulseAudioServiceProvider)
+                 : RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && (sample.ServiceProvider != s_d3d12GraphicsServiceProvider);
             ;
         }
 
@@ -107,7 +111,8 @@ namespace TerraFX.Samples
 
         private static void Run(Sample sample, TimeSpan timeout, Vector2? windowLocation, Vector2? windowSize)
         {
-            using var application = new Application(sample.CompositionAssemblies);
+            var application = new Application(sample.ServiceProvider);
+
             if (sample is HelloWindow window)
             {
                 window.Initialize(application, timeout, windowLocation, windowSize);

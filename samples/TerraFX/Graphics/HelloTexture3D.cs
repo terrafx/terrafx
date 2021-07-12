@@ -1,7 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
@@ -25,8 +24,8 @@ namespace TerraFX.Samples.Graphics
         private float _texturePosition;
         private const uint TEXTURE3D_SIDE_LENGTH = 64; // this results in a RowPitch of 256, the minimum allowed
 
-        public HelloTexture3D(string name, params Assembly[] compositionAssemblies)
-            : base(name, compositionAssemblies)
+        public HelloTexture3D(string name, ApplicationServiceProvider serviceProvider)
+            : base(name, serviceProvider)
         {
         }
 

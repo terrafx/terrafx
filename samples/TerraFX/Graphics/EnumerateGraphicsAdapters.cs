@@ -1,17 +1,15 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Reflection;
 using TerraFX.ApplicationModel;
-using TerraFX.Graphics;
 using TerraFX.Utilities;
 
 namespace TerraFX.Samples.Graphics
 {
     public sealed class EnumerateGraphicsAdapters : Sample
     {
-        public EnumerateGraphicsAdapters(string name, params Assembly[] compositionAssemblies)
-            : base(name, compositionAssemblies)
+        public EnumerateGraphicsAdapters(string name, ApplicationServiceProvider serviceProvider)
+            : base(name, serviceProvider)
         {
         }
 
@@ -21,9 +19,9 @@ namespace TerraFX.Samples.Graphics
 
             var application = (Application)sender;
             {
-                var graphicsProvider = application.GetService<GraphicsProvider>();
+                var graphicsService = application.ServiceProvider.GraphicsService;
 
-                foreach (var graphicsAdapter in graphicsProvider.Adapters)
+                foreach (var graphicsAdapter in graphicsService.Adapters)
                 {
                     Console.WriteLine($"    Name: {graphicsAdapter.Name}");
                     Console.WriteLine($"        Device ID: {graphicsAdapter.DeviceId}");

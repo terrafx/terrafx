@@ -270,14 +270,14 @@ namespace TerraFX.Graphics
                 SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL,
             };
 
-            var provider = Adapter.Provider;
+            var service = Adapter.Service;
             var iid = IID_IDXGISwapChain3;
 
             switch (surface.Kind)
             {
                 case GraphicsSurfaceKind.Win32:
                 {
-                    ThrowExternalExceptionIfFailed(provider.DxgiFactory->CreateSwapChainForHwnd((IUnknown*)D3D12CommandQueue, surfaceHandle, &swapChainDesc, pFullscreenDesc: null, pRestrictToOutput: null, (IDXGISwapChain1**)&dxgiSwapChain), nameof(IDXGIFactory2.CreateSwapChainForHwnd));
+                    ThrowExternalExceptionIfFailed(service.DxgiFactory->CreateSwapChainForHwnd((IUnknown*)D3D12CommandQueue, surfaceHandle, &swapChainDesc, pFullscreenDesc: null, pRestrictToOutput: null, (IDXGISwapChain1**)&dxgiSwapChain), nameof(IDXGIFactory2.CreateSwapChainForHwnd));
                     break;
                 }
 
@@ -290,7 +290,7 @@ namespace TerraFX.Graphics
             }
 
             // Fullscreen transitions are not currently supported
-            ThrowExternalExceptionIfFailed(provider.DxgiFactory->MakeWindowAssociation(surfaceHandle, DXGI_MWA_NO_ALT_ENTER), nameof(IDXGIFactory.MakeWindowAssociation));
+            ThrowExternalExceptionIfFailed(service.DxgiFactory->MakeWindowAssociation(surfaceHandle, DXGI_MWA_NO_ALT_ENTER), nameof(IDXGIFactory.MakeWindowAssociation));
 
             _swapChainFormat = swapChainDesc.Format;
             _contextIndex = unchecked((int)dxgiSwapChain->GetCurrentBackBufferIndex());

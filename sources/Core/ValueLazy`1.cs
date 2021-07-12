@@ -19,7 +19,7 @@ namespace TerraFX
     /// <typeparam name="T">The type of the value being lazily initialized.</typeparam>
     [DebuggerDisplay("IsValueCreated={IsValueCreated}, IsValueFaulted={IsValueFaulted}, Value={ValueOrDefault}")]
     [DebuggerTypeProxy(typeof(ValueLazy<>.DebugView))]
-    public partial struct ValueLazy<T> : IDisposable
+    public partial struct ValueLazy<T>
     {
         private const int Creating = 2;
         private const int Faulted = 3;
@@ -82,14 +82,7 @@ namespace TerraFX
             }
         }
 
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            _ = _state.BeginDispose();
-            _state.EndDispose();
-        }
-
-        /// <inheritdoc cref="Dispose()" />
+        /// <inheritdoc cref="IDisposable.Dispose()" />
         /// <param name="action">The action to call, if the value was created, which performs the appropriate disposal.</param>
         public void Dispose(Action<T> action)
         {

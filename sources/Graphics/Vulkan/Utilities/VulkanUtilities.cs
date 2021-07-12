@@ -2,8 +2,8 @@
 
 using TerraFX.Graphics;
 using TerraFX.Interop;
-using static TerraFX.Interop.VkBufferUsageFlagBits;
-using static TerraFX.Interop.VkImageUsageFlagBits;
+using static TerraFX.Interop.VkBufferUsageFlags;
+using static TerraFX.Interop.VkImageUsageFlags;
 using static TerraFX.Interop.VkResult;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -11,7 +11,7 @@ namespace TerraFX.Utilities
 {
     internal static partial class VulkanUtilities
     {
-        public static uint GetVulkanBufferUsageKind(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess)
+        public static VkBufferUsageFlags GetVulkanBufferUsageKind(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess)
         {
             var vulkanBufferUsageKind = kind switch {
                 GraphicsBufferKind.Vertex => VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
@@ -26,10 +26,10 @@ namespace TerraFX.Utilities
                 _ => default,
             };
 
-            return (uint)vulkanBufferUsageKind;
+            return vulkanBufferUsageKind;
         }
 
-        public static uint GetVulkanImageUsageKind(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess)
+        public static VkImageUsageFlags GetVulkanImageUsageKind(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess)
         {
             var vulkanImageUsageKind = cpuAccess switch {
                 GraphicsResourceCpuAccess.Read => VK_IMAGE_USAGE_TRANSFER_DST_BIT,
@@ -38,7 +38,7 @@ namespace TerraFX.Utilities
             };
 
             vulkanImageUsageKind |= VK_IMAGE_USAGE_SAMPLED_BIT;
-            return (uint)vulkanImageUsageKind;
+            return vulkanImageUsageKind;
         }
 
         public static VkFormat Map(TexelFormat texelFormat) => texelFormat switch {

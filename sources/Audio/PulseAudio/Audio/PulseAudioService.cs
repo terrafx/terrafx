@@ -1,13 +1,11 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Composition;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using TerraFX.Interop;
-using TerraFX.Runtime;
 using TerraFX.Threading;
 using static TerraFX.Interop.pa_context_flags;
 using static TerraFX.Interop.pa_context_state;
@@ -19,9 +17,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Audio
 {
     /// <summary>Provides access to a PulseAudio-based audio subsystem.</summary>
-    [Export(typeof(IAudioProvider))]
-    [Shared]
-    public sealed class PulseAudioProvider : IDisposable, IAsyncDisposable, IAudioProvider
+    public sealed class PulseAudioService : IAudioService, IDisposable, IAsyncDisposable
     {
         private const int Starting = 2;
         private const int Running = 3;
@@ -34,9 +30,8 @@ namespace TerraFX.Audio
         private Thread? _mainLoopThread;
         private VolatileState _state;
 
-        /// <summary>Initializes a new instance of the <see cref="PulseAudioProvider" /> class.</summary>
-        [ImportingConstructor]
-        public PulseAudioProvider()
+        /// <summary>Initializes a new instance of the <see cref="PulseAudioService" /> class.</summary>
+        public PulseAudioService()
         {
             _mainloop = new Lazy<IntPtr>(CreateMainLoop, isThreadSafe: true);
             _context = new Lazy<IntPtr>(CreateContext, isThreadSafe: true);
@@ -44,8 +39,8 @@ namespace TerraFX.Audio
             _ = _state.Transition(to: Initialized);
         }
 
-        /// <summary>Finalizes an instance of the <see cref="PulseAudioProvider" /> class.</summary>
-        ~PulseAudioProvider() => DisposeAsync(false).Wait();
+        /// <summary>Finalizes an instance of the <see cref="PulseAudioService" /> class.</summary>
+        ~PulseAudioService() => DisposeAsync(false).Wait();
 
         /// <summary>Gets the underlying native pointer for the PulseAudio context.</summary>
         public IntPtr Context => _context.Value;
@@ -75,7 +70,6 @@ namespace TerraFX.Audio
             }
             return mainloop;
         }
-
 
         /// <inheritdoc/>
         public async ValueTask StartAsync(CancellationToken cancellationToken = default)
@@ -167,7 +161,7 @@ namespace TerraFX.Audio
         /// <inheritdoc/>
         public async ValueTask StopAsync(CancellationToken cancellationToken = default)
         {
-            ThrowIfDisposedOrDisposing(_state, nameof(PulseAudioProvider));
+            ThrowIfDisposedOrDisposing(_state, nameof(PulseAudioService));
 
             _state.Transition(from: Running, to: Stopping);
             await StopAsyncInternalAsync(cancellationToken);
@@ -207,19 +201,10 @@ namespace TerraFX.Audio
             public int Completed;
         }
 
-        /// <summary>
-        /// Returns an enumerable which can be used to discover the input and output devices supported by PulseAudio
-        /// </summary>
-        /// <remarks>
-        /// Synchronous iteration of the returned enumerable is implemented via async-over-sync code,
-        /// meaning deadlocks may occur if extra care is not taken.
-        /// </remarks>
-        /// <returns>
-        /// An enumerable supporting asynchronous iteration.
-        /// </returns>
+        /// <inheritdoc cref="IAudioService.EnumerateAudioDevices()"/>
         public unsafe PulseAudioAdapterEnumerable EnumerateAudioDevices()
         {
-            ThrowIfDisposedOrDisposing(_state, nameof(PulseAudioProvider));
+            ThrowIfDisposedOrDisposing(_state, nameof(PulseAudioService));
 
             if (_state != Running)
             {
@@ -289,7 +274,7 @@ namespace TerraFX.Audio
         }
 
         /// <inheritdoc/>
-        IAudioAdapterEnumerable IAudioProvider.EnumerateAudioDevices() => EnumerateAudioDevices();
+        IAudioAdapterEnumerable IAudioService.EnumerateAudioDevices() => EnumerateAudioDevices();
 
         /// <inheritdoc/>
         public unsafe ValueTask<IAudioPlaybackDevice> RequestAudioPlaybackDeviceAsync(IAudioAdapter adapter) => new ValueTask<IAudioPlaybackDevice>(new PulseAudioPlaybackDevice(adapter, Context));

@@ -311,6 +311,17 @@ namespace TerraFX.Utilities
             throw new NotSupportedException(message);
         }
 
+        /// <summary>Throws a <see cref="ArgumentOutOfRangeException" /> for an unsupported type.</summary>
+        /// <param name="type">The type that caused the exception.</param>
+        /// <param name="valueName">The name of the value that is not a supported type.</param>
+        /// <exception cref="ArgumentException"><paramref name="valueName" /> is the unsupported type <paramref name="type" />.</exception>
+        [DoesNotReturn]
+        public static void ThrowForUnsupportedType(Type type, string valueName)
+        {
+            var message = string.Format(Resources.UnsupportedTypeMessage, valueName, type);
+            ThrowArgumentOutOfRangeException(message, type, valueName);
+        }
+
         /// <summary>Throws an <see cref="ObjectDisposedException" /> if <paramref name="state" /> is <see cref="VolatileState.Disposed" /> or <see cref="VolatileState.Disposing" />.</summary>
         /// <param name="state">The state being checked.</param>
         /// <param name="valueName">The name of the value being checked.</param>

@@ -22,11 +22,11 @@ using static TerraFX.Utilities.UnsafeUtilities;
 namespace TerraFX.UI
 {
     /// <summary>Provides access to an X11 based dispatch subsystem.</summary>
-    public sealed unsafe class XlibDispatchProvider : DispatchProvider
+    public sealed unsafe class XlibDispatchService : DispatchService
     {
         private const uint AtomIdCount = (uint)ATOM_ID_COUNT;
 
-        private static readonly XlibDispatchProvider s_instance = new XlibDispatchProvider();
+        private static readonly XlibDispatchService s_instance = new XlibDispatchService();
 
         private readonly ConcurrentDictionary<Thread, XlibDispatcher> _dispatchers;
 
@@ -38,7 +38,7 @@ namespace TerraFX.UI
 
         private VolatileState _state;
 
-        private XlibDispatchProvider()
+        private XlibDispatchService()
         {
             _dispatchers = new ConcurrentDictionary<Thread, XlibDispatcher>();
 
@@ -51,11 +51,11 @@ namespace TerraFX.UI
             _ = _state.Transition(to: Initialized);
         }
 
-        /// <summary>Finalizes an instance of the <see cref="XlibDispatchProvider" /> class.</summary>
-        ~XlibDispatchProvider() => Dispose(isDisposing: false);
+        /// <summary>Finalizes an instance of the <see cref="XlibDispatchService" /> class.</summary>
+        ~XlibDispatchService() => Dispose(isDisposing: false);
 
-        /// <summary>Gets the <see cref="XlibDispatchProvider" /> instance for the current program.</summary>
-        public static XlibDispatchProvider Instance => s_instance;
+        /// <summary>Gets the <see cref="XlibDispatchService" /> instance for the current program.</summary>
+        public static XlibDispatchService Instance => s_instance;
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="clock_gettime(int, timespec*)" /> failed.</exception>
@@ -238,7 +238,7 @@ namespace TerraFX.UI
                     (sbyte*)XlibAtomName._TERRAFX_CREATE_WINDOW.GetPointer(),
                     (sbyte*)XlibAtomName._TERRAFX_DISPOSE_WINDOW.GetPointer(),
                     (sbyte*)XlibAtomName._TERRAFX_NATIVE_INT.GetPointer(),
-                    (sbyte*)XlibAtomName._TERRAFX_WINDOWPROVIDER.GetPointer(),
+                    (sbyte*)XlibAtomName._TERRAFX_WINDOWSERVICE.GetPointer(),
                     (sbyte*)XlibAtomName.UTF8_STRING.GetPointer(),
                     (sbyte*)XlibAtomName.WM_DELETE_WINDOW.GetPointer(),
                     (sbyte*)XlibAtomName.WM_PROTOCOLS.GetPointer(),

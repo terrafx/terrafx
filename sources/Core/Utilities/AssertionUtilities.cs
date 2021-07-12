@@ -7,7 +7,6 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using TerraFX.Threading;
 using static TerraFX.Runtime.Configuration;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Utilities
 {

@@ -3,14 +3,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Composition" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\Audio\Core\TerraFX.Audio.csproj" />
+    <ProjectReference Include="..\Graphics\Core\TerraFX.Graphics.csproj" />
     <ProjectReference Include="..\UI\Core\TerraFX.UI.csproj" />
   </ItemGroup>
 

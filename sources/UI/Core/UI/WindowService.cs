@@ -7,13 +7,13 @@ using System.Threading;
 namespace TerraFX.UI
 {
     /// <summary>Provides access to a window subsystem.</summary>
-    public abstract class WindowProvider : IDisposable
+    public abstract class WindowService : IDisposable
     {
-        /// <summary>Initializes a new instance of the <see cref="WindowProvider" /> class.</summary>
-        protected WindowProvider() { }
+        /// <summary>Initializes a new instance of the <see cref="WindowService" /> class.</summary>
+        protected WindowService() { }
 
-        /// <summary>Gets the <see cref="UI.DispatchProvider" /> for the instance.</summary>
-        public abstract DispatchProvider DispatchProvider { get; }
+        /// <summary>Gets the <see cref="UI.DispatchService" /> for the instance.</summary>
+        public abstract DispatchService DispatchService { get; }
 
         /// <summary>Gets the <see cref="Window" /> objects created by the instance which are associated with <see cref="Thread.CurrentThread" />.</summary>
         public abstract IEnumerable<Window> WindowsForCurrentThread { get; }

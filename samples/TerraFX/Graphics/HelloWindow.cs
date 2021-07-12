@@ -2,7 +2,6 @@
 
 using System;
 using System.Linq;
-using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
@@ -18,8 +17,8 @@ namespace TerraFX.Samples.Graphics
         private TimeSpan _elapsedTime;
         private uint _secondsOfLastFpsUpdate;
 
-        public HelloWindow(string name, params Assembly[] compositionAssemblies)
-            : base(name, compositionAssemblies)
+        public HelloWindow(string name, ApplicationServiceProvider serviceProvider)
+            : base(name, serviceProvider)
         {
         }
 
@@ -49,9 +48,9 @@ namespace TerraFX.Samples.Graphics
         {
             ExceptionUtilities.ThrowIfNull(application, nameof(application));
 
-            var windowProvider = application.GetService<WindowProvider>();
+            var windowService = application.ServiceProvider.WindowService;
 
-            _window = windowProvider.CreateWindow();
+            _window = windowService.CreateWindow();
             _window.SetTitle(Name);
             if (windowLocation.HasValue)
             {
@@ -63,8 +62,8 @@ namespace TerraFX.Samples.Graphics
             }
             _window.Show();
 
-            var graphicsProvider = application.GetService<GraphicsProvider>();
-            var graphicsAdapter = graphicsProvider.Adapters.First();
+            var graphicsService = application.ServiceProvider.GraphicsService;
+            var graphicsAdapter = graphicsService.Adapters.First();
 
             _graphicsDevice = graphicsAdapter.CreateDevice(_window, contextCount: 2);
 

@@ -23,8 +23,8 @@ namespace TerraFX.Graphics
 
         private VolatileState _state;
 
-        internal VulkanGraphicsAdapter(VulkanGraphicsProvider provider, VkPhysicalDevice vulkanPhysicalDevice)
-            : base(provider)
+        internal VulkanGraphicsAdapter(VulkanGraphicsService service, VkPhysicalDevice vulkanPhysicalDevice)
+            : base(service)
         {
             AssertNotNull(vulkanPhysicalDevice);
 
@@ -43,8 +43,8 @@ namespace TerraFX.Graphics
         /// <inheritdoc />
         public override string Name => _name.Value;
 
-        /// <inheritdoc cref="GraphicsAdapter.Provider" />
-        public new VulkanGraphicsProvider Provider => (VulkanGraphicsProvider)base.Provider;
+        /// <inheritdoc cref="GraphicsAdapter.Service" />
+        public new VulkanGraphicsService Service => (VulkanGraphicsService)base.Service;
 
         /// <inheritdoc />
         public override uint VendorId => VulkanPhysicalDeviceProperties.vendorID;
@@ -79,7 +79,7 @@ namespace TerraFX.Graphics
         }
 
         /// <inheritdoc />
-        /// <remarks>While there are no unmanaged resources to cleanup, we still want to mark the instance as disposed if, for example, <see cref="GraphicsAdapter.Provider" /> was disposed.</remarks>
+        /// <remarks>While there are no unmanaged resources to cleanup, we still want to mark the instance as disposed if, for example, <see cref="GraphicsAdapter.Service" /> was disposed.</remarks>
         protected override void Dispose(bool isDisposing)
         {
             _ = _state.BeginDispose();

@@ -103,18 +103,18 @@ public abstract class AudioDecoderOptions
 }
 
 
-public interface IAudioProvider
+public abstract class AudioService
 {
     // Provides sound devices to code, so that they can be requested and used to
-    // play sound. Implementors are likely to name based on subsystem, e.g. XAudio2AudioProvider, OpenALAudioProvider
+    // play sound. Implementors are likely to name based on subsystem, e.g. XAudio2AudioService, OpenALAudioService
 
     // Requests an audio device supporting the given options. If none could be
     // found, returns null.
-    IAudioDevice RequestAudioDevice(IAudioDeviceOptions options = null);
+    public abstract IAudioDevice RequestAudioDevice(IAudioDeviceOptions options = null);
 
     // Returns an enumerable which can be used to enumerate available audio
     // devices. Does not initialize them.
-    IEnumerable<IAudioDeviceOptions> EnumerateAudioDevices();
+    public abstract IEnumerable<IAudioDeviceOptions> EnumerateAudioDevices();
 }
 
 
@@ -164,7 +164,7 @@ public static sealed class WellKnownSampleRates
 - How do we name well-known sampling rates?
   - `CdAudio` and `DvdAudio` are based on well-known sample rates for CDs and
     DVDs, but how do we handle cases, e.g. 192kHz?
-- How do we handle cases where an audio provider does not match a requested
+- How do we handle cases where an audio service does not match a requested
   device?
   - If byte order does not match, byte swapping can likely be performed
     transparently using vectorised operations

@@ -5,14 +5,15 @@ using TerraFX.Interop;
 using TerraFX.Numerics;
 using TerraFX.Threading;
 using static TerraFX.Utilities.VulkanUtilities;
+using static TerraFX.Interop.VkColorComponentFlags;
 using static TerraFX.Interop.VkCompareOp;
-using static TerraFX.Interop.VkCullModeFlagBits;
+using static TerraFX.Interop.VkCullModeFlags;
 using static TerraFX.Interop.VkDynamicState;
 using static TerraFX.Interop.VkFormat;
 using static TerraFX.Interop.VkFrontFace;
 using static TerraFX.Interop.VkPrimitiveTopology;
-using static TerraFX.Interop.VkSampleCountFlagBits;
-using static TerraFX.Interop.VkShaderStageFlagBits;
+using static TerraFX.Interop.VkSampleCountFlags;
+using static TerraFX.Interop.VkShaderStageFlags;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkVertexInputRate;
 using static TerraFX.Interop.Vulkan;
@@ -110,7 +111,7 @@ namespace TerraFX.Graphics
                 var pipelineRasterizationStateCreateInfo = new VkPipelineRasterizationStateCreateInfo {
                     sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
                     frontFace = VK_FRONT_FACE_CLOCKWISE,
-                    cullMode = (uint)VK_CULL_MODE_BACK_BIT,
+                    cullMode = VK_CULL_MODE_BACK_BIT,
                     lineWidth = 1.0f,
                 };
 
@@ -131,7 +132,7 @@ namespace TerraFX.Graphics
                 };
 
                 var pipelineColorBlendAttachmentState = new VkPipelineColorBlendAttachmentState {
-                    colorWriteMask = 0xF,
+                    colorWriteMask = VK_COLOR_COMPONENT_A_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_R_BIT,
                 };
 
                 var pipelineColorBlendStateCreateInfo = new VkPipelineColorBlendStateCreateInfo {

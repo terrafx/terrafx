@@ -1,40 +1,34 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Composition.Hosting;
-using System.Reflection;
 using System.Threading;
 using TerraFX.Threading;
-using TerraFX.UI;
 using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.ApplicationModel
 {
     /// <summary>A multimedia-based application.</summary>
-    public sealed class Application : IDisposable, IServiceProvider
+    public sealed class Application
     {
         private const int Stopped = 1;
         private const int Running = 2;
         private const int Exiting = 3;
 
-        private readonly Assembly[] _compositionAssemblies;
         private readonly Thread _parentThread;
-        private ValueLazy<CompositionHost> _compositionHost;
+        private readonly ApplicationServiceProvider _serviceProvider;
 
         private VolatileState _state;
 
         /// <summary>Initializes a new instance of the <see cref="Application" /> class.</summary>
-        /// <param name="compositionAssemblies">The <see cref="Assembly" /> instances to search for type exports.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="compositionAssemblies" /> is <c>null</c>.</exception>
-        public Application(params Assembly[] compositionAssemblies)
+        /// <param name="serviceProvider">The object which provides services for the instance.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="serviceProvider" /> is <c>null</c>.</exception>
+        public Application(ApplicationServiceProvider serviceProvider)
         {
-            ThrowIfNull(compositionAssemblies, nameof(compositionAssemblies));
+            ThrowIfNull(serviceProvider, nameof(serviceProvider));
 
-            _compositionAssemblies = compositionAssemblies;
             _parentThread = Thread.CurrentThread;
-            _compositionHost = new ValueLazy<CompositionHost>(CreateCompositionHost);
+            _serviceProvider = serviceProvider;
 
             _ = _state.Transition(to: Stopped);
         }
@@ -48,12 +42,8 @@ namespace TerraFX.ApplicationModel
         /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
         public Thread ParentThread => _parentThread;
 
-        /// <inheritdoc />
-        public TService GetService<TService>()
-        {
-            _ = _compositionHost.Value.TryGetExport<TService>(out var service);
-            return service;
-        }
+        /// <summary>Gets the <see cref="ApplicationServiceProvider" /> for the instance.</summary>
+        public ApplicationServiceProvider ServiceProvider => _serviceProvider;
 
         /// <summary>Requests that the instance exits the event loop.</summary>
         /// <remarks>
@@ -75,11 +65,11 @@ namespace TerraFX.ApplicationModel
 
             _state.Transition(from: Stopped, to: Running);
             {
-                var windowProvider = _compositionHost.Value.GetExport<WindowProvider>();
+                var windowService = _serviceProvider.WindowService;
 
-                var dispatchProvider = windowProvider.DispatchProvider;
-                var dispatcher = dispatchProvider.DispatcherForCurrentThread;
-                var previousTimestamp = dispatchProvider.CurrentTimestamp;
+                var dispatchService = windowService.DispatchService;
+                var dispatcher = dispatchService.DispatcherForCurrentThread;
+                var previousTimestamp = dispatchService.CurrentTimestamp;
 
                 var previousFrameCount = 0u;
                 var framesPerSecond = 0u;
@@ -97,7 +87,7 @@ namespace TerraFX.ApplicationModel
 
                 while (_state == Running)
                 {
-                    var currentTimestamp = dispatchProvider.CurrentTimestamp;
+                    var currentTimestamp = dispatchService.CurrentTimestamp;
                     var frameCount = previousFrameCount++;
                     {
                         var delta = currentTimestamp - previousTimestamp;
@@ -124,49 +114,6 @@ namespace TerraFX.ApplicationModel
                 dispatcher.ExitRequested -= OnDispatcherExitRequested;
             }
             _ = _state.TryTransition(from: Exiting, to: Stopped);
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            var priorState = _state.BeginDispose();
-
-            if (priorState < Disposing)
-            {
-                DisposeCompositionHost(isDisposing: true);
-            }
-
-            _state.EndDispose();
-        }
-
-        /// <summary>Gets the service object of the specified type.</summary>
-        /// <param name="serviceType">The type of the service object to get.</param>
-        /// <returns>A service object of <paramref name="serviceType" /> if one exists; otherwise, <c>null</c>.</returns>
-        public object GetService(Type serviceType)
-        {
-            _ = _compositionHost.Value.TryGetExport(serviceType, out var service);
-            return service;
-        }
-
-        private CompositionHost CreateCompositionHost()
-        {
-            ThrowIfDisposedOrDisposing(_state, nameof(Application));
-
-            var containerConfiguration = new ContainerConfiguration();
-            {
-                containerConfiguration = containerConfiguration.WithAssemblies(_compositionAssemblies);
-            }
-            return containerConfiguration.CreateContainer();
-        }
-
-        private void DisposeCompositionHost(bool isDisposing)
-        {
-            AssertDisposing(_state);
-
-            if (isDisposing && _compositionHost.IsValueCreated)
-            {
-                _compositionHost.Value.Dispose();
-            }
         }
 
         private void OnDispatcherExitRequested(object? sender, EventArgs e) => RequestExit();

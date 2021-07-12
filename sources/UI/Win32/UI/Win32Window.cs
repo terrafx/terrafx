@@ -13,7 +13,7 @@ using static TerraFX.Interop.Windows;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.Win32Utilities;
-using static TerraFX.UI.Win32WindowProvider;
+using static TerraFX.UI.Win32WindowService;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -38,8 +38,8 @@ namespace TerraFX.UI
 
         private VolatileState _state;
 
-        internal Win32Window(Win32WindowProvider windowProvider)
-            : base(windowProvider, Thread.CurrentThread)
+        internal Win32Window(Win32WindowService windowService)
+            : base(windowService, Thread.CurrentThread)
         {
             _flowDirection = FlowDirection.TopToBottom;
             _readingDirection = ReadingDirection.LeftToRight;
@@ -113,9 +113,9 @@ namespace TerraFX.UI
         public override string Title
             => _title;
 
-        /// <inheritdoc cref="Window.WindowProvider" />
-        public new Win32WindowProvider WindowProvider
-            => (Win32WindowProvider)base.WindowProvider;
+        /// <inheritdoc cref="Window.WindowService" />
+        public new Win32WindowService WindowService
+            => (Win32WindowService)base.WindowService;
 
         /// <inheritdoc />
         public override WindowState WindowState
@@ -397,7 +397,7 @@ namespace TerraFX.UI
             {
                 hWnd = CreateWindowExW(
                     _extendedStyle,
-                    (ushort*)WindowProvider.ClassAtom,
+                    (ushort*)WindowService.ClassAtom,
                     (ushort*)lpWindowName,
                     _style,
                     X: CW_USEDEFAULT,

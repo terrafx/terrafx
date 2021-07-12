@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Composition;
 using System.Runtime.InteropServices;
 using TerraFX.Interop;
 using TerraFX.Threading;
@@ -16,18 +15,15 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics
 {
     /// <inheritdoc />
-    [Export(typeof(GraphicsProvider))]
-    [Shared]
-    public sealed unsafe class D3D12GraphicsProvider : GraphicsProvider
+    public sealed unsafe class D3D12GraphicsService : GraphicsService
     {
         private ValueLazy<Pointer<IDXGIFactory2>> _dxgiFactory;
         private ValueLazy<ImmutableArray<D3D12GraphicsAdapter>> _adapters;
 
         private VolatileState _state;
 
-        /// <summary>Initializes a new instance of the <see cref="D3D12GraphicsProvider" /> class.</summary>
-        [ImportingConstructor]
-        public D3D12GraphicsProvider()
+        /// <summary>Initializes a new instance of the <see cref="D3D12GraphicsService" /> class.</summary>
+        public D3D12GraphicsService()
         {
             _dxgiFactory = new ValueLazy<Pointer<IDXGIFactory2>>(CreateDxgiFactory);
             _adapters = new ValueLazy<ImmutableArray<D3D12GraphicsAdapter>>(GetAdapters);
@@ -35,16 +31,16 @@ namespace TerraFX.Graphics
             _ = _state.Transition(to: Initialized);
         }
 
-        /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsProvider" /> class.</summary>
-        ~D3D12GraphicsProvider() => Dispose(isDisposing: false);
+        /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsService" /> class.</summary>
+        ~D3D12GraphicsService() => Dispose(isDisposing: false);
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="IDXGIFactory1.EnumAdapters1(uint, IDXGIAdapter1**)" /> failed.</exception>
         public override IEnumerable<D3D12GraphicsAdapter> Adapters => _adapters.Value;
 
-        /// <summary>Gets the underlying <see cref="IDXGIFactory2" /> for the provider.</summary>
+        /// <summary>Gets the underlying <see cref="IDXGIFactory2" /> for the service.</summary>
         /// <exception cref="ExternalException">The call to <see cref="CreateDXGIFactory2" /> failed.</exception>
-        /// <exception cref="ObjectDisposedException">The provider has been disposed.</exception>
+        /// <exception cref="ObjectDisposedException">The service has been disposed.</exception>
         public IDXGIFactory2* DxgiFactory => _dxgiFactory.Value;
 
         /// <inheritdoc />
@@ -95,7 +91,7 @@ namespace TerraFX.Graphics
 
         private Pointer<IDXGIFactory2> CreateDxgiFactory()
         {
-            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsProvider));
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsService));
 
             IDXGIFactory2* dxgiFactory;
 
@@ -142,7 +138,7 @@ namespace TerraFX.Graphics
 
         private ImmutableArray<D3D12GraphicsAdapter> GetAdapters()
         {
-            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsProvider));
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsService));
 
             var adapters = ImmutableArray.CreateBuilder<D3D12GraphicsAdapter>();
 

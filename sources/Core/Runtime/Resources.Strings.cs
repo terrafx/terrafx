@@ -68,6 +68,9 @@ namespace TerraFX.Runtime
         /// <summary>Gets a localized string similar to <c>'{0}' is not a supported GraphicsSurfaceKind</c>.</summary>
         public static string UnsupportedSurfaceKindMessage => GetString(nameof(UnsupportedSurfaceKindMessage));
 
+        /// <summary>Gets a localized string similar to <c>'{0}' is the unsupported type '{1}'</c>.</summary>
+        public static string UnsupportedTypeMessage => GetString(nameof(UnsupportedTypeMessage));
+
         /// <summary>Gets a localized string similar to <c>'{0}' is negative</c>.</summary>
         public static string ValueIsNegativeMessage => GetString(nameof(ValueIsNegativeMessage));
 

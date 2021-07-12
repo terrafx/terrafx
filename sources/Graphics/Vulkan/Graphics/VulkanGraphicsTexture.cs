@@ -9,7 +9,7 @@ using static TerraFX.Interop.VkBorderColor;
 using static TerraFX.Interop.VkComponentSwizzle;
 using static TerraFX.Interop.VkFilter;
 using static TerraFX.Interop.VkFormat;
-using static TerraFX.Interop.VkImageAspectFlagBits;
+using static TerraFX.Interop.VkImageAspectFlags;
 using static TerraFX.Interop.VkImageViewType;
 using static TerraFX.Interop.VkSamplerMipmapMode;
 using static TerraFX.Interop.VkStructureType;
@@ -266,7 +266,7 @@ namespace TerraFX.Graphics
                     a = VK_COMPONENT_SWIZZLE_A,
                 },
                 subresourceRange = new VkImageSubresourceRange {
-                    aspectMask = (uint)VK_IMAGE_ASPECT_COLOR_BIT,
+                    aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
                     levelCount = 1,
                     layerCount = 1,
                 },

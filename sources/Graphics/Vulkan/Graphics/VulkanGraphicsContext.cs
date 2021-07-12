@@ -5,16 +5,16 @@ using TerraFX.Interop;
 using TerraFX.Numerics;
 using TerraFX.Threading;
 using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkAccessFlagBits;
-using static TerraFX.Interop.VkCommandPoolCreateFlagBits;
+using static TerraFX.Interop.VkAccessFlags;
+using static TerraFX.Interop.VkCommandPoolCreateFlags;
 using static TerraFX.Interop.VkComponentSwizzle;
 using static TerraFX.Interop.VkDescriptorType;
-using static TerraFX.Interop.VkImageAspectFlagBits;
+using static TerraFX.Interop.VkImageAspectFlags;
 using static TerraFX.Interop.VkImageLayout;
 using static TerraFX.Interop.VkImageViewType;
 using static TerraFX.Interop.VkIndexType;
 using static TerraFX.Interop.VkPipelineBindPoint;
-using static TerraFX.Interop.VkPipelineStageFlagBits;
+using static TerraFX.Interop.VkPipelineStageFlags;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkSubpassContents;
 using static TerraFX.Interop.Vulkan;
@@ -182,11 +182,11 @@ namespace TerraFX.Graphics
 
             var vulkanBufferImageCopy = new VkBufferImageCopy {
                 imageSubresource = new VkImageSubresourceLayers {
-                    aspectMask = (uint)VK_IMAGE_ASPECT_COLOR_BIT,
+                    aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
                     layerCount = 1,
                 },
                 imageExtent = new VkExtent3D {
-                    width = (uint)destination.Width,
+                    width = destination.Width,
                     height = destination.Height,
                     depth = destination.Depth,
                 },
@@ -200,37 +200,37 @@ namespace TerraFX.Graphics
             {
                 var vulkanImageMemoryBarrier = new VkImageMemoryBarrier {
                     sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-                    dstAccessMask = (uint)VK_ACCESS_TRANSFER_WRITE_BIT,
+                    dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
                     oldLayout = VK_IMAGE_LAYOUT_UNDEFINED,
                     newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                     image = vulkanImage,
                     subresourceRange = new VkImageSubresourceRange {
-                        aspectMask = (uint)VK_IMAGE_ASPECT_COLOR_BIT,
+                        aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
                         levelCount = 1,
                         layerCount = 1,
                     },
                 };
 
-                vkCmdPipelineBarrier(vulkanCommandBuffer, (uint)VK_PIPELINE_STAGE_HOST_BIT, (uint)VK_PIPELINE_STAGE_TRANSFER_BIT, dependencyFlags: 0, memoryBarrierCount: 0, pMemoryBarriers: null, bufferMemoryBarrierCount: 0, pBufferMemoryBarriers: null, imageMemoryBarrierCount: 1, &vulkanImageMemoryBarrier);
+                vkCmdPipelineBarrier(vulkanCommandBuffer, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, dependencyFlags: 0, memoryBarrierCount: 0, pMemoryBarriers: null, bufferMemoryBarrierCount: 0, pBufferMemoryBarriers: null, imageMemoryBarrierCount: 1, &vulkanImageMemoryBarrier);
             }
 
             void EndCopy()
             {
                 var vulkanImageMemoryBarrier = new VkImageMemoryBarrier {
                     sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-                    srcAccessMask = (uint)VK_ACCESS_TRANSFER_WRITE_BIT,
-                    dstAccessMask = (uint)VK_ACCESS_SHADER_READ_BIT,
+                    srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
+                    dstAccessMask = VK_ACCESS_SHADER_READ_BIT,
                     oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                     newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                     image = vulkanImage,
                     subresourceRange = new VkImageSubresourceRange {
-                        aspectMask = (uint)VK_IMAGE_ASPECT_COLOR_BIT,
+                        aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
                         levelCount = 1,
                         layerCount = 1,
                     },
                 };
 
-                vkCmdPipelineBarrier(vulkanCommandBuffer, (uint)VK_PIPELINE_STAGE_TRANSFER_BIT, (uint)VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, dependencyFlags: 0, memoryBarrierCount: 0, pMemoryBarriers: null, bufferMemoryBarrierCount: 0, pBufferMemoryBarriers: null, imageMemoryBarrierCount: 1, &vulkanImageMemoryBarrier);
+                vkCmdPipelineBarrier(vulkanCommandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, dependencyFlags: 0, memoryBarrierCount: 0, pMemoryBarriers: null, bufferMemoryBarrierCount: 0, pBufferMemoryBarriers: null, imageMemoryBarrierCount: 1, &vulkanImageMemoryBarrier);
             }
         }
 
@@ -421,7 +421,7 @@ namespace TerraFX.Graphics
 
             var commandPoolCreateInfo = new VkCommandPoolCreateInfo {
                 sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-                flags = (uint)VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+                flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
                 queueFamilyIndex = Device.VulkanCommandQueueFamilyIndex,
             };
             ThrowExternalExceptionIfNotSuccess(vkCreateCommandPool(Device.VulkanDevice, &commandPoolCreateInfo, pAllocator: null, (ulong*)&vulkanCommandPool), nameof(vkCreateCommandPool));
@@ -469,7 +469,7 @@ namespace TerraFX.Graphics
                     a = VK_COMPONENT_SWIZZLE_A,
                 },
                 subresourceRange = new VkImageSubresourceRange {
-                    aspectMask = (uint)VK_IMAGE_ASPECT_COLOR_BIT,
+                    aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
                     levelCount = 1,
                     layerCount = 1,
                 },

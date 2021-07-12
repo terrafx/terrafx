@@ -5,7 +5,7 @@ using System.Threading;
 using TerraFX.Interop;
 using TerraFX.Threading;
 using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkFenceCreateFlagBits;
+using static TerraFX.Interop.VkFenceCreateFlags;
 using static TerraFX.Interop.VkResult;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
@@ -88,7 +88,7 @@ namespace TerraFX.Graphics
             var fenceCreateInfo = new VkFenceCreateInfo {
                 sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
                 pNext = null,
-                flags = (uint)VK_FENCE_CREATE_SIGNALED_BIT,
+                flags = VK_FENCE_CREATE_SIGNALED_BIT,
             };
             ThrowExternalExceptionIfNotSuccess(vkCreateFence(Device.VulkanDevice, &fenceCreateInfo, pAllocator: null, (ulong*)&vulkanFence), nameof(vkCreateFence));
 

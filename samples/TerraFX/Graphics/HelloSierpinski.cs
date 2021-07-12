@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
@@ -21,8 +20,8 @@ namespace TerraFX.Samples.Graphics
         private GraphicsBuffer _vertexBuffer = null!;
         private float _texturePosition;
 
-        public HelloSierpinski(string name, int recursionDepth, SierpinskiShape shape, params Assembly[] compositionAssemblies)
-            : base(name, compositionAssemblies)
+        public HelloSierpinski(string name, int recursionDepth, SierpinskiShape shape, ApplicationServiceProvider serviceProvider)
+            : base(name, serviceProvider)
         {
             _recursionDepth = recursionDepth;
             _sierpinskiShape = shape;

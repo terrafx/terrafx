@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TerraFX.Interop;
-using TerraFX.Runtime;
 using TerraFX.Threading;
 using static TerraFX.Interop.pa_sample_format;
 using static TerraFX.Interop.pa_seek_mode;

@@ -21,20 +21,30 @@
     <PackageVersion Condition="'$(EXCLUDE_RUN_ID_FROM_PACKAGE)' == ''">$(Version)-$(GITHUB_RUN_ID)</PackageVersion>
   </PropertyGroup>
 
+  <!-- Settings that are only set for executables -->
+  <PropertyGroup Condition="'$(OutputType)' != 'Library'">
+    <PublishTrimmed>true</PublishTrimmed>
+  </PropertyGroup>
+
+  <!-- Settings that are only set for libraries -->
+  <PropertyGroup Condition="'$(OutputType)' == 'Library'">
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <IsTrimmable>true</IsTrimmable>
+  </PropertyGroup>
+
   <!-- Package versions for package references across all projects -->
   <ItemGroup>
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.10.0" />
     <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.0.0" />
-    <PackageReference Update="NUnit" Version="3.13.1" />
-    <PackageReference Update="NUnit3TestAdapter" Version="3.17.0" />
-    <PackageReference Update="System.Composition" Version="5.0.0" />
-    <PackageReference Update="System.IO.Pipelines" Version="5.0.0" />
-    <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-beta1" />
-    <PackageReference Update="TerraFX.Interop.Mimalloc" Version="1.6.0-beta1" />
-    <PackageReference Update="TerraFX.Interop.PulseAudio" Version="13.0.0-beta1" />
-    <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.162-beta2" />
-    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.19041-beta2" />
-    <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-beta1" />
+    <PackageReference Update="NUnit" Version="3.13.2" />
+    <PackageReference Update="NUnit3TestAdapter" Version="4.0.0" />
+    <PackageReference Update="System.IO.Pipelines" Version="5.0.1" />
+    <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-beta2" />
+    <PackageReference Update="TerraFX.Interop.Mimalloc" Version="1.6.0-beta2" />
+    <PackageReference Update="TerraFX.Interop.PulseAudio" Version="13.0.0-beta2" />
+    <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.182-beta1" />
+    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.20348-beta1" />
+    <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-beta2" />
   </ItemGroup>
 
 </Project>

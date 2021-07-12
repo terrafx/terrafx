@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Composition;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -19,11 +18,9 @@ using static TerraFX.Utilities.UnsafeUtilities;
 namespace TerraFX.UI
 {
     /// <summary>Provides access to a Win32 based window subsystem.</summary>
-    [Export(typeof(WindowProvider))]
-    [Shared]
-    public sealed unsafe class Win32WindowProvider : WindowProvider
+    public sealed unsafe class Win32WindowService : WindowService
     {
-        private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.VulkanGraphicsProvider.RequiredExtensionNames";
+        private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.VulkanGraphicsService.RequiredExtensionNames";
 
         /// <summary>A <c>HINSTANCE</c> to the entry point module.</summary>
         public static readonly IntPtr EntryPointModule = GetModuleHandleW(lpModuleName: null);
@@ -35,9 +32,8 @@ namespace TerraFX.UI
 
         private VolatileState _state;
 
-        /// <summary>Initializes a new instance of the <see cref="Win32WindowProvider" /> class.</summary>
-        [ImportingConstructor]
-        public Win32WindowProvider()
+        /// <summary>Initializes a new instance of the <see cref="Win32WindowService" /> class.</summary>
+        public Win32WindowService()
         {
             var vulkanRequiredExtensionNamesDataName = AppContext.GetData(VulkanRequiredExtensionNamesDataName) as string;
             vulkanRequiredExtensionNamesDataName += ";VK_KHR_surface;VK_KHR_win32_surface";
@@ -50,21 +46,21 @@ namespace TerraFX.UI
             _ = _state.Transition(to: Initialized);
         }
 
-        /// <summary>Finalizes an instance of the <see cref="Win32WindowProvider" /> class.</summary>
-        ~Win32WindowProvider() => Dispose(isDisposing: false);
+        /// <summary>Finalizes an instance of the <see cref="Win32WindowService" /> class.</summary>
+        ~Win32WindowService() => Dispose(isDisposing: false);
 
         /// <summary>Gets the <c>ATOM</c> of the <see cref="WNDCLASSEXW" /> registered for the instance.</summary>
         public ushort ClassAtom
         {
             get
             {
-                ThrowIfDisposedOrDisposing(_state, nameof(Win32WindowProvider));
+                ThrowIfDisposedOrDisposing(_state, nameof(Win32WindowService));
                 return _classAtom.Value;
             }
         }
 
         /// <inheritdoc />
-        public override DispatchProvider DispatchProvider => Win32DispatchProvider.Instance;
+        public override DispatchService DispatchService => Win32DispatchService.Instance;
 
         /// <summary>Gets the <see cref="GCHandle" /> containing the native handle for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -83,7 +79,7 @@ namespace TerraFX.UI
         {
             get
             {
-                ThrowIfDisposedOrDisposing(_state, nameof(Win32WindowProvider));
+                ThrowIfDisposedOrDisposing(_state, nameof(Win32WindowService));
                 return _windows.Value?.Values ?? Enumerable.Empty<Win32Window>();
             }
         }
@@ -92,7 +88,7 @@ namespace TerraFX.UI
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public override Window CreateWindow()
         {
-            ThrowIfDisposedOrDisposing(_state, nameof(Win32WindowProvider));
+            ThrowIfDisposedOrDisposing(_state, nameof(Win32WindowService));
             return new Win32Window(this);
         }
 
@@ -101,7 +97,7 @@ namespace TerraFX.UI
         {
             nint userData;
             GCHandle gcHandle;
-            Win32WindowProvider windowProvider;
+            Win32WindowService windowService;
             Dictionary<IntPtr, Win32Window>? windows;
             Win32Window? window;
             bool forwardMessage;
@@ -115,28 +111,28 @@ namespace TerraFX.UI
                 var createStruct = (CREATESTRUCTW*)lParam;
                 userData = (nint)createStruct->lpCreateParams;
 
-                // Unlike the WindowProvider GCHandle, the Window GCHandle is short lived and
+                // Unlike the WindowService GCHandle, the Window GCHandle is short lived and
                 // we want to free it after we add the relevant entries to the window map.
 
                 gcHandle = GCHandle.FromIntPtr(userData);
                 {
                     window = (Win32Window)gcHandle.Target!;
-                    windowProvider = window.WindowProvider;
-                    windows = windowProvider._windows.Value!;
+                    windowService = window.WindowService;
+                    windows = windowService._windows.Value!;
                 }
                 gcHandle.Free();
 
                 if (windows is null)
                 {
                     windows = new Dictionary<IntPtr, Win32Window>(capacity: 4);
-                    windowProvider._windows.Value = windows;
+                    windowService._windows.Value = windows;
                 }
                 windows.Add(hWnd, window);
 
-                // We then want to ensure the window provider is registered as a property for fast
+                // We then want to ensure the window service is registered as a property for fast
                 // subsequent lookups. This proocess also allows everything to be lazily initialized.
 
-                gcHandle = window.WindowProvider.NativeHandle;
+                gcHandle = window.WindowService.NativeHandle;
                 userData = GCHandle.ToIntPtr(gcHandle);
 
                 _ = SetWindowLongPtrW(hWnd, GWLP_USERDATA, userData);
@@ -151,8 +147,8 @@ namespace TerraFX.UI
                 {
                     gcHandle = GCHandle.FromIntPtr(userData);
 
-                    windowProvider = (Win32WindowProvider)gcHandle.Target!;
-                    windows = windowProvider._windows.Value!;
+                    windowService = (Win32WindowService)gcHandle.Target!;
+                    windows = windowService._windows.Value!;
 
                     forwardMessage = windows.TryGetValue(hWnd, out window);
                 }
@@ -308,7 +304,7 @@ namespace TerraFX.UI
 
                         foreach (var hWnd in hWnds)
                         {
-                            var dispatchProvider = Win32DispatchProvider.Instance;
+                            var dispatchService = Win32DispatchService.Instance;
                             var window = RemoveWindow(windows, hWnd);
                             window.Dispose();
                         }

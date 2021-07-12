@@ -11,26 +11,26 @@ namespace TerraFX.UI
     /// <summary>Provides a means of dispatching events for a thread.</summary>
     public sealed unsafe class XlibDispatcher : Dispatcher
     {
-        internal XlibDispatcher(XlibDispatchProvider dispatchProvider, Thread parentThread)
-            : base(dispatchProvider, parentThread) { }
+        internal XlibDispatcher(XlibDispatchService dispatchService, Thread parentThread)
+            : base(dispatchService, parentThread) { }
 
         /// <inheritdoc />
         public override event EventHandler? ExitRequested;
 
-        /// <inheritdoc cref="Dispatcher.DispatchProvider" />
-        public new XlibDispatchProvider DispatchProvider => (XlibDispatchProvider)base.DispatchProvider;
+        /// <inheritdoc cref="Dispatcher.DispatchService" />
+        public new XlibDispatchService DispatchService => (XlibDispatchService)base.DispatchService;
 
         /// <inheritdoc />
         public override void DispatchPending()
         {
             ThrowIfNotThread(ParentThread);
-            var display = DispatchProvider.Display;
+            var display = DispatchService.Display;
 
             while (XPending(display) != 0)
             {
                 XEvent xevent;
                 _ = XNextEvent(display, &xevent);
-                XlibWindowProvider.ForwardWindowEvent(&xevent);
+                XlibWindowService.ForwardWindowEvent(&xevent);
             }
         }
 

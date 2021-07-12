@@ -42,8 +42,8 @@ namespace TerraFX.UI
 
         private VolatileState _state;
 
-        internal XlibWindow(XlibWindowProvider windowProvider)
-            : base(windowProvider, Thread.CurrentThread)
+        internal XlibWindow(XlibWindowService windowService)
+            : base(windowService, Thread.CurrentThread)
         {
             _flowDirection = FlowDirection.TopToBottom;
             _readingDirection = ReadingDirection.LeftToRight;
@@ -117,9 +117,9 @@ namespace TerraFX.UI
         public override string Title
             => _title;
 
-        /// <inheritdoc cref="Window.WindowProvider" />
-        public new XlibWindowProvider WindowProvider
-            => (XlibWindowProvider)base.WindowProvider;
+        /// <inheritdoc cref="Window.WindowService" />
+        public new XlibWindowService WindowService
+            => (XlibWindowService)base.WindowService;
 
         /// <inheritdoc />
         public override WindowState WindowState
@@ -127,7 +127,7 @@ namespace TerraFX.UI
 
         /// <inheritdoc />
         protected override IntPtr SurfaceContextHandle
-            => XlibDispatchProvider.Instance.Display;
+            => XlibDispatchService.Instance.Display;
 
         /// <inheritdoc />
         protected override IntPtr SurfaceHandle
@@ -158,18 +158,18 @@ namespace TerraFX.UI
         {
             if (_handle.IsValueCreated)
             {
-                var dispatchProvider = XlibDispatchProvider.Instance;
-                var display = dispatchProvider.Display;
+                var dispatchService = XlibDispatchService.Instance;
+                var display = dispatchService.Display;
                 var window = Handle;
 
-                if (dispatchProvider.GetAtomIsSupported(_NET_CLOSE_WINDOW))
+                if (dispatchService.GetAtomIsSupported(_NET_CLOSE_WINDOW))
                 {
                     SendClientMessage(
                         display,
-                        dispatchProvider.DefaultRootWindow,
+                        dispatchService.DefaultRootWindow,
                         SubstructureNotifyMask | SubstructureRedirectMask,
                         window,
-                        dispatchProvider.GetAtom(_NET_CLOSE_WINDOW),
+                        dispatchService.GetAtom(_NET_CLOSE_WINDOW),
                         CurrentTime,
                         SourceApplication
                     );
@@ -181,8 +181,8 @@ namespace TerraFX.UI
                         window,
                         NoEventMask,
                         window,
-                        dispatchProvider.GetAtom(WM_PROTOCOLS),
-                        (nint)dispatchProvider.GetAtom(WM_DELETE_WINDOW)
+                        dispatchService.GetAtom(WM_PROTOCOLS),
+                        (nint)dispatchService.GetAtom(WM_DELETE_WINDOW)
                     );
                 }
             }
@@ -198,7 +198,7 @@ namespace TerraFX.UI
                     flags = InputHint,
                     input = False
                 };
-                _ = XSetWMHints(XlibDispatchProvider.Instance.Display, Handle, &wmHints);
+                _ = XSetWMHints(XlibDispatchService.Instance.Display, Handle, &wmHints);
             }
         }
 
@@ -213,7 +213,7 @@ namespace TerraFX.UI
                     flags = InputHint,
                     input = True
                 };
-                _ = XSetWMHints(XlibDispatchProvider.Instance.Display, Handle, &wmHints);
+                _ = XSetWMHints(XlibDispatchService.Instance.Display, Handle, &wmHints);
             }
         }
 
@@ -223,12 +223,12 @@ namespace TerraFX.UI
         {
             if (WindowState != WindowState.Hidden)
             {
-                var dispatchProvider = XlibDispatchProvider.Instance;
+                var dispatchService = XlibDispatchService.Instance;
 
                 ThrowForLastErrorIfZero(XWithdrawWindow(
-                    dispatchProvider.Display,
+                    dispatchService.Display,
                     Handle,
-                    XScreenNumberOfScreen(dispatchProvider.DefaultScreen)
+                    XScreenNumberOfScreen(dispatchService.DefaultScreen)
                 ), nameof(XWithdrawWindow));
             }
         }
@@ -242,8 +242,8 @@ namespace TerraFX.UI
 
             if (windowState != WindowState.Maximized)
             {
-                var dispatchProvider = XlibDispatchProvider.Instance;
-                var display = dispatchProvider.Display;
+                var dispatchService = XlibDispatchService.Instance;
+                var display = dispatchService.Display;
                 var window = Handle;
 
                 if (windowState == WindowState.Minimized)
@@ -257,17 +257,17 @@ namespace TerraFX.UI
                     ShowWindow(display, window);
                 }
 
-                if (dispatchProvider.GetAtomIsSupported(_NET_WM_STATE_MAXIMIZED_HORZ) && dispatchProvider.GetAtomIsSupported(_NET_WM_STATE_MAXIMIZED_VERT))
+                if (dispatchService.GetAtomIsSupported(_NET_WM_STATE_MAXIMIZED_HORZ) && dispatchService.GetAtomIsSupported(_NET_WM_STATE_MAXIMIZED_VERT))
                 {
                     SendClientMessage(
                         display,
-                        dispatchProvider.DefaultRootWindow,
+                        dispatchService.DefaultRootWindow,
                         SubstructureNotifyMask | SubstructureRedirectMask,
                         window,
-                        dispatchProvider.GetAtom(_NET_WM_STATE),
+                        dispatchService.GetAtom(_NET_WM_STATE),
                         _NET_WM_STATE_ADD,
-                        (nint)dispatchProvider.GetAtom(_NET_WM_STATE_MAXIMIZED_HORZ),
-                        (nint)dispatchProvider.GetAtom(_NET_WM_STATE_MAXIMIZED_VERT),
+                        (nint)dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_HORZ),
+                        (nint)dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_VERT),
                         SourceApplication
                     );
                 }
@@ -287,8 +287,8 @@ namespace TerraFX.UI
 
             if (windowState != WindowState.Minimized)
             {
-                var dispatchProvider = XlibDispatchProvider.Instance;
-                var display = dispatchProvider.Display;
+                var dispatchService = XlibDispatchService.Instance;
+                var display = dispatchService.Display;
                 var window = Handle;
 
                 if (windowState == WindowState.Hidden)
@@ -299,7 +299,7 @@ namespace TerraFX.UI
                 ThrowForLastErrorIfZero(XIconifyWindow(
                     display,
                     window,
-                    XScreenNumberOfScreen(dispatchProvider.DefaultScreen)
+                    XScreenNumberOfScreen(dispatchService.DefaultScreen)
                 ), nameof(XIconifyWindow));
             }
         }
@@ -310,18 +310,18 @@ namespace TerraFX.UI
         {
             if (_bounds.Location != location)
             {
-                var dispatchProvider = XlibDispatchProvider.Instance;
-                var display = dispatchProvider.Display;
+                var dispatchService = XlibDispatchService.Instance;
+                var display = dispatchService.Display;
                 var window = Handle;
 
-                if (dispatchProvider.GetAtomIsSupported(_NET_MOVERESIZE_WINDOW))
+                if (dispatchService.GetAtomIsSupported(_NET_MOVERESIZE_WINDOW))
                 {
                     SendClientMessage(
                         display,
-                        dispatchProvider.DefaultRootWindow,
+                        dispatchService.DefaultRootWindow,
                         SubstructureNotifyMask | SubstructureRedirectMask,
                         window,
-                        dispatchProvider.GetAtom(_NET_MOVERESIZE_WINDOW),
+                        dispatchService.GetAtom(_NET_MOVERESIZE_WINDOW),
                         NorthWestGravity | (0b0011 << 8) | (SourceApplication << 12),
                         (nint)location.X,
                         (nint)location.Y,
@@ -342,18 +342,18 @@ namespace TerraFX.UI
         {
             if (_clientBounds.Location != location)
             {
-                var dispatchProvider = XlibDispatchProvider.Instance;
-                var display = dispatchProvider.Display;
+                var dispatchService = XlibDispatchService.Instance;
+                var display = dispatchService.Display;
                 var window = Handle;
 
-                if (dispatchProvider.GetAtomIsSupported(_NET_MOVERESIZE_WINDOW))
+                if (dispatchService.GetAtomIsSupported(_NET_MOVERESIZE_WINDOW))
                 {
                     SendClientMessage(
                         display,
-                        dispatchProvider.DefaultRootWindow,
+                        dispatchService.DefaultRootWindow,
                         SubstructureNotifyMask | SubstructureRedirectMask,
                         window,
-                        dispatchProvider.GetAtom(_NET_MOVERESIZE_WINDOW),
+                        dispatchService.GetAtom(_NET_MOVERESIZE_WINDOW),
                         StaticGravity | (0b0011 << 8) | (SourceApplication << 12),
                         (nint)location.X,
                         (nint)location.Y,
@@ -374,18 +374,18 @@ namespace TerraFX.UI
         {
             if (_bounds.Size != size)
             {
-                var dispatchProvider = XlibDispatchProvider.Instance;
-                var display = dispatchProvider.Display;
+                var dispatchService = XlibDispatchService.Instance;
+                var display = dispatchService.Display;
                 var window = Handle;
 
-                if (dispatchProvider.GetAtomIsSupported(_NET_MOVERESIZE_WINDOW))
+                if (dispatchService.GetAtomIsSupported(_NET_MOVERESIZE_WINDOW))
                 {
                     SendClientMessage(
                         display,
-                        dispatchProvider.DefaultRootWindow,
+                        dispatchService.DefaultRootWindow,
                         SubstructureNotifyMask | SubstructureRedirectMask,
                         window,
-                        dispatchProvider.GetAtom(_NET_MOVERESIZE_WINDOW),
+                        dispatchService.GetAtom(_NET_MOVERESIZE_WINDOW),
                         NorthWestGravity | (0b1100 << 8) | (SourceApplication << 12),
                         None,
                         None,
@@ -406,18 +406,18 @@ namespace TerraFX.UI
         {
             if (_clientBounds.Size != size)
             {
-                var dispatchProvider = XlibDispatchProvider.Instance;
-                var display = dispatchProvider.Display;
+                var dispatchService = XlibDispatchService.Instance;
+                var display = dispatchService.Display;
                 var window = Handle;
 
-                if (dispatchProvider.GetAtomIsSupported(_NET_MOVERESIZE_WINDOW))
+                if (dispatchService.GetAtomIsSupported(_NET_MOVERESIZE_WINDOW))
                 {
                     SendClientMessage(
                         display,
-                        dispatchProvider.DefaultRootWindow,
+                        dispatchService.DefaultRootWindow,
                         SubstructureNotifyMask | SubstructureRedirectMask,
                         window,
-                        dispatchProvider.GetAtom(_NET_MOVERESIZE_WINDOW),
+                        dispatchService.GetAtom(_NET_MOVERESIZE_WINDOW),
                         StaticGravity | (0b1100 << 8) | (SourceApplication << 12),
                         None,
                         None,
@@ -440,8 +440,8 @@ namespace TerraFX.UI
 
             if (windowState != WindowState.Normal)
             {
-                var dispatchProvider = XlibDispatchProvider.Instance;
-                var display = dispatchProvider.Display;
+                var dispatchService = XlibDispatchService.Instance;
+                var display = dispatchService.Display;
                 var window = Handle;
 
                 if (windowState == WindowState.Minimized)
@@ -461,17 +461,17 @@ namespace TerraFX.UI
                     _ = XMapWindow(display, window);
                 }
 
-                if (dispatchProvider.GetAtomIsSupported(_NET_WM_STATE_MAXIMIZED_HORZ) && dispatchProvider.GetAtomIsSupported(_NET_WM_STATE_MAXIMIZED_VERT))
+                if (dispatchService.GetAtomIsSupported(_NET_WM_STATE_MAXIMIZED_HORZ) && dispatchService.GetAtomIsSupported(_NET_WM_STATE_MAXIMIZED_VERT))
                 {
                     SendClientMessage(
                         display,
-                        dispatchProvider.DefaultRootWindow,
+                        dispatchService.DefaultRootWindow,
                         SubstructureNotifyMask | SubstructureRedirectMask,
                         window,
-                        dispatchProvider.GetAtom(_NET_WM_STATE),
+                        dispatchService.GetAtom(_NET_WM_STATE),
                         _NET_WM_STATE_REMOVE,
-                        (nint)dispatchProvider.GetAtom(_NET_WM_STATE_MAXIMIZED_HORZ),
-                        (nint)dispatchProvider.GetAtom(_NET_WM_STATE_MAXIMIZED_VERT),
+                        (nint)dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_HORZ),
+                        (nint)dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_VERT),
                         SourceApplication
                     );
                 }
@@ -488,8 +488,8 @@ namespace TerraFX.UI
         {
             if (_title != title)
             {
-                var dispatchProvider = XlibDispatchProvider.Instance;
-                SetWindowTitle(dispatchProvider, dispatchProvider.Display, Handle, title);
+                var dispatchService = XlibDispatchService.Instance;
+                SetWindowTitle(dispatchService, dispatchService.Display, Handle, title);
             }
         }
 
@@ -499,7 +499,7 @@ namespace TerraFX.UI
         {
             if (_windowState == WindowState.Hidden)
             {
-                _ = XMapWindow(XlibDispatchProvider.Instance.Display, Handle);
+                _ = XMapWindow(XlibDispatchService.Instance.Display, Handle);
             }
         }
 
@@ -510,18 +510,18 @@ namespace TerraFX.UI
         {
             if (!_isActive)
             {
-                var dispatchProvider = XlibDispatchProvider.Instance;
-                var display = dispatchProvider.Display;
+                var dispatchService = XlibDispatchService.Instance;
+                var display = dispatchService.Display;
                 var window = Handle;
 
-                if (dispatchProvider.GetAtomIsSupported(_NET_ACTIVE_WINDOW))
+                if (dispatchService.GetAtomIsSupported(_NET_ACTIVE_WINDOW))
                 {
                     SendClientMessage(
                         display,
-                        dispatchProvider.DefaultRootWindow,
+                        dispatchService.DefaultRootWindow,
                         SubstructureNotifyMask | SubstructureRedirectMask,
                         window,
-                        dispatchProvider.GetAtom(_NET_ACTIVE_WINDOW),
+                        dispatchService.GetAtom(_NET_ACTIVE_WINDOW),
                         SourceApplication,
                         CurrentTime,
                         None
@@ -623,11 +623,11 @@ namespace TerraFX.UI
 
         private nuint CreateWindowHandle()
         {
-            var dispatchProvider = XlibDispatchProvider.Instance;
-            var display = dispatchProvider.Display;
+            var dispatchService = XlibDispatchService.Instance;
+            var display = dispatchService.Display;
 
-            var defaultRootWindow = dispatchProvider.DefaultRootWindow;
-            var defaultScreen = dispatchProvider.DefaultScreen;
+            var defaultRootWindow = dispatchService.DefaultRootWindow;
+            var defaultScreen = dispatchService.DefaultScreen;
 
             var defaultScreenWidth = XWidthOfScreen(defaultScreen);
             var defaultScreenHeight = XHeightOfScreen(defaultScreen);
@@ -657,7 +657,7 @@ namespace TerraFX.UI
             const int WmProtocolCount = 1;
 
             var wmProtocols = stackalloc nuint[WmProtocolCount] {
-                dispatchProvider.GetAtom(WM_DELETE_WINDOW)
+                dispatchService.GetAtom(WM_DELETE_WINDOW)
             };
 
             ThrowForLastErrorIfZero(XSetWMProtocols(
@@ -675,12 +675,12 @@ namespace TerraFX.UI
                 window,
                 NoEventMask,
                 window,
-                dispatchProvider.GetAtom(_TERRAFX_CREATE_WINDOW),
+                dispatchService.GetAtom(_TERRAFX_CREATE_WINDOW),
                 unchecked((nint)(uint)gcHandlePtr),
                 (nint)(gcHandlePtr >> 32)
             );
 
-            SetWindowTitle(dispatchProvider, display, window, _title);
+            SetWindowTitle(dispatchService, display, window, _title);
             return window;
         }
 
@@ -694,8 +694,8 @@ namespace TerraFX.UI
 
             if (_handle.IsValueCreated)
             {
-                var dispatchProvider = XlibDispatchProvider.Instance;
-                var display = dispatchProvider.Display;
+                var dispatchService = XlibDispatchService.Instance;
+                var display = dispatchService.Display;
                 var window = _handle.Value;
 
                 var gcHandle = GCHandle.Alloc(this, GCHandleType.Normal);
@@ -706,7 +706,7 @@ namespace TerraFX.UI
                     window,
                     NoEventMask,
                     window,
-                    dispatchProvider.GetAtom(_TERRAFX_DISPOSE_WINDOW),
+                    dispatchService.GetAtom(_TERRAFX_DISPOSE_WINDOW),
                     unchecked((nint)(uint)gcHandlePtr),
                     (nint)(gcHandlePtr >> 32)
                 );
@@ -717,16 +717,16 @@ namespace TerraFX.UI
 
         private void HandleXClientMessage(XClientMessageEvent* xclientMessage)
         {
-            var dispatchProvider = XlibDispatchProvider.Instance;
+            var dispatchService = XlibDispatchService.Instance;
 
-            if ((xclientMessage->format != 32) || (xclientMessage->message_type != dispatchProvider.GetAtom(WM_PROTOCOLS)))
+            if ((xclientMessage->format != 32) || (xclientMessage->message_type != dispatchService.GetAtom(WM_PROTOCOLS)))
             {
                 return;
             }
 
             var eventAtom = (nuint)xclientMessage->data.l[0];
 
-            if (eventAtom == dispatchProvider.GetAtom(WM_DELETE_WINDOW))
+            if (eventAtom == dispatchService.GetAtom(WM_DELETE_WINDOW))
             {
                 // If we are already disposing, then Dispose is happening on some other thread
                 // and Close was called in order for us to continue disposal on the parent thread.
@@ -760,7 +760,7 @@ namespace TerraFX.UI
                 ThrowForLastErrorIfZero(XTranslateCoordinates(
                     xconfigure->display,
                     xconfigure->window,
-                    XlibDispatchProvider.Instance.DefaultRootWindow,
+                    XlibDispatchService.Instance.DefaultRootWindow,
                     0,
                     0,
                     &xconfigure->x,
@@ -809,46 +809,46 @@ namespace TerraFX.UI
         private static void HandleXExpose(XExposeEvent* xexpose) { }
 
         private void HandleXMap(XMapEvent* xmap)
-            => UpdateWindowState(XlibDispatchProvider.Instance, xmap->display, xmap->@event);
+            => UpdateWindowState(XlibDispatchService.Instance, xmap->display, xmap->@event);
 
         private void HandleXProperty(XPropertyEvent* xproperty)
         {
-            var dispatchProvider = XlibDispatchProvider.Instance;
+            var dispatchService = XlibDispatchService.Instance;
             var atom = xproperty->atom;
 
-            if (atom == dispatchProvider.GetAtom(_NET_FRAME_EXTENTS))
+            if (atom == dispatchService.GetAtom(_NET_FRAME_EXTENTS))
             {
-                HandleXPropertyNetFrameExtents(xproperty, dispatchProvider);
+                HandleXPropertyNetFrameExtents(xproperty, dispatchService);
             }
-            else if (atom == dispatchProvider.GetAtom(_NET_WM_NAME))
+            else if (atom == dispatchService.GetAtom(_NET_WM_NAME))
             {
-                HandleXPropertyNetWmName(xproperty, dispatchProvider);
+                HandleXPropertyNetWmName(xproperty, dispatchService);
             }
-            else if (atom == dispatchProvider.GetAtom(_NET_WM_STATE))
+            else if (atom == dispatchService.GetAtom(_NET_WM_STATE))
             {
-                HandleXPropertyNetWmState(xproperty, dispatchProvider);
+                HandleXPropertyNetWmState(xproperty, dispatchService);
             }
             else if (atom == XA_WM_HINTS)
             {
-                HandleXPropertyWmHints(xproperty, dispatchProvider);
+                HandleXPropertyWmHints(xproperty, dispatchService);
             }
             else if (atom == XA_WM_NAME)
             {
-                HandleXPropertyWmName(xproperty, dispatchProvider);
+                HandleXPropertyWmName(xproperty, dispatchService);
             }
-            else if (atom == dispatchProvider.GetAtom(WM_STATE))
+            else if (atom == dispatchService.GetAtom(WM_STATE))
             {
-                HandleXPropertyWmState(xproperty, dispatchProvider);
+                HandleXPropertyWmState(xproperty, dispatchService);
             }
         }
 
-        private void HandleXPropertyNetFrameExtents(XPropertyEvent* xproperty, XlibDispatchProvider dispatchProvider)
-            => UpdateFrameExtents(dispatchProvider, xproperty->display, xproperty->window);
+        private void HandleXPropertyNetFrameExtents(XPropertyEvent* xproperty, XlibDispatchService dispatchService)
+            => UpdateFrameExtents(dispatchService, xproperty->display, xproperty->window);
 
-        private void HandleXPropertyNetWmState(XPropertyEvent* xproperty, XlibDispatchProvider dispatchProvider)
-            => UpdateWindowState(XlibDispatchProvider.Instance, xproperty->display, xproperty->window);
+        private void HandleXPropertyNetWmState(XPropertyEvent* xproperty, XlibDispatchService dispatchService)
+            => UpdateWindowState(XlibDispatchService.Instance, xproperty->display, xproperty->window);
 
-        private void HandleXPropertyWmHints(XPropertyEvent* xproperty, XlibDispatchProvider dispatchProvider)
+        private void HandleXPropertyWmHints(XPropertyEvent* xproperty, XlibDispatchService dispatchService)
         {
             XWMHints* wmHints = null;
 
@@ -869,17 +869,17 @@ namespace TerraFX.UI
             }
         }
 
-        private void HandleXPropertyNetWmName(XPropertyEvent* xproperty, XlibDispatchProvider dispatchProvider)
-            => UpdateWindowTitle(dispatchProvider, xproperty->display, xproperty->window);
+        private void HandleXPropertyNetWmName(XPropertyEvent* xproperty, XlibDispatchService dispatchService)
+            => UpdateWindowTitle(dispatchService, xproperty->display, xproperty->window);
 
-        private void HandleXPropertyWmName(XPropertyEvent* xproperty, XlibDispatchProvider dispatchProvider)
-            => UpdateWindowTitle(dispatchProvider, xproperty->display, xproperty->window);
+        private void HandleXPropertyWmName(XPropertyEvent* xproperty, XlibDispatchService dispatchService)
+            => UpdateWindowTitle(dispatchService, xproperty->display, xproperty->window);
 
-        private void HandleXPropertyWmState(XPropertyEvent* xproperty, XlibDispatchProvider dispatchProvider)
-            => UpdateWindowState(dispatchProvider, xproperty->display, xproperty->window);
+        private void HandleXPropertyWmState(XPropertyEvent* xproperty, XlibDispatchService dispatchService)
+            => UpdateWindowState(dispatchService, xproperty->display, xproperty->window);
 
         private void HandleXUnmap(XUnmapEvent* xunmap)
-            => UpdateWindowState(XlibDispatchProvider.Instance, xunmap->display, xunmap->@event);
+            => UpdateWindowState(XlibDispatchService.Instance, xunmap->display, xunmap->@event);
 
         private void HandleXVisibility(XVisibilityEvent* xvisibility) => _isVisible = xvisibility->state != VisibilityFullyObscured;
 
@@ -919,9 +919,9 @@ namespace TerraFX.UI
             }
         }
 
-        private void UpdateFrameExtents(XlibDispatchProvider dispatchProvider, IntPtr display, nuint window)
+        private void UpdateFrameExtents(XlibDispatchService dispatchService, IntPtr display, nuint window)
         {
-            if (dispatchProvider.GetAtomIsSupported(_NET_FRAME_EXTENTS))
+            if (dispatchService.GetAtomIsSupported(_NET_FRAME_EXTENTS))
             {
                 nuint actualType;
                 int actualFormat;
@@ -932,7 +932,7 @@ namespace TerraFX.UI
                 _ = XGetWindowProperty(
                     display,
                     window,
-                    dispatchProvider.GetAtom(_NET_FRAME_EXTENTS),
+                    dispatchService.GetAtom(_NET_FRAME_EXTENTS),
                     0,
                     4,
                     False,
@@ -969,9 +969,9 @@ namespace TerraFX.UI
             }
         }
 
-        private void UpdateWindowState(XlibDispatchProvider dispatchProvider, IntPtr display, nuint window)
+        private void UpdateWindowState(XlibDispatchService dispatchService, IntPtr display, nuint window)
         {
-            if (dispatchProvider.GetAtomIsSupported(_NET_WM_STATE))
+            if (dispatchService.GetAtomIsSupported(_NET_WM_STATE))
             {
                 nuint actualType;
                 int actualFormat;
@@ -982,7 +982,7 @@ namespace TerraFX.UI
                 _ = XGetWindowProperty(
                     display,
                     window,
-                    dispatchProvider.GetAtom(_NET_WM_STATE),
+                    dispatchService.GetAtom(_NET_WM_STATE),
                     0,
                     nint.MaxValue,
                     False,
@@ -1003,19 +1003,19 @@ namespace TerraFX.UI
 
                     for (nuint i = 0; i < itemCount; i++)
                     {
-                        if (netWmState[i] == dispatchProvider.GetAtom(_NET_WM_STATE_FOCUSED))
+                        if (netWmState[i] == dispatchService.GetAtom(_NET_WM_STATE_FOCUSED))
                         {
                             foundNetWmStateFocused = true;
                         }
-                        else if (netWmState[i] == dispatchProvider.GetAtom(_NET_WM_STATE_HIDDEN))
+                        else if (netWmState[i] == dispatchService.GetAtom(_NET_WM_STATE_HIDDEN))
                         {
                             foundNetWmStateHidden = true;
                         }
-                        else if (netWmState[i] == dispatchProvider.GetAtom(_NET_WM_STATE_MAXIMIZED_HORZ))
+                        else if (netWmState[i] == dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_HORZ))
                         {
                             foundNetWmStateMaximizedHorz = true;
                         }
-                        else if (netWmState[i] == dispatchProvider.GetAtom(_NET_WM_STATE_MAXIMIZED_VERT))
+                        else if (netWmState[i] == dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_VERT))
                         {
                             foundNetWmStateMaximizedVert = true;
                         }
@@ -1048,9 +1048,9 @@ namespace TerraFX.UI
             }
         }
 
-        private void UpdateWindowTitle(XlibDispatchProvider dispatchProvider, IntPtr display, nuint window)
+        private void UpdateWindowTitle(XlibDispatchService dispatchService, IntPtr display, nuint window)
         {
-            if (dispatchProvider.GetAtomIsSupported(_NET_WM_NAME))
+            if (dispatchService.GetAtomIsSupported(_NET_WM_NAME))
             {
                 nuint actualType;
                 int actualFormat;
@@ -1061,11 +1061,11 @@ namespace TerraFX.UI
                 _ = XGetWindowProperty(
                     display,
                     window,
-                    dispatchProvider.GetAtom(_NET_WM_NAME),
+                    dispatchService.GetAtom(_NET_WM_NAME),
                     0,
                     nint.MaxValue,
                     False,
-                    dispatchProvider.GetAtom(UTF8_STRING),
+                    dispatchService.GetAtom(UTF8_STRING),
                     &actualType,
                     &actualFormat,
                     &itemCount,
@@ -1073,7 +1073,7 @@ namespace TerraFX.UI
                     (byte**)&wmName
                 );
 
-                if ((actualType == dispatchProvider.GetAtom(UTF8_STRING)) && (actualFormat == 8) && (bytesRemaining == 0))
+                if ((actualType == dispatchService.GetAtom(UTF8_STRING)) && (actualFormat == 8) && (bytesRemaining == 0))
                 {
                     _title = GetUtf8Span(wmName, checked((int)itemCount)).GetString() ?? string.Empty;
                 }
