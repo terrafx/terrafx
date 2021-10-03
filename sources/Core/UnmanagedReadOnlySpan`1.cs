@@ -54,10 +54,7 @@ namespace TerraFX
         /// <param name="index">The index of the item to get or set.</param>
         /// <returns>The item that exists at <paramref name="index" /> in the span.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is greater than or equal to <see cref="Length" />.</exception>
-        public ref T this[nuint index] => ref _span[index];
-
-        /// <inheritdoc cref="UnmanagedSpan{T}.Clear()" />
-        public void Clear() => _span.Clear();
+        public ref readonly T this[nuint index] => ref _span[index];
 
         /// <inheritdoc cref="UnmanagedSpan{T}.CopyTo(UnmanagedArray{T})" />
         public void CopyTo(UnmanagedArray<T> destination) => _span.CopyTo(destination);
@@ -72,7 +69,7 @@ namespace TerraFX
         public T* GetPointerUnsafe(nuint index) => _span.GetPointerUnsafe(index);
 
         /// <inheritdoc cref="UnmanagedSpan{T}.GetReferenceUnsafe(nuint)" />
-        public ref T GetReferenceUnsafe(nuint index) => ref _span.GetReferenceUnsafe(index);
+        public ref readonly T GetReferenceUnsafe(nuint index) => ref _span.GetReferenceUnsafe(index);
 
         /// <inheritdoc cref="UnmanagedSpan{T}.Slice(nuint)" />
         public UnmanagedReadOnlySpan<T> Slice(nuint start) => _span.Slice(start);
