@@ -23,10 +23,10 @@ namespace TerraFX.Graphics
 
         private VolatileState _state;
 
-        internal VulkanGraphicsFence(VulkanGraphicsDevice device)
+        internal VulkanGraphicsFence(VulkanGraphicsDevice device, bool isSignaled)
             : base(device)
         {
-            _vulkanFence = new ValueLazy<VkFence>(CreateVulkanFence);
+            _vulkanFence = new ValueLazy<VkFence>(isSignaled ? CreateVulkanFenceSignaled : CreateVulkanFenceUnsignaled);
 
             _ = _state.Transition(to: Initialized);
         }
@@ -79,7 +79,11 @@ namespace TerraFX.Graphics
             _state.EndDispose();
         }
 
-        private VkFence CreateVulkanFence()
+        private VkFence CreateVulkanFenceSignaled() => CreateVulkanFence(VK_FENCE_CREATE_SIGNALED_BIT);
+
+        private VkFence CreateVulkanFenceUnsignaled() => CreateVulkanFence(0);
+
+        private VkFence CreateVulkanFence(VkFenceCreateFlags flags)
         {
             ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsFence));
 
@@ -88,7 +92,7 @@ namespace TerraFX.Graphics
             var fenceCreateInfo = new VkFenceCreateInfo {
                 sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
                 pNext = null,
-                flags = VK_FENCE_CREATE_SIGNALED_BIT,
+                flags = flags,
             };
             ThrowExternalExceptionIfNotSuccess(vkCreateFence(Device.VulkanDevice, &fenceCreateInfo, pAllocator: null, (ulong*)&vulkanFence), nameof(vkCreateFence));
 

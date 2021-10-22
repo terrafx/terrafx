@@ -41,8 +41,8 @@ namespace TerraFX.Graphics
         internal VulkanGraphicsContext(VulkanGraphicsDevice device, int index)
             : base(device, index)
         {
-            _fence = new VulkanGraphicsFence(device);
-            _waitForExecuteCompletionFence = new VulkanGraphicsFence(device);
+            _fence = new VulkanGraphicsFence(device, isSignaled: true);
+            _waitForExecuteCompletionFence = new VulkanGraphicsFence(device, isSignaled: false);
 
             _vulkanCommandBuffer = new ValueLazy<VkCommandBuffer>(CreateVulkanCommandBuffer);
             _vulkanCommandPool = new ValueLazy<VkCommandPool>(CreateVulkanCommandPool);
