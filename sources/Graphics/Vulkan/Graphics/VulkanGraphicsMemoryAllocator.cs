@@ -10,6 +10,7 @@ using TerraFX.Interop;
 using TerraFX.Threading;
 using static TerraFX.Utilities.VulkanUtilities;
 using static TerraFX.Interop.VkImageType;
+using static TerraFX.Interop.VkMemoryHeapFlags;
 using static TerraFX.Interop.VkMemoryPropertyFlags;
 using static TerraFX.Interop.VkPhysicalDeviceType;
 using static TerraFX.Interop.VkSampleCountFlags;
@@ -144,6 +145,7 @@ namespace TerraFX.Graphics
         private int GetBlockCollectionIndex(GraphicsResourceCpuAccess cpuAccess, uint memoryTypeBits)
         {
             var isIntegratedGpu = Device.Adapter.VulkanPhysicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU;
+            var canBeMultiInstance = false;
 
             VkMemoryPropertyFlags requiredMemoryPropertyFlags = 0;
             VkMemoryPropertyFlags preferredMemoryPropertyFlags = 0;
@@ -154,6 +156,7 @@ namespace TerraFX.Graphics
                 case GraphicsResourceCpuAccess.GpuOnly:
                 {
                     preferredMemoryPropertyFlags |= isIntegratedGpu ? default : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+                    canBeMultiInstance = true;
                     break;
                 }
 
@@ -184,9 +187,17 @@ namespace TerraFX.Graphics
                     continue;
                 }
 
-                var memoryPropertyFlags = memoryProperties.memoryTypes[i].propertyFlags;
+                ref var memoryType = ref memoryProperties.memoryTypes[i];
+                ref var memoryHeap = ref memoryProperties.memoryHeaps[(int)memoryType.heapIndex];
+
+                var memoryPropertyFlags = memoryType.propertyFlags;
 
                 if ((requiredMemoryPropertyFlags & ~memoryPropertyFlags) != 0)
+                {
+                    continue;
+                }
+
+                if (!canBeMultiInstance && memoryHeap.flags.HasFlag(VK_MEMORY_HEAP_MULTI_INSTANCE_BIT))
                 {
                     continue;
                 }

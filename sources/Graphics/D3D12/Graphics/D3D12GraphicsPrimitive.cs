@@ -51,9 +51,13 @@ namespace TerraFX.Graphics
 
                 Pipeline?.Dispose();
 
+                // TODO: The primitive shouldn't dispose the collections, it
+                // should be freeing the region and something else should control
+                // resource disposal.
+
                 foreach (var inputResourceRegion in InputResourceRegions)
                 {
-                    inputResourceRegion.Collection.Free(in inputResourceRegion);
+                    inputResourceRegion.Collection?.Dispose();
                 }
 
                 VertexBufferRegion.Collection?.Dispose();

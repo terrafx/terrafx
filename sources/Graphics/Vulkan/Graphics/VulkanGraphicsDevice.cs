@@ -48,7 +48,7 @@ namespace TerraFX.Graphics
         internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter, IGraphicsSurface surface, int contextCount)
             : base(adapter, surface)
         {
-            _presentCompletionFence = new VulkanGraphicsFence(this);
+            _presentCompletionFence = new VulkanGraphicsFence(this, isSignaled: false);
 
             _vulkanCommandQueue = new ValueLazy<VkQueue>(GetVulkanCommandQueue);
             _vulkanCommandQueueFamilyIndex = new ValueLazy<uint>(GetVulkanCommandQueueFamilyIndex);
@@ -63,7 +63,6 @@ namespace TerraFX.Graphics
 
             _ = _state.Transition(to: Initialized);
 
-            PresentCompletionFence.Reset();
             surface.SizeChanged += OnGraphicsSurfaceSizeChanged;
 
             static VulkanGraphicsContext[] CreateGraphicsContexts(VulkanGraphicsDevice device, int contextCount)
@@ -130,6 +129,9 @@ namespace TerraFX.Graphics
 
         /// <summary>Gets a readonly span of the <see cref="VkImage" /> used by <see cref="VulkanSwapchain" />.</summary>
         public ReadOnlySpan<VkImage> VulkanSwapchainImages => _vulkanSwapchainImages.Value;
+
+        // VK_LAYER_KHRONOS_validation
+        private static ReadOnlySpan<sbyte> VK_LAYER_KHRONOS_VALIDATION_NAME => new sbyte[] { 0x56, 0x4B, 0x5F, 0x4C, 0x41, 0x59, 0x45, 0x52, 0x5F, 0x4B, 0x48, 0x52, 0x4F, 0x4E, 0x4F, 0x53, 0x5F, 0x76, 0x61, 0x6C, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x00 };
 
         /// <inheritdoc />
         public override VulkanGraphicsPipeline CreatePipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null)
@@ -255,11 +257,16 @@ namespace TerraFX.Graphics
                 pQueuePriorities = &queuePriority,
             };
 
+            var debugModeEnabled = Adapter.Service.DebugModeEnabled;
+
             const int EnabledExtensionNamesCount = 1;
 
             var enabledExtensionNames = stackalloc sbyte*[EnabledExtensionNamesCount] {
                 (sbyte*)VK_KHR_SWAPCHAIN_EXTENSION_NAME.GetPointer(),
             };
+
+            var enabledLayersNamesCount = debugModeEnabled ? 1u : 0u;
+            var enabledLayerNames = stackalloc sbyte*[(int)enabledLayersNamesCount];
 
             var physicalDeviceFeatures = new VkPhysicalDeviceFeatures();
 
@@ -267,10 +274,18 @@ namespace TerraFX.Graphics
                 sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
                 queueCreateInfoCount = 1,
                 pQueueCreateInfos = &deviceQueueCreateInfo,
+                enabledLayerCount = enabledLayersNamesCount,
+                ppEnabledLayerNames = enabledLayerNames,
                 enabledExtensionCount = EnabledExtensionNamesCount,
                 ppEnabledExtensionNames = enabledExtensionNames,
                 pEnabledFeatures = &physicalDeviceFeatures,
             };
+
+            if (debugModeEnabled)
+            {
+                enabledLayerNames[enabledLayersNamesCount - 1] = VK_LAYER_KHRONOS_VALIDATION_NAME.GetPointer();
+            }
+
             ThrowExternalExceptionIfNotSuccess(vkCreateDevice(Adapter.VulkanPhysicalDevice, &deviceCreateInfo, pAllocator: null, (IntPtr*)&vulkanDevice), nameof(vkCreateDevice));
 
             return vulkanDevice;

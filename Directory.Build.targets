@@ -18,7 +18,7 @@
 
   <!-- Settings that are only set for CI builds -->
   <PropertyGroup Condition="'$(GITHUB_RUN_ID)' != ''">
-    <PackageVersion Condition="'$(EXCLUDE_RUN_ID_FROM_PACKAGE)' == ''">$(Version)-$(GITHUB_RUN_ID)</PackageVersion>
+    <PackageVersion Condition="'$(EXCLUDE_RUN_ID_FROM_PACKAGE)' == ''">$(Version).$(GITHUB_RUN_ID)</PackageVersion>
   </PropertyGroup>
 
   <!-- Settings that are only set for executables -->
@@ -34,7 +34,7 @@
 
   <!-- Package versions for package references across all projects -->
   <ItemGroup>
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.10.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.0.0" />
     <PackageReference Update="NUnit" Version="3.13.2" />
     <PackageReference Update="NUnit3TestAdapter" Version="4.0.0" />
@@ -42,8 +42,8 @@
     <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-beta2" />
     <PackageReference Update="TerraFX.Interop.Mimalloc" Version="1.6.0-beta2" />
     <PackageReference Update="TerraFX.Interop.PulseAudio" Version="13.0.0-beta2" />
-    <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.182-beta1" />
-    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.20348-beta1" />
+    <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.189-rc1" />
+    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.20348-rc1" />
     <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-beta2" />
   </ItemGroup>
 
