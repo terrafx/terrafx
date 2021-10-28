@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using NUnit.Framework;
@@ -23,6 +24,20 @@ namespace TerraFX.UnitTests.Utilities
                       .And.Message.Contains("message")
                       .And.Message.Contains("'value'")
                       .And.Property("ParamName").EqualTo("value")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowArgumentException(string, string, Exception?)" /> method.</summary>
+        [Test]
+        public static void ThrowArgumentExceptionExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowArgumentException("message", "value", innerException),
+                        Throws.ArgumentException
+                              .And.Message.Contains("message")
+                              .And.Message.Contains("'value'")
+                              .And.Property("ParamName").EqualTo("value")
+                              .And.Property("InnerException").SameAs(innerException)
             );
         }
 
@@ -1064,6 +1079,40 @@ namespace TerraFX.UnitTests.Utilities
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIOException(string)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowIOExceptionTest()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIOException("message"),
+                        Throws.Exception.TypeOf<IOException>()
+                              .And.Message.Contains("message")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIOException(string, Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowIOExceptionExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowIOException("message", innerException),
+                        Throws.Exception.TypeOf<IOException>()
+                              .And.Message.Contains("message")
+                              .And.InnerException.SameAs(innerException)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIOException(string, int)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowIOExceptionWithHrExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowIOException("message", 42),
+                        Throws.Exception.TypeOf<IOException>()
+                              .And.Message.Contains("message")
+                              .And.Property(nameof(IOException.HResult)).EqualTo(42)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowKeyNotFoundException{TKey}(TKey, string)" /> method.</summary>
         [Test]
         public static unsafe void ThrowKeyNotFoundExceptionTest()
@@ -1074,12 +1123,35 @@ namespace TerraFX.UnitTests.Utilities
             );
         }
 
-        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowNotImplementedException" /> method.</summary>
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowKeyNotFoundException{TKey}(TKey, string, Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowKeyNotFoundExceptionExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowKeyNotFoundException("key", "collection", innerException),
+                Throws.InstanceOf<KeyNotFoundException>()
+                      .And.Message.Contains("'collection'")
+                      .And.InnerException.SameAs(innerException)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowNotImplementedException()" /> method.</summary>
         [Test]
         public static unsafe void ThrowNotImplementedExceptionTest()
         {
             Assert.That(() => ExceptionUtilities.ThrowNotImplementedException(),
                 Throws.InstanceOf<NotImplementedException>()
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowNotImplementedException(Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowNotImplementedExceptionExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowNotImplementedException(innerException),
+                Throws.InstanceOf<NotImplementedException>()
+                      .And.InnerException.SameAs(innerException)
             );
         }
 
@@ -1103,6 +1175,18 @@ namespace TerraFX.UnitTests.Utilities
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(ulong, Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowOutOfMemoryExceptionUInt64ExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException(42UL, innerException),
+                Throws.InstanceOf<OutOfMemoryException>()
+                      .And.Message.Contains($"'{42UL}'")
+                      .And.InnerException.SameAs(innerException)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(nuint)" /> method.</summary>
         [Test]
         public static unsafe void ThrowOutOfMemoryExceptionNUIntTest()
@@ -1110,6 +1194,18 @@ namespace TerraFX.UnitTests.Utilities
             Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException((nuint)42),
                 Throws.InstanceOf<OutOfMemoryException>()
                       .And.Message.Contains($"'{(nuint)42}'")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(nuint, Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowOutOfMemoryExceptionNUIntExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException((nuint)42, innerException),
+                Throws.InstanceOf<OutOfMemoryException>()
+                      .And.Message.Contains($"'{(nuint)42}'")
+                      .And.InnerException.SameAs(innerException)
             );
         }
 
@@ -1123,6 +1219,18 @@ namespace TerraFX.UnitTests.Utilities
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(ulong, ulong, Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowOutOfMemoryExceptionUInt64UInt64ExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException(42UL, 24UL, innerException),
+                Throws.InstanceOf<OutOfMemoryException>()
+                      .And.Message.Contains($"'{42UL}x{24UL}'")
+                      .And.InnerException.SameAs(innerException)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(nuint, nuint)" /> method.</summary>
         [Test]
         public static unsafe void ThrowOutOfMemoryExceptionNUIntNUIntTest()
@@ -1130,6 +1238,18 @@ namespace TerraFX.UnitTests.Utilities
             Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException((nuint)42, (nuint)24),
                 Throws.InstanceOf<OutOfMemoryException>()
                       .And.Message.Contains($"'{(nuint)42}x{(nuint)24}'")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(nuint, nuint, Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowOutOfMemoryExceptionNUIntNUIntExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException((nuint)42, (nuint)24, innerException),
+                Throws.InstanceOf<OutOfMemoryException>()
+                      .And.Message.Contains($"'{(nuint)42}x{(nuint)24}'")
+                      .And.InnerException.SameAs(innerException)
             );
         }
 
@@ -1144,6 +1264,19 @@ namespace TerraFX.UnitTests.Utilities
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowTimeoutException(string, int, Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowTimeoutExceptionInt32ExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowTimeoutException("method", 42, innerException),
+                Throws.InstanceOf<TimeoutException>()
+                      .And.Message.Contains("'method'")
+                      .And.Message.Contains($"'{42}'")
+                      .And.InnerException.SameAs(innerException)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowTimeoutException(string, TimeSpan)" /> method.</summary>
         [Test]
         public static unsafe void ThrowTimeoutExceptionTimeSpanTest()
@@ -1152,6 +1285,19 @@ namespace TerraFX.UnitTests.Utilities
                 Throws.InstanceOf<TimeoutException>()
                       .And.Message.Contains("'method'")
                       .And.Message.Contains($"'{TimeSpan.FromMilliseconds(42).TotalMilliseconds}'")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowTimeoutException(string, TimeSpan, Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowTimeoutExceptionTimeSpanExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowTimeoutException("method", TimeSpan.FromMilliseconds(42), innerException),
+                Throws.InstanceOf<TimeoutException>()
+                      .And.Message.Contains("'method'")
+                      .And.Message.Contains($"'{TimeSpan.FromMilliseconds(42).TotalMilliseconds}'")
+                      .And.InnerException.SameAs(innerException)
             );
         }
     }

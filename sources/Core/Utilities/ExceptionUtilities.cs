@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -22,6 +23,15 @@ namespace TerraFX.Utilities
         [DoesNotReturn]
         public static void ThrowArgumentException(string message, string valueName)
             => throw new ArgumentException(message, valueName);
+
+        /// <summary>Throws an <see cref="ArgumentException" />.</summary>
+        /// <param name="message">The message detailing the cause of the exception.</param>
+        /// <param name="valueName">The name of the value that caused the exception.</param>
+        /// <param name="innerException">The exception that is the cause of the current exception.</param>
+        /// <exception cref="ArgumentException"><paramref name="message" /></exception>
+        [DoesNotReturn]
+        public static void ThrowArgumentException(string message, string valueName, Exception? innerException)
+            => throw new ArgumentException(message, valueName, innerException);
 
         /// <summary>Throws an <see cref="ArgumentNullException" />.</summary>
         /// <param name="valueName">The name of the value that is <c>null</c>.</param>
@@ -842,6 +852,29 @@ namespace TerraFX.Utilities
         public static void ThrowInvalidOperationException(string message)
             => throw new InvalidOperationException(message);
 
+        /// <summary>Throws a <see cref="IOException" />.</summary>
+        /// <param name="message">The message detailing the cause of the exception.</param>
+        /// <exception cref="IOException"><paramref name="message" />.</exception>
+        [DoesNotReturn]
+        public static void ThrowIOException(string message)
+            => throw new IOException(message);
+
+        /// <summary>Throws a <see cref="IOException" />.</summary>
+        /// <param name="message">The message detailing the cause of the exception.</param>
+        /// <param name="innerException">The exception that is the cause of this exception.</param>
+        /// <exception cref="IOException"><paramref name="message" />.</exception>
+        [DoesNotReturn]
+        public static void ThrowIOException(string message, Exception? innerException)
+            => throw new IOException(message, innerException);
+
+        /// <summary>Throws a <see cref="IOException" />.</summary>
+        /// <param name="message">The message detailing the cause of the exception.</param>
+        /// <param name="hr">An integer identifying the error that has occurred.</param>
+        /// <exception cref="IOException"><paramref name="message" />.</exception>
+        [DoesNotReturn]
+        public static void ThrowIOException(string message, int hr)
+            => throw new IOException(message, hr);
+
         /// <summary>Throws a <see cref="KeyNotFoundException" />.</summary>
         /// <param name="key">The key that is missing from <paramref name="collectionName" />.</param>
         /// <param name="collectionName">The name of the collection which does not contain <paramref name="key" />.</param>
@@ -854,11 +887,30 @@ namespace TerraFX.Utilities
             throw new KeyNotFoundException(message);
         }
 
+        /// <summary>Throws a <see cref="KeyNotFoundException" />.</summary>
+        /// <param name="key">The key that is missing from <paramref name="collectionName" />.</param>
+        /// <param name="collectionName">The name of the collection which does not contain <paramref name="key" />.</param>
+        /// <param name="innerException">The exception that is the cause of this exception.</param>
+        /// <exception cref="KeyNotFoundException"><paramref name="key" /> is not a valid key to <paramref name="collectionName"/>.</exception>
+        [DoesNotReturn]
+        public static void ThrowKeyNotFoundException<TKey>(TKey key, string collectionName, Exception? innerException)
+            where TKey : notnull
+        {
+            var message = string.Format(Resources.InvalidKeyMessage, key, collectionName);
+            throw new KeyNotFoundException(message, innerException);
+        }
+
         /// <summary>Throws a <see cref="NotImplementedException" />.</summary>
         /// <exception cref="NotImplementedException">The given code path is not currently implemented.</exception>
         [DoesNotReturn]
         public static void ThrowNotImplementedException()
             => throw new NotImplementedException(Resources.NotImplementedMessage);
+
+        /// <summary>Throws a <see cref="NotImplementedException" />.</summary>
+        /// <exception cref="NotImplementedException">The given code path is not currently implemented.</exception>
+        [DoesNotReturn]
+        public static void ThrowNotImplementedException(Exception? innerException)
+            => throw new NotImplementedException(Resources.NotImplementedMessage, innerException);
 
         /// <summary>Throws an <see cref="ObjectDisposedException" />.</summary>
         /// <param name="valueName">The name of the value that is <see cref="VolatileState.Disposed" /> or <see cref="VolatileState.Disposing" />.</param>
@@ -882,12 +934,34 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="OutOfMemoryException" />.</summary>
         /// <param name="size">The size, in bytes, of the failed allocation.</param>
+        /// <param name="innerException">The exception that is the cause of this exception.</param>
+        /// <exception cref="OutOfMemoryException">The allocation of <paramref name="size" /> bytes failed.</exception>
+        [DoesNotReturn]
+        public static void ThrowOutOfMemoryException(ulong size, Exception? innerException)
+        {
+            var message = string.Format(Resources.AllocationFailedMessage, size);
+            throw new OutOfMemoryException(message, innerException);
+        }
+
+        /// <summary>Throws an <see cref="OutOfMemoryException" />.</summary>
+        /// <param name="size">The size, in bytes, of the failed allocation.</param>
         /// <exception cref="OutOfMemoryException">The allocation of <paramref name="size" /> bytes failed.</exception>
         [DoesNotReturn]
         public static void ThrowOutOfMemoryException(nuint size)
         {
             var message = string.Format(Resources.AllocationFailedMessage, size);
             throw new OutOfMemoryException(message);
+        }
+
+        /// <summary>Throws an <see cref="OutOfMemoryException" />.</summary>
+        /// <param name="size">The size, in bytes, of the failed allocation.</param>
+        /// <param name="innerException">The exception that is the cause of this exception.</param>
+        /// <exception cref="OutOfMemoryException">The allocation of <paramref name="size" /> bytes failed.</exception>
+        [DoesNotReturn]
+        public static void ThrowOutOfMemoryException(nuint size, Exception? innerException)
+        {
+            var message = string.Format(Resources.AllocationFailedMessage, size);
+            throw new OutOfMemoryException(message, innerException);
         }
 
         /// <summary>Throws an <see cref="OutOfMemoryException" />.</summary>
@@ -904,12 +978,36 @@ namespace TerraFX.Utilities
         /// <summary>Throws an <see cref="OutOfMemoryException" />.</summary>
         /// <param name="count">The count, in elements, of the failed allocation.</param>
         /// <param name="size">The size, in bytes, of the elements in the failed allocation.</param>
+        /// <param name="innerException">The exception that is the cause of this exception.</param>
+        /// <exception cref="OutOfMemoryException">The allocation of <paramref name="size" /> bytes failed.</exception>
+        [DoesNotReturn]
+        public static void ThrowOutOfMemoryException(ulong count, ulong size, Exception? innerException)
+        {
+            var message = string.Format(Resources.ArrayAllocationFailedMessage, count, size);
+            throw new OutOfMemoryException(message, innerException);
+        }
+
+        /// <summary>Throws an <see cref="OutOfMemoryException" />.</summary>
+        /// <param name="count">The count, in elements, of the failed allocation.</param>
+        /// <param name="size">The size, in bytes, of the elements in the failed allocation.</param>
         /// <exception cref="OutOfMemoryException">The allocation of <paramref name="size" /> bytes failed.</exception>
         [DoesNotReturn]
         public static void ThrowOutOfMemoryException(nuint count, nuint size)
         {
             var message = string.Format(Resources.ArrayAllocationFailedMessage, count, size);
             throw new OutOfMemoryException(message);
+        }
+
+        /// <summary>Throws an <see cref="OutOfMemoryException" />.</summary>
+        /// <param name="count">The count, in elements, of the failed allocation.</param>
+        /// <param name="size">The size, in bytes, of the elements in the failed allocation.</param>
+        /// <param name="innerException">The exception that is the cause of this exception.</param>
+        /// <exception cref="OutOfMemoryException">The allocation of <paramref name="size" /> bytes failed.</exception>
+        [DoesNotReturn]
+        public static void ThrowOutOfMemoryException(nuint count, nuint size, Exception? innerException)
+        {
+            var message = string.Format(Resources.ArrayAllocationFailedMessage, count, size);
+            throw new OutOfMemoryException(message, innerException);
         }
 
         /// <summary>Throws a <see cref="TimeoutException" />.</summary>
@@ -924,6 +1022,18 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Throws a <see cref="TimeoutException" />.</summary>
+        /// <param name="methodName">The name of the method that failed to complete within <paramref name="millisecondsTimeout" />.</param>
+        /// <param name="millisecondsTimeout">The timeout, in milliseconds, for <paramref name="methodName"/>.</param>
+        /// <param name="innerException">The exception that is the cause of this exception.</param>
+        /// <exception cref="TimeoutException"><paramref name="methodName" /> failed to complete within <paramref name="millisecondsTimeout" /> ms.</exception>
+        [DoesNotReturn]
+        public static void ThrowTimeoutException(string methodName, int millisecondsTimeout, Exception? innerException)
+        {
+            var message = string.Format(Resources.MethodTimeoutMessage, methodName, millisecondsTimeout);
+            throw new TimeoutException(message, innerException);
+        }
+
+        /// <summary>Throws a <see cref="TimeoutException" />.</summary>
         /// <param name="methodName">The name of the method that failed to complete within <paramref name="timeout" />.</param>
         /// <param name="timeout">The timeout for <paramref name="methodName"/>.</param>
         /// <exception cref="TimeoutException"><paramref name="methodName" /> failed to complete within <paramref name="timeout" /> ms.</exception>
@@ -932,6 +1042,18 @@ namespace TerraFX.Utilities
         {
             var message = string.Format(Resources.MethodTimeoutMessage, methodName, timeout.TotalMilliseconds);
             throw new TimeoutException(message);
+        }
+
+        /// <summary>Throws a <see cref="TimeoutException" />.</summary>
+        /// <param name="methodName">The name of the method that failed to complete within <paramref name="timeout" />.</param>
+        /// <param name="timeout">The timeout for <paramref name="methodName"/>.</param>
+        /// <param name="innerException">The exception that is the cause of this exception.</param>
+        /// <exception cref="TimeoutException"><paramref name="methodName" /> failed to complete within <paramref name="timeout" /> ms.</exception>
+        [DoesNotReturn]
+        public static void ThrowTimeoutException(string methodName, TimeSpan timeout, Exception? innerException)
+        {
+            var message = string.Format(Resources.MethodTimeoutMessage, methodName, timeout.TotalMilliseconds);
+            throw new TimeoutException(message, innerException);
         }
     }
 }
