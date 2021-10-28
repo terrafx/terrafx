@@ -83,7 +83,7 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> for an invalid flags enum combination.</summary>
-        /// <param name="value">The value that caused the exception.va</param>
+        /// <param name="value">The value that caused the exception.</param>
         /// <param name="valueName">The name of the value that caused the exception.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="valueName" /> has an invalid flag combination.</exception>
         [DoesNotReturn]
