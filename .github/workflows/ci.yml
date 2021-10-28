@@ -107,6 +107,7 @@ jobs:
         if-no-files-found: error
   build-nuget-release:
     runs-on: windows-latest
+    if: false
     steps:
     - uses: actions/checkout@v2
     - run: ./scripts/cibuild.cmd -configuration release -architecture x64
@@ -126,7 +127,7 @@ jobs:
   publish-nightlies-azure:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' }}
-    needs: [ windows-x64, windows-x86, linux-x64, macos-x64, build-nuget-preview, build-nuget-release ]
+    needs: [ windows-x64, windows-x86, linux-x64, macos-x64, build-nuget-preview ]
     steps:
     - uses: actions/download-artifact@v2
       with:
@@ -142,7 +143,7 @@ jobs:
   publish-nightlies-github:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' }}
-    needs: [ windows-x64, windows-x86, linux-x64, macos-x64, build-nuget-preview, build-nuget-release ]
+    needs: [ windows-x64, windows-x86, linux-x64, macos-x64, build-nuget-preview ]
     steps:
     - uses: actions/download-artifact@v2
       with:
