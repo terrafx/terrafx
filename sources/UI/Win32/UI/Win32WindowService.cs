@@ -23,9 +23,9 @@ namespace TerraFX.UI
         private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.VulkanGraphicsService.RequiredExtensionNames";
 
         /// <summary>A <c>HINSTANCE</c> to the entry point module.</summary>
-        public static readonly IntPtr EntryPointModule = GetModuleHandleW(lpModuleName: null);
+        public static readonly HINSTANCE EntryPointModule = GetModuleHandleW(lpModuleName: null);
 
-        private readonly ThreadLocal<Dictionary<IntPtr, Win32Window>> _windows;
+        private readonly ThreadLocal<Dictionary<HWND, Win32Window>> _windows;
 
         private ValueLazy<ushort> _classAtom;
         private ValueLazy<GCHandle> _nativeHandle;
@@ -42,7 +42,7 @@ namespace TerraFX.UI
             _classAtom = new ValueLazy<ushort>(CreateClassAtom);
             _nativeHandle = new ValueLazy<GCHandle>(CreateNativeHandle);
 
-            _windows = new ThreadLocal<Dictionary<IntPtr, Win32Window>>(trackAllValues: true);
+            _windows = new ThreadLocal<Dictionary<HWND, Win32Window>>(trackAllValues: true);
             _ = _state.Transition(to: Initialized);
         }
 
@@ -93,12 +93,12 @@ namespace TerraFX.UI
         }
 
         [UnmanagedCallersOnly]
-        private static nint ForwardWindowMessage(IntPtr hWnd, uint msg, nuint wParam, nint lParam)
+        private static nint ForwardWindowMessage(HWND hWnd, uint msg, nuint wParam, nint lParam)
         {
             nint userData;
             GCHandle gcHandle;
             Win32WindowService windowService;
-            Dictionary<IntPtr, Win32Window>? windows;
+            Dictionary<HWND, Win32Window>? windows;
             Win32Window? window;
             bool forwardMessage;
 
@@ -124,7 +124,7 @@ namespace TerraFX.UI
 
                 if (windows is null)
                 {
-                    windows = new Dictionary<IntPtr, Win32Window>(capacity: 4);
+                    windows = new Dictionary<HWND, Win32Window>(capacity: 4);
                     windowService._windows.Value = windows;
                 }
                 windows.Add(hWnd, window);
@@ -182,7 +182,7 @@ namespace TerraFX.UI
             return DefWindowProcW(hWnd, msg, wParam, lParam);
         }
 
-        private static Win32Window RemoveWindow(Dictionary<IntPtr, Win32Window> windows, IntPtr hWnd)
+        private static Win32Window RemoveWindow(Dictionary<HWND, Win32Window> windows, HWND hWnd)
         {
             _ = windows.Remove(hWnd, out var window);
             AssertNotNull(window);
@@ -195,7 +195,7 @@ namespace TerraFX.UI
             return window;
         }
 
-        private static HICON GetDesktopCursor()
+        private static HCURSOR GetDesktopCursor()
         {
             var desktopWindowHandle = GetDesktopWindow();
 
@@ -236,7 +236,7 @@ namespace TerraFX.UI
                         hInstance = EntryPointModule,
                         hIcon = HICON.NULL,
                         hCursor = GetDesktopCursor(),
-                        hbrBackground = (IntPtr)(COLOR_WINDOW + 1),
+                        hbrBackground = (HBRUSH)(COLOR_WINDOW + 1),
                         lpszMenuName = null,
                         lpszClassName = (ushort*)lpszClassName,
                         hIconSm = HICON.NULL

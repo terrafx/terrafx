@@ -124,9 +124,9 @@ namespace TerraFX.Graphics
         {
             AssertNotDisposedOrDisposing(_state);
 
-            HANDLE eventHandle = CreateEventW(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
+            var eventHandle = CreateEventW(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
 
-            if (eventHandle == null)
+            if (eventHandle == HANDLE.NULL)
             {
                 ThrowForLastError(nameof(CreateEventW));
             }
@@ -138,7 +138,7 @@ namespace TerraFX.Graphics
         {
             AssertDisposing(_state);
 
-            if (eventHandle != null)
+            if (eventHandle != HANDLE.NULL)
             {
                 _ = CloseHandle(eventHandle);
             }

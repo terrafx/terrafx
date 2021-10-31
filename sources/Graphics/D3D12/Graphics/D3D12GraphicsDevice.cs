@@ -258,7 +258,7 @@ namespace TerraFX.Graphics
             IDXGISwapChain3* dxgiSwapChain;
 
             var surface = Surface;
-            var surfaceHandle = surface.Handle;
+            var surfaceHandle = (HWND)surface.Handle;
 
             var swapChainDesc = new DXGI_SWAP_CHAIN_DESC1 {
                 Width = (uint)surface.Width,
