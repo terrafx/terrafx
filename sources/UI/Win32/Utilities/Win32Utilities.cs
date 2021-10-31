@@ -1,7 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.	
 
 using System.Runtime.CompilerServices;
-using static TerraFX.Interop.Windows;
+using TerraFX.Interop;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Utilities
@@ -9,9 +9,9 @@ namespace TerraFX.Utilities
     internal static unsafe partial class Win32Utilities
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowExternalExceptionIfFalse(int value, string methodName)
+        public static void ThrowExternalExceptionIfFalse(BOOL value, string methodName)
         {
-            if (value == FALSE)
+            if (value == BOOL.FALSE)
             {
                 ThrowForLastError(methodName);
             }

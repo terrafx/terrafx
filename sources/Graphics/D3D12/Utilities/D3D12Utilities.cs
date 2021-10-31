@@ -32,9 +32,9 @@ namespace TerraFX.Utilities
             }
         }
 
-        public static void ThrowExternalExceptionIfFailed(int hr, string methodName)
+        public static void ThrowExternalExceptionIfFailed(HRESULT hr, string methodName)
         {
-            if (FAILED(hr))
+            if (hr.FAILED)
             {
                 ThrowExternalException(methodName, hr);
             }
