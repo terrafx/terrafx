@@ -25,7 +25,7 @@ namespace TerraFX.UI
         private readonly FlowDirection _flowDirection;
         private readonly ReadingDirection _readingDirection;
 
-        private ValueLazy<IntPtr> _handle;
+        private ValueLazy<HWND> _handle;
         private ValueLazy<PropertySet> _properties;
 
         private string _title;
@@ -44,7 +44,7 @@ namespace TerraFX.UI
             _flowDirection = FlowDirection.TopToBottom;
             _readingDirection = ReadingDirection.LeftToRight;
 
-            _handle = new ValueLazy<IntPtr>(CreateWindowHandle);
+            _handle = new ValueLazy<HWND>(CreateWindowHandle);
             _properties = new ValueLazy<PropertySet>(CreateProperties);
 
             _title = typeof(Win32Window).FullName!;
@@ -86,7 +86,7 @@ namespace TerraFX.UI
 
         /// <summary>Gets the underlying <c>HWND</c> for the window.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IntPtr Handle
+        public HWND Handle
             => _handle.Value;
 
         /// <inheritdoc />
@@ -387,11 +387,11 @@ namespace TerraFX.UI
         private PropertySet CreateProperties()
             => new PropertySet();
 
-        private IntPtr CreateWindowHandle()
+        private HWND CreateWindowHandle()
         {
             AssertNotDisposedOrDisposing(_state);
 
-            IntPtr hWnd;
+            HWND hWnd;
 
             fixed (char* lpWindowName = _title)
             {
