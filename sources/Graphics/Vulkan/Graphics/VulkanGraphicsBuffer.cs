@@ -15,7 +15,7 @@ namespace TerraFX.Graphics
     /// <inheritdoc />
     public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
     {
-        private VkBuffer _vulkanBuffer;
+        private readonly VkBuffer _vulkanBuffer;
         private protected VolatileState _state;
 
         private protected VulkanGraphicsBuffer(VulkanGraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, VkBuffer vulkanBuffer)
@@ -49,7 +49,7 @@ namespace TerraFX.Graphics
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(IntPtr, ulong, ulong, ulong, uint, void**)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(VkDevice, VkDeviceMemory, ulong, ulong, uint, void**)" /> failed.</exception>
         public override T* Map<T>()
         {
             var device = Allocator.Device;
@@ -64,7 +64,7 @@ namespace TerraFX.Graphics
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(IntPtr, ulong, ulong, ulong, uint, void**)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(VkDevice, VkDeviceMemory, ulong, ulong, uint, void**)" /> failed.</exception>
         public override T* Map<T>(nuint rangeOffset, nuint rangeLength)
         {
             var device = Allocator.Device;
@@ -79,7 +79,7 @@ namespace TerraFX.Graphics
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(IntPtr, ulong, ulong, ulong, uint, void**)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(VkDevice, VkDeviceMemory, ulong, ulong, uint, void**)" /> failed.</exception>
         public override T* MapForRead<T>()
         {
             var device = Allocator.Device;
@@ -107,7 +107,7 @@ namespace TerraFX.Graphics
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(IntPtr, ulong, ulong, ulong, uint, void**)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(VkDevice, VkDeviceMemory, ulong, ulong, uint, void**)" /> failed.</exception>
         public override T* MapForRead<T>(nuint readRangeOffset, nuint readRangeLength)
         {
             var device = Allocator.Device;
@@ -137,7 +137,7 @@ namespace TerraFX.Graphics
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(IntPtr, uint, VkMappedMemoryRange*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(VkDevice, uint, VkMappedMemoryRange*)" /> failed.</exception>
         public override void Unmap()
         {
             var device = Allocator.Device;
@@ -149,7 +149,7 @@ namespace TerraFX.Graphics
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(IntPtr, uint, VkMappedMemoryRange*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(VkDevice, uint, VkMappedMemoryRange*)" /> failed.</exception>
         public override void UnmapAndWrite()
         {
             var device = Allocator.Device;
@@ -174,7 +174,7 @@ namespace TerraFX.Graphics
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(IntPtr, uint, VkMappedMemoryRange*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(VkDevice, uint, VkMappedMemoryRange*)" /> failed.</exception>
         public override void UnmapAndWrite(nuint writtenRangeOffset, nuint writtenRangeLength)
         {
             var device = Allocator.Device;

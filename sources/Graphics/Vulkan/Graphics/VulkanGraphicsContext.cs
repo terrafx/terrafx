@@ -255,7 +255,7 @@ namespace TerraFX.Graphics
             var vulkanVertexBuffer = vertexBuffer.VulkanBuffer;
             var vulkanVertexBufferOffset = vertexBufferRegion.Offset;
 
-            vkCmdBindVertexBuffers(vulkanCommandBuffer, firstBinding: 0, bindingCount: 1, (ulong*)&vulkanVertexBuffer, &vulkanVertexBufferOffset);
+            vkCmdBindVertexBuffers(vulkanCommandBuffer, firstBinding: 0, bindingCount: 1, &vulkanVertexBuffer, &vulkanVertexBufferOffset);
 
             var vulkanDescriptorSet = pipelineSignature.VulkanDescriptorSet;
 
@@ -308,7 +308,7 @@ namespace TerraFX.Graphics
                     vkUpdateDescriptorSets(Device.VulkanDevice, 1, &writeDescriptorSet, 0, pDescriptorCopies: null);
                 }
 
-                vkCmdBindDescriptorSets(vulkanCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineSignature.VulkanPipelineLayout, firstSet: 0, 1, (ulong*)&vulkanDescriptorSet, dynamicOffsetCount: 0, pDynamicOffsets: null);
+                vkCmdBindDescriptorSets(vulkanCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineSignature.VulkanPipelineLayout, firstSet: 0, 1, &vulkanDescriptorSet, dynamicOffsetCount: 0, pDynamicOffsets: null);
             }
 
             ref readonly var indexBufferRegion = ref primitive.IndexBufferRegion;
@@ -345,7 +345,7 @@ namespace TerraFX.Graphics
             var submitInfo = new VkSubmitInfo {
                 sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
                 commandBufferCount = 1,
-                pCommandBuffers = (IntPtr*)&commandBuffer,
+                pCommandBuffers = &commandBuffer,
             };
 
             var executeGraphicsFence = WaitForExecuteCompletionFence;
@@ -410,7 +410,7 @@ namespace TerraFX.Graphics
                 commandPool = VulkanCommandPool,
                 commandBufferCount = 1,
             };
-            ThrowExternalExceptionIfNotSuccess(vkAllocateCommandBuffers(Device.VulkanDevice, &commandBufferAllocateInfo, (IntPtr*)&vulkanCommandBuffer), nameof(vkAllocateCommandBuffers));
+            ThrowExternalExceptionIfNotSuccess(vkAllocateCommandBuffers(Device.VulkanDevice, &commandBufferAllocateInfo, &vulkanCommandBuffer), nameof(vkAllocateCommandBuffers));
 
             return vulkanCommandBuffer;
         }
@@ -424,7 +424,7 @@ namespace TerraFX.Graphics
                 flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
                 queueFamilyIndex = Device.VulkanCommandQueueFamilyIndex,
             };
-            ThrowExternalExceptionIfNotSuccess(vkCreateCommandPool(Device.VulkanDevice, &commandPoolCreateInfo, pAllocator: null, (ulong*)&vulkanCommandPool), nameof(vkCreateCommandPool));
+            ThrowExternalExceptionIfNotSuccess(vkCreateCommandPool(Device.VulkanDevice, &commandPoolCreateInfo, pAllocator: null, &vulkanCommandPool), nameof(vkCreateCommandPool));
 
             return vulkanCommandPool;
         }
@@ -441,12 +441,12 @@ namespace TerraFX.Graphics
                 sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
                 renderPass = device.VulkanRenderPass,
                 attachmentCount = 1,
-                pAttachments = (ulong*)&swapChainImageView,
+                pAttachments = &swapChainImageView,
                 width = (uint)surface.Width,
                 height = (uint)surface.Height,
                 layers = 1,
             };
-            ThrowExternalExceptionIfNotSuccess(vkCreateFramebuffer(device.VulkanDevice, &frameBufferCreateInfo, pAllocator: null, (ulong*)&vulkanFramebuffer), nameof(vkCreateFramebuffer));
+            ThrowExternalExceptionIfNotSuccess(vkCreateFramebuffer(device.VulkanDevice, &frameBufferCreateInfo, pAllocator: null, &vulkanFramebuffer), nameof(vkCreateFramebuffer));
 
             return vulkanFramebuffer;
         }
@@ -474,7 +474,7 @@ namespace TerraFX.Graphics
                     layerCount = 1,
                 },
             };
-            ThrowExternalExceptionIfNotSuccess(vkCreateImageView(device.VulkanDevice, &swapChainImageViewCreateInfo, pAllocator: null, (ulong*)&swapChainImageView), nameof(vkCreateImageView));
+            ThrowExternalExceptionIfNotSuccess(vkCreateImageView(device.VulkanDevice, &swapChainImageViewCreateInfo, pAllocator: null, &swapChainImageView), nameof(vkCreateImageView));
 
             return swapChainImageView;
         }
@@ -483,9 +483,9 @@ namespace TerraFX.Graphics
         {
             AssertDisposing(_state);
 
-            if (vulkanCommandBuffer != null)
+            if (vulkanCommandBuffer != VkCommandBuffer.NULL)
             {
-                vkFreeCommandBuffers(Device.VulkanDevice, VulkanCommandPool, 1, (IntPtr*)&vulkanCommandBuffer);
+                vkFreeCommandBuffers(Device.VulkanDevice, VulkanCommandPool, 1, &vulkanCommandBuffer);
             }
         }
 

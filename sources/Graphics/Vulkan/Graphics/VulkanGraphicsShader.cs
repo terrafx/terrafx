@@ -71,7 +71,7 @@ namespace TerraFX.Graphics
 
             fixed (VkShaderModuleCreateInfo* shaderModuleCreateInfo = &_vulkanShaderModuleCreateInfo)
             {
-                ThrowExternalExceptionIfNotSuccess(vkCreateShaderModule(Device.VulkanDevice, shaderModuleCreateInfo, pAllocator: null, (ulong*)&vulkanShaderModule), nameof(vkCreateShaderModule));
+                ThrowExternalExceptionIfNotSuccess(vkCreateShaderModule(Device.VulkanDevice, shaderModuleCreateInfo, pAllocator: null, &vulkanShaderModule), nameof(vkCreateShaderModule));
             }
 
             return vulkanShaderModule;

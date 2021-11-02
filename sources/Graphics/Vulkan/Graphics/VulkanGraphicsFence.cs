@@ -48,7 +48,7 @@ namespace TerraFX.Graphics
         public override void Reset()
         {
             var vulkanFence = VulkanFence;
-            ThrowExternalExceptionIfNotSuccess(vkResetFences(Device.VulkanDevice, fenceCount: 1, (ulong*)&vulkanFence), nameof(vkResetFences));
+            ThrowExternalExceptionIfNotSuccess(vkResetFences(Device.VulkanDevice, fenceCount: 1, &vulkanFence), nameof(vkResetFences));
         }
 
         /// <inheritdoc />
@@ -94,7 +94,7 @@ namespace TerraFX.Graphics
                 pNext = null,
                 flags = flags,
             };
-            ThrowExternalExceptionIfNotSuccess(vkCreateFence(Device.VulkanDevice, &fenceCreateInfo, pAllocator: null, (ulong*)&vulkanFence), nameof(vkCreateFence));
+            ThrowExternalExceptionIfNotSuccess(vkCreateFence(Device.VulkanDevice, &fenceCreateInfo, pAllocator: null, &vulkanFence), nameof(vkCreateFence));
 
             return vulkanFence;
         }
@@ -116,7 +116,7 @@ namespace TerraFX.Graphics
             if (!fenceSignalled)
             {
                 var vulkanFence = VulkanFence;
-                var result = vkWaitForFences(Device.VulkanDevice, fenceCount: 1, (ulong*)&vulkanFence, waitAll: VK_TRUE, millisecondsTimeout);
+                var result = vkWaitForFences(Device.VulkanDevice, fenceCount: 1, &vulkanFence, waitAll: VK_TRUE, millisecondsTimeout);
 
                 if (result == VK_SUCCESS)
                 {
