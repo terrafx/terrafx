@@ -23,7 +23,7 @@ namespace TerraFX.UI
             ThrowIfNotThread(ParentThread);
 
             MSG msg;
-            while (PeekMessageW(&msg, hWnd: IntPtr.Zero, wMsgFilterMin: WM_NULL, wMsgFilterMax: WM_NULL, wRemoveMsg: PM_REMOVE) != FALSE)
+            while (PeekMessageW(&msg, HWND.NULL, wMsgFilterMin: WM_NULL, wMsgFilterMax: WM_NULL, wRemoveMsg: PM_REMOVE) != FALSE)
             {
                 if (msg.message != WM_QUIT)
                 {
