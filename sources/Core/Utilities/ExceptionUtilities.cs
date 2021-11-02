@@ -53,6 +53,21 @@ namespace TerraFX.Utilities
         public static void ThrowArgumentOutOfRangeException<T>(string message, T value, string valueName)
             => throw new ArgumentOutOfRangeException(valueName, value, message);
 
+        /// <summary>Throws an <see cref="DirectoryNotFoundException" />.</summary>
+        /// <param name="message">The message detailing the cause of the exception.</param>
+        /// <exception cref="DirectoryNotFoundException"><paramref name="message" />.</exception>
+        [DoesNotReturn]
+        public static void ThrowDirectoryNotFoundException(string message)
+            => throw new DirectoryNotFoundException(message);
+
+        /// <summary>Throws an <see cref="DirectoryNotFoundException" />.</summary>
+        /// <param name="message">The message detailing the cause of the exception.</param>
+        /// <param name="innerException">The exception that is the cause of this exception.</param>
+        /// <exception cref="DirectoryNotFoundException"><paramref name="message" />.</exception>
+        [DoesNotReturn]
+        public static void ThrowDirectoryNotFoundException(string message, Exception? innerException)
+            => throw new DirectoryNotFoundException(message, innerException);
+
         /// <summary>Throws an <see cref="ExternalException" />.</summary>
         /// <param name="methodName">The name of the method that caused the exception.</param>
         /// <param name="errorCode">The underlying error code for the exception.</param>
@@ -63,6 +78,38 @@ namespace TerraFX.Utilities
             var message = string.Format(Resources.UnmanagedMethodFailedMessage, methodName, errorCode);
             throw new ExternalException(message, errorCode);
         }
+
+        /// <summary>Throws an <see cref="FileNotFoundException" />.</summary>
+        /// <param name="message">The message detailing the cause of the exception.</param>
+        /// <exception cref="FileNotFoundException"><paramref name="message" />.</exception>
+        [DoesNotReturn]
+        public static void ThrowFileNotFoundException(string message)
+            => throw new FileNotFoundException(message);
+
+        /// <summary>Throws an <see cref="FileNotFoundException" />.</summary>
+        /// <param name="message">The message detailing the cause of the exception.</param>
+        /// <param name="innerException">The exception that is the cause of this exception.</param>
+        /// <exception cref="FileNotFoundException"><paramref name="message" />.</exception>
+        [DoesNotReturn]
+        public static void ThrowFileNotFoundException(string message, Exception? innerException)
+            => throw new FileNotFoundException(message, innerException);
+
+        /// <summary>Throws an <see cref="FileNotFoundException" />.</summary>
+        /// <param name="message">The message detailing the cause of the exception.</param>
+        /// <param name="fileName">The full name of the file.</param>
+        /// <exception cref="FileNotFoundException"><paramref name="message" />.</exception>
+        [DoesNotReturn]
+        public static void ThrowFileNotFoundException(string message, string? fileName)
+            => throw new FileNotFoundException(message, fileName);
+
+        /// <summary>Throws an <see cref="FileNotFoundException" />.</summary>
+        /// <param name="message">The message detailing the cause of the exception.</param>
+        /// <param name="fileName">The full name of the file.</param>
+        /// <param name="innerException">The exception that is the cause of this exception.</param>
+        /// <exception cref="FileNotFoundException"><paramref name="message" />.</exception>
+        [DoesNotReturn]
+        public static void ThrowFileNotFoundException(string message, string? fileName, Exception? innerException)
+            => throw new FileNotFoundException(message, fileName, innerException);
 
         /// <summary>Throws an <see cref="InvalidOperationException" /> for an empty queue.</summary>
         /// <exception cref="InvalidOperationException">The queue is empty.</exception>
