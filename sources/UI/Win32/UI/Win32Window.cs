@@ -153,7 +153,7 @@ namespace TerraFX.UI
         {
             if (_handle.IsValueCreated)
             {
-                _ = SendMessageW(Handle, WM_CLOSE, wParam: 0, lParam: 0);
+                _ = SendMessageW(Handle, WM_CLOSE, wParam: 0u, lParam: 0);
             }
         }
 

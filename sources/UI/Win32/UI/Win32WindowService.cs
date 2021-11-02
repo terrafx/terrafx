@@ -93,7 +93,7 @@ namespace TerraFX.UI
         }
 
         [UnmanagedCallersOnly]
-        private static nint ForwardWindowMessage(HWND hWnd, uint msg, nuint wParam, nint lParam)
+        private static LRESULT ForwardWindowMessage(HWND hWnd, uint msg, WPARAM wParam, LPARAM lParam)
         {
             nint userData;
             GCHandle gcHandle;
