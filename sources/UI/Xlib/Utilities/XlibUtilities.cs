@@ -6,6 +6,7 @@ using TerraFX.UI;
 using static TerraFX.Interop.Xlib;
 using static TerraFX.UI.XlibAtomId;
 using static TerraFX.Utilities.ExceptionUtilities;
+using XWindow = TerraFX.Interop.Window;
 
 namespace TerraFX.Utilities
 {
@@ -40,7 +41,7 @@ namespace TerraFX.Utilities
         public const int _NET_WM_STATE_TOGGLE = 2;
 #pragma warning restore IDE1006
 
-        public static void SendClientMessage(IntPtr display, nuint targetWindow, nint eventMask, nuint eventWindow, nuint messageType, nint data0 = 0, nint data1 = 0, nint data2 = 0, nint data3 = 0, nint data4 = 0)
+        public static void SendClientMessage(Display* display, XWindow targetWindow, nint eventMask, XWindow eventWindow, Atom messageType, nint data0 = 0, nint data1 = 0, nint data2 = 0, nint data3 = 0, nint data4 = 0)
         {
             var clientEvent = new XClientMessageEvent {
                 type = ClientMessage,
@@ -66,7 +67,7 @@ namespace TerraFX.Utilities
             ), nameof(XSendEvent));
         }
 
-        public static void SetWindowTitle(XlibDispatchService dispatchService, IntPtr display, nuint window, string value)
+        public static void SetWindowTitle(XlibDispatchService dispatchService, Display* display, XWindow window, string value)
         {
             if (dispatchService.GetAtomIsSupported(_NET_WM_NAME))
             {
@@ -92,7 +93,7 @@ namespace TerraFX.Utilities
             }
         }
 
-        public static void ShowWindow(IntPtr display, nuint window, int initialState = NormalState)
+        public static void ShowWindow(Display* display, XWindow window, int initialState = NormalState)
         {
             var wmHints = new XWMHints {
                 flags = StateHint,

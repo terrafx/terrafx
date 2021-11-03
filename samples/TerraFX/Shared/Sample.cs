@@ -12,6 +12,7 @@ using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
+using GC = System.GC;
 
 namespace TerraFX.Samples
 {

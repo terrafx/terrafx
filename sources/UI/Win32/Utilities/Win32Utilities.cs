@@ -11,7 +11,7 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowExternalExceptionIfFalse(BOOL value, string methodName)
         {
-            if (value == BOOL.FALSE)
+            if (!value)
             {
                 ThrowForLastError(methodName);
             }

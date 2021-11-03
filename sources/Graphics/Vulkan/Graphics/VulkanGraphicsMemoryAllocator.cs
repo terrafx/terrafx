@@ -62,7 +62,7 @@ namespace TerraFX.Graphics
             };
 
             VkBuffer vulkanBuffer;
-            ThrowExternalExceptionIfNotSuccess(vkCreateBuffer(vulkanDevice, &bufferCreateInfo, pAllocator: null, (ulong*)&vulkanBuffer), nameof(vkCreateBuffer));
+            ThrowExternalExceptionIfNotSuccess(vkCreateBuffer(vulkanDevice, &bufferCreateInfo, pAllocator: null, &vulkanBuffer), nameof(vkCreateBuffer));
 
             VkMemoryRequirements memoryRequirements;
             vkGetBufferMemoryRequirements(vulkanDevice, vulkanBuffer, &memoryRequirements);
@@ -100,7 +100,7 @@ namespace TerraFX.Graphics
             };
 
             VkImage vulkanImage;
-            ThrowExternalExceptionIfNotSuccess(vkCreateImage(vulkanDevice, &imageCreateInfo, pAllocator: null, (ulong*)&vulkanImage), nameof(vkCreateImage));
+            ThrowExternalExceptionIfNotSuccess(vkCreateImage(vulkanDevice, &imageCreateInfo, pAllocator: null, &vulkanImage), nameof(vkCreateImage));
 
             VkMemoryRequirements memoryRequirements;
             vkGetImageMemoryRequirements(vulkanDevice, vulkanImage, &memoryRequirements);

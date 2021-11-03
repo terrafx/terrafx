@@ -64,7 +64,7 @@ namespace TerraFX.Graphics
                 allocationSize = Size,
                 memoryTypeIndex = collection.VulkanMemoryTypeIndex,
             };
-            ThrowExternalExceptionIfNotSuccess(vkAllocateMemory(vulkanDevice, &memoryAllocateInfo, pAllocator: null, (ulong*)&vulkanDeviceMemory), nameof(vkAllocateMemory));
+            ThrowExternalExceptionIfNotSuccess(vkAllocateMemory(vulkanDevice, &memoryAllocateInfo, pAllocator: null, &vulkanDeviceMemory), nameof(vkAllocateMemory));
 
             return vulkanDeviceMemory;
         }
