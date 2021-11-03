@@ -223,6 +223,18 @@ namespace TerraFX.Utilities
             }
         }
 
+        /// <summary>Throws an <see cref="ExternalException" /> if <paramref name="result" /> is <c>null</c>.</summary>
+        /// <param name="result">The underlying error code for the exception.</param>
+        /// <param name="methodName">The name of the method that caused the exception.</param>
+        /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an error code of <paramref name="result" />.</exception>
+        public static void ThrowForLastErrorIfNull(void* result, string methodName)
+        {
+            if (result == null)
+            {
+                ThrowExternalException(methodName, GetLastError());
+            }
+        }
+
         /// <summary>Throws an <see cref="ExternalException" /> if <paramref name="result" /> is <c>zero</c>.</summary>
         /// <param name="result">The underlying error code for the exception.</param>
         /// <param name="methodName">The name of the method that caused the exception.</param>

@@ -43,7 +43,7 @@
     <PackageReference Update="TerraFX.Interop.PulseAudio" Version="13.0.0-beta2" />
     <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.189-rc2.1412857636" />
     <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.20348-rc2.1414617443" />
-    <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-beta2" />
+    <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-beta3.1414648105" />
   </ItemGroup>
 
 </Project>

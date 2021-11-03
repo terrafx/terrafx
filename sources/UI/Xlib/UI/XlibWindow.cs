@@ -17,6 +17,7 @@ using static TerraFX.UI.XlibAtomId;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
+using XWindow = TerraFX.Interop.Window;
 
 namespace TerraFX.UI
 {
@@ -26,7 +27,7 @@ namespace TerraFX.UI
         private readonly FlowDirection _flowDirection;
         private readonly ReadingDirection _readingDirection;
 
-        private ValueLazy<nuint> _handle;
+        private ValueLazy<XWindow> _handle;
         private ValueLazy<PropertySet> _properties;
 
 #pragma warning disable CS0649
@@ -48,7 +49,7 @@ namespace TerraFX.UI
             _flowDirection = FlowDirection.TopToBottom;
             _readingDirection = ReadingDirection.LeftToRight;
 
-            _handle = new ValueLazy<nuint>(CreateWindowHandle);
+            _handle = new ValueLazy<XWindow>(CreateWindowHandle);
             _properties = new ValueLazy<PropertySet>(CreateProperties);
 
             _title = typeof(XlibWindow).FullName!;
@@ -90,7 +91,7 @@ namespace TerraFX.UI
 
         /// <summary>Gets the underlying <c>Window</c> for the window.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public nuint Handle
+        public XWindow Handle
             => _handle.Value;
 
         /// <inheritdoc />
@@ -127,11 +128,11 @@ namespace TerraFX.UI
 
         /// <inheritdoc />
         protected override IntPtr SurfaceContextHandle
-            => XlibDispatchService.Instance.Display;
+            => (nint)XlibDispatchService.Instance.Display;
 
         /// <inheritdoc />
         protected override IntPtr SurfaceHandle
-            => (nint)Handle;
+            => Handle;
 
         /// <inheritdoc />
         protected override GraphicsSurfaceKind SurfaceKind
@@ -149,7 +150,7 @@ namespace TerraFX.UI
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="XSendEvent(IntPtr, nuint, int, nint, XEvent*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XSendEvent(Display*, Interop.Window, int, nint, XEvent*)" /> failed.</exception>
         /// <remarks>
         ///   <para>This method can be called from any thread.</para>
         ///   <para>This method does nothing if the underlying <c>Window</c> has not been created.</para>
@@ -182,7 +183,7 @@ namespace TerraFX.UI
                         NoEventMask,
                         window,
                         dispatchService.GetAtom(WM_PROTOCOLS),
-                        (nint)dispatchService.GetAtom(WM_DELETE_WINDOW)
+                        dispatchService.GetAtom(WM_DELETE_WINDOW)
                     );
                 }
             }
@@ -203,7 +204,7 @@ namespace TerraFX.UI
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="XGetWMHints(IntPtr, nuint)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XGetWMHints(Display*, Interop.Window)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>false</c> but the instance has already been disposed.</exception>
         public override void Enable()
         {
@@ -234,7 +235,7 @@ namespace TerraFX.UI
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="XGetWindowAttributes(IntPtr, nuint, XWindowAttributes*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XGetWindowAttributes(Display*, Interop.Window, XWindowAttributes*)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Maximized" /> but the instance has already been disposed.</exception>
         public override void Maximize()
         {
@@ -279,7 +280,7 @@ namespace TerraFX.UI
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="XIconifyWindow(IntPtr, nuint, int)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XIconifyWindow(Display*, Interop.Window, int)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Minimized" /> but the instance has already been disposed.</exception>
         public override void Minimize()
         {
@@ -621,7 +622,7 @@ namespace TerraFX.UI
             }
         }
 
-        private nuint CreateWindowHandle()
+        private XWindow CreateWindowHandle()
         {
             var dispatchService = XlibDispatchService.Instance;
             var display = dispatchService.Display;
@@ -656,7 +657,7 @@ namespace TerraFX.UI
 
             const int WmProtocolCount = 1;
 
-            var wmProtocols = stackalloc nuint[WmProtocolCount] {
+            var wmProtocols = stackalloc Atom[WmProtocolCount] {
                 dispatchService.GetAtom(WM_DELETE_WINDOW)
             };
 
@@ -755,7 +756,7 @@ namespace TerraFX.UI
                 // coordinates when translated. We'll explicitly query
                 // the location of our own origin for this case instead.
 
-                nuint child;
+                XWindow child;
 
                 ThrowForLastErrorIfZero(XTranslateCoordinates(
                     xconfigure->display,
@@ -919,11 +920,11 @@ namespace TerraFX.UI
             }
         }
 
-        private void UpdateFrameExtents(XlibDispatchService dispatchService, IntPtr display, nuint window)
+        private void UpdateFrameExtents(XlibDispatchService dispatchService, Display* display, XWindow window)
         {
             if (dispatchService.GetAtomIsSupported(_NET_FRAME_EXTENTS))
             {
-                nuint actualType;
+                Atom actualType;
                 int actualFormat;
                 nuint itemCount;
                 nuint bytesRemaining;
@@ -969,11 +970,11 @@ namespace TerraFX.UI
             }
         }
 
-        private void UpdateWindowState(XlibDispatchService dispatchService, IntPtr display, nuint window)
+        private void UpdateWindowState(XlibDispatchService dispatchService, Display* display, XWindow window)
         {
             if (dispatchService.GetAtomIsSupported(_NET_WM_STATE))
             {
-                nuint actualType;
+                Atom actualType;
                 int actualFormat;
                 nuint itemCount;
                 nuint bytesRemaining;
@@ -1048,11 +1049,11 @@ namespace TerraFX.UI
             }
         }
 
-        private void UpdateWindowTitle(XlibDispatchService dispatchService, IntPtr display, nuint window)
+        private void UpdateWindowTitle(XlibDispatchService dispatchService, Display* display, XWindow window)
         {
             if (dispatchService.GetAtomIsSupported(_NET_WM_NAME))
             {
-                nuint actualType;
+                Atom actualType;
                 int actualFormat;
                 nuint itemCount;
                 nuint bytesRemaining;
