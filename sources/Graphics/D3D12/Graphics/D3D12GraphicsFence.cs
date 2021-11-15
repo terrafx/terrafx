@@ -6,6 +6,7 @@ using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12_FENCE_FLAGS;
+using static TerraFX.Interop.Windows.WAIT;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;

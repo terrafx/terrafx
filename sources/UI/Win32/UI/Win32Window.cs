@@ -9,6 +9,7 @@ using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop.Windows;
 using TerraFX.Numerics;
 using TerraFX.Threading;
+using static TerraFX.Interop.Windows.GWL;
 using static TerraFX.Interop.Windows.HWND;
 using static TerraFX.Interop.Windows.SW;
 using static TerraFX.Interop.Windows.Windows;
