@@ -9,6 +9,7 @@ using TerraFX.Interop.Windows;
 using TerraFX.Threading;
 using static TerraFX.Interop.Windows.COLOR;
 using static TerraFX.Interop.Windows.CS;
+using static TerraFX.Interop.Windows.GWLP;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Interop.Windows.WM;
 using static TerraFX.Runtime.Configuration;

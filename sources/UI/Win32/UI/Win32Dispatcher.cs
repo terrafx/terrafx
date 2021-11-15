@@ -3,6 +3,7 @@
 using System;
 using System.Threading;
 using TerraFX.Interop.Windows;
+using static TerraFX.Interop.Windows.PM;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Interop.Windows.WM;
 using static TerraFX.Utilities.ExceptionUtilities;
