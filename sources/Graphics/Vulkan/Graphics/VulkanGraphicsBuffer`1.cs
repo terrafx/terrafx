@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using TerraFX.Interop;
+using TerraFX.Interop.Vulkan;
 using static TerraFX.Threading.VolatileState;
 
 namespace TerraFX.Graphics

@@ -1,20 +1,22 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Interop;
+using TerraFX.Interop.DirectX;
+using TerraFX.Interop.Windows;
 using TerraFX.Numerics;
 using TerraFX.Threading;
-using static TerraFX.Utilities.D3D12Utilities;
-using static TerraFX.Interop.D3D_PRIMITIVE_TOPOLOGY;
-using static TerraFX.Interop.D3D12_COMMAND_LIST_TYPE;
-using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_TYPE;
-using static TerraFX.Interop.D3D12_RESOURCE_STATES;
-using static TerraFX.Interop.D3D12_RTV_DIMENSION;
-using static TerraFX.Interop.DXGI_FORMAT;
-using static TerraFX.Interop.Windows;
+using static TerraFX.Interop.DirectX.D3D12;
+using static TerraFX.Interop.DirectX.D3D12_COMMAND_LIST_TYPE;
+using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_TYPE;
+using static TerraFX.Interop.DirectX.D3D12_RESOURCE_STATES;
+using static TerraFX.Interop.DirectX.D3D12_RTV_DIMENSION;
+using static TerraFX.Interop.DirectX.D3D_PRIMITIVE_TOPOLOGY;
+using static TerraFX.Interop.DirectX.DXGI_FORMAT;
+using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics
@@ -449,9 +451,7 @@ namespace TerraFX.Graphics
             ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsContext));
 
             ID3D12CommandAllocator* d3d12CommandAllocator;
-
-            var iid = IID_ID3D12CommandAllocator;
-            ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, &iid, (void**)&d3d12CommandAllocator), nameof(ID3D12Device.CreateCommandAllocator));
+            ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof<ID3D12CommandAllocator>(), (void**)&d3d12CommandAllocator), nameof(ID3D12Device.CreateCommandAllocator));
 
             return d3d12CommandAllocator;
         }
@@ -461,9 +461,7 @@ namespace TerraFX.Graphics
             ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsContext));
 
             ID3D12GraphicsCommandList* d3d12GraphicsCommandList;
-
-            var iid = IID_ID3D12GraphicsCommandList;
-            ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateCommandList(nodeMask: 0, D3D12_COMMAND_LIST_TYPE_DIRECT, D3D12CommandAllocator, pInitialState: null, &iid, (void**)&d3d12GraphicsCommandList), nameof(ID3D12Device.CreateCommandList));
+            ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateCommandList(nodeMask: 0, D3D12_COMMAND_LIST_TYPE_DIRECT, D3D12CommandAllocator, pInitialState: null, __uuidof<ID3D12GraphicsCommandList>(), (void**)&d3d12GraphicsCommandList), nameof(ID3D12Device.CreateCommandList));
 
             // Command lists are created in the recording state, but there is nothing
             // to record yet. The main loop expects it to be closed, so close it now.
@@ -477,9 +475,7 @@ namespace TerraFX.Graphics
             ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsContext));
 
             ID3D12Resource* renderTargetResource;
-
-            var iid = IID_ID3D12Resource;
-            ThrowExternalExceptionIfFailed(Device.DxgiSwapChain->GetBuffer(unchecked((uint)Index), &iid, (void**)&renderTargetResource), nameof(IDXGISwapChain.GetBuffer));
+            ThrowExternalExceptionIfFailed(Device.DxgiSwapChain->GetBuffer(unchecked((uint)Index), __uuidof<ID3D12Resource>(), (void**)&renderTargetResource), nameof(IDXGISwapChain.GetBuffer));
 
             return renderTargetResource;
         }

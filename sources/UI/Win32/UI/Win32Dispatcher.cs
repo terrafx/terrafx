@@ -2,8 +2,9 @@
 
 using System;
 using System.Threading;
-using TerraFX.Interop;
-using static TerraFX.Interop.Windows;
+using TerraFX.Interop.Windows;
+using static TerraFX.Interop.Windows.Windows;
+using static TerraFX.Interop.Windows.WM;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.UI

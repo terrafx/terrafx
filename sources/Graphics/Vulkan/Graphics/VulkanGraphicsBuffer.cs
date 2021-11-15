@@ -2,13 +2,13 @@
 
 using System;
 using System.Runtime.InteropServices;
-using TerraFX.Interop;
+using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
-using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Interop.Vulkan;
+using static TerraFX.Interop.Vulkan.VkStructureType;
+using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics
 {
@@ -216,7 +216,7 @@ namespace TerraFX.Graphics
 
         private void DisposeVulkanBuffer(VkBuffer vulkanBuffer)
         {
-            if (vulkanBuffer != VK_NULL_HANDLE)
+            if (vulkanBuffer != VkBuffer.NULL)
             {
                 vkDestroyBuffer(Allocator.Device.VulkanDevice, vulkanBuffer, pAllocator: null);
             }

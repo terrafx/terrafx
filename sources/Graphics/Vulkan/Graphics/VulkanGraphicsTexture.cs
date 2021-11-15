@@ -2,20 +2,20 @@
 
 using System;
 using System.Runtime.InteropServices;
-using TerraFX.Interop;
+using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
-using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkBorderColor;
-using static TerraFX.Interop.VkComponentSwizzle;
-using static TerraFX.Interop.VkFilter;
-using static TerraFX.Interop.VkFormat;
-using static TerraFX.Interop.VkImageAspectFlags;
-using static TerraFX.Interop.VkImageViewType;
-using static TerraFX.Interop.VkSamplerMipmapMode;
-using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Interop.Vulkan;
+using static TerraFX.Interop.Vulkan.VkBorderColor;
+using static TerraFX.Interop.Vulkan.VkComponentSwizzle;
+using static TerraFX.Interop.Vulkan.VkFilter;
+using static TerraFX.Interop.Vulkan.VkFormat;
+using static TerraFX.Interop.Vulkan.VkImageAspectFlags;
+using static TerraFX.Interop.Vulkan.VkImageViewType;
+using static TerraFX.Interop.Vulkan.VkSamplerMipmapMode;
+using static TerraFX.Interop.Vulkan.VkStructureType;
+using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics
 {
@@ -304,7 +304,7 @@ namespace TerraFX.Graphics
 
         private void DisposeVulkanImage(VkImage vulkanImage)
         {
-            if (vulkanImage != VK_NULL_HANDLE)
+            if (vulkanImage != VkImage.NULL)
             {
                 vkDestroyImage(Allocator.Device.VulkanDevice, vulkanImage, pAllocator: null);
             }
@@ -312,7 +312,7 @@ namespace TerraFX.Graphics
 
         private void DisposeVulkanImageView(VkImageView vulkanImageView)
         {
-            if (vulkanImageView != VK_NULL_HANDLE)
+            if (vulkanImageView != VkImageView.NULL)
             {
                 vkDestroyImageView(Allocator.Device.VulkanDevice, vulkanImageView, pAllocator: null);
             }
@@ -320,7 +320,7 @@ namespace TerraFX.Graphics
 
         private void DisposeVulkanSampler(VkSampler vulkanSampler)
         {
-            if (vulkanSampler != VK_NULL_HANDLE)
+            if (vulkanSampler != VkSampler.NULL)
             {
                 vkDestroySampler(Allocator.Device.VulkanDevice, vulkanSampler, pAllocator: null);
             }

@@ -2,7 +2,7 @@
 
 using System;
 using System.Runtime.InteropServices;
-using TerraFX.Interop;
+using TerraFX.Interop.PulseAudio;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Audio
@@ -22,9 +22,9 @@ namespace TerraFX.Audio
             var format = i->sample_spec.format;
             switch (format)
             {
-                case pa_sample_format.PA_SAMPLE_U8:
-                case pa_sample_format.PA_SAMPLE_ALAW:
-                case pa_sample_format.PA_SAMPLE_ULAW:
+                case pa_sample_format_t.PA_SAMPLE_U8:
+                case pa_sample_format_t.PA_SAMPLE_ALAW:
+                case pa_sample_format_t.PA_SAMPLE_ULAW:
                 {
                     IsUnsigned = true;
                     BitDepth = 8;
@@ -33,62 +33,62 @@ namespace TerraFX.Audio
                     break;
                 }
 
-                case pa_sample_format.PA_SAMPLE_S16LE:
-                case pa_sample_format.PA_SAMPLE_S16BE:
+                case pa_sample_format_t.PA_SAMPLE_S16LE:
+                case pa_sample_format_t.PA_SAMPLE_S16BE:
                 {
                     IsUnsigned = false;
                     BitDepth = 16;
                     PackedSize = 16;
-                    IsBigEndian = format == pa_sample_format.PA_SAMPLE_S16BE;
+                    IsBigEndian = format == pa_sample_format_t.PA_SAMPLE_S16BE;
                     break;
                 }
 
-                case pa_sample_format.PA_SAMPLE_FLOAT32LE:
-                case pa_sample_format.PA_SAMPLE_FLOAT32BE:
+                case pa_sample_format_t.PA_SAMPLE_FLOAT32LE:
+                case pa_sample_format_t.PA_SAMPLE_FLOAT32BE:
                 {
                     IsUnsigned = false;
                     BitDepth = 32;
                     PackedSize = 32;
-                    IsBigEndian = format == pa_sample_format.PA_SAMPLE_FLOAT32BE;
+                    IsBigEndian = format == pa_sample_format_t.PA_SAMPLE_FLOAT32BE;
                     IsFloatingPoint = true;
                     break;
                 }
 
-                case pa_sample_format.PA_SAMPLE_S32LE:
-                case pa_sample_format.PA_SAMPLE_S32BE:
+                case pa_sample_format_t.PA_SAMPLE_S32LE:
+                case pa_sample_format_t.PA_SAMPLE_S32BE:
                 {
                     IsUnsigned = false;
                     BitDepth = 32;
                     PackedSize = 32;
-                    IsBigEndian = format == pa_sample_format.PA_SAMPLE_S32BE;
+                    IsBigEndian = format == pa_sample_format_t.PA_SAMPLE_S32BE;
                     IsFloatingPoint = false;
                     break;
                 }
 
-                case pa_sample_format.PA_SAMPLE_S24LE:
-                case pa_sample_format.PA_SAMPLE_S24BE:
+                case pa_sample_format_t.PA_SAMPLE_S24LE:
+                case pa_sample_format_t.PA_SAMPLE_S24BE:
                 {
                     IsUnsigned = false;
                     BitDepth = 24;
                     PackedSize = 24;
-                    IsBigEndian = format == pa_sample_format.PA_SAMPLE_S32BE;
+                    IsBigEndian = format == pa_sample_format_t.PA_SAMPLE_S32BE;
                     IsFloatingPoint = false;
                     break;
                 }
 
-                case pa_sample_format.PA_SAMPLE_S24_32LE:
-                case pa_sample_format.PA_SAMPLE_S24_32BE:
+                case pa_sample_format_t.PA_SAMPLE_S24_32LE:
+                case pa_sample_format_t.PA_SAMPLE_S24_32BE:
                 {
                     IsUnsigned = false;
                     BitDepth = 24;
                     PackedSize = 32;
-                    IsBigEndian = format == pa_sample_format.PA_SAMPLE_S24_32BE;
+                    IsBigEndian = format == pa_sample_format_t.PA_SAMPLE_S24_32BE;
                     IsFloatingPoint = false;
                     break;
                 }
 
-                case pa_sample_format.PA_SAMPLE_MAX:
-                case pa_sample_format.PA_SAMPLE_INVALID:
+                case pa_sample_format_t.PA_SAMPLE_MAX:
+                case pa_sample_format_t.PA_SAMPLE_INVALID:
                 default:
                 {
                     ThrowForInvalidKind(format, nameof(format));

@@ -2,13 +2,13 @@
 
 using System;
 using System.Runtime.InteropServices;
-using TerraFX.Interop;
+using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
-using static TerraFX.Utilities.D3D12Utilities;
-using static TerraFX.Interop.D3D12_RESOURCE_FLAGS;
-using static TerraFX.Interop.D3D12_RESOURCE_STATES;
-using static TerraFX.Interop.Windows;
+using static TerraFX.Interop.DirectX.D3D12_RESOURCE_FLAGS;
+using static TerraFX.Interop.DirectX.D3D12_RESOURCE_STATES;
+using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics
@@ -141,8 +141,6 @@ namespace TerraFX.Graphics
             ref readonly var blockRegion = ref BlockRegion;
 
             var bufferDesc = D3D12_RESOURCE_DESC.Buffer(blockRegion.Size, D3D12_RESOURCE_FLAG_NONE, Alignment);
-            var iid = IID_ID3D12Resource;
-
             var d3d12Device = Allocator.Device.D3D12Device;
             var d3d12Heap = Block.D3D12Heap;
 
@@ -152,7 +150,7 @@ namespace TerraFX.Graphics
                 &bufferDesc,
                 D3D12ResourceState,
                 pOptimizedClearValue: null,
-                &iid,
+                __uuidof<ID3D12Resource>(),
                 (void**)&d3d12Resource
             ), nameof(ID3D12Device.CreatePlacedResource));
 

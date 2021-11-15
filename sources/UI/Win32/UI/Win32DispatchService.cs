@@ -4,10 +4,10 @@ using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
-using TerraFX.Interop;
-using static TerraFX.Interop.Windows;
-using static TerraFX.Utilities.Win32Utilities;
+using TerraFX.Interop.Windows;
+using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.Win32Utilities;
 
 namespace TerraFX.UI
 {

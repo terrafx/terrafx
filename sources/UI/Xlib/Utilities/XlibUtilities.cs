@@ -1,12 +1,12 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.	
 
 using System;
-using TerraFX.Interop;
+using TerraFX.Interop.Xlib;
 using TerraFX.UI;
-using static TerraFX.Interop.Xlib;
+using static TerraFX.Interop.Xlib.Xlib;
 using static TerraFX.UI.XlibAtomId;
 using static TerraFX.Utilities.ExceptionUtilities;
-using XWindow = TerraFX.Interop.Window;
+using XWindow = TerraFX.Interop.Xlib.Window;
 
 namespace TerraFX.Utilities
 {

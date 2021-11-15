@@ -6,18 +6,18 @@ using System.Threading;
 using TerraFX.Collections;
 using TerraFX.Graphics;
 using TerraFX.Graphics.Geometry2D;
-using TerraFX.Interop;
+using TerraFX.Interop.Xlib;
 using TerraFX.Numerics;
 using TerraFX.Threading;
 using TerraFX.Utilities;
-using static TerraFX.Interop.Xlib;
+using static TerraFX.Interop.Xlib.Xlib;
 using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.XlibUtilities;
 using static TerraFX.UI.XlibAtomId;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
-using XWindow = TerraFX.Interop.Window;
+using static TerraFX.Utilities.XlibUtilities;
+using XWindow = TerraFX.Interop.Xlib.Window;
 
 namespace TerraFX.UI
 {
@@ -150,7 +150,7 @@ namespace TerraFX.UI
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="XSendEvent(Display*, Interop.Window, int, nint, XEvent*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XSendEvent(Display*, XWindow, int, nint, XEvent*)" /> failed.</exception>
         /// <remarks>
         ///   <para>This method can be called from any thread.</para>
         ///   <para>This method does nothing if the underlying <c>Window</c> has not been created.</para>
@@ -204,7 +204,7 @@ namespace TerraFX.UI
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="XGetWMHints(Display*, Interop.Window)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XGetWMHints(Display*, XWindow)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>false</c> but the instance has already been disposed.</exception>
         public override void Enable()
         {
@@ -235,7 +235,7 @@ namespace TerraFX.UI
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="XGetWindowAttributes(Display*, Interop.Window, XWindowAttributes*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XGetWindowAttributes(Display*, XWindow, XWindowAttributes*)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Maximized" /> but the instance has already been disposed.</exception>
         public override void Maximize()
         {
@@ -280,7 +280,7 @@ namespace TerraFX.UI
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="XIconifyWindow(Display*, Interop.Window, int)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XIconifyWindow(Display*, XWindow, int)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Minimized" /> but the instance has already been disposed.</exception>
         public override void Minimize()
         {

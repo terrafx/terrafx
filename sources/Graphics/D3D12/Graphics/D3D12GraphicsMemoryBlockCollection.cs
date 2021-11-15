@@ -5,7 +5,7 @@
 
 using System;
 using System.Reflection;
-using TerraFX.Interop;
+using TerraFX.Interop.DirectX;
 
 namespace TerraFX.Graphics
 {

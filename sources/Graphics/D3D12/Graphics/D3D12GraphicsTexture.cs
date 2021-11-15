@@ -2,13 +2,13 @@
 
 using System;
 using System.Runtime.InteropServices;
-using TerraFX.Interop;
+using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
-using static TerraFX.Utilities.D3D12Utilities;
-using static TerraFX.Interop.D3D12_RESOURCE_STATES;
-using static TerraFX.Interop.DXGI_FORMAT;
-using static TerraFX.Interop.Windows;
+using static TerraFX.Interop.DirectX.D3D12_RESOURCE_STATES;
+using static TerraFX.Interop.DirectX.DXGI_FORMAT;
+using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics
@@ -146,7 +146,6 @@ namespace TerraFX.Graphics
                 GraphicsTextureKind.ThreeDimensional => D3D12_RESOURCE_DESC.Tex3D(DXGI_FORMAT_R8G8B8A8_UNORM, Width, Height, Depth, mipLevels: 1),
                 _ => default,
             };
-            var iid = IID_ID3D12Resource;
 
             var device = Allocator.Device;
             var d3d12Device = device.D3D12Device;
@@ -158,7 +157,7 @@ namespace TerraFX.Graphics
                 &textureDesc,
                 D3D12ResourceState,
                 pOptimizedClearValue: null,
-                &iid,
+                __uuidof<ID3D12Resource>(),
                 (void**)&d3d12Resource
             ), nameof(ID3D12Device.CreatePlacedResource));
 

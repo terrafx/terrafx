@@ -1,15 +1,15 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Interop;
+using TerraFX.Interop.DirectX;
 using TerraFX.Numerics;
 using TerraFX.Threading;
 using TerraFX.Utilities;
-using static TerraFX.Utilities.D3D12Utilities;
-using static TerraFX.Interop.D3D12_PRIMITIVE_TOPOLOGY_TYPE;
-using static TerraFX.Interop.DXGI_FORMAT;
-using static TerraFX.Interop.Windows;
+using static TerraFX.Interop.DirectX.D3D12_PRIMITIVE_TOPOLOGY_TYPE;
+using static TerraFX.Interop.DirectX.DXGI_FORMAT;
+using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics
@@ -154,9 +154,7 @@ namespace TerraFX.Graphics
                     pInputElementDescs = pInputElementDescs,
                     NumElements = unchecked((uint)inputElementDescs.Length),
                 };
-
-                var iid = IID_ID3D12PipelineState;
-                ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateGraphicsPipelineState(&pipelineStateDesc, &iid, (void**)&d3d12GraphicsPipelineState), nameof(ID3D12Device.CreateGraphicsPipelineState));
+                ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateGraphicsPipelineState(&pipelineStateDesc, __uuidof<ID3D12PipelineState>(), (void**)&d3d12GraphicsPipelineState), nameof(ID3D12Device.CreateGraphicsPipelineState));
             }
             return d3d12GraphicsPipelineState;
 

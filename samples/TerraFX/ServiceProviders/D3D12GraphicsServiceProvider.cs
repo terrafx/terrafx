@@ -2,11 +2,12 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Versioning;
 using TerraFX.Graphics;
-using TerraFX.UI;
 
 namespace TerraFX.Samples.ServiceProviders
 {
+    [SupportedOSPlatform("windows10.0")]
     public sealed class D3D12GraphicsServiceProvider : Win32WindowServiceProvider
     {
         private ValueLazy<D3D12GraphicsService> _graphicsService;

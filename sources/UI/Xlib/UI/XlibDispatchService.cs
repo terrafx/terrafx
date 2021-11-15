@@ -6,11 +6,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
-using TerraFX.Interop;
+using TerraFX.Interop.LibC;
+using TerraFX.Interop.Xlib;
 using TerraFX.Threading;
 using TerraFX.Utilities;
-using static TerraFX.Interop.Libc;
-using static TerraFX.Interop.Xlib;
+using static TerraFX.Interop.LibC.LibC;
+using static TerraFX.Interop.Xlib.Xlib;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.UI.XlibAtomId;
@@ -18,7 +19,7 @@ using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
-using XWindow = TerraFX.Interop.Window;
+using XWindow = TerraFX.Interop.Xlib.Window;
 
 namespace TerraFX.UI
 {

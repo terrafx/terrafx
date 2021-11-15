@@ -2,14 +2,15 @@
 
 using System;
 using System.Threading;
-using TerraFX.Interop;
+using TerraFX.Interop.DirectX;
+using TerraFX.Interop.Windows;
 using TerraFX.Threading;
-using static TerraFX.Utilities.D3D12Utilities;
-using static TerraFX.Interop.D3D12_FENCE_FLAGS;
-using static TerraFX.Interop.Windows;
+using static TerraFX.Interop.DirectX.D3D12_FENCE_FLAGS;
+using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics
@@ -113,9 +114,7 @@ namespace TerraFX.Graphics
             AssertNotDisposedOrDisposing(_state);
 
             ID3D12Fence* d3d12Fence;
-
-            var iid = IID_ID3D12Fence;
-            ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateFence(InitialValue: 0, D3D12_FENCE_FLAG_NONE, &iid, (void**)&d3d12Fence), nameof(ID3D12Device.CreateFence));
+            ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateFence(InitialValue: 0, D3D12_FENCE_FLAG_NONE, __uuidof<ID3D12Fence>(), (void**)&d3d12Fence), nameof(ID3D12Device.CreateFence));
 
             return d3d12Fence;
         }
