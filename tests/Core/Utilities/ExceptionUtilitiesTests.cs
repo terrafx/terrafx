@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using NUnit.Framework;
@@ -22,7 +24,21 @@ namespace TerraFX.UnitTests.Utilities
                 Throws.ArgumentException
                       .And.Message.Contains("message")
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentException.ParamName)).EqualTo("value")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowArgumentException(string, string, Exception?)" /> method.</summary>
+        [Test]
+        public static void ThrowArgumentExceptionExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowArgumentException("message", "value", innerException),
+                        Throws.ArgumentException
+                              .And.Message.Contains("message")
+                              .And.Message.Contains("'value'")
+                              .And.Property(nameof(ArgumentException.ParamName)).EqualTo("value")
+                              .And.InnerException.SameAs(innerException)
             );
         }
 
@@ -34,7 +50,7 @@ namespace TerraFX.UnitTests.Utilities
                 Throws.ArgumentNullException
                       .And.Message.Contains("'value'")
                       .And.Message.Contains("null")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentNullException.ParamName)).EqualTo("value")
             );
         }
 
@@ -44,10 +60,10 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => ExceptionUtilities.ThrowArgumentOutOfRangeException("message", Guid.Empty, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(Guid.Empty)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(Guid.Empty)
                       .And.Message.Contains("message")
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -57,7 +73,7 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => ExceptionUtilities.ThrowExternalException("method", -1),
                 Throws.InstanceOf<ExternalException>()
-                      .And.Property("ErrorCode").EqualTo(-1)
+                      .And.Property(nameof(ExternalException.ErrorCode)).EqualTo(-1)
                       .And.Message.Contains("'method'")
                       .And.Message.Contains($"'{-1}'")
             );
@@ -87,10 +103,10 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => ExceptionUtilities.ThrowForInvalidFlagsCombination(AttributeTargets.Assembly, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(AttributeTargets.Assembly)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(AttributeTargets.Assembly)
                       .And.Message.Contains("'value'")
                       .And.Message.Contains(AttributeTargets.Assembly.ToString())
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -100,9 +116,9 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => ExceptionUtilities.ThrowForInvalidKind(AttributeTargets.Class, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(AttributeTargets.Class)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(AttributeTargets.Class)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -112,10 +128,10 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => ExceptionUtilities.ThrowForInvalidKind(AttributeTargets.Class, "value", AttributeTargets.Struct),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(AttributeTargets.Class)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(AttributeTargets.Class)
                       .And.Message.Contains("'value'")
                       .And.Message.Contains($"'{AttributeTargets.Struct}'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -127,9 +143,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowForInvalidParent(value, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").SameAs(value)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).SameAs(value)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -151,10 +167,10 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => ExceptionUtilities.ThrowForInvalidType(typeof(object), "value", typeof(string)),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").SameAs(typeof(object))
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).SameAs(typeof(object))
                       .And.Message.Contains("'value'")
                       .And.Message.Contains($"'{typeof(string)}'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -391,9 +407,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNegative(-1, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(-1)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(-1)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -407,9 +423,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNegative(-1L, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(-1L)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(-1L)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -423,9 +439,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNegative((nint)(-1), "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo((nint)(-1))
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nint)(-1))
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -439,26 +455,26 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(-1, 1, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(-1)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(-1)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(1, 1, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(1)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(1)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(2, 1, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(2)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(2)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
         }
 
@@ -472,26 +488,26 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(-1L, 1L, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(-1L)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(-1L)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(1L, 1L, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(1L)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(1L)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(2L, 1L, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(2L)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(2L)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
         }
 
@@ -505,26 +521,26 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds((nint)(-1), (nint)1, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo((nint)(-1))
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nint)(-1))
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds((nint)1, (nint)1, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo((nint)1)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nint)1)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds((nint)2, (nint)1, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo((nint)2)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nint)2)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
         }
 
@@ -538,18 +554,18 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(1U, 1U, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(1U)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(1U)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(2U, 1U, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(2U)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(2U)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
         }
 
@@ -563,18 +579,18 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(1UL, 1UL, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(1UL)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(1UL)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(2UL, 1UL, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(2UL)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(2UL)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
         }
 
@@ -588,18 +604,18 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds((nuint)1, (nuint)1, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo((nuint)1)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nuint)1)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds((nuint)2, (nuint)1, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo((nuint)2)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nuint)2)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
         }
 
@@ -617,18 +633,18 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(-1, 1, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(-1)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(-1)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(2, 1, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(2)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(2)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
         }
 
@@ -646,18 +662,18 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(-1L, 1L, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(-1L)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(-1L)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(2L, 1L, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(2L)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(2L)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
         }
 
@@ -675,18 +691,18 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds((nint)(-1), (nint)1, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo((nint)(-1))
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nint)(-1))
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds((nint)2, (nint)1, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo((nint)2)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nint)2)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
         }
 
@@ -704,10 +720,10 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(2U, 1U, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(2U)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(2U)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
         }
 
@@ -725,10 +741,10 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(2UL, 1UL, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(2UL)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(2UL)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
         }
 
@@ -746,10 +762,10 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds((nuint)2, (nuint)1, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo((nuint)2)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nuint)2)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
-                      .And.Property("ParamName").EqualTo("index")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
             );
         }
 
@@ -763,9 +779,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotPow2(0U, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(0U)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(0U)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -779,9 +795,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotPow2(0UL, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(0UL)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(0UL)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -795,9 +811,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotPow2((nuint)0, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo((nuint)0)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nuint)0)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -824,9 +840,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotZero(1, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(1)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(1)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -840,9 +856,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotZero(1L, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(1L)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(1L)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -856,9 +872,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotZero((nint)1, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo((nint)1)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nint)1)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -872,9 +888,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotZero(1U, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(1U)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(1U)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -888,9 +904,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotZero(1UL, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(1UL)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(1UL)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -904,9 +920,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfNotZero((nuint)1, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo((nuint)1)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nuint)1)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -922,7 +938,7 @@ namespace TerraFX.UnitTests.Utilities
                 Throws.ArgumentNullException
                       .And.Message.Contains("'value'")
                       .And.Message.Contains("null")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentNullException.ParamName)).EqualTo("value")
             );
         }
 
@@ -938,7 +954,7 @@ namespace TerraFX.UnitTests.Utilities
                 Throws.ArgumentNullException
                       .And.Message.Contains("'value'")
                       .And.Message.Contains("null")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentNullException.ParamName)).EqualTo("value")
             );
         }
 
@@ -954,7 +970,7 @@ namespace TerraFX.UnitTests.Utilities
                 Throws.ArgumentNullException
                       .And.Message.Contains("'value'")
                       .And.Message.Contains("null")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentNullException.ParamName)).EqualTo("value")
             );
         }
 
@@ -968,9 +984,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfZero(0, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(0)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(0)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -984,9 +1000,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfZero(0L, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(0L)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(0L)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -1000,9 +1016,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfZero((nint)0, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo((nint)0)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nint)0)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -1016,9 +1032,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfZero(0U, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(0U)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(0U)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -1032,9 +1048,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfZero(0UL, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo(0UL)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(0UL)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -1048,9 +1064,9 @@ namespace TerraFX.UnitTests.Utilities
 
             Assert.That(() => ExceptionUtilities.ThrowIfZero((nuint)0, "value"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
-                      .And.Property("ActualValue").EqualTo((nuint)0)
+                      .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nuint)0)
                       .And.Message.Contains("'value'")
-                      .And.Property("ParamName").EqualTo("value")
+                      .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("value")
             );
         }
 
@@ -1064,6 +1080,40 @@ namespace TerraFX.UnitTests.Utilities
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIOException(string)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowIOExceptionTest()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIOException("message"),
+                        Throws.InstanceOf<IOException>()
+                              .And.Message.Contains("message")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIOException(string, Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowIOExceptionExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowIOException("message", innerException),
+                        Throws.InstanceOf<IOException>()
+                              .And.Message.Contains("message")
+                              .And.InnerException.SameAs(innerException)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIOException(string, int)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowIOExceptionWithHrExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowIOException("message", 42),
+                        Throws.InstanceOf<IOException>()
+                              .And.Message.Contains("message")
+                              .And.Property(nameof(IOException.HResult)).EqualTo(42)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowKeyNotFoundException{TKey}(TKey, string)" /> method.</summary>
         [Test]
         public static unsafe void ThrowKeyNotFoundExceptionTest()
@@ -1074,12 +1124,35 @@ namespace TerraFX.UnitTests.Utilities
             );
         }
 
-        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowNotImplementedException" /> method.</summary>
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowKeyNotFoundException{TKey}(TKey, string, Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowKeyNotFoundExceptionExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowKeyNotFoundException("key", "collection", innerException),
+                Throws.InstanceOf<KeyNotFoundException>()
+                      .And.Message.Contains("'collection'")
+                      .And.InnerException.SameAs(innerException)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowNotImplementedException()" /> method.</summary>
         [Test]
         public static unsafe void ThrowNotImplementedExceptionTest()
         {
             Assert.That(() => ExceptionUtilities.ThrowNotImplementedException(),
                 Throws.InstanceOf<NotImplementedException>()
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowNotImplementedException(Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowNotImplementedExceptionExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowNotImplementedException(innerException),
+                Throws.InstanceOf<NotImplementedException>()
+                      .And.InnerException.SameAs(innerException)
             );
         }
 
@@ -1103,6 +1176,18 @@ namespace TerraFX.UnitTests.Utilities
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(ulong, Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowOutOfMemoryExceptionUInt64ExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException(42UL, innerException),
+                Throws.InstanceOf<OutOfMemoryException>()
+                      .And.Message.Contains($"'{42UL}'")
+                      .And.InnerException.SameAs(innerException)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(nuint)" /> method.</summary>
         [Test]
         public static unsafe void ThrowOutOfMemoryExceptionNUIntTest()
@@ -1110,6 +1195,18 @@ namespace TerraFX.UnitTests.Utilities
             Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException((nuint)42),
                 Throws.InstanceOf<OutOfMemoryException>()
                       .And.Message.Contains($"'{(nuint)42}'")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(nuint, Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowOutOfMemoryExceptionNUIntExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException((nuint)42, innerException),
+                Throws.InstanceOf<OutOfMemoryException>()
+                      .And.Message.Contains($"'{(nuint)42}'")
+                      .And.InnerException.SameAs(innerException)
             );
         }
 
@@ -1123,6 +1220,18 @@ namespace TerraFX.UnitTests.Utilities
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(ulong, ulong, Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowOutOfMemoryExceptionUInt64UInt64ExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException(42UL, 24UL, innerException),
+                Throws.InstanceOf<OutOfMemoryException>()
+                      .And.Message.Contains($"'{42UL}x{24UL}'")
+                      .And.InnerException.SameAs(innerException)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(nuint, nuint)" /> method.</summary>
         [Test]
         public static unsafe void ThrowOutOfMemoryExceptionNUIntNUIntTest()
@@ -1130,6 +1239,18 @@ namespace TerraFX.UnitTests.Utilities
             Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException((nuint)42, (nuint)24),
                 Throws.InstanceOf<OutOfMemoryException>()
                       .And.Message.Contains($"'{(nuint)42}x{(nuint)24}'")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(nuint, nuint, Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowOutOfMemoryExceptionNUIntNUIntExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException((nuint)42, (nuint)24, innerException),
+                Throws.InstanceOf<OutOfMemoryException>()
+                      .And.Message.Contains($"'{(nuint)42}x{(nuint)24}'")
+                      .And.InnerException.SameAs(innerException)
             );
         }
 
@@ -1144,6 +1265,19 @@ namespace TerraFX.UnitTests.Utilities
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowTimeoutException(string, int, Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowTimeoutExceptionInt32ExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowTimeoutException("method", 42, innerException),
+                Throws.InstanceOf<TimeoutException>()
+                      .And.Message.Contains("'method'")
+                      .And.Message.Contains($"'{42}'")
+                      .And.InnerException.SameAs(innerException)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowTimeoutException(string, TimeSpan)" /> method.</summary>
         [Test]
         public static unsafe void ThrowTimeoutExceptionTimeSpanTest()
@@ -1152,6 +1286,19 @@ namespace TerraFX.UnitTests.Utilities
                 Throws.InstanceOf<TimeoutException>()
                       .And.Message.Contains("'method'")
                       .And.Message.Contains($"'{TimeSpan.FromMilliseconds(42).TotalMilliseconds}'")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowTimeoutException(string, TimeSpan, Exception?)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowTimeoutExceptionTimeSpanExceptionTest()
+        {
+            var innerException = new Exception();
+            Assert.That(() => ExceptionUtilities.ThrowTimeoutException("method", TimeSpan.FromMilliseconds(42), innerException),
+                Throws.InstanceOf<TimeoutException>()
+                      .And.Message.Contains("'method'")
+                      .And.Message.Contains($"'{TimeSpan.FromMilliseconds(42).TotalMilliseconds}'")
+                      .And.InnerException.SameAs(innerException)
             );
         }
     }
