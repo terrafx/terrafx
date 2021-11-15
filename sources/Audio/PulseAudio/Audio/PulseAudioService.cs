@@ -5,11 +5,11 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using TerraFX.Interop;
+using TerraFX.Interop.PulseAudio;
 using TerraFX.Threading;
-using static TerraFX.Interop.pa_context_flags;
-using static TerraFX.Interop.pa_context_state;
-using static TerraFX.Interop.Pulse;
+using static TerraFX.Interop.PulseAudio.pa_context_flags_t;
+using static TerraFX.Interop.PulseAudio.pa_context_state_t;
+using static TerraFX.Interop.PulseAudio.PulseAudio;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -23,8 +23,8 @@ namespace TerraFX.Audio
         private const int Running = 3;
         private const int Stopping = 4;
 
-        private readonly Lazy<IntPtr> _mainloop;
-        private readonly Lazy<IntPtr> _context;
+        private readonly Lazy<Pointer<pa_mainloop>> _mainloop;
+        private readonly Lazy<Pointer<pa_context>> _context;
         private readonly SemaphoreSlim _mainLoopMutex;
 
         private Thread? _mainLoopThread;
@@ -33,8 +33,8 @@ namespace TerraFX.Audio
         /// <summary>Initializes a new instance of the <see cref="PulseAudioService" /> class.</summary>
         public PulseAudioService()
         {
-            _mainloop = new Lazy<IntPtr>(CreateMainLoop, isThreadSafe: true);
-            _context = new Lazy<IntPtr>(CreateContext, isThreadSafe: true);
+            _mainloop = new Lazy<Pointer<pa_mainloop>>(CreateMainLoop, isThreadSafe: true);
+            _context = new Lazy<Pointer<pa_context>>(CreateContext, isThreadSafe: true);
             _mainLoopMutex = new SemaphoreSlim(initialCount: 1);
             _ = _state.Transition(to: Initialized);
         }
@@ -43,28 +43,28 @@ namespace TerraFX.Audio
         ~PulseAudioService() => DisposeAsync(false).Wait();
 
         /// <summary>Gets the underlying native pointer for the PulseAudio context.</summary>
-        public IntPtr Context => _context.Value;
+        public unsafe pa_context* Context => _context.Value;
 
         /// <summary>Gets the underlying native pointer for the PulseAudio main loop.</summary>
-        public IntPtr MainLoop => _mainloop.Value;
+        public unsafe pa_mainloop* MainLoop => _mainloop.Value;
 
-        private unsafe IntPtr CreateContext()
+        private unsafe Pointer<pa_context> CreateContext()
         {
             var api = pa_mainloop_get_api(MainLoop);
             var context = pa_context_new(api, null);
 
-            if (context == IntPtr.Zero)
+            if (context == null)
             {
                 ThrowExternalException(errorCode: -1, methodName: nameof(CreateContext));
             }
             return context;
         }
 
-        private IntPtr CreateMainLoop()
+        private unsafe Pointer<pa_mainloop> CreateMainLoop()
         {
             var mainloop = pa_mainloop_new();
 
-            if (mainloop == IntPtr.Zero)
+            if (mainloop == null)
             {
                 ThrowExternalException(errorCode: -1, methodName: nameof(CreateMainLoop));
             }
@@ -105,8 +105,11 @@ namespace TerraFX.Audio
                     }
                     catch (Exception)
                     {
-                        // Disconnect in case of an unhandled exception, so we're in a safe state to reconnect if the user wishes
-                        pa_context_disconnect(Context);
+                        unsafe
+                        {
+                            // Disconnect in case of an unhandled exception, so we're in a safe state to reconnect if the user wishes
+                            pa_context_disconnect(Context);
+                        }
 
                         _ = _state.Transition(to: Initialized);
                         throw;
@@ -140,16 +143,20 @@ namespace TerraFX.Audio
             return false;
         }
 
-        private async Task WaitForStateAsync(pa_context_state desired)
+        private async Task WaitForStateAsync(pa_context_state_t desired)
         {
-            pa_context_state current = default;
+            pa_context_state_t current = default;
 
             while (current != desired)
             {
                 try
                 {
                     await _mainLoopMutex.WaitAsync();
-                    current = pa_context_get_state(Context);
+
+                    unsafe
+                    {
+                        current = pa_context_get_state(Context);
+                    }
                 }
                 finally
                 {
@@ -175,11 +182,17 @@ namespace TerraFX.Audio
                 // TODO: make WaitAsync() timeout configurable
                 do
                 {
-                    pa_mainloop_wakeup(MainLoop);
+                    unsafe
+                    {
+                        pa_mainloop_wakeup(MainLoop);
+                    }
                 }
                 while (!await _mainLoopMutex.WaitAsync(millisecondsTimeout: 8, cancellationToken));
 
-                pa_mainloop_quit(MainLoop, retval: 1);
+                unsafe
+                {
+                    pa_mainloop_quit(MainLoop, retval: 1);
+                }
             }
             finally
             {
@@ -193,11 +206,11 @@ namespace TerraFX.Audio
         }
 
         // Small helper struct to explicitly capture state for EnumerateAudioDevices
-        private struct AudioDeviceEnumeratorHelper
+        private unsafe struct AudioDeviceEnumeratorHelper
         {
             public PulseAudioAdapterEnumerable Enumerable;
-            public IntPtr SourceOp;
-            public IntPtr SinkOp;
+            public pa_operation* SourceOp;
+            public pa_operation* SinkOp;
             public int Completed;
         }
 
@@ -224,7 +237,7 @@ namespace TerraFX.Audio
             return helper.Enumerable;
 
             [UnmanagedCallersOnly]
-            static void AddSourceDevice(IntPtr c, pa_source_info* i, int eol, void* userdata)
+            static void AddSourceDevice(pa_context* c, pa_source_info* i, int eol, void* userdata)
             {
                 var handle = GCHandle.FromIntPtr((IntPtr)userdata);
                 IAudioAdapter? adapter = null;
@@ -238,7 +251,7 @@ namespace TerraFX.Audio
             }
 
             [UnmanagedCallersOnly]
-            static void AddSinkDevice(IntPtr c, pa_sink_info* i, int eol, void* userdata)
+            static void AddSinkDevice(pa_context* c, pa_sink_info* i, int eol, void* userdata)
             {
                 var handle = GCHandle.FromIntPtr((IntPtr)userdata);
                 IAudioAdapter? adapter = null;
@@ -314,12 +327,18 @@ namespace TerraFX.Audio
 
                 if (_context.IsValueCreated)
                 {
-                    pa_context_unref(_context.Value);
+                    unsafe
+                    {
+                        pa_context_unref(_context.Value);
+                    }
                 }
 
                 if (_mainloop.IsValueCreated)
                 {
-                    pa_mainloop_free(_mainloop.Value);
+                    unsafe
+                    {
+                        pa_mainloop_free(_mainloop.Value);
+                    }
                 }
             }
 

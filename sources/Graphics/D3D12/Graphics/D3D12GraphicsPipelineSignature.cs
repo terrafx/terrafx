@@ -1,15 +1,16 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Interop;
+using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
-using static TerraFX.Utilities.D3D12Utilities;
-using static TerraFX.Interop.D3D_ROOT_SIGNATURE_VERSION;
-using static TerraFX.Interop.D3D12_DESCRIPTOR_RANGE_TYPE;
-using static TerraFX.Interop.D3D12_ROOT_SIGNATURE_FLAGS;
-using static TerraFX.Interop.D3D12_SHADER_VISIBILITY;
-using static TerraFX.Interop.Windows;
+using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_RANGE_TYPE;
+using static TerraFX.Interop.DirectX.D3D12_ROOT_SIGNATURE_FLAGS;
+using static TerraFX.Interop.DirectX.D3D12_SHADER_VISIBILITY;
+using static TerraFX.Interop.DirectX.D3D_ROOT_SIGNATURE_VERSION;
+using static TerraFX.Interop.DirectX.DirectX;
+using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics
@@ -138,9 +139,7 @@ namespace TerraFX.Graphics
                 rootSignatureDesc.pStaticSamplers = staticSamplers;
 
                 ThrowExternalExceptionIfFailed(D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &rootSignatureBlob, &rootSignatureErrorBlob), nameof(D3D12SerializeRootSignature));
-
-                var iid = IID_ID3D12RootSignature;
-                ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), &iid, (void**)&d3d12RootSignature), nameof(ID3D12Device.CreateRootSignature));
+                ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), __uuidof<ID3D12RootSignature>(), (void**)&d3d12RootSignature), nameof(ID3D12Device.CreateRootSignature));
 
                 return d3d12RootSignature;
             }

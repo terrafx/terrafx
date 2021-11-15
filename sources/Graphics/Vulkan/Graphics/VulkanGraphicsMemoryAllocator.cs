@@ -6,17 +6,17 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using TerraFX.Interop;
+using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
-using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkImageType;
-using static TerraFX.Interop.VkMemoryHeapFlags;
-using static TerraFX.Interop.VkMemoryPropertyFlags;
-using static TerraFX.Interop.VkPhysicalDeviceType;
-using static TerraFX.Interop.VkSampleCountFlags;
-using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Interop.Vulkan;
+using static TerraFX.Interop.Vulkan.VkImageType;
+using static TerraFX.Interop.Vulkan.VkMemoryHeapFlags;
+using static TerraFX.Interop.Vulkan.VkMemoryPropertyFlags;
+using static TerraFX.Interop.Vulkan.VkPhysicalDeviceType;
+using static TerraFX.Interop.Vulkan.VkSampleCountFlags;
+using static TerraFX.Interop.Vulkan.VkStructureType;
+using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics
 {

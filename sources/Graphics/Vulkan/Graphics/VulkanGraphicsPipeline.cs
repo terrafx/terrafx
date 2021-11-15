@@ -1,25 +1,25 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Interop;
+using TerraFX.Interop.Vulkan;
 using TerraFX.Numerics;
 using TerraFX.Threading;
-using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkColorComponentFlags;
-using static TerraFX.Interop.VkCompareOp;
-using static TerraFX.Interop.VkCullModeFlags;
-using static TerraFX.Interop.VkDynamicState;
-using static TerraFX.Interop.VkFormat;
-using static TerraFX.Interop.VkFrontFace;
-using static TerraFX.Interop.VkPrimitiveTopology;
-using static TerraFX.Interop.VkSampleCountFlags;
-using static TerraFX.Interop.VkShaderStageFlags;
-using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Interop.VkVertexInputRate;
-using static TerraFX.Interop.Vulkan;
+using static TerraFX.Interop.Vulkan.VkColorComponentFlags;
+using static TerraFX.Interop.Vulkan.VkCompareOp;
+using static TerraFX.Interop.Vulkan.VkCullModeFlags;
+using static TerraFX.Interop.Vulkan.VkDynamicState;
+using static TerraFX.Interop.Vulkan.VkFormat;
+using static TerraFX.Interop.Vulkan.VkFrontFace;
+using static TerraFX.Interop.Vulkan.VkPrimitiveTopology;
+using static TerraFX.Interop.Vulkan.VkSampleCountFlags;
+using static TerraFX.Interop.Vulkan.VkShaderStageFlags;
+using static TerraFX.Interop.Vulkan.VkStructureType;
+using static TerraFX.Interop.Vulkan.VkVertexInputRate;
+using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
+using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics
 {
@@ -258,7 +258,7 @@ namespace TerraFX.Graphics
                     pipelineVertexInputStateCreateInfo.vertexAttributeDescriptionCount = unchecked((uint)vertexInputAttributeDescriptions.Length);
                     pipelineVertexInputStateCreateInfo.pVertexAttributeDescriptions = pVertexInputAttributeDescriptions;
 
-                    ThrowExternalExceptionIfNotSuccess(vkCreateGraphicsPipelines(device.VulkanDevice, pipelineCache: VK_NULL_HANDLE, 1, &pipelineCreateInfo, pAllocator: null, &vulkanPipeline), nameof(vkCreateGraphicsPipelines));
+                    ThrowExternalExceptionIfNotSuccess(vkCreateGraphicsPipelines(device.VulkanDevice, pipelineCache: VkPipelineCache.NULL, 1, &pipelineCreateInfo, pAllocator: null, &vulkanPipeline), nameof(vkCreateGraphicsPipelines));
                 }
 
                 return vulkanPipeline;
@@ -287,7 +287,7 @@ namespace TerraFX.Graphics
 
         private void DisposeVulkanPipeline(VkPipeline vulkanPipeline)
         {
-            if (vulkanPipeline != VK_NULL_HANDLE)
+            if (vulkanPipeline != VkPipeline.NULL)
             {
                 vkDestroyPipeline(Device.VulkanDevice, vulkanPipeline, pAllocator: null);
             }

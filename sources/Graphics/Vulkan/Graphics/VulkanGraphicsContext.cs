@@ -1,27 +1,27 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Interop;
+using TerraFX.Interop.Vulkan;
 using TerraFX.Numerics;
 using TerraFX.Threading;
-using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkAccessFlags;
-using static TerraFX.Interop.VkCommandPoolCreateFlags;
-using static TerraFX.Interop.VkComponentSwizzle;
-using static TerraFX.Interop.VkDescriptorType;
-using static TerraFX.Interop.VkImageAspectFlags;
-using static TerraFX.Interop.VkImageLayout;
-using static TerraFX.Interop.VkImageViewType;
-using static TerraFX.Interop.VkIndexType;
-using static TerraFX.Interop.VkPipelineBindPoint;
-using static TerraFX.Interop.VkPipelineStageFlags;
-using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Interop.VkSubpassContents;
-using static TerraFX.Interop.Vulkan;
+using static TerraFX.Interop.Vulkan.VkAccessFlags;
+using static TerraFX.Interop.Vulkan.VkCommandPoolCreateFlags;
+using static TerraFX.Interop.Vulkan.VkComponentSwizzle;
+using static TerraFX.Interop.Vulkan.VkDescriptorType;
+using static TerraFX.Interop.Vulkan.VkImageAspectFlags;
+using static TerraFX.Interop.Vulkan.VkImageLayout;
+using static TerraFX.Interop.Vulkan.VkImageViewType;
+using static TerraFX.Interop.Vulkan.VkIndexType;
+using static TerraFX.Interop.Vulkan.VkPipelineBindPoint;
+using static TerraFX.Interop.Vulkan.VkPipelineStageFlags;
+using static TerraFX.Interop.Vulkan.VkStructureType;
+using static TerraFX.Interop.Vulkan.VkSubpassContents;
+using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics
 {
@@ -259,7 +259,7 @@ namespace TerraFX.Graphics
 
             var vulkanDescriptorSet = pipelineSignature.VulkanDescriptorSet;
 
-            if (vulkanDescriptorSet != VK_NULL_HANDLE)
+            if (vulkanDescriptorSet != VkDescriptorSet.NULL)
             {
                 var inputResourceRegions = primitive.InputResourceRegions;
                 var inputResourceRegionsLength = inputResourceRegions.Length;
@@ -380,7 +380,7 @@ namespace TerraFX.Graphics
             {
                 var vulkanFramebuffer = _vulkanFramebuffer.Value;
 
-                if (vulkanFramebuffer != VK_NULL_HANDLE)
+                if (vulkanFramebuffer != VkFramebuffer.NULL)
                 {
                     vkDestroyFramebuffer(Device.VulkanDevice, vulkanFramebuffer, pAllocator: null);
                 }
@@ -392,7 +392,7 @@ namespace TerraFX.Graphics
             {
                 var vulkanSwapChainImageView = _vulkanSwapChainImageView.Value;
 
-                if (vulkanSwapChainImageView != VK_NULL_HANDLE)
+                if (vulkanSwapChainImageView != VkImageView.NULL)
                 {
                     vkDestroyImageView(Device.VulkanDevice, vulkanSwapChainImageView, pAllocator: null);
                 }
@@ -493,7 +493,7 @@ namespace TerraFX.Graphics
         {
             AssertDisposing(_state);
 
-            if (vulkanCommandPool != VK_NULL_HANDLE)
+            if (vulkanCommandPool != VkCommandPool.NULL)
             {
                 vkDestroyCommandPool(Device.VulkanDevice, vulkanCommandPool, pAllocator: null);
             }
@@ -503,7 +503,7 @@ namespace TerraFX.Graphics
         {
             AssertDisposing(_state);
 
-            if (vulkanFramebuffer != VK_NULL_HANDLE)
+            if (vulkanFramebuffer != VkFramebuffer.NULL)
             {
                 vkDestroyFramebuffer(Device.VulkanDevice, vulkanFramebuffer, pAllocator: null);
             }
@@ -513,7 +513,7 @@ namespace TerraFX.Graphics
         {
             AssertDisposing(_state);
 
-            if (vulkanSwapchainImageView != VK_NULL_HANDLE)
+            if (vulkanSwapchainImageView != VkImageView.NULL)
             {
                 vkDestroyImageView(Device.VulkanDevice, vulkanSwapchainImageView, pAllocator: null);
             }

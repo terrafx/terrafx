@@ -3,12 +3,13 @@
 // This file includes code based on the MemoryBlock class from https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator/
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
-using TerraFX.Interop;
+using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
-using static TerraFX.Utilities.D3D12Utilities;
-using static TerraFX.Interop.D3D12_HEAP_FLAGS;
-using static TerraFX.Interop.Windows;
+using static TerraFX.Interop.DirectX.D3D12;
+using static TerraFX.Interop.DirectX.D3D12_HEAP_FLAGS;
+using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics
@@ -72,9 +73,7 @@ namespace TerraFX.Graphics
             var heapType = collection.D3D12HeapType;
 
             var heapDesc = new D3D12_HEAP_DESC(Size, heapType, GetAlignment(heapFlags), heapFlags);
-
-            var iid = IID_ID3D12Heap;
-            ThrowExternalExceptionIfFailed(d3d12Device->CreateHeap(&heapDesc, &iid, (void**)&d3d12Heap), nameof(ID3D12Device.CreateHeap));
+            ThrowExternalExceptionIfFailed(d3d12Device->CreateHeap(&heapDesc, __uuidof<ID3D12Heap>(), (void**)&d3d12Heap), nameof(ID3D12Device.CreateHeap));
 
             return d3d12Heap;
         }

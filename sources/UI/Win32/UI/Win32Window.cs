@@ -6,16 +6,20 @@ using System.Threading;
 using TerraFX.Collections;
 using TerraFX.Graphics;
 using TerraFX.Graphics.Geometry2D;
-using TerraFX.Interop;
+using TerraFX.Interop.Windows;
 using TerraFX.Numerics;
 using TerraFX.Threading;
-using static TerraFX.Interop.Windows;
+using static TerraFX.Interop.Windows.HWND;
+using static TerraFX.Interop.Windows.SW;
+using static TerraFX.Interop.Windows.Windows;
+using static TerraFX.Interop.Windows.WM;
+using static TerraFX.Interop.Windows.WS;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.Win32Utilities;
 using static TerraFX.UI.Win32WindowService;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.Win32Utilities;
 
 namespace TerraFX.UI
 {

@@ -1,27 +1,27 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Interop;
+using TerraFX.Interop.Vulkan;
 using TerraFX.Numerics;
 using TerraFX.Threading;
-using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkAttachmentLoadOp;
-using static TerraFX.Interop.VkAttachmentStoreOp;
-using static TerraFX.Interop.VkCompositeAlphaFlagsKHR;
-using static TerraFX.Interop.VkFormat;
-using static TerraFX.Interop.VkImageLayout;
-using static TerraFX.Interop.VkImageUsageFlags;
-using static TerraFX.Interop.VkPipelineBindPoint;
-using static TerraFX.Interop.VkPresentModeKHR;
-using static TerraFX.Interop.VkQueueFlags;
-using static TerraFX.Interop.VkSampleCountFlags;
-using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Interop.VkSurfaceTransformFlagsKHR;
-using static TerraFX.Interop.Vulkan;
+using static TerraFX.Interop.Vulkan.VkAttachmentLoadOp;
+using static TerraFX.Interop.Vulkan.VkAttachmentStoreOp;
+using static TerraFX.Interop.Vulkan.VkCompositeAlphaFlagsKHR;
+using static TerraFX.Interop.Vulkan.VkFormat;
+using static TerraFX.Interop.Vulkan.VkImageLayout;
+using static TerraFX.Interop.Vulkan.VkImageUsageFlags;
+using static TerraFX.Interop.Vulkan.VkPipelineBindPoint;
+using static TerraFX.Interop.Vulkan.VkPresentModeKHR;
+using static TerraFX.Interop.Vulkan.VkQueueFlags;
+using static TerraFX.Interop.Vulkan.VkSampleCountFlags;
+using static TerraFX.Interop.Vulkan.VkStructureType;
+using static TerraFX.Interop.Vulkan.VkSurfaceTransformFlagsKHR;
+using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
+using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics
 {
@@ -186,7 +186,7 @@ namespace TerraFX.Graphics
             Signal(CurrentContext.Fence);
 
             var presentCompletionGraphicsFence = PresentCompletionFence;
-            ThrowExternalExceptionIfNotSuccess(vkAcquireNextImageKHR(VulkanDevice, vulkanSwapchain, timeout: ulong.MaxValue, semaphore: VK_NULL_HANDLE, presentCompletionGraphicsFence.VulkanFence, (uint*)&contextIndex), nameof(vkAcquireNextImageKHR));
+            ThrowExternalExceptionIfNotSuccess(vkAcquireNextImageKHR(VulkanDevice, vulkanSwapchain, timeout: ulong.MaxValue, semaphore: VkSemaphore.NULL, presentCompletionGraphicsFence.VulkanFence, (uint*)&contextIndex), nameof(vkAcquireNextImageKHR));
 
             presentCompletionGraphicsFence.Wait();
             presentCompletionGraphicsFence.Reset();
@@ -365,7 +365,7 @@ namespace TerraFX.Graphics
                 default:
                 {
                     ThrowForUnsupportedSurfaceKind(Surface.Kind.ToString());
-                    vulkanSurface = VK_NULL_HANDLE;
+                    vulkanSurface = VkSurfaceKHR.NULL;
                     break;
                 }
             }
@@ -462,7 +462,7 @@ namespace TerraFX.Graphics
         {
             AssertDisposing(_state);
 
-            if (vulkanRenderPass != VK_NULL_HANDLE)
+            if (vulkanRenderPass != VkRenderPass.NULL)
             {
                 vkDestroyRenderPass(VulkanDevice, vulkanRenderPass, pAllocator: null);
             }
@@ -472,7 +472,7 @@ namespace TerraFX.Graphics
         {
             AssertDisposing(_state);
 
-            if (vulkanSurface != VK_NULL_HANDLE)
+            if (vulkanSurface != VkSurfaceKHR.NULL)
             {
                 vkDestroySurfaceKHR(Adapter.Service.VulkanInstance, vulkanSurface, pAllocator: null);
             }
@@ -482,7 +482,7 @@ namespace TerraFX.Graphics
         {
             AssertDisposing(_state);
 
-            if (vulkanSwapchain != VK_NULL_HANDLE)
+            if (vulkanSwapchain != VkSwapchainKHR.NULL)
             {
                 vkDestroySwapchainKHR(VulkanDevice, vulkanSwapchain, pAllocator: null);
             }
@@ -541,7 +541,7 @@ namespace TerraFX.Graphics
             var presentCompletionGraphicsFence = PresentCompletionFence;
 
             int contextIndex;
-            ThrowExternalExceptionIfNotSuccess(vkAcquireNextImageKHR(VulkanDevice, vulkanSwapchain, timeout: ulong.MaxValue, semaphore: VK_NULL_HANDLE, presentCompletionGraphicsFence.VulkanFence, (uint*)&contextIndex), nameof(vkAcquireNextImageKHR));
+            ThrowExternalExceptionIfNotSuccess(vkAcquireNextImageKHR(VulkanDevice, vulkanSwapchain, timeout: ulong.MaxValue, semaphore: VkSemaphore.NULL, presentCompletionGraphicsFence.VulkanFence, (uint*)&contextIndex), nameof(vkAcquireNextImageKHR));
             _contextIndex = contextIndex;
 
             presentCompletionGraphicsFence.Wait();

@@ -1,17 +1,17 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Interop;
+using TerraFX.Interop.Vulkan;
 using TerraFX.Numerics;
 using TerraFX.Threading;
-using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkDescriptorPoolCreateFlags;
-using static TerraFX.Interop.VkDescriptorType;
-using static TerraFX.Interop.VkFormat;
-using static TerraFX.Interop.VkShaderStageFlags;
-using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Interop.Vulkan;
+using static TerraFX.Interop.Vulkan.VkDescriptorPoolCreateFlags;
+using static TerraFX.Interop.Vulkan.VkDescriptorType;
+using static TerraFX.Interop.Vulkan.VkFormat;
+using static TerraFX.Interop.Vulkan.VkShaderStageFlags;
+using static TerraFX.Interop.Vulkan.VkStructureType;
+using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics
 {
@@ -72,7 +72,7 @@ namespace TerraFX.Graphics
 
         private VkDescriptorPool CreateVulkanDescriptorPool()
         {
-            VkDescriptorPool vulkanDescriptorPool = VK_NULL_HANDLE;
+            var vulkanDescriptorPool = VkDescriptorPool.NULL;
             var vulkanDescriptorPoolSizes = Array.Empty<VkDescriptorPoolSize>();
 
             var descriptorPoolCreateInfo = new VkDescriptorPoolCreateInfo {
@@ -158,10 +158,10 @@ namespace TerraFX.Graphics
 
         private VkDescriptorSet CreateVulkanDescriptorSet()
         {
-            VkDescriptorSet vulkanDescriptorSet = VK_NULL_HANDLE;
+            var vulkanDescriptorSet = VkDescriptorSet.NULL;
             var vulkanDescriptorPool = VulkanDescriptorPool;
 
-            if (vulkanDescriptorPool != VK_NULL_HANDLE)
+            if (vulkanDescriptorPool != VkDescriptorPool.NULL)
             {
                 var vulkanDescriptorSetLayout = VulkanDescriptorSetLayout;
 
@@ -249,7 +249,7 @@ namespace TerraFX.Graphics
             }
             else
             {
-                vulkanDescriptorSetLayout = VK_NULL_HANDLE;
+                vulkanDescriptorSetLayout = VkDescriptorSetLayout.NULL;
             }
 
             return vulkanDescriptorSetLayout;
@@ -285,7 +285,7 @@ namespace TerraFX.Graphics
 
             var descriptorSetLayout = VulkanDescriptorSetLayout;
 
-            if (descriptorSetLayout != VK_NULL_HANDLE)
+            if (descriptorSetLayout != VkDescriptorSetLayout.NULL)
             {
                 pipelineLayoutCreateInfo.setLayoutCount = 1;
                 pipelineLayoutCreateInfo.pSetLayouts = &descriptorSetLayout;
@@ -298,7 +298,7 @@ namespace TerraFX.Graphics
 
         private void DisposeVulkanDescriptorPool(VkDescriptorPool vulkanDescriptorPool)
         {
-            if (vulkanDescriptorPool != VK_NULL_HANDLE)
+            if (vulkanDescriptorPool != VkDescriptorPool.NULL)
             {
                 vkDestroyDescriptorPool(Device.VulkanDevice, vulkanDescriptorPool, pAllocator: null);
             }
@@ -306,7 +306,7 @@ namespace TerraFX.Graphics
 
         private void DisposeVulkanDescriptorSet(VkDescriptorSet vulkanDescriptorSet)
         {
-            if (vulkanDescriptorSet != VK_NULL_HANDLE)
+            if (vulkanDescriptorSet != VkDescriptorSet.NULL)
             {
                 _ = vkFreeDescriptorSets(Device.VulkanDevice, VulkanDescriptorPool, 1, &vulkanDescriptorSet);
             }
@@ -314,7 +314,7 @@ namespace TerraFX.Graphics
 
         private void DisposeVulkanDescriptorSetLayout(VkDescriptorSetLayout vulkanDescriptorSetLayout)
         {
-            if (vulkanDescriptorSetLayout != VK_NULL_HANDLE)
+            if (vulkanDescriptorSetLayout != VkDescriptorSetLayout.NULL)
             {
                 vkDestroyDescriptorSetLayout(Device.VulkanDevice, vulkanDescriptorSetLayout, pAllocator: null);
             }
@@ -322,7 +322,7 @@ namespace TerraFX.Graphics
 
         private void DisposeVulkanPipelineLayout(VkPipelineLayout vulkanPipelineLayout)
         {
-            if (vulkanPipelineLayout != VK_NULL_HANDLE)
+            if (vulkanPipelineLayout != VkPipelineLayout.NULL)
             {
                 vkDestroyPipelineLayout(Device.VulkanDevice, vulkanPipelineLayout, pAllocator: null);
             }

@@ -7,19 +7,19 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using TerraFX.Interop;
+using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
-using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkDebugUtilsMessageSeverityFlagsEXT;
-using static TerraFX.Interop.VkDebugUtilsMessageTypeFlagsEXT;
-using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Interop.Vulkan;
+using static TerraFX.Interop.Vulkan.VkDebugUtilsMessageSeverityFlagsEXT;
+using static TerraFX.Interop.Vulkan.VkDebugUtilsMessageTypeFlagsEXT;
+using static TerraFX.Interop.Vulkan.VkStructureType;
+using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
+using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics
 {
@@ -376,7 +376,7 @@ namespace TerraFX.Graphics
         {
             AssertDisposing(_state);
 
-            if (_vulkanDebugUtilsMessenger != VK_NULL_HANDLE)
+            if (_vulkanDebugUtilsMessenger != VkDebugUtilsMessengerEXT.NULL)
             {
                 var vkDestroyDebugUtilsMessengerEXT = (delegate* unmanaged<IntPtr, VkDebugUtilsMessengerEXT, VkAllocationCallbacks*, void>)vkGetInstanceProcAddr(vulkanInstance, VKDESTROYDEBUGUTILSMESSENGEREXT_FUNCTION_NAME.GetPointer());
                 vkDestroyDebugUtilsMessengerEXT(vulkanInstance, _vulkanDebugUtilsMessenger, null);

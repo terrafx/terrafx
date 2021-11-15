@@ -1,12 +1,10 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using TerraFX.Interop;
-
+using TerraFX.Interop.PulseAudio;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Audio
@@ -24,12 +22,12 @@ namespace TerraFX.Audio
 
         private readonly List<IAudioAdapter> _backingCollection;
         private readonly Thread _eventLoopThread;
-        private readonly unsafe delegate* unmanaged<IntPtr, pa_source_info*, int, void*, void> _sourceCallback;
-        private readonly unsafe delegate* unmanaged<IntPtr, pa_sink_info*, int, void*, void> _sinkCallback;
+        private readonly unsafe delegate* unmanaged<pa_context*, pa_source_info*, int, void*, void> _sourceCallback;
+        private readonly unsafe delegate* unmanaged<pa_context*, pa_sink_info*, int, void*, void> _sinkCallback;
 
         private TaskCompletionSource<bool> _completeSignal;
 
-        internal unsafe PulseAudioAdapterEnumerable(Thread eventLoopThread, delegate* unmanaged<IntPtr, pa_source_info*, int, void*, void> sourceCallback, delegate* unmanaged<IntPtr, pa_sink_info*, int, void*, void> sinkCallback)
+        internal unsafe PulseAudioAdapterEnumerable(Thread eventLoopThread, delegate* unmanaged<pa_context*, pa_source_info*, int, void*, void> sourceCallback, delegate* unmanaged<pa_context*, pa_sink_info*, int, void*, void> sinkCallback)
         {
             _backingCollection = new List<IAudioAdapter>(DefaultAudioAdapterCount);
             _eventLoopThread = eventLoopThread;
@@ -39,9 +37,9 @@ namespace TerraFX.Audio
             _completeSignal = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
         }
 
-        internal unsafe delegate* unmanaged<IntPtr, pa_source_info*, int, void*, void> SourceCallback => _sourceCallback;
+        internal unsafe delegate* unmanaged<pa_context*, pa_source_info*, int, void*, void> SourceCallback => _sourceCallback;
 
-        internal unsafe delegate* unmanaged<IntPtr, pa_sink_info*, int, void*, void> SinkCallback => _sinkCallback;
+        internal unsafe delegate* unmanaged<pa_context*, pa_sink_info*, int, void*, void> SinkCallback => _sinkCallback;
 
         private void SetCompleteSignal(bool value)
         {

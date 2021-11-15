@@ -4,11 +4,12 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
-using TerraFX.Interop;
-using static TerraFX.Interop.Windows;
+using TerraFX.Interop.DirectX;
+using static TerraFX.Interop.DirectX.D3D;
+using static TerraFX.Interop.DirectX.DirectX;
+using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -62,7 +63,7 @@ namespace TerraFX.Samples
 
         protected unsafe GraphicsShader CompileShader(GraphicsDevice graphicsDevice, GraphicsShaderKind kind, string shaderName, string entryPointName)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && (_serviceProvider == Program.s_d3d12GraphicsServiceProvider))
+            if (OperatingSystem.IsWindowsVersionAtLeast(10) && (_serviceProvider == Program.s_d3d12GraphicsServiceProvider))
             {
                 var assetName = $"{shaderName}{kind}.hlsl";
 
