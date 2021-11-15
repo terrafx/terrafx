@@ -7,12 +7,12 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using TerraFX.Interop;
+using TerraFX.Interop.PulseAudio;
 using TerraFX.Threading;
-using static TerraFX.Interop.pa_sample_format;
-using static TerraFX.Interop.pa_seek_mode;
-using static TerraFX.Interop.pa_stream_flags;
-using static TerraFX.Interop.Pulse;
+using static TerraFX.Interop.PulseAudio.pa_sample_format_t;
+using static TerraFX.Interop.PulseAudio.pa_seek_mode_t;
+using static TerraFX.Interop.PulseAudio.pa_stream_flags_t;
+using static TerraFX.Interop.PulseAudio.PulseAudio;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -29,11 +29,11 @@ namespace TerraFX.Audio
 
         private static readonly byte[] s_playbackName = Encoding.UTF8.GetBytes("Playback");
 
-        private readonly IntPtr _context;
+        private readonly unsafe pa_context* _context;
         private readonly Pipe _sampleDataPipe;
-        private readonly Lazy<IntPtr> _stream;
+        private readonly Lazy<Pointer<pa_stream>> _stream;
         private readonly ValueLazy<GCHandle> _writeDelegateHandle;
-        private readonly unsafe delegate* unmanaged<IntPtr, nuint, void*, void> _writeDelegate;
+        private readonly unsafe delegate* unmanaged<pa_stream*, nuint, void*, void> _writeDelegate;
         private readonly ManualResetValueTaskSource<int> _writeRequest;
 
         private VolatileState _state;
@@ -46,12 +46,12 @@ namespace TerraFX.Audio
 
         private GCHandle WriteDelegateHandle => _writeDelegateHandle.Value;
 
-        private IntPtr Stream => _stream.Value;
+        private unsafe pa_stream* Stream => _stream.Value;
 
         /// <summary>Initializes a new instance of the <see cref="PulseAudioPlaybackDevice" /> class.</summary>
-        internal unsafe PulseAudioPlaybackDevice(IAudioAdapter adapter, IntPtr context)
+        internal unsafe PulseAudioPlaybackDevice(IAudioAdapter adapter, pa_context* context)
         {
-            Assert(AssertionsEnabled && (context != IntPtr.Zero));
+            Assert(AssertionsEnabled && (context != null));
 
             if (adapter.DeviceType != AudioDeviceType.Playback)
             {
@@ -60,7 +60,7 @@ namespace TerraFX.Audio
 
             _context = context;
             _sampleDataPipe = new Pipe();
-            _stream = new Lazy<IntPtr>(CreateStream, isThreadSafe: true);
+            _stream = new Lazy<Pointer<pa_stream>>(CreateStream, isThreadSafe: true);
             _writeDelegateHandle = new ValueLazy<GCHandle>(CreateHandle);
             _writeDelegate = &WriteCallback;
             _writeRequest = new ManualResetValueTaskSource<int>() {
@@ -77,7 +77,7 @@ namespace TerraFX.Audio
 
         private GCHandle CreateHandle() => GCHandle.Alloc(this);
 
-        private unsafe IntPtr CreateStream()
+        private unsafe Pointer<pa_stream> CreateStream()
         {
             pa_sample_spec spec;
 
@@ -85,20 +85,20 @@ namespace TerraFX.Audio
             spec.format = GetSampleFormat(Adapter);
             spec.rate = (uint)Adapter.SampleRate;
 
-            IntPtr stream;
+            pa_stream* stream;
             fixed(byte* streamName = s_playbackName)
             {
                 stream = pa_stream_new(_context, (sbyte*)streamName, &spec, null);
             }
 
-            Assert(AssertionsEnabled && (stream != IntPtr.Zero));
+            Assert(AssertionsEnabled && (stream != null));
 
             var userdata = (void*)GCHandle.ToIntPtr(WriteDelegateHandle);
             pa_stream_set_write_callback(stream, _writeDelegate, userdata);
 
             return stream;
 
-            static pa_sample_format GetSampleFormat(IAudioAdapter adapter)
+            static pa_sample_format_t GetSampleFormat(IAudioAdapter adapter)
             {
                 // TODO: make this return some appropriate value
                 return PA_SAMPLE_S16LE;
@@ -110,7 +110,7 @@ namespace TerraFX.Audio
         private short _lastToken = -1; // cache the previous token used so we can detect cases where we're called twice
 
         [UnmanagedCallersOnly]
-        private static unsafe void WriteCallback(IntPtr stream, nuint length, void* userdata)
+        private static unsafe void WriteCallback(pa_stream* stream, nuint length, void* userdata)
         {
             var handle = GCHandle.FromIntPtr((IntPtr)userdata);
             var device = (PulseAudioPlaybackDevice)handle.Target!;
@@ -123,7 +123,7 @@ namespace TerraFX.Audio
         }
 
         /// <summary>Resets the playback device to a usable state if it was completed.</summary>
-        public void Reset()
+        public unsafe void Reset()
         {
             _state.Transition(from: Completed, to: Initialized);
             Assert(AssertionsEnabled && (pa_stream_disconnect(Stream) == 0));
@@ -137,7 +137,7 @@ namespace TerraFX.Audio
 
             unsafe
             {
-                if (pa_stream_connect_playback(Stream, null, null, PA_STREAM_NOFLAGS, null, IntPtr.Zero) != 0)
+                if (pa_stream_connect_playback(Stream, null, null, PA_STREAM_NOFLAGS, null, null) != 0)
                 {
                     ThrowExternalException(nameof(pa_stream_connect_playback), pa_context_errno(_context));
                 }
@@ -220,7 +220,7 @@ namespace TerraFX.Audio
             GC.SuppressFinalize(this);
         }
 
-        private void Dispose(bool isDisposing)
+        private unsafe void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 

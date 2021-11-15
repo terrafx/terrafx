@@ -107,17 +107,17 @@ namespace TerraFX.Samples.Graphics
 
                 pVertexBuffer[0] = new TextureVertex {
                     Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
-                    UV = new Vector2(1.0f, 0.0f)
+                    UV = new Vector2(0.5f, 0.0f)
                 };
 
                 pVertexBuffer[1] = new TextureVertex {
                     Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
-                    UV = new Vector2(0.0f, 1.0f)
+                    UV = new Vector2(1.0f, 1.0f)
                 };
 
                 pVertexBuffer[2] = new TextureVertex {
                     Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
-                    UV = new Vector2(0.0f, 0.0f)
+                    UV = new Vector2(0.0f, 1.0f)
                 };
 
                 vertexStagingBuffer.UnmapAndWrite(in vertexBufferRegion);

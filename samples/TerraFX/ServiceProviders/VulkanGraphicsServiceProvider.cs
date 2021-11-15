@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
-using TerraFX.UI;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Samples.ServiceProviders

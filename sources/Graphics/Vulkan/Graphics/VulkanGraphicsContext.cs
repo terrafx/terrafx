@@ -1,27 +1,27 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Interop;
+using TerraFX.Interop.Vulkan;
 using TerraFX.Numerics;
 using TerraFX.Threading;
-using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkAccessFlags;
-using static TerraFX.Interop.VkCommandPoolCreateFlags;
-using static TerraFX.Interop.VkComponentSwizzle;
-using static TerraFX.Interop.VkDescriptorType;
-using static TerraFX.Interop.VkImageAspectFlags;
-using static TerraFX.Interop.VkImageLayout;
-using static TerraFX.Interop.VkImageViewType;
-using static TerraFX.Interop.VkIndexType;
-using static TerraFX.Interop.VkPipelineBindPoint;
-using static TerraFX.Interop.VkPipelineStageFlags;
-using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Interop.VkSubpassContents;
-using static TerraFX.Interop.Vulkan;
+using static TerraFX.Interop.Vulkan.VkAccessFlags;
+using static TerraFX.Interop.Vulkan.VkCommandPoolCreateFlags;
+using static TerraFX.Interop.Vulkan.VkComponentSwizzle;
+using static TerraFX.Interop.Vulkan.VkDescriptorType;
+using static TerraFX.Interop.Vulkan.VkImageAspectFlags;
+using static TerraFX.Interop.Vulkan.VkImageLayout;
+using static TerraFX.Interop.Vulkan.VkImageViewType;
+using static TerraFX.Interop.Vulkan.VkIndexType;
+using static TerraFX.Interop.Vulkan.VkPipelineBindPoint;
+using static TerraFX.Interop.Vulkan.VkPipelineStageFlags;
+using static TerraFX.Interop.Vulkan.VkStructureType;
+using static TerraFX.Interop.Vulkan.VkSubpassContents;
+using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics
 {
@@ -255,11 +255,11 @@ namespace TerraFX.Graphics
             var vulkanVertexBuffer = vertexBuffer.VulkanBuffer;
             var vulkanVertexBufferOffset = vertexBufferRegion.Offset;
 
-            vkCmdBindVertexBuffers(vulkanCommandBuffer, firstBinding: 0, bindingCount: 1, (ulong*)&vulkanVertexBuffer, &vulkanVertexBufferOffset);
+            vkCmdBindVertexBuffers(vulkanCommandBuffer, firstBinding: 0, bindingCount: 1, &vulkanVertexBuffer, &vulkanVertexBufferOffset);
 
             var vulkanDescriptorSet = pipelineSignature.VulkanDescriptorSet;
 
-            if (vulkanDescriptorSet != VK_NULL_HANDLE)
+            if (vulkanDescriptorSet != VkDescriptorSet.NULL)
             {
                 var inputResourceRegions = primitive.InputResourceRegions;
                 var inputResourceRegionsLength = inputResourceRegions.Length;
@@ -308,7 +308,7 @@ namespace TerraFX.Graphics
                     vkUpdateDescriptorSets(Device.VulkanDevice, 1, &writeDescriptorSet, 0, pDescriptorCopies: null);
                 }
 
-                vkCmdBindDescriptorSets(vulkanCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineSignature.VulkanPipelineLayout, firstSet: 0, 1, (ulong*)&vulkanDescriptorSet, dynamicOffsetCount: 0, pDynamicOffsets: null);
+                vkCmdBindDescriptorSets(vulkanCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineSignature.VulkanPipelineLayout, firstSet: 0, 1, &vulkanDescriptorSet, dynamicOffsetCount: 0, pDynamicOffsets: null);
             }
 
             ref readonly var indexBufferRegion = ref primitive.IndexBufferRegion;
@@ -345,7 +345,7 @@ namespace TerraFX.Graphics
             var submitInfo = new VkSubmitInfo {
                 sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
                 commandBufferCount = 1,
-                pCommandBuffers = (IntPtr*)&commandBuffer,
+                pCommandBuffers = &commandBuffer,
             };
 
             var executeGraphicsFence = WaitForExecuteCompletionFence;
@@ -380,7 +380,7 @@ namespace TerraFX.Graphics
             {
                 var vulkanFramebuffer = _vulkanFramebuffer.Value;
 
-                if (vulkanFramebuffer != VK_NULL_HANDLE)
+                if (vulkanFramebuffer != VkFramebuffer.NULL)
                 {
                     vkDestroyFramebuffer(Device.VulkanDevice, vulkanFramebuffer, pAllocator: null);
                 }
@@ -392,7 +392,7 @@ namespace TerraFX.Graphics
             {
                 var vulkanSwapChainImageView = _vulkanSwapChainImageView.Value;
 
-                if (vulkanSwapChainImageView != VK_NULL_HANDLE)
+                if (vulkanSwapChainImageView != VkImageView.NULL)
                 {
                     vkDestroyImageView(Device.VulkanDevice, vulkanSwapChainImageView, pAllocator: null);
                 }
@@ -410,7 +410,7 @@ namespace TerraFX.Graphics
                 commandPool = VulkanCommandPool,
                 commandBufferCount = 1,
             };
-            ThrowExternalExceptionIfNotSuccess(vkAllocateCommandBuffers(Device.VulkanDevice, &commandBufferAllocateInfo, (IntPtr*)&vulkanCommandBuffer), nameof(vkAllocateCommandBuffers));
+            ThrowExternalExceptionIfNotSuccess(vkAllocateCommandBuffers(Device.VulkanDevice, &commandBufferAllocateInfo, &vulkanCommandBuffer), nameof(vkAllocateCommandBuffers));
 
             return vulkanCommandBuffer;
         }
@@ -424,7 +424,7 @@ namespace TerraFX.Graphics
                 flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
                 queueFamilyIndex = Device.VulkanCommandQueueFamilyIndex,
             };
-            ThrowExternalExceptionIfNotSuccess(vkCreateCommandPool(Device.VulkanDevice, &commandPoolCreateInfo, pAllocator: null, (ulong*)&vulkanCommandPool), nameof(vkCreateCommandPool));
+            ThrowExternalExceptionIfNotSuccess(vkCreateCommandPool(Device.VulkanDevice, &commandPoolCreateInfo, pAllocator: null, &vulkanCommandPool), nameof(vkCreateCommandPool));
 
             return vulkanCommandPool;
         }
@@ -441,12 +441,12 @@ namespace TerraFX.Graphics
                 sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
                 renderPass = device.VulkanRenderPass,
                 attachmentCount = 1,
-                pAttachments = (ulong*)&swapChainImageView,
+                pAttachments = &swapChainImageView,
                 width = (uint)surface.Width,
                 height = (uint)surface.Height,
                 layers = 1,
             };
-            ThrowExternalExceptionIfNotSuccess(vkCreateFramebuffer(device.VulkanDevice, &frameBufferCreateInfo, pAllocator: null, (ulong*)&vulkanFramebuffer), nameof(vkCreateFramebuffer));
+            ThrowExternalExceptionIfNotSuccess(vkCreateFramebuffer(device.VulkanDevice, &frameBufferCreateInfo, pAllocator: null, &vulkanFramebuffer), nameof(vkCreateFramebuffer));
 
             return vulkanFramebuffer;
         }
@@ -474,7 +474,7 @@ namespace TerraFX.Graphics
                     layerCount = 1,
                 },
             };
-            ThrowExternalExceptionIfNotSuccess(vkCreateImageView(device.VulkanDevice, &swapChainImageViewCreateInfo, pAllocator: null, (ulong*)&swapChainImageView), nameof(vkCreateImageView));
+            ThrowExternalExceptionIfNotSuccess(vkCreateImageView(device.VulkanDevice, &swapChainImageViewCreateInfo, pAllocator: null, &swapChainImageView), nameof(vkCreateImageView));
 
             return swapChainImageView;
         }
@@ -483,9 +483,9 @@ namespace TerraFX.Graphics
         {
             AssertDisposing(_state);
 
-            if (vulkanCommandBuffer != null)
+            if (vulkanCommandBuffer != VkCommandBuffer.NULL)
             {
-                vkFreeCommandBuffers(Device.VulkanDevice, VulkanCommandPool, 1, (IntPtr*)&vulkanCommandBuffer);
+                vkFreeCommandBuffers(Device.VulkanDevice, VulkanCommandPool, 1, &vulkanCommandBuffer);
             }
         }
 
@@ -493,7 +493,7 @@ namespace TerraFX.Graphics
         {
             AssertDisposing(_state);
 
-            if (vulkanCommandPool != VK_NULL_HANDLE)
+            if (vulkanCommandPool != VkCommandPool.NULL)
             {
                 vkDestroyCommandPool(Device.VulkanDevice, vulkanCommandPool, pAllocator: null);
             }
@@ -503,7 +503,7 @@ namespace TerraFX.Graphics
         {
             AssertDisposing(_state);
 
-            if (vulkanFramebuffer != VK_NULL_HANDLE)
+            if (vulkanFramebuffer != VkFramebuffer.NULL)
             {
                 vkDestroyFramebuffer(Device.VulkanDevice, vulkanFramebuffer, pAllocator: null);
             }
@@ -513,7 +513,7 @@ namespace TerraFX.Graphics
         {
             AssertDisposing(_state);
 
-            if (vulkanSwapchainImageView != VK_NULL_HANDLE)
+            if (vulkanSwapchainImageView != VkImageView.NULL)
             {
                 vkDestroyImageView(Device.VulkanDevice, vulkanSwapchainImageView, pAllocator: null);
             }

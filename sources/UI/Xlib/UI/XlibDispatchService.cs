@@ -6,11 +6,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
-using TerraFX.Interop;
+using TerraFX.Interop.LibC;
+using TerraFX.Interop.Xlib;
 using TerraFX.Threading;
 using TerraFX.Utilities;
-using static TerraFX.Interop.Libc;
-using static TerraFX.Interop.Xlib;
+using static TerraFX.Interop.LibC.LibC;
+using static TerraFX.Interop.Xlib.Xlib;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.UI.XlibAtomId;
@@ -18,6 +19,7 @@ using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
+using XWindow = TerraFX.Interop.Xlib.Window;
 
 namespace TerraFX.UI
 {
@@ -30,11 +32,11 @@ namespace TerraFX.UI
 
         private readonly ConcurrentDictionary<Thread, XlibDispatcher> _dispatchers;
 
-        private ValueLazy<nuint[]> _atoms;
-        private ValueLazy<nuint> _defaultRootWindow;
+        private ValueLazy<Atom[]> _atoms;
+        private ValueLazy<XWindow> _defaultRootWindow;
         private ValueLazy<Pointer<Screen>> _defaultScreen;
-        private ValueLazy<IntPtr> _display;
-        private ValueLazy<nuint[]> _supportedAtoms;
+        private ValueLazy<Pointer<Display>> _display;
+        private ValueLazy<Atom[]> _supportedAtoms;
 
         private VolatileState _state;
 
@@ -42,11 +44,11 @@ namespace TerraFX.UI
         {
             _dispatchers = new ConcurrentDictionary<Thread, XlibDispatcher>();
 
-            _display = new ValueLazy<IntPtr>(CreateDisplayHandle);
-            _defaultRootWindow = new ValueLazy<nuint>(GetDefaultRootWindow);
+            _display = new ValueLazy<Pointer<Display>>(CreateDisplayHandle);
+            _defaultRootWindow = new ValueLazy<XWindow>(GetDefaultRootWindow);
             _defaultScreen = new ValueLazy<Pointer<Screen>>(GetDefaultScreen);
-            _atoms = new ValueLazy<nuint[]>(CreateAtoms);
-            _supportedAtoms = new ValueLazy<nuint[]>(GetSupportedAtoms);
+            _atoms = new ValueLazy<Atom[]>(CreateAtoms);
+            _supportedAtoms = new ValueLazy<Atom[]>(GetSupportedAtoms);
 
             _ = _state.Transition(to: Initialized);
         }
@@ -83,19 +85,19 @@ namespace TerraFX.UI
         public override XlibDispatcher DispatcherForCurrentThread => GetDispatcher(Thread.CurrentThread);
 
         /// <summary>Gets the <c>Display</c> that was created for the instance.</summary>
-        public IntPtr Display => _display.Value;
+        public Display* Display => _display.Value;
 
         /// <summary>Gets the default root window associated with <see cref="Display" />.</summary>
-        public nuint DefaultRootWindow => _defaultRootWindow.Value;
+        public XWindow DefaultRootWindow => _defaultRootWindow.Value;
 
         /// <summary>Gets the default screen associated with <see cref="Display" />.</summary>
         public Screen* DefaultScreen => _defaultScreen.Value;
 
-        internal nuint GetAtom(XlibAtomId id) => _atoms.Value[(nuint)id];
+        internal Atom GetAtom(XlibAtomId id) => _atoms.Value[(nuint)id];
 
         internal bool GetAtomIsSupported(XlibAtomId id)
         {
-            var (supportedAtomIndex, supportedAtomBitIndex) = DivRem((nuint)id, SizeOf<nuint>() * 8);
+            var (supportedAtomIndex, supportedAtomBitIndex) = DivRem((nuint)id, SizeOf<Atom>() * 8);
             return (_supportedAtoms.Value[supportedAtomIndex] & ((nuint)1 << (int)supportedAtomBitIndex)) != 0;
         }
 
@@ -114,10 +116,10 @@ namespace TerraFX.UI
             return _dispatchers.TryGetValue(thread, out Unsafe.As<Dispatcher, XlibDispatcher>(ref dispatcher)!);
         }
 
-        private static IntPtr CreateDisplayHandle()
+        private static Pointer<Display> CreateDisplayHandle()
         {
             var display = XOpenDisplay(null);
-            ThrowForLastErrorIfZero(display, nameof(XOpenDisplay));
+            ThrowForLastErrorIfNull(display, nameof(XOpenDisplay));
 
             _ = XSetErrorHandler(&HandleXlibError);
             _ = XSetIOErrorHandler(&HandleXlibIOError);
@@ -126,7 +128,7 @@ namespace TerraFX.UI
         }
 
         [UnmanagedCallersOnly]
-        private static int HandleXlibError(IntPtr display, XErrorEvent* errorEvent)
+        private static int HandleXlibError(Display* display, XErrorEvent* errorEvent)
         {
             // Due to the asynchronous nature of Xlib, there can be a race between
             // the window being deleted and it being unmapped. This ignores the warning
@@ -145,13 +147,13 @@ namespace TerraFX.UI
         }
 
         [UnmanagedCallersOnly]
-        private static int HandleXlibIOError(IntPtr display) => 0;
+        private static int HandleXlibIOError(Display* display) => 0;
 
-        private nuint[] CreateAtoms()
+        private Atom[] CreateAtoms()
         {
-            var atoms = new nuint[AtomIdCount];
+            var atoms = new Atom[AtomIdCount];
 
-            fixed (nuint* pAtoms = atoms)
+            fixed (Atom* pAtoms = atoms)
             {
                 var atomNames = stackalloc sbyte*[(int)AtomIdCount] {
                     (sbyte*)XlibAtomName._NET_ACTIVE_WINDOW.GetPointer(),
@@ -257,19 +259,19 @@ namespace TerraFX.UI
             return atoms;
         }
 
-        private nuint GetDefaultRootWindow() => XDefaultRootWindow(Display);
+        private XWindow GetDefaultRootWindow() => XDefaultRootWindow(Display);
 
         private Pointer<Screen> GetDefaultScreen() => XDefaultScreenOfDisplay(Display);
 
-        private nuint[] GetSupportedAtoms()
+        private Atom[] GetSupportedAtoms()
         {
-            var supportedAtoms = new nuint[DivideRoundingUp(AtomIdCount, SizeOf<nuint>() * 8)];
+            var supportedAtoms = new Atom[DivideRoundingUp(AtomIdCount, SizeOf<Atom>() * 8)];
 
-            nuint actualType;
+            Atom actualType;
             int actualFormat;
             nuint itemCount;
             nuint bytesRemaining;
-            nuint* pSupportedAtoms;
+            Atom* pSupportedAtoms;
 
             _ = XGetWindowProperty(
                 Display,
@@ -299,8 +301,8 @@ namespace TerraFX.UI
                             continue;
                         }
 
-                        var (supportedAtomIndex, supportedAtomBitIndex) = DivRem(n, SizeOf<nuint>() * 8);
-                        supportedAtoms[supportedAtomIndex] |= (nuint)1 << (int)supportedAtomBitIndex;
+                        var (supportedAtomIndex, supportedAtomBitIndex) = DivRem(n, SizeOf<Atom>() * 8);
+                        supportedAtoms[supportedAtomIndex] = (Atom)(supportedAtoms[supportedAtomIndex] | ((nuint)1 << (int)supportedAtomBitIndex));
                         break;
                     }
                 }

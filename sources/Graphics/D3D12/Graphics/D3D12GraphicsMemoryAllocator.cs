@@ -5,17 +5,17 @@
 
 using System;
 using System.Collections.Generic;
-using TerraFX.Interop;
+using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
-using static TerraFX.Utilities.D3D12Utilities;
-using static TerraFX.Interop.D3D12_HEAP_FLAGS;
-using static TerraFX.Interop.D3D12_HEAP_TYPE;
-using static TerraFX.Interop.D3D12_RESOURCE_FLAGS;
-using static TerraFX.Interop.D3D12_RESOURCE_HEAP_TIER;
-using static TerraFX.Interop.Windows;
+using static TerraFX.Interop.DirectX.D3D12;
+using static TerraFX.Interop.DirectX.D3D12_HEAP_FLAGS;
+using static TerraFX.Interop.DirectX.D3D12_HEAP_TYPE;
+using static TerraFX.Interop.DirectX.D3D12_RESOURCE_FLAGS;
+using static TerraFX.Interop.DirectX.D3D12_RESOURCE_HEAP_TIER;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.Utilities.D3D12Utilities;
 
 namespace TerraFX.Graphics
 {

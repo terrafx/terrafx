@@ -1,10 +1,11 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Threading;
 using TerraFX.ApplicationModel;
 using TerraFX.Numerics;
@@ -20,49 +21,94 @@ namespace TerraFX.Samples
 
         internal static readonly ApplicationServiceProvider s_uiServiceProvider = OperatingSystem.IsWindows() ? new Win32WindowServiceProvider() : new XlibWindowServiceProvider();
 
+        [SupportedOSPlatform("windows10.0")]
         internal static readonly ApplicationServiceProvider s_d3d12GraphicsServiceProvider = new D3D12GraphicsServiceProvider();
 
         internal static readonly ApplicationServiceProvider s_vulkanGraphicsServiceProvider = new VulkanGraphicsServiceProvider(s_uiServiceProvider);
 
-        private static readonly Sample[] s_samples = {
+        [SupportedOSPlatform("windows10.0")]
+        private static readonly Sample[] s_d3d12Samples = {
             new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_d3d12GraphicsServiceProvider),
-            new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapters", s_vulkanGraphicsServiceProvider),
-
             new HelloWindow("D3D12.HelloWindow", s_d3d12GraphicsServiceProvider),
-            new HelloWindow("Vulkan.HelloWindow", s_vulkanGraphicsServiceProvider),
-
             new HelloTriangle("D3D12.HelloTriangle", s_d3d12GraphicsServiceProvider),
-            new HelloTriangle("Vulkan.HelloTriangle", s_vulkanGraphicsServiceProvider),
-
             new HelloQuad("D3D12.HelloQuad", s_d3d12GraphicsServiceProvider),
-            new HelloQuad("Vulkan.HelloQuad", s_vulkanGraphicsServiceProvider),
-
             new HelloTransform("D3D12.HelloTransform", s_d3d12GraphicsServiceProvider),
-            new HelloTransform("Vulkan.HelloTransform", s_vulkanGraphicsServiceProvider),
-
             new HelloTexture("D3D12.HelloTexture", s_d3d12GraphicsServiceProvider),
-            new HelloTexture("Vulkan.HelloTexture", s_vulkanGraphicsServiceProvider),
-
             new HelloTextureTransform("D3D12.HelloTextureTransform", s_d3d12GraphicsServiceProvider),
-            new HelloTextureTransform("Vulkan.HelloTextureTransform", s_vulkanGraphicsServiceProvider),
-
             new HelloTexture3D("D3D12.HelloTexture3D", s_d3d12GraphicsServiceProvider),
-            new HelloTexture3D("Vulkan.HelloTexture3D", s_vulkanGraphicsServiceProvider),
-
             new HelloSmoke("D3D12.HelloSmoke", true, s_d3d12GraphicsServiceProvider),
-            new HelloSmoke("Vulkan.HelloSmoke", true, s_vulkanGraphicsServiceProvider),
-
             new HelloSierpinskiPyramid("D3D12.HelloSierpinskiPyramid", 5, s_d3d12GraphicsServiceProvider),
-            new HelloSierpinskiPyramid("Vulkan.HelloSierpinskiPyramid", 5, s_vulkanGraphicsServiceProvider),
-
             new HelloSierpinskiQuad("D3D12.HelloSierpinskiQuad", 6, s_d3d12GraphicsServiceProvider),
-            new HelloSierpinskiQuad("Vulkan.HelloSierpinskiQuad", 6, s_vulkanGraphicsServiceProvider),
+        };
 
+        private static readonly Sample[] s_vulkanSamples = {
+            new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapters", s_vulkanGraphicsServiceProvider),
+            new HelloWindow("Vulkan.HelloWindow", s_vulkanGraphicsServiceProvider),
+            new HelloTriangle("Vulkan.HelloTriangle", s_vulkanGraphicsServiceProvider),
+            new HelloQuad("Vulkan.HelloQuad", s_vulkanGraphicsServiceProvider),
+            new HelloTransform("Vulkan.HelloTransform", s_vulkanGraphicsServiceProvider),
+            new HelloTexture("Vulkan.HelloTexture", s_vulkanGraphicsServiceProvider),
+            new HelloTextureTransform("Vulkan.HelloTextureTransform", s_vulkanGraphicsServiceProvider),
+            new HelloTexture3D("Vulkan.HelloTexture3D", s_vulkanGraphicsServiceProvider),
+            new HelloSmoke("Vulkan.HelloSmoke", true, s_vulkanGraphicsServiceProvider),
+            new HelloSierpinskiPyramid("Vulkan.HelloSierpinskiPyramid", 5, s_vulkanGraphicsServiceProvider),
+            new HelloSierpinskiQuad("Vulkan.HelloSierpinskiQuad", 6, s_vulkanGraphicsServiceProvider),
+        };
+
+        private static readonly Sample[] s_pulseAudioSamples = {
             new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Sync", false, s_pulseAudioServiceProvider),
             new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Async", true, s_pulseAudioServiceProvider),
 
             new PlaySampleAudio("PulseAudio.PlaySampleAudio", s_pulseAudioServiceProvider),
         };
+
+        private static IEnumerable<Sample> AllSamples
+        {
+            get
+            {
+                var samples = Enumerable.Empty<Sample>();
+
+                samples = samples.Concat(AudioSamples);
+                samples = samples.Concat(GraphicsSamples);
+
+                return samples;
+            }
+        }
+
+        private static IEnumerable<Sample> AudioSamples
+        {
+            get
+            {
+                var samples = Enumerable.Empty<Sample>();
+
+                if (OperatingSystem.IsLinux())
+                {
+                    samples = samples.Concat(s_pulseAudioSamples);
+                }
+
+                return samples;
+            }
+        }
+
+        private static IEnumerable<Sample> GraphicsSamples
+        {
+            get
+            {
+                var samples = Enumerable.Empty<Sample>();
+
+                if (OperatingSystem.IsWindowsVersionAtLeast(10))
+                {
+                    samples = samples.Concat(s_d3d12Samples);
+                }
+
+                if (OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
+                {
+                    samples = samples.Concat(s_vulkanSamples);
+                }
+
+                return samples;
+            }
+        }
 
         public static void Main(string[] args)
         {
@@ -76,14 +122,6 @@ namespace TerraFX.Samples
             {
                 RunSamples(args);
             }
-        }
-
-        private static bool IsSupported(Sample sample)
-        {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                 ? (sample.ServiceProvider != s_pulseAudioServiceProvider)
-                 : RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && (sample.ServiceProvider != s_d3d12GraphicsServiceProvider);
-            ;
         }
 
         private static bool Matches(string arg, params string[] keywords)
@@ -100,12 +138,9 @@ namespace TerraFX.Samples
 
             Console.WriteLine("Available Samples - Can specify multiple");
 
-            foreach (var sample in s_samples)
+            foreach (var sample in AllSamples)
             {
-                if (IsSupported(sample))
-                {
-                    Console.WriteLine($"    {sample.Name}");
-                }
+                Console.WriteLine($"    {sample.Name}");
             }
         }
 
@@ -169,28 +204,20 @@ namespace TerraFX.Samples
 
             if (args.Any((arg) => Matches(arg, "all")))
             {
-                var samples = s_samples;
-                foreach (var sample in samples)
+                foreach (var sample in AllSamples)
                 {
-                    if (IsSupported(sample))
-                    {
-                        RunSample(sample, TimeSpan.FromSeconds(2.5), windowLocation, windowSize);
-                        ranAnySamples = true;
-                    }
+                    RunSample(sample, TimeSpan.FromSeconds(2.5), windowLocation, windowSize);
+                    ranAnySamples = true;
                 }
             }
             else
             {
-                var samples = s_samples;
                 foreach (var arg in args)
                 {
-                    foreach (var sample in samples.Where((sample) => arg.Equals(sample.Name, StringComparison.OrdinalIgnoreCase)))
+                    foreach (var sample in AllSamples.Where((sample) => arg.Equals(sample.Name, StringComparison.OrdinalIgnoreCase)))
                     {
-                        if (IsSupported(sample))
-                        {
-                            RunSample(sample, TimeSpan.MaxValue, windowLocation, windowSize);
-                            ranAnySamples = true;
-                        }
+                        RunSample(sample, TimeSpan.MaxValue, windowLocation, windowSize);
+                        ranAnySamples = true;
                     }
                 }
             }

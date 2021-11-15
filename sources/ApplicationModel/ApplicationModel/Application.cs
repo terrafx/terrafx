@@ -3,7 +3,6 @@
 using System;
 using System.Threading;
 using TerraFX.Threading;
-using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.ApplicationModel

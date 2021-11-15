@@ -1,10 +1,10 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.	
 
 using TerraFX.Graphics;
-using TerraFX.Interop;
-using static TerraFX.Interop.VkBufferUsageFlags;
-using static TerraFX.Interop.VkImageUsageFlags;
-using static TerraFX.Interop.VkResult;
+using TerraFX.Interop.Vulkan;
+using static TerraFX.Interop.Vulkan.VkBufferUsageFlags;
+using static TerraFX.Interop.Vulkan.VkImageUsageFlags;
+using static TerraFX.Interop.Vulkan.VkResult;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Utilities

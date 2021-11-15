@@ -5,15 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using TerraFX.Interop;
+using TerraFX.Interop.Xlib;
 using TerraFX.Threading;
-using static TerraFX.Interop.Xlib;
+using static TerraFX.Interop.Xlib.Xlib;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.UI.XlibAtomId;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
+using XWindow = TerraFX.Interop.Xlib.Window;
 
 namespace TerraFX.UI
 {
@@ -22,7 +23,7 @@ namespace TerraFX.UI
     {
         private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.VulkanGraphicsService.RequiredExtensionNames";
 
-        private readonly ThreadLocal<Dictionary<nuint, XlibWindow>> _windows;
+        private readonly ThreadLocal<Dictionary<XWindow, XlibWindow>> _windows;
 
         private ValueLazy<GCHandle> _nativeHandle;
         private VolatileState _state;
@@ -35,7 +36,7 @@ namespace TerraFX.UI
             AppDomain.CurrentDomain.SetData(VulkanRequiredExtensionNamesDataName, vulkanRequiredExtensionNamesDataName);
 
             _nativeHandle = new ValueLazy<GCHandle>(() => GCHandle.Alloc(this, GCHandleType.Normal));
-            _windows = new ThreadLocal<Dictionary<nuint, XlibWindow>>(trackAllValues: true);
+            _windows = new ThreadLocal<Dictionary<XWindow, XlibWindow>>(trackAllValues: true);
 
             _ = _state.Transition(to: Initialized);
         }
@@ -80,7 +81,7 @@ namespace TerraFX.UI
             nint userData;
             GCHandle gcHandle;
             XlibWindowService windowService;
-            Dictionary<nuint, XlibWindow>? windows;
+            Dictionary<XWindow, XlibWindow>? windows;
             XlibWindow? window;
             bool forwardMessage;
 
@@ -110,7 +111,7 @@ namespace TerraFX.UI
                 {
                     if (windows is null)
                     {
-                        windows = new Dictionary<nuint, XlibWindow>(capacity: 4);
+                        windows = new Dictionary<XWindow, XlibWindow>(capacity: 4);
                         windowService._windows.Value = windows;
                     }
                     windows.Add(xevent->xany.window, window);
@@ -142,7 +143,7 @@ namespace TerraFX.UI
             }
             else
             {
-                nuint actualType;
+                Atom actualType;
                 int actualFormat;
                 nuint itemCount;
                 nuint bytesRemaining;
@@ -198,7 +199,7 @@ namespace TerraFX.UI
             }
         }
 
-        private static XlibWindow RemoveWindow(Dictionary<nuint, XlibWindow> windows, IntPtr display, nuint windowHandle, XlibDispatchService dispatchService)
+        private static XlibWindow RemoveWindow(Dictionary<XWindow, XlibWindow> windows, Display* display, XWindow windowHandle, XlibDispatchService dispatchService)
         {
             _ = windows.Remove(windowHandle, out var window);
             AssertNotNull(window);

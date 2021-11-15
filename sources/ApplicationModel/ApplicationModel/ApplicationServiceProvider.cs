@@ -2,7 +2,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using TerraFX.Audio;
 using TerraFX.Graphics;
 using TerraFX.Threading;

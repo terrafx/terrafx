@@ -7,19 +7,19 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using TerraFX.Interop;
+using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
-using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkDebugUtilsMessageSeverityFlagsEXT;
-using static TerraFX.Interop.VkDebugUtilsMessageTypeFlagsEXT;
-using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Interop.Vulkan;
+using static TerraFX.Interop.Vulkan.VkDebugUtilsMessageSeverityFlagsEXT;
+using static TerraFX.Interop.Vulkan.VkDebugUtilsMessageTypeFlagsEXT;
+using static TerraFX.Interop.Vulkan.VkStructureType;
+using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
+using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics
 {
@@ -140,16 +140,16 @@ namespace TerraFX.Graphics
         private static ReadOnlySpan<sbyte> VKDESTROYDEBUGUTILSMESSENGEREXT_FUNCTION_NAME => new sbyte[] { 0x76, 0x6B, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6F, 0x79, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4D, 0x65, 0x73, 0x73, 0x65, 0x6E, 0x67, 0x65, 0x72, 0x45, 0x58, 0x54, 0x00 };
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(IntPtr, uint*, IntPtr*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(VkInstance, uint*, VkPhysicalDevice*)" /> failed.</exception>
         public override IEnumerable<VulkanGraphicsAdapter> Adapters => _adapters.Value;
 
         /// <summary>Gets the underlying <see cref="VkInstance" /> for the service.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, IntPtr*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, VkInstance*)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException">The service has been disposed.</exception>
         public VkInstance VulkanInstance => _vulkanInstance.Value;
 
         [UnmanagedCallersOnly]
-        private static uint VulkanDebugUtilsMessengerCallback(VkDebugUtilsMessageSeverityFlagsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes, VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
+        private static VkBool32 VulkanDebugUtilsMessengerCallback(VkDebugUtilsMessageSeverityFlagsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes, VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
         {
             var message = GetUtf8Span(pCallbackData->pMessage).GetString();
             Debug.WriteLine(message);
@@ -227,7 +227,7 @@ namespace TerraFX.Graphics
                         instanceCreateInfo.pNext = &debugUtilsMessengerCreateInfo;
                     }
 
-                    ThrowExternalExceptionIfNotSuccess(vkCreateInstance(&instanceCreateInfo, pAllocator: null, (IntPtr*)&vulkanInstance), nameof(vkCreateInstance));
+                    ThrowExternalExceptionIfNotSuccess(vkCreateInstance(&instanceCreateInfo, pAllocator: null, &vulkanInstance), nameof(vkCreateInstance));
                 }
 
                 if (DebugModeEnabled)
@@ -376,7 +376,7 @@ namespace TerraFX.Graphics
         {
             AssertDisposing(_state);
 
-            if (_vulkanDebugUtilsMessenger != VK_NULL_HANDLE)
+            if (_vulkanDebugUtilsMessenger != VkDebugUtilsMessengerEXT.NULL)
             {
                 var vkDestroyDebugUtilsMessengerEXT = (delegate* unmanaged<IntPtr, VkDebugUtilsMessengerEXT, VkAllocationCallbacks*, void>)vkGetInstanceProcAddr(vulkanInstance, VKDESTROYDEBUGUTILSMESSENGEREXT_FUNCTION_NAME.GetPointer());
                 vkDestroyDebugUtilsMessengerEXT(vulkanInstance, _vulkanDebugUtilsMessenger, null);
@@ -395,7 +395,7 @@ namespace TerraFX.Graphics
             ThrowExternalExceptionIfNotSuccess(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, pPhysicalDevices: null), nameof(vkEnumeratePhysicalDevices));
 
             var physicalDevices = stackalloc VkPhysicalDevice[unchecked((int)physicalDeviceCount)];
-            ThrowExternalExceptionIfNotSuccess(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, (IntPtr*)physicalDevices), nameof(vkEnumeratePhysicalDevices));
+            ThrowExternalExceptionIfNotSuccess(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, physicalDevices), nameof(vkEnumeratePhysicalDevices));
 
             var adapters = ImmutableArray.CreateBuilder<VulkanGraphicsAdapter>(unchecked((int)physicalDeviceCount));
 

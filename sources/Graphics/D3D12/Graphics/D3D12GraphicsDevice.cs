@@ -1,17 +1,20 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Interop;
+using TerraFX.Interop.DirectX;
+using TerraFX.Interop.Windows;
 using TerraFX.Numerics;
 using TerraFX.Threading;
-using static TerraFX.Utilities.D3D12Utilities;
-using static TerraFX.Interop.D3D_FEATURE_LEVEL;
-using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_TYPE;
-using static TerraFX.Interop.D3D12_FEATURE;
-using static TerraFX.Interop.DXGI_FORMAT;
-using static TerraFX.Interop.DXGI_SWAP_EFFECT;
-using static TerraFX.Interop.Windows;
+using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_TYPE;
+using static TerraFX.Interop.DirectX.D3D12_FEATURE;
+using static TerraFX.Interop.DirectX.D3D_FEATURE_LEVEL;
+using static TerraFX.Interop.DirectX.DirectX;
+using static TerraFX.Interop.DirectX.DXGI;
+using static TerraFX.Interop.DirectX.DXGI_FORMAT;
+using static TerraFX.Interop.DirectX.DXGI_SWAP_EFFECT;
+using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
@@ -214,11 +217,9 @@ namespace TerraFX.Graphics
             ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
 
             ID3D12CommandQueue* d3d12CommandQueue;
-
             var commandQueueDesc = new D3D12_COMMAND_QUEUE_DESC();
-            var iid = IID_ID3D12CommandQueue;
-            ThrowExternalExceptionIfFailed(D3D12Device->CreateCommandQueue(&commandQueueDesc, &iid, (void**)&d3d12CommandQueue), nameof(ID3D12Device.CreateCommandQueue));
 
+            ThrowExternalExceptionIfFailed(D3D12Device->CreateCommandQueue(&commandQueueDesc, __uuidof<ID3D12CommandQueue>(), (void**)&d3d12CommandQueue), nameof(ID3D12Device.CreateCommandQueue));
             return d3d12CommandQueue;
         }
 
@@ -227,9 +228,7 @@ namespace TerraFX.Graphics
             ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
 
             ID3D12Device* d3d12Device;
-
-            var iid = IID_ID3D12Device;
-            ThrowExternalExceptionIfFailed(D3D12CreateDevice((IUnknown*)Adapter.DxgiAdapter, D3D_FEATURE_LEVEL_11_0, &iid, (void**)&d3d12Device), nameof(D3D12CreateDevice));
+            ThrowExternalExceptionIfFailed(D3D12CreateDevice((IUnknown*)Adapter.DxgiAdapter, D3D_FEATURE_LEVEL_11_0, __uuidof<ID3D12Device>(), (void**)&d3d12Device), nameof(D3D12CreateDevice));
 
             return d3d12Device;
         }
@@ -244,9 +243,7 @@ namespace TerraFX.Graphics
                 Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV,
                 NumDescriptors = (uint)Contexts.Length,
             };
-
-            var iid = IID_ID3D12DescriptorHeap;
-            ThrowExternalExceptionIfFailed(D3D12Device->CreateDescriptorHeap(&renderTargetDescriptorHeapDesc, &iid, (void**)&renderTargetDescriptorHeap), nameof(ID3D12Device.CreateDescriptorHeap));
+            ThrowExternalExceptionIfFailed(D3D12Device->CreateDescriptorHeap(&renderTargetDescriptorHeapDesc, __uuidof<ID3D12DescriptorHeap>(), (void**)&renderTargetDescriptorHeap), nameof(ID3D12Device.CreateDescriptorHeap));
 
             return renderTargetDescriptorHeap;
         }
@@ -271,7 +268,6 @@ namespace TerraFX.Graphics
             };
 
             var service = Adapter.Service;
-            var iid = IID_IDXGISwapChain3;
 
             switch (surface.Kind)
             {

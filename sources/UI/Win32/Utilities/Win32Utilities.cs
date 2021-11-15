@@ -1,7 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.	
 
 using System.Runtime.CompilerServices;
-using TerraFX.Interop;
+using TerraFX.Interop.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Utilities
@@ -11,7 +11,7 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowExternalExceptionIfFalse(BOOL value, string methodName)
         {
-            if (value == BOOL.FALSE)
+            if (!value)
             {
                 ThrowForLastError(methodName);
             }

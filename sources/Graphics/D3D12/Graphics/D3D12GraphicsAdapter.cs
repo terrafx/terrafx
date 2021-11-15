@@ -2,11 +2,11 @@
 
 using System;
 using System.Runtime.InteropServices;
-using TerraFX.Interop;
+using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
 using TerraFX.Utilities;
-using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 

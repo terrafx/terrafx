@@ -2,20 +2,20 @@
 
 using System;
 using System.Runtime.InteropServices;
-using TerraFX.Interop;
+using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
-using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkBorderColor;
-using static TerraFX.Interop.VkComponentSwizzle;
-using static TerraFX.Interop.VkFilter;
-using static TerraFX.Interop.VkFormat;
-using static TerraFX.Interop.VkImageAspectFlags;
-using static TerraFX.Interop.VkImageViewType;
-using static TerraFX.Interop.VkSamplerMipmapMode;
-using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Interop.Vulkan;
+using static TerraFX.Interop.Vulkan.VkBorderColor;
+using static TerraFX.Interop.Vulkan.VkComponentSwizzle;
+using static TerraFX.Interop.Vulkan.VkFilter;
+using static TerraFX.Interop.Vulkan.VkFormat;
+using static TerraFX.Interop.Vulkan.VkImageAspectFlags;
+using static TerraFX.Interop.Vulkan.VkImageViewType;
+using static TerraFX.Interop.Vulkan.VkSamplerMipmapMode;
+using static TerraFX.Interop.Vulkan.VkStructureType;
+using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics
 {
@@ -25,7 +25,7 @@ namespace TerraFX.Graphics
         private const int Binding = 2;
         private const int Bound = 3;
 
-        private VkImage _vulkanImage;
+        private readonly VkImage _vulkanImage;
         private ValueLazy<VkImageView> _vulkanImageView;
         private ValueLazy<VkSampler> _vulkanSampler;
         private protected VolatileState _state;
@@ -53,22 +53,22 @@ namespace TerraFX.Graphics
         public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
         /// <summary>Gets the underlying <see cref="VkImage" /> for the buffer.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="vkBindImageMemory(IntPtr, ulong, ulong, ulong)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkBindImageMemory(VkDevice, VkImage, VkDeviceMemory, ulong)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException">The texture has been disposed.</exception>
         public VkImage VulkanImage => _vulkanImage;
 
         /// <summary>Gets the underlying <see cref="VkImageView" /> for the buffer.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="vkCreateImageView(IntPtr, VkImageViewCreateInfo*, VkAllocationCallbacks*, ulong*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkCreateImageView(VkDevice, VkImageViewCreateInfo*, VkAllocationCallbacks*, VkImageView*)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException">The texture has been disposed.</exception>
         public VkImageView VulkanImageView => _vulkanImageView.Value;
 
         /// <summary>Gets the underlying <see cref="VkSampler" /> for the buffer.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="vkCreateSampler(IntPtr, VkSamplerCreateInfo*, VkAllocationCallbacks*, ulong*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkCreateSampler(VkDevice, VkSamplerCreateInfo*, VkAllocationCallbacks*, VkSampler*)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException">The texture has been disposed.</exception>
         public VkSampler VulkanSampler => _vulkanSampler.Value;
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(IntPtr, ulong, ulong, ulong, uint, void**)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(VkDevice, VkDeviceMemory, ulong, ulong, uint, void**)" /> failed.</exception>
         public override T* Map<T>()
         {
             var device = Allocator.Device;
@@ -83,7 +83,7 @@ namespace TerraFX.Graphics
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(IntPtr, ulong, ulong, ulong, uint, void**)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(VkDevice, VkDeviceMemory, ulong, ulong, uint, void**)" /> failed.</exception>
         public override T* Map<T>(nuint rangeOffset, nuint rangeLength)
         {
             var device = Allocator.Device;
@@ -98,7 +98,7 @@ namespace TerraFX.Graphics
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(IntPtr, ulong, ulong, ulong, uint, void**)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(VkDevice, VkDeviceMemory, ulong, ulong, uint, void**)" /> failed.</exception>
         public override T* MapForRead<T>()
         {
             var device = Allocator.Device;
@@ -126,7 +126,7 @@ namespace TerraFX.Graphics
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(IntPtr, ulong, ulong, ulong, uint, void**)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(VkDevice, VkDeviceMemory, ulong, ulong, uint, void**)" /> failed.</exception>
         public override T* MapForRead<T>(nuint readRangeOffset, nuint readRangeLength)
         {
             var device = Allocator.Device;
@@ -156,7 +156,7 @@ namespace TerraFX.Graphics
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(IntPtr, uint, VkMappedMemoryRange*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(VkDevice, uint, VkMappedMemoryRange*)" /> failed.</exception>
         public override void Unmap()
         {
             var device = Allocator.Device;
@@ -168,7 +168,7 @@ namespace TerraFX.Graphics
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(IntPtr, uint, VkMappedMemoryRange*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(VkDevice, uint, VkMappedMemoryRange*)" /> failed.</exception>
         public override void UnmapAndWrite()
         {
             var device = Allocator.Device;
@@ -193,7 +193,7 @@ namespace TerraFX.Graphics
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(IntPtr, uint, VkMappedMemoryRange*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(VkDevice, uint, VkMappedMemoryRange*)" /> failed.</exception>
         public override void UnmapAndWrite(nuint writtenRangeOffset, nuint writtenRangeLength)
         {
             var device = Allocator.Device;
@@ -272,7 +272,7 @@ namespace TerraFX.Graphics
                 },
             };
 
-            ThrowExternalExceptionIfNotSuccess(vkCreateImageView(vulkanDevice, &imageViewCreateInfo, pAllocator: null, (ulong*)&vulkanImageView), nameof(vkCreateImageView));
+            ThrowExternalExceptionIfNotSuccess(vkCreateImageView(vulkanDevice, &imageViewCreateInfo, pAllocator: null, &vulkanImageView), nameof(vkCreateImageView));
 
             return vulkanImageView;
         }
@@ -297,14 +297,14 @@ namespace TerraFX.Graphics
                 borderColor = VK_BORDER_COLOR_INT_OPAQUE_WHITE
             };
 
-            ThrowExternalExceptionIfNotSuccess(vkCreateSampler(vulkanDevice, &samplerCreateInfo, pAllocator: null, (ulong*)&vulkanSampler), nameof(vkCreateSampler));
+            ThrowExternalExceptionIfNotSuccess(vkCreateSampler(vulkanDevice, &samplerCreateInfo, pAllocator: null, &vulkanSampler), nameof(vkCreateSampler));
 
             return vulkanSampler;
         }
 
         private void DisposeVulkanImage(VkImage vulkanImage)
         {
-            if (vulkanImage != VK_NULL_HANDLE)
+            if (vulkanImage != VkImage.NULL)
             {
                 vkDestroyImage(Allocator.Device.VulkanDevice, vulkanImage, pAllocator: null);
             }
@@ -312,7 +312,7 @@ namespace TerraFX.Graphics
 
         private void DisposeVulkanImageView(VkImageView vulkanImageView)
         {
-            if (vulkanImageView != VK_NULL_HANDLE)
+            if (vulkanImageView != VkImageView.NULL)
             {
                 vkDestroyImageView(Allocator.Device.VulkanDevice, vulkanImageView, pAllocator: null);
             }
@@ -320,7 +320,7 @@ namespace TerraFX.Graphics
 
         private void DisposeVulkanSampler(VkSampler vulkanSampler)
         {
-            if (vulkanSampler != VK_NULL_HANDLE)
+            if (vulkanSampler != VkSampler.NULL)
             {
                 vkDestroySampler(Allocator.Device.VulkanDevice, vulkanSampler, pAllocator: null);
             }

@@ -1,10 +1,13 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.	
 
+using System.Runtime.Versioning;
 using TerraFX.Graphics;
-using TerraFX.Interop;
-using static TerraFX.Interop.DXGI_FORMAT;
-using static TerraFX.Interop.Windows;
+using TerraFX.Interop.DirectX;
+using TerraFX.Interop.Windows;
+using static TerraFX.Interop.DirectX.DXGI_FORMAT;
 using static TerraFX.Utilities.ExceptionUtilities;
+
+[assembly: SupportedOSPlatform("windows10.0")]
 
 namespace TerraFX.Utilities
 {

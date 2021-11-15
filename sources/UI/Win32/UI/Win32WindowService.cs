@@ -5,15 +5,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using TerraFX.Interop;
+using TerraFX.Interop.Windows;
 using TerraFX.Threading;
-using static TerraFX.Interop.Windows;
+using static TerraFX.Interop.Windows.COLOR;
+using static TerraFX.Interop.Windows.CS;
+using static TerraFX.Interop.Windows.Windows;
+using static TerraFX.Interop.Windows.WM;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.Win32Utilities;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
+using static TerraFX.Utilities.Win32Utilities;
 
 namespace TerraFX.UI
 {
@@ -93,7 +96,7 @@ namespace TerraFX.UI
         }
 
         [UnmanagedCallersOnly]
-        private static nint ForwardWindowMessage(HWND hWnd, uint msg, nuint wParam, nint lParam)
+        private static LRESULT ForwardWindowMessage(HWND hWnd, uint msg, WPARAM wParam, LPARAM lParam)
         {
             nint userData;
             GCHandle gcHandle;

@@ -2,17 +2,17 @@
 
 using System;
 using System.Threading;
-using TerraFX.Interop;
+using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
-using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkFenceCreateFlags;
-using static TerraFX.Interop.VkResult;
-using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Interop.Vulkan;
+using static TerraFX.Interop.Vulkan.VkFenceCreateFlags;
+using static TerraFX.Interop.Vulkan.VkResult;
+using static TerraFX.Interop.Vulkan.VkStructureType;
+using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics
 {
@@ -48,7 +48,7 @@ namespace TerraFX.Graphics
         public override void Reset()
         {
             var vulkanFence = VulkanFence;
-            ThrowExternalExceptionIfNotSuccess(vkResetFences(Device.VulkanDevice, fenceCount: 1, (ulong*)&vulkanFence), nameof(vkResetFences));
+            ThrowExternalExceptionIfNotSuccess(vkResetFences(Device.VulkanDevice, fenceCount: 1, &vulkanFence), nameof(vkResetFences));
         }
 
         /// <inheritdoc />
@@ -94,7 +94,7 @@ namespace TerraFX.Graphics
                 pNext = null,
                 flags = flags,
             };
-            ThrowExternalExceptionIfNotSuccess(vkCreateFence(Device.VulkanDevice, &fenceCreateInfo, pAllocator: null, (ulong*)&vulkanFence), nameof(vkCreateFence));
+            ThrowExternalExceptionIfNotSuccess(vkCreateFence(Device.VulkanDevice, &fenceCreateInfo, pAllocator: null, &vulkanFence), nameof(vkCreateFence));
 
             return vulkanFence;
         }
@@ -103,7 +103,7 @@ namespace TerraFX.Graphics
         {
             AssertDisposing(_state);
 
-            if (vulkanFence != VK_NULL_HANDLE)
+            if (vulkanFence != VkFence.NULL)
             {
                 vkDestroyFence(Device.VulkanDevice, vulkanFence, pAllocator: null);
             }
@@ -116,7 +116,7 @@ namespace TerraFX.Graphics
             if (!fenceSignalled)
             {
                 var vulkanFence = VulkanFence;
-                var result = vkWaitForFences(Device.VulkanDevice, fenceCount: 1, (ulong*)&vulkanFence, waitAll: VK_TRUE, millisecondsTimeout);
+                var result = vkWaitForFences(Device.VulkanDevice, fenceCount: 1, &vulkanFence, waitAll: VK_TRUE, millisecondsTimeout);
 
                 if (result == VK_SUCCESS)
                 {

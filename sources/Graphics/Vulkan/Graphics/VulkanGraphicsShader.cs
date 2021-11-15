@@ -1,15 +1,15 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Interop;
+using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
-using static TerraFX.Utilities.VulkanUtilities;
-using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Interop.Vulkan;
+using static TerraFX.Interop.Vulkan.VkStructureType;
+using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
+using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics
 {
@@ -71,7 +71,7 @@ namespace TerraFX.Graphics
 
             fixed (VkShaderModuleCreateInfo* shaderModuleCreateInfo = &_vulkanShaderModuleCreateInfo)
             {
-                ThrowExternalExceptionIfNotSuccess(vkCreateShaderModule(Device.VulkanDevice, shaderModuleCreateInfo, pAllocator: null, (ulong*)&vulkanShaderModule), nameof(vkCreateShaderModule));
+                ThrowExternalExceptionIfNotSuccess(vkCreateShaderModule(Device.VulkanDevice, shaderModuleCreateInfo, pAllocator: null, &vulkanShaderModule), nameof(vkCreateShaderModule));
             }
 
             return vulkanShaderModule;
@@ -79,7 +79,7 @@ namespace TerraFX.Graphics
 
         private void DisposeVulkanShaderModule(VkShaderModule vulkanShaderModule)
         {
-            if (vulkanShaderModule != VK_NULL_HANDLE)
+            if (vulkanShaderModule != VkShaderModule.NULL)
             {
                 vkDestroyShaderModule(Device.VulkanDevice, vulkanShaderModule, pAllocator: null);
             }

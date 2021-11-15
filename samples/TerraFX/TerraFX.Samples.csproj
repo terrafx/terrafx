@@ -3,7 +3,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PublishTrimmed>false</PublishTrimmed>
     <TargetFrameworks>net6.0</TargetFrameworks>
   </PropertyGroup>
 

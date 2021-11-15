@@ -4,12 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Runtime.InteropServices;
-using TerraFX.Interop;
+using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
-using static TerraFX.Utilities.D3D12Utilities;
-using static TerraFX.Interop.DXGI_DEBUG_RLO_FLAGS;
-using static TerraFX.Interop.Windows;
+using static TerraFX.Interop.DirectX.DirectX;
+using static TerraFX.Interop.DirectX.DXGI;
+using static TerraFX.Interop.DirectX.DXGI_DEBUG_RLO_FLAGS;
+using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics
@@ -74,9 +76,7 @@ namespace TerraFX.Graphics
 
                 try
                 {
-                    var iid = IID_IDXGIDebug;
-
-                    if (SUCCEEDED(DXGIGetDebugInterface(&iid, (void**)&dxgiDebug)))
+                    if (SUCCEEDED(DXGIGetDebugInterface(__uuidof<IDXGIDebug>(), (void**)&dxgiDebug)))
                     {
                         // We don't want to throw if the debug interface fails to be created
                         _ = dxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL | DXGI_DEBUG_RLO_IGNORE_INTERNAL);
@@ -96,8 +96,7 @@ namespace TerraFX.Graphics
             IDXGIFactory2* dxgiFactory;
 
             var createFlags = (DebugModeEnabled && TryEnableDebugMode()) ? DXGI_CREATE_FACTORY_DEBUG : 0u;
-            var iid = IID_IDXGIFactory2;
-            ThrowExternalExceptionIfFailed(CreateDXGIFactory2(createFlags, &iid, (void**)&dxgiFactory), nameof(CreateDXGIFactory2));
+            ThrowExternalExceptionIfFailed(CreateDXGIFactory2(createFlags, __uuidof<IDXGIFactory2>(), (void**)&dxgiFactory), nameof(CreateDXGIFactory2));
 
             return dxgiFactory;
 
@@ -110,15 +109,12 @@ namespace TerraFX.Graphics
 
                 try
                 {
-                    var iid = IID_ID3D12Debug;
-
-                    if (SUCCEEDED(D3D12GetDebugInterface(&iid, (void**)&dxgiDebug)))
+                    if (SUCCEEDED(D3D12GetDebugInterface(__uuidof<ID3D12Debug>(), (void**)&dxgiDebug)))
                     {
                         // We don't want to throw if the debug interface fails to be created
                         dxgiDebug->EnableDebugLayer();
 
-                        iid = IID_ID3D12Debug1;
-                        if (SUCCEEDED(dxgiDebug->QueryInterface(&iid, (void**)&dxgiDebug1)))
+                        if (SUCCEEDED(dxgiDebug->QueryInterface(__uuidof<ID3D12Debug1>(), (void**)&dxgiDebug1)))
                         {
                             dxgiDebug1->SetEnableGPUBasedValidation(TRUE);
                             dxgiDebug1->SetEnableSynchronizedCommandQueueValidation(TRUE);
