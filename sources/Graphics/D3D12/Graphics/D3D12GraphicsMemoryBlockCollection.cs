@@ -7,41 +7,40 @@ using System;
 using System.Reflection;
 using TerraFX.Interop.DirectX;
 
-namespace TerraFX.Graphics
+namespace TerraFX.Graphics;
+
+/// <inheritdoc />
+public sealed class D3D12GraphicsMemoryBlockCollection : GraphicsMemoryBlockCollection
 {
-    /// <inheritdoc />
-    public sealed class D3D12GraphicsMemoryBlockCollection : GraphicsMemoryBlockCollection
+    private readonly D3D12_HEAP_FLAGS _d3d12HeapFlags;
+    private readonly D3D12_HEAP_TYPE _d3d12HeapType;
+
+    internal D3D12GraphicsMemoryBlockCollection(D3D12GraphicsDevice device, D3D12GraphicsMemoryAllocator allocator, D3D12_HEAP_FLAGS d3d12HeapFlags, D3D12_HEAP_TYPE d3d12HeapType)
+        : base(device, allocator)
     {
-        private readonly D3D12_HEAP_FLAGS _d3d12HeapFlags;
-        private readonly D3D12_HEAP_TYPE _d3d12HeapType;
-
-        internal D3D12GraphicsMemoryBlockCollection(D3D12GraphicsDevice device, D3D12GraphicsMemoryAllocator allocator, D3D12_HEAP_FLAGS d3d12HeapFlags, D3D12_HEAP_TYPE d3d12HeapType)
-            : base(device, allocator)
-        {
-            _d3d12HeapFlags = d3d12HeapFlags;
-            _d3d12HeapType = d3d12HeapType;
-        }
-
-        /// <inheritdoc cref="GraphicsMemoryBlockCollection.Allocator" />
-        public new D3D12GraphicsMemoryAllocator Allocator => (D3D12GraphicsMemoryAllocator)base.Allocator;
-
-        /// <summary>Gets the heap flags used when creating the <see cref="ID3D12Heap" /> instance for a memory block.</summary>
-        public D3D12_HEAP_FLAGS D3D12HeapFlags => _d3d12HeapFlags;
-
-        /// <summary>Gets the heap type used when creating the <see cref="ID3D12Heap" /> instance for a memory block.</summary>
-        public D3D12_HEAP_TYPE D3D12HeapType => _d3d12HeapType;
-
-        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-        public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
-
-        /// <inheritdoc />
-        protected override D3D12GraphicsMemoryBlock CreateBlock(ulong size) => (D3D12GraphicsMemoryBlock)Activator.CreateInstance(
-            typeof(D3D12GraphicsMemoryBlock<>).MakeGenericType(Allocator.Settings.RegionCollectionMetadataType!),
-            bindingAttr: BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.CreateInstance,
-            binder: null,
-            args: new object[] { Device, this, size },
-            culture: null,
-            activationAttributes: null
-        )!;
+        _d3d12HeapFlags = d3d12HeapFlags;
+        _d3d12HeapType = d3d12HeapType;
     }
+
+    /// <inheritdoc cref="GraphicsMemoryBlockCollection.Allocator" />
+    public new D3D12GraphicsMemoryAllocator Allocator => (D3D12GraphicsMemoryAllocator)base.Allocator;
+
+    /// <summary>Gets the heap flags used when creating the <see cref="ID3D12Heap" /> instance for a memory block.</summary>
+    public D3D12_HEAP_FLAGS D3D12HeapFlags => _d3d12HeapFlags;
+
+    /// <summary>Gets the heap type used when creating the <see cref="ID3D12Heap" /> instance for a memory block.</summary>
+    public D3D12_HEAP_TYPE D3D12HeapType => _d3d12HeapType;
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
+    public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
+
+    /// <inheritdoc />
+    protected override D3D12GraphicsMemoryBlock CreateBlock(ulong size) => (D3D12GraphicsMemoryBlock)Activator.CreateInstance(
+        typeof(D3D12GraphicsMemoryBlock<>).MakeGenericType(Allocator.Settings.RegionCollectionMetadataType!),
+        bindingAttr: BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.CreateInstance,
+        binder: null,
+        args: new object[] { Device, this, size },
+        culture: null,
+        activationAttributes: null
+    )!;
 }

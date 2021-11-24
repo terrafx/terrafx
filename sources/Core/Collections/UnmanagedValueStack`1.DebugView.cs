@@ -5,36 +5,35 @@ using System.Diagnostics;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.MathUtilities;
 
-namespace TerraFX.Collections
+namespace TerraFX.Collections;
+
+public partial struct UnmanagedValueStack<T>
 {
-    public partial struct UnmanagedValueStack<T>
+    internal sealed class DebugView
     {
-        internal sealed class DebugView
+        private readonly UnmanagedValueStack<T> _stack;
+
+        public DebugView(UnmanagedValueStack<T> stack)
         {
-            private readonly UnmanagedValueStack<T> _stack;
+            _stack = stack;
+        }
 
-            public DebugView(UnmanagedValueStack<T> stack)
+        public nuint Count => _stack.Count;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        public unsafe T[] Items
+        {
+            get
             {
-                _stack = stack;
-            }
+                var count = Min(_stack.Count, s_maxArrayLength);
+                var items = GC.AllocateUninitializedArray<T>((int)count);
 
-            public nuint Count => _stack.Count;
-
-            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-            public unsafe T[] Items
-            {
-                get
+                fixed (T* pItems = items)
                 {
-                    var count = Min(_stack.Count, s_maxArrayLength);
-                    var items = GC.AllocateUninitializedArray<T>((int)count);
-
-                    fixed (T* pItems = items)
-                    {
-                        var span = new UnmanagedSpan<T>(pItems, count);
-                        _stack.CopyTo(span);
-                    }
-                    return items;
+                    var span = new UnmanagedSpan<T>(pItems, count);
+                    _stack.CopyTo(span);
                 }
+                return items;
             }
         }
     }

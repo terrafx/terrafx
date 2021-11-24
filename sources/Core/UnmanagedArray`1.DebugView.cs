@@ -5,40 +5,39 @@ using System.Diagnostics;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.MathUtilities;
 
-namespace TerraFX
+namespace TerraFX;
+
+public readonly partial struct UnmanagedArray<T>
 {
-    public readonly partial struct UnmanagedArray<T>
+    internal sealed class DebugView
     {
-        internal sealed class DebugView
+        private readonly UnmanagedArray<T> _array;
+
+        public DebugView(UnmanagedArray<T> array)
         {
-            private readonly UnmanagedArray<T> _array;
+            _array = array;
+        }
 
-            public DebugView(UnmanagedArray<T> array)
+        public nuint Alignment => _array.Alignment;
+
+        public bool IsNull => _array.IsNull;
+
+        public nuint Length => _array.Length;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        public unsafe T[] Items
+        {
+            get
             {
-                _array = array;
-            }
+                var count = Min(_array.Length, s_maxArrayLength);
+                var items = GC.AllocateUninitializedArray<T>((int)count);
 
-            public nuint Alignment => _array.Alignment;
-
-            public bool IsNull => _array.IsNull;
-
-            public nuint Length => _array.Length;
-
-            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-            public unsafe T[] Items
-            {
-                get
+                fixed (T* pItems = items)
                 {
-                    var count = Min(_array.Length, s_maxArrayLength);
-                    var items = GC.AllocateUninitializedArray<T>((int)count);
-
-                    fixed (T* pItems = items)
-                    {
-                        var span = new UnmanagedSpan<T>(pItems, count);
-                        _array.CopyTo(span);
-                    }
-                    return items;
+                    var span = new UnmanagedSpan<T>(pItems, count);
+                    _array.CopyTo(span);
                 }
+                return items;
             }
         }
     }

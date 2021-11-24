@@ -2,11 +2,10 @@
 
 using TerraFX.Numerics;
 
-namespace TerraFX.Samples.Graphics
+namespace TerraFX.Samples.Graphics;
+
+public struct IdentityVertex
 {
-    public struct IdentityVertex
-    {
-        public Vector3 Position;
-        public Vector4 Color;
-    }
+    public Vector3 Position;
+    public Vector4 Color;
 }

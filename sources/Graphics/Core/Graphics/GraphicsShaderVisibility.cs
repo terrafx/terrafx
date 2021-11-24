@@ -2,19 +2,18 @@
 
 using System;
 
-namespace TerraFX.Graphics
+namespace TerraFX.Graphics;
+
+/// <summary>Defines the graphics shader(s) for which a resource is visible.</summary>
+[Flags]
+public enum GraphicsShaderVisibility
 {
-    /// <summary>Defines the graphics shader(s) for which a resource is visible.</summary>
-    [Flags]
-    public enum GraphicsShaderVisibility
-    {
-        /// <summary>Defines visibility to all shaders.</summary>
-        All = 0,
+    /// <summary>Defines visibility to all shaders.</summary>
+    All = 0,
 
-        /// <summary>Defines vertex shader visibility.</summary>
-        Vertex = 1,
+    /// <summary>Defines vertex shader visibility.</summary>
+    Vertex = 1,
 
-        /// <summary>Defines pixel shader visibility.</summary>
-        Pixel = 2,
-    }
+    /// <summary>Defines pixel shader visibility.</summary>
+    Pixel = 2,
 }

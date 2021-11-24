@@ -2,11 +2,10 @@
 
 using TerraFX.Numerics;
 
-namespace TerraFX.Samples.Graphics
+namespace TerraFX.Samples.Graphics;
+
+public struct TextureVertex
 {
-    public struct TextureVertex
-    {
-        public Vector3 Position;
-        public Vector2 UV;
-    }
+    public Vector3 Position;
+    public Vector2 UV;
 }

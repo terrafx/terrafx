@@ -8,21 +8,20 @@
 
 using System;
 
-namespace TerraFX.Graphics
+namespace TerraFX.Graphics;
+
+public partial interface IGraphicsMemoryRegionCollection<TSelf>
 {
-    public partial interface IGraphicsMemoryRegionCollection<TSelf>
+    /// <summary>Defines metadata for a collection of memory regions.</summary>
+    public interface IMetadata : IGraphicsMemoryRegionCollection<TSelf>
     {
-        /// <summary>Defines metadata for a collection of memory regions.</summary>
-        public interface IMetadata : IGraphicsMemoryRegionCollection<TSelf>
-        {
-            /// <summary>Initializes an instance of the <see cref="IMetadata" /> interface.</summary>
-            /// <param name="collection">The collection which contains the metadata.</param>
-            /// <param name="size">The size of the collection, in bytes.</param>
-            /// <param name="minimumAllocatedRegionMarginSize">The minimum size of free regions to keep on either side of an allocated region, in bytes.</param>
-            /// <param name="minimumFreeRegionSizeToRegister">The minimum size of a free region for it to be registered as available, in bytes.</param>
-            /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <c>null</c>.</exception>
-            /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
-            void Initialize(TSelf collection, ulong size, ulong minimumAllocatedRegionMarginSize, ulong minimumFreeRegionSizeToRegister);
-        }
+        /// <summary>Initializes an instance of the <see cref="IMetadata" /> interface.</summary>
+        /// <param name="collection">The collection which contains the metadata.</param>
+        /// <param name="size">The size of the collection, in bytes.</param>
+        /// <param name="minimumAllocatedRegionMarginSize">The minimum size of free regions to keep on either side of an allocated region, in bytes.</param>
+        /// <param name="minimumFreeRegionSizeToRegister">The minimum size of a free region for it to be registered as available, in bytes.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
+        void Initialize(TSelf collection, ulong size, ulong minimumAllocatedRegionMarginSize, ulong minimumFreeRegionSizeToRegister);
     }
 }

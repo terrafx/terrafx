@@ -2,12 +2,11 @@
 
 using TerraFX.Numerics;
 
-namespace TerraFX.Samples.Graphics
+namespace TerraFX.Samples.Graphics;
+
+public struct PosNormTex3DVertex
 {
-    public struct PosNormTex3DVertex
-    {
-        public Vector3 Position;
-        public Vector3 Normal;
-        public Vector3 UVW;
-    }
+    public Vector3 Position;
+    public Vector3 Normal;
+    public Vector3 UVW;
 }

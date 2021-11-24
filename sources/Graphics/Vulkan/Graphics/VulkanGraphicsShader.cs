@@ -11,84 +11,83 @@ using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
-namespace TerraFX.Graphics
+namespace TerraFX.Graphics;
+
+/// <inheritdoc />
+public sealed unsafe class VulkanGraphicsShader : GraphicsShader
 {
-    /// <inheritdoc />
-    public sealed unsafe class VulkanGraphicsShader : GraphicsShader
+    private readonly VkShaderModuleCreateInfo _vulkanShaderModuleCreateInfo;
+
+    private ValueLazy<VkShaderModule> _vulkanShaderModule;
+
+    private VolatileState _state;
+
+    internal VulkanGraphicsShader(VulkanGraphicsDevice device, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
+        : base(device, kind, entryPointName)
     {
-        private readonly VkShaderModuleCreateInfo _vulkanShaderModuleCreateInfo;
+        var bytecodeLength = (nuint)bytecode.Length;
 
-        private ValueLazy<VkShaderModule> _vulkanShaderModule;
+        _vulkanShaderModuleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+        _vulkanShaderModuleCreateInfo.codeSize = bytecodeLength;
+        _vulkanShaderModuleCreateInfo.pCode = AllocateArray<uint>(AlignUp(bytecodeLength, SizeOf<nuint>()));
 
-        private VolatileState _state;
+        var destination = new Span<byte>(_vulkanShaderModuleCreateInfo.pCode, (int)bytecodeLength);
+        bytecode.CopyTo(destination);
 
-        internal VulkanGraphicsShader(VulkanGraphicsDevice device, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
-            : base(device, kind, entryPointName)
+        _vulkanShaderModule = new ValueLazy<VkShaderModule>(CreateVulkanShaderModule);
+
+        _ = _state.Transition(to: Initialized);
+    }
+
+    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsShader" /> class.</summary>
+    ~VulkanGraphicsShader() => Dispose(isDisposing: true);
+
+    /// <inheritdoc />
+    public override ReadOnlySpan<byte> Bytecode => new ReadOnlySpan<byte>(_vulkanShaderModuleCreateInfo.pCode, (int)_vulkanShaderModuleCreateInfo.codeSize);
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
+    public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
+
+    /// <summary>Gets the underlying <see cref="VkShaderModule" /> for the shader.</summary>
+    public VkShaderModule VulkanShaderModule => _vulkanShaderModule.Value;
+
+    /// <inheritdoc />
+    protected override void Dispose(bool isDisposing)
+    {
+        var priorState = _state.BeginDispose();
+
+        if (priorState < Disposing)
         {
-            var bytecodeLength = (nuint)bytecode.Length;
-
-            _vulkanShaderModuleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-            _vulkanShaderModuleCreateInfo.codeSize = bytecodeLength;
-            _vulkanShaderModuleCreateInfo.pCode = AllocateArray<uint>(AlignUp(bytecodeLength, SizeOf<nuint>()));
-
-            var destination = new Span<byte>(_vulkanShaderModuleCreateInfo.pCode, (int)bytecodeLength);
-            bytecode.CopyTo(destination);
-
-            _vulkanShaderModule = new ValueLazy<VkShaderModule>(CreateVulkanShaderModule);
-
-            _ = _state.Transition(to: Initialized);
+            _vulkanShaderModule.Dispose(DisposeVulkanShaderModule);
+            DisposeVulkanShaderModuleCreateInfo();
         }
 
-        /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsShader" /> class.</summary>
-        ~VulkanGraphicsShader() => Dispose(isDisposing: true);
+        _state.EndDispose();
+    }
 
-        /// <inheritdoc />
-        public override ReadOnlySpan<byte> Bytecode => new ReadOnlySpan<byte>(_vulkanShaderModuleCreateInfo.pCode, (int)_vulkanShaderModuleCreateInfo.codeSize);
+    private VkShaderModule CreateVulkanShaderModule()
+    {
+        VkShaderModule vulkanShaderModule;
 
-        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-        public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
-
-        /// <summary>Gets the underlying <see cref="VkShaderModule" /> for the shader.</summary>
-        public VkShaderModule VulkanShaderModule => _vulkanShaderModule.Value;
-
-        /// <inheritdoc />
-        protected override void Dispose(bool isDisposing)
+        fixed (VkShaderModuleCreateInfo* shaderModuleCreateInfo = &_vulkanShaderModuleCreateInfo)
         {
-            var priorState = _state.BeginDispose();
-
-            if (priorState < Disposing)
-            {
-                _vulkanShaderModule.Dispose(DisposeVulkanShaderModule);
-                DisposeVulkanShaderModuleCreateInfo();
-            }
-
-            _state.EndDispose();
+            ThrowExternalExceptionIfNotSuccess(vkCreateShaderModule(Device.VulkanDevice, shaderModuleCreateInfo, pAllocator: null, &vulkanShaderModule), nameof(vkCreateShaderModule));
         }
 
-        private VkShaderModule CreateVulkanShaderModule()
+        return vulkanShaderModule;
+    }
+
+    private void DisposeVulkanShaderModule(VkShaderModule vulkanShaderModule)
+    {
+        if (vulkanShaderModule != VkShaderModule.NULL)
         {
-            VkShaderModule vulkanShaderModule;
-
-            fixed (VkShaderModuleCreateInfo* shaderModuleCreateInfo = &_vulkanShaderModuleCreateInfo)
-            {
-                ThrowExternalExceptionIfNotSuccess(vkCreateShaderModule(Device.VulkanDevice, shaderModuleCreateInfo, pAllocator: null, &vulkanShaderModule), nameof(vkCreateShaderModule));
-            }
-
-            return vulkanShaderModule;
+            vkDestroyShaderModule(Device.VulkanDevice, vulkanShaderModule, pAllocator: null);
         }
+    }
 
-        private void DisposeVulkanShaderModule(VkShaderModule vulkanShaderModule)
-        {
-            if (vulkanShaderModule != VkShaderModule.NULL)
-            {
-                vkDestroyShaderModule(Device.VulkanDevice, vulkanShaderModule, pAllocator: null);
-            }
-        }
-
-        private void DisposeVulkanShaderModuleCreateInfo()
-        {
-            var code = _vulkanShaderModuleCreateInfo.pCode;
-            Free(code);
-        }
+    private void DisposeVulkanShaderModuleCreateInfo()
+    {
+        var code = _vulkanShaderModuleCreateInfo.pCode;
+        Free(code);
     }
 }

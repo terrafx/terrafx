@@ -6,49 +6,48 @@ using System.Threading;
 using System.Threading.Tasks;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-namespace TerraFX.Audio
+namespace TerraFX.Audio;
+
+/// <summary>A pipe used to decode audio from one format to another.</summary>
+public abstract class AudioDecoder : IDisposable
 {
-    /// <summary>A pipe used to decode audio from one format to another.</summary>
-    public abstract class AudioDecoder : IDisposable
+    private readonly Pipe _inputPipe;
+    private readonly Pipe _outputPipe;
+
+    /// <summary>Initializes a new instance of the <see cref="AudioDecoder" /> class.</summary>
+    /// <param name="options">Audio decoder options.</param>
+    /// <param name="pipeOptions">Options for input/output pipes. Defaults to <see cref="PipeOptions.Default" />.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="options" /> is <c>null</c>.</exception>
+    public AudioDecoder(AudioDecoderOptions options, PipeOptions? pipeOptions = null)
     {
-        private readonly Pipe _inputPipe;
-        private readonly Pipe _outputPipe;
+        ThrowIfNull(options, nameof(options));
 
-        /// <summary>Initializes a new instance of the <see cref="AudioDecoder" /> class.</summary>
-        /// <param name="options">Audio decoder options.</param>
-        /// <param name="pipeOptions">Options for input/output pipes. Defaults to <see cref="PipeOptions.Default" />.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="options" /> is <c>null</c>.</exception>
-        public AudioDecoder(AudioDecoderOptions options, PipeOptions? pipeOptions = null)
-        {
-            ThrowIfNull(options, nameof(options));
+        _inputPipe = new Pipe(pipeOptions ?? PipeOptions.Default);
+        _outputPipe = new Pipe(pipeOptions ?? PipeOptions.Default);
+    }
 
-            _inputPipe = new Pipe(pipeOptions ?? PipeOptions.Default);
-            _outputPipe = new Pipe(pipeOptions ?? PipeOptions.Default);
-        }
+    /// <summary>Reader for decoded output data.</summary>
+    public PipeReader Reader => _outputPipe.Reader;
 
-        /// <summary>Reader for decoded output data.</summary>
-        public PipeReader Reader => _outputPipe.Reader;
+    /// <summary>Writer for encoded input data.</summary>
+    public PipeWriter Writer => _inputPipe.Writer;
 
-        /// <summary>Writer for encoded input data.</summary>
-        public PipeWriter Writer => _inputPipe.Writer;
+    /// <summary>Reader for encoded input data.</summary>
+    protected PipeReader InputReader => _inputPipe.Reader;
 
-        /// <summary>Reader for encoded input data.</summary>
-        protected PipeReader InputReader => _inputPipe.Reader;
+    /// <summary>Writer for decoded output data.</summary>
+    protected PipeWriter OutputWriter => _outputPipe.Writer;
 
-        /// <summary>Writer for decoded output data.</summary>
-        protected PipeWriter OutputWriter => _outputPipe.Writer;
+    /// <summary>Runs the decoder pipeline.</summary>
+    public abstract Task DecodeAsync(CancellationToken cancellationToken = default);
 
-        /// <summary>Runs the decoder pipeline.</summary>
-        public abstract Task DecodeAsync(CancellationToken cancellationToken = default);
+    /// <inheritdoc />
+    public abstract void Dispose();
 
-        /// <inheritdoc />
-        public abstract void Dispose();
-
-        /// <summary>Resets the decoder pipeline.</summary>
-        public virtual void Reset()
-        {
-            _inputPipe.Reset();
-            _outputPipe.Reset();
-        }
+    /// <summary>Resets the decoder pipeline.</summary>
+    public virtual void Reset()
+    {
+        _inputPipe.Reset();
+        _outputPipe.Reset();
     }
 }
