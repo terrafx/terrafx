@@ -51,8 +51,9 @@ namespace TerraFX.Utilities
             return result;
         }
 
-        /// <inheritdoc cref="Marshal.GetLastWin32Error" />
-        public static int GetLastError() => Marshal.GetLastWin32Error();
+        /// <inheritdoc cref="Marshal.GetLastSystemError" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetLastSystemError() => Marshal.GetLastSystemError();
 
         /// <summary>Marshals a string to a null-terminated ASCII string.</summary>
         /// <param name="source">The string for which to marshal.</param>

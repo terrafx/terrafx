@@ -206,7 +206,7 @@ namespace TerraFX.Utilities
         /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetLastWin32Error()" />.</exception>
         [DoesNotReturn]
         public static void ThrowForLastError(string methodName)
-            => ThrowExternalException(methodName, GetLastError());
+            => ThrowExternalException(methodName, GetLastSystemError());
 
         /// <summary>Throws an <see cref="ExternalException" /> if <paramref name="result" /> is not <c>zero</c>.</summary>
         /// <param name="result">The underlying error code for the exception.</param>
@@ -216,7 +216,7 @@ namespace TerraFX.Utilities
         {
             if (result != 0)
             {
-                ThrowExternalException(methodName, GetLastError());
+                ThrowExternalException(methodName, GetLastSystemError());
             }
         }
 
@@ -228,7 +228,7 @@ namespace TerraFX.Utilities
         {
             if (result != 0)
             {
-                ThrowExternalException(methodName, GetLastError());
+                ThrowExternalException(methodName, GetLastSystemError());
             }
         }
 
@@ -240,7 +240,7 @@ namespace TerraFX.Utilities
         {
             if (result != 0)
             {
-                ThrowExternalException(methodName, GetLastError());
+                ThrowExternalException(methodName, GetLastSystemError());
             }
         }
 
@@ -252,7 +252,7 @@ namespace TerraFX.Utilities
         {
             if (result != 0)
             {
-                ThrowExternalException(methodName, GetLastError());
+                ThrowExternalException(methodName, GetLastSystemError());
             }
         }
 
@@ -264,7 +264,7 @@ namespace TerraFX.Utilities
         {
             if (result != 0)
             {
-                ThrowExternalException(methodName, GetLastError());
+                ThrowExternalException(methodName, GetLastSystemError());
             }
         }
 
@@ -276,7 +276,7 @@ namespace TerraFX.Utilities
         {
             if (result != 0)
             {
-                ThrowExternalException(methodName, GetLastError());
+                ThrowExternalException(methodName, GetLastSystemError());
             }
         }
 
@@ -288,7 +288,7 @@ namespace TerraFX.Utilities
         {
             if (result == null)
             {
-                ThrowExternalException(methodName, GetLastError());
+                ThrowExternalException(methodName, GetLastSystemError());
             }
         }
 
@@ -300,7 +300,7 @@ namespace TerraFX.Utilities
         {
             if (result == 0)
             {
-                ThrowExternalException(methodName, GetLastError());
+                ThrowExternalException(methodName, GetLastSystemError());
             }
         }
 
@@ -312,7 +312,7 @@ namespace TerraFX.Utilities
         {
             if (result == 0)
             {
-                ThrowExternalException(methodName, GetLastError());
+                ThrowExternalException(methodName, GetLastSystemError());
             }
         }
 
@@ -324,7 +324,7 @@ namespace TerraFX.Utilities
         {
             if (result == 0)
             {
-                ThrowExternalException(methodName, GetLastError());
+                ThrowExternalException(methodName, GetLastSystemError());
             }
         }
 
@@ -336,7 +336,7 @@ namespace TerraFX.Utilities
         {
             if (result == 0)
             {
-                ThrowExternalException(methodName, GetLastError());
+                ThrowExternalException(methodName, GetLastSystemError());
             }
         }
 
@@ -348,7 +348,7 @@ namespace TerraFX.Utilities
         {
             if (result == 0)
             {
-                ThrowExternalException(methodName, GetLastError());
+                ThrowExternalException(methodName, GetLastSystemError());
             }
         }
 
@@ -360,7 +360,7 @@ namespace TerraFX.Utilities
         {
             if (result == 0)
             {
-                ThrowExternalException(methodName, GetLastError());
+                ThrowExternalException(methodName, GetLastSystemError());
             }
         }
 
