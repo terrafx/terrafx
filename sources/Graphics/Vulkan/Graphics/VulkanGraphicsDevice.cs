@@ -134,6 +134,13 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     private static ReadOnlySpan<sbyte> VK_LAYER_KHRONOS_VALIDATION_NAME => new sbyte[] { 0x56, 0x4B, 0x5F, 0x4C, 0x41, 0x59, 0x45, 0x52, 0x5F, 0x4B, 0x48, 0x52, 0x4F, 0x4E, 0x4F, 0x53, 0x5F, 0x76, 0x61, 0x6C, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x00 };
 
     /// <inheritdoc />
+    public override VulkanGraphicsFence CreateFence()
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        return new VulkanGraphicsFence(this, isSignaled: false);
+    }
+
+    /// <inheritdoc />
     public override VulkanGraphicsPipeline CreatePipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null)
         => CreatePipeline((VulkanGraphicsPipelineSignature)signature, (VulkanGraphicsShader?)vertexShader, (VulkanGraphicsShader?)pixelShader);
 

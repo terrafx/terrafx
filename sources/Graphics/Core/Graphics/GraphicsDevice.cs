@@ -43,6 +43,9 @@ public abstract class GraphicsDevice : IDisposable
     /// <summary>Gets the surface on which the device can render.</summary>
     public IGraphicsSurface Surface => _surface;
 
+    /// <summary>Creates a new graphics fence for the device.</summary>
+    public abstract GraphicsFence CreateFence();
+
     /// <summary>Creates a new graphics pipeline for the device.</summary>
     /// <param name="signature">The signature which details the inputs given and resources available to the graphics pipeline.</param>
     /// <param name="vertexShader">The vertex shader for the graphics pipeline or <c>null</c> if none exists.</param>

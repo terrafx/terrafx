@@ -120,6 +120,13 @@ public sealed unsafe class D3D12GraphicsDevice : GraphicsDevice
     public D3D12GraphicsFence WaitForIdleGraphicsFence => _idleFence;
 
     /// <inheritdoc />
+    public override D3D12GraphicsFence CreateFence()
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        return new D3D12GraphicsFence(this);
+    }
+
+    /// <inheritdoc />
     public override D3D12GraphicsPipeline CreatePipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null)
         => CreatePipeline((D3D12GraphicsPipelineSignature)signature, (D3D12GraphicsShader?)vertexShader, (D3D12GraphicsShader?)pixelShader);
 
