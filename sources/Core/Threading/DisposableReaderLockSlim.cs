@@ -4,32 +4,31 @@ using System;
 using System.Threading;
 using static TerraFX.Utilities.AssertionUtilities;
 
-namespace TerraFX.Threading
+namespace TerraFX.Threading;
+
+/// <summary>Provides a simple wrapper over a <see cref="ReaderWriterLockSlim" /> so a read lock can be acquired and released via a using statement.</summary>
+public readonly struct DisposableReaderLockSlim : IDisposable
 {
-    /// <summary>Provides a simple wrapper over a <see cref="ReaderWriterLockSlim" /> so a read lock can be acquired and released via a using statement.</summary>
-    public readonly struct DisposableReaderLockSlim : IDisposable
+    private readonly ReaderWriterLockSlim? _mutex;
+
+    /// <summary>Initializes a new instance of the <see cref="DisposableReaderLockSlim" /> struct.</summary>
+    /// <param name="mutex">The mutex on which a read lock should be acquired.</param>
+    /// <param name="isExternallySynchronized"><c>false</c> if a read lock on <paramref name="mutex" /> should be acquired; otherwise, <c>true</c>.</param>
+    public DisposableReaderLockSlim(ReaderWriterLockSlim mutex, bool isExternallySynchronized)
     {
-        private readonly ReaderWriterLockSlim? _mutex;
+        AssertNotNull(mutex);
 
-        /// <summary>Initializes a new instance of the <see cref="DisposableReaderLockSlim" /> struct.</summary>
-        /// <param name="mutex">The mutex on which a read lock should be acquired.</param>
-        /// <param name="isExternallySynchronized"><c>false</c> if a read lock on <paramref name="mutex" /> should be acquired; otherwise, <c>true</c>.</param>
-        public DisposableReaderLockSlim(ReaderWriterLockSlim mutex, bool isExternallySynchronized)
+        if (!isExternallySynchronized)
         {
-            AssertNotNull(mutex);
-
-            if (!isExternallySynchronized)
-            {
-                mutex.EnterReadLock();
-                _mutex = mutex;
-            }
-            else
-            {
-                _mutex = null;
-            }
+            mutex.EnterReadLock();
+            _mutex = mutex;
         }
-
-        /// <inheritdoc />
-        public void Dispose() => _mutex?.ExitReadLock();
+        else
+        {
+            _mutex = null;
+        }
     }
+
+    /// <inheritdoc />
+    public void Dispose() => _mutex?.ExitReadLock();
 }

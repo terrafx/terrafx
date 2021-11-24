@@ -42,7 +42,7 @@
     <PackageReference Update="TerraFX.Interop.Mimalloc" Version="1.6.0-beta3.1460839352" />
     <PackageReference Update="TerraFX.Interop.PulseAudio" Version="13.99.0-beta3.1460840491" />
     <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.189-rc2.1460983340" />
-    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.20348-rc2.1464241963" />
+    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.20348-rc3.1500654281" />
     <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-beta3.1460979563" />
   </ItemGroup>
 

@@ -4,31 +4,30 @@ using System;
 using TerraFX.ApplicationModel;
 using TerraFX.Utilities;
 
-namespace TerraFX.Samples.Graphics
+namespace TerraFX.Samples.Graphics;
+
+public sealed class EnumerateGraphicsAdapters : Sample
 {
-    public sealed class EnumerateGraphicsAdapters : Sample
+    public EnumerateGraphicsAdapters(string name, ApplicationServiceProvider serviceProvider)
+        : base(name, serviceProvider)
     {
-        public EnumerateGraphicsAdapters(string name, ApplicationServiceProvider serviceProvider)
-            : base(name, serviceProvider)
-        {
-        }
+    }
 
-        protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
-        {
-            ExceptionUtilities.ThrowIfNull(sender, nameof(sender));
+    protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
+    {
+        ExceptionUtilities.ThrowIfNull(sender, nameof(sender));
 
-            var application = (Application)sender;
+        var application = (Application)sender;
+        {
+            var graphicsService = application.ServiceProvider.GraphicsService;
+
+            foreach (var graphicsAdapter in graphicsService.Adapters)
             {
-                var graphicsService = application.ServiceProvider.GraphicsService;
-
-                foreach (var graphicsAdapter in graphicsService.Adapters)
-                {
-                    Console.WriteLine($"    Name: {graphicsAdapter.Name}");
-                    Console.WriteLine($"        Device ID: {graphicsAdapter.DeviceId}");
-                    Console.WriteLine($"        Vendor ID: {graphicsAdapter.VendorId}");
-                }
+                Console.WriteLine($"    Name: {graphicsAdapter.Name}");
+                Console.WriteLine($"        Device ID: {graphicsAdapter.DeviceId}");
+                Console.WriteLine($"        Vendor ID: {graphicsAdapter.VendorId}");
             }
-            application.RequestExit();
         }
+        application.RequestExit();
     }
 }

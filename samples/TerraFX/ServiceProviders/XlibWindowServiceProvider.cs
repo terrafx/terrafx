@@ -5,38 +5,37 @@ using System.Diagnostics.CodeAnalysis;
 using TerraFX.ApplicationModel;
 using TerraFX.UI;
 
-namespace TerraFX.Samples.ServiceProviders
+namespace TerraFX.Samples.ServiceProviders;
+
+public class XlibWindowServiceProvider : ApplicationServiceProvider
 {
-    public class XlibWindowServiceProvider : ApplicationServiceProvider
+    private ValueLazy<XlibWindowService> _windowService;
+
+    public XlibWindowServiceProvider()
     {
-        private ValueLazy<XlibWindowService> _windowService;
-
-        public XlibWindowServiceProvider()
-        {
-            _windowService = new ValueLazy<XlibWindowService>(() => new XlibWindowService());
-        }
-
-        public override bool TryGetService(Type serviceType, [NotNullWhen(true)] out object? service)
-        {
-            if (serviceType.IsAssignableFrom(typeof(XlibWindowService)))
-            {
-                service = _windowService.Value;
-                return true;
-            }
-
-            service = null;
-            return false;
-        }
-
-        protected override void DisposeCore(bool isDisposing)
-        {
-            if (isDisposing)
-            {
-                _windowService.Dispose(DisposeWindowService);
-            }
-        }
-
-        private void DisposeWindowService(WindowService windowService)
-            => windowService.Dispose();
+        _windowService = new ValueLazy<XlibWindowService>(() => new XlibWindowService());
     }
+
+    public override bool TryGetService(Type serviceType, [NotNullWhen(true)] out object? service)
+    {
+        if (serviceType.IsAssignableFrom(typeof(XlibWindowService)))
+        {
+            service = _windowService.Value;
+            return true;
+        }
+
+        service = null;
+        return false;
+    }
+
+    protected override void DisposeCore(bool isDisposing)
+    {
+        if (isDisposing)
+        {
+            _windowService.Dispose(DisposeWindowService);
+        }
+    }
+
+    private void DisposeWindowService(WindowService windowService)
+        => windowService.Dispose();
 }

@@ -6,32 +6,31 @@
 using System;
 using System.Diagnostics;
 
-namespace TerraFX.Collections
+namespace TerraFX.Collections;
+
+public partial struct ValueQueue<T>
 {
-    public partial struct ValueQueue<T>
+    internal sealed class DebugView
     {
-        internal sealed class DebugView
+        private readonly ValueQueue<T> _queue;
+
+        public DebugView(ValueQueue<T> queue)
         {
-            private readonly ValueQueue<T> _queue;
+            _queue = queue;
+        }
 
-            public DebugView(ValueQueue<T> queue)
+        public int Capacity => _queue.Capacity;
+
+        public int Count => _queue.Count;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        public T[] Items
+        {
+            get
             {
-                _queue = queue;
-            }
-
-            public int Capacity => _queue.Capacity;
-
-            public int Count => _queue.Count;
-
-            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-            public T[] Items
-            {
-                get
-                {
-                    var items = GC.AllocateUninitializedArray<T>(_queue.Count);
-                    _queue.CopyTo(items);
-                    return items;
-                }
+                var items = GC.AllocateUninitializedArray<T>(_queue.Count);
+                _queue.CopyTo(items);
+                return items;
             }
         }
     }

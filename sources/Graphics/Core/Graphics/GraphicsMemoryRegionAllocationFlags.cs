@@ -8,24 +8,23 @@
 
 using System;
 
-namespace TerraFX.Graphics
+namespace TerraFX.Graphics;
+
+/// <summary>Defines flags that modify how a memory region is allocated.</summary>
+[Flags]
+public enum GraphicsMemoryRegionAllocationFlags
 {
-    /// <summary>Defines flags that modify how a memory region is allocated.</summary>
-    [Flags]
-    public enum GraphicsMemoryRegionAllocationFlags
-    {
-        /// <summary>No flags are specified.</summary>
-        None = 0,
+    /// <summary>No flags are specified.</summary>
+    None = 0,
 
-        /// <summary>Indicates the region should get its own dedicated collection.</summary>
-        /// <remarks>This flag cannot be combined with <see cref="ExistingCollection" />.</remarks>
-        DedicatedCollection = 1 << 0,
+    /// <summary>Indicates the region should get its own dedicated collection.</summary>
+    /// <remarks>This flag cannot be combined with <see cref="ExistingCollection" />.</remarks>
+    DedicatedCollection = 1 << 0,
 
-        /// <summary>Indicates the region should only come from an existing collection.</summary>
-        /// <remarks>This flag cannot be combined with <see cref="DedicatedCollection" />.</remarks>
-        ExistingCollection = 1 << 1,
+    /// <summary>Indicates the region should only come from an existing collection.</summary>
+    /// <remarks>This flag cannot be combined with <see cref="DedicatedCollection" />.</remarks>
+    ExistingCollection = 1 << 1,
 
-        /// <summary>Indicates the region should only be allocated if it doesn't exceed the memory budget.</summary>
-        WithinBudget = 1 << 2,
-    }
+    /// <summary>Indicates the region should only be allocated if it doesn't exceed the memory budget.</summary>
+    WithinBudget = 1 << 2,
 }

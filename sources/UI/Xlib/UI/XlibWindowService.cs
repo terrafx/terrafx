@@ -16,244 +16,243 @@ using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using XWindow = TerraFX.Interop.Xlib.Window;
 
-namespace TerraFX.UI
+namespace TerraFX.UI;
+
+/// <summary>Provides access to an X11 based window subsystem.</summary>
+public sealed unsafe class XlibWindowService : WindowService
 {
-    /// <summary>Provides access to an X11 based window subsystem.</summary>
-    public sealed unsafe class XlibWindowService : WindowService
+    private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.VulkanGraphicsService.RequiredExtensionNames";
+
+    private readonly ThreadLocal<Dictionary<XWindow, XlibWindow>> _windows;
+
+    private ValueLazy<GCHandle> _nativeHandle;
+    private VolatileState _state;
+
+    /// <summary>Initializes a new instance of the <see cref="XlibWindowService" /> class.</summary>
+    public XlibWindowService()
     {
-        private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.VulkanGraphicsService.RequiredExtensionNames";
+        var vulkanRequiredExtensionNamesDataName = AppContext.GetData(VulkanRequiredExtensionNamesDataName) as string;
+        vulkanRequiredExtensionNamesDataName += ";VK_KHR_surface;VK_KHR_xlib_surface";
+        AppDomain.CurrentDomain.SetData(VulkanRequiredExtensionNamesDataName, vulkanRequiredExtensionNamesDataName);
 
-        private readonly ThreadLocal<Dictionary<XWindow, XlibWindow>> _windows;
+        _nativeHandle = new ValueLazy<GCHandle>(() => GCHandle.Alloc(this, GCHandleType.Normal));
+        _windows = new ThreadLocal<Dictionary<XWindow, XlibWindow>>(trackAllValues: true);
 
-        private ValueLazy<GCHandle> _nativeHandle;
-        private VolatileState _state;
+        _ = _state.Transition(to: Initialized);
+    }
 
-        /// <summary>Initializes a new instance of the <see cref="XlibWindowService" /> class.</summary>
-        public XlibWindowService()
+    /// <summary>Finalizes an instance of the <see cref="XlibWindowService" /> class.</summary>
+    ~XlibWindowService() => Dispose(isDisposing: false);
+
+    /// <inheritdoc />
+    public override DispatchService DispatchService => XlibDispatchService.Instance;
+
+    /// <summary>Gets the <see cref="GCHandle" /> containing the native handle for the instance.</summary>
+    public GCHandle NativeHandle
+    {
+        get
         {
-            var vulkanRequiredExtensionNamesDataName = AppContext.GetData(VulkanRequiredExtensionNamesDataName) as string;
-            vulkanRequiredExtensionNamesDataName += ";VK_KHR_surface;VK_KHR_xlib_surface";
-            AppDomain.CurrentDomain.SetData(VulkanRequiredExtensionNamesDataName, vulkanRequiredExtensionNamesDataName);
-
-            _nativeHandle = new ValueLazy<GCHandle>(() => GCHandle.Alloc(this, GCHandleType.Normal));
-            _windows = new ThreadLocal<Dictionary<XWindow, XlibWindow>>(trackAllValues: true);
-
-            _ = _state.Transition(to: Initialized);
+            AssertNotDisposedOrDisposing(_state);
+            return _nativeHandle.Value;
         }
+    }
 
-        /// <summary>Finalizes an instance of the <see cref="XlibWindowService" /> class.</summary>
-        ~XlibWindowService() => Dispose(isDisposing: false);
-
-        /// <inheritdoc />
-        public override DispatchService DispatchService => XlibDispatchService.Instance;
-
-        /// <summary>Gets the <see cref="GCHandle" /> containing the native handle for the instance.</summary>
-        public GCHandle NativeHandle
-        {
-            get
-            {
-                AssertNotDisposedOrDisposing(_state);
-                return _nativeHandle.Value;
-            }
-        }
-
-        /// <inheritdoc />
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public override IEnumerable<Window> WindowsForCurrentThread
-        {
-            get
-            {
-                ThrowIfDisposedOrDisposing(_state, nameof(XlibWindowService));
-                return _windows.Value?.Values ?? Enumerable.Empty<XlibWindow>();
-            }
-        }
-
-        /// <inheritdoc />
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public override Window CreateWindow()
+    /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+    public override IEnumerable<Window> WindowsForCurrentThread
+    {
+        get
         {
             ThrowIfDisposedOrDisposing(_state, nameof(XlibWindowService));
-            return new XlibWindow(this);
+            return _windows.Value?.Values ?? Enumerable.Empty<XlibWindow>();
         }
+    }
 
-        internal static void ForwardWindowEvent(XEvent* xevent)
+    /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+    public override Window CreateWindow()
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(XlibWindowService));
+        return new XlibWindow(this);
+    }
+
+    internal static void ForwardWindowEvent(XEvent* xevent)
+    {
+        nint userData;
+        GCHandle gcHandle;
+        XlibWindowService windowService;
+        Dictionary<XWindow, XlibWindow>? windows;
+        XlibWindow? window;
+        bool forwardMessage;
+
+        var dispatchService = XlibDispatchService.Instance;
+
+        if ((xevent->type == ClientMessage) && (xevent->xclient.format == 32) && ((xevent->xclient.message_type == dispatchService.GetAtom(_TERRAFX_CREATE_WINDOW)) || (xevent->xclient.message_type == dispatchService.GetAtom(_TERRAFX_DISPOSE_WINDOW))))
         {
-            nint userData;
-            GCHandle gcHandle;
-            XlibWindowService windowService;
-            Dictionary<XWindow, XlibWindow>? windows;
-            XlibWindow? window;
-            bool forwardMessage;
+            // We allow the create and dispose message to be forwarded to the Window instance for xevent->xany.window.
+            // This allows some delayed initialization to occur since most of the fields in Window are lazy.
 
-            var dispatchService = XlibDispatchService.Instance;
+            userData = Environment.Is64BitProcess
+                     ? (xevent->xclient.data.l[1] << 32) | unchecked((nint)(uint)xevent->xclient.data.l[0])
+                     : xevent->xclient.data.l[0];
 
-            if ((xevent->type == ClientMessage) && (xevent->xclient.format == 32) && ((xevent->xclient.message_type == dispatchService.GetAtom(_TERRAFX_CREATE_WINDOW)) || (xevent->xclient.message_type == dispatchService.GetAtom(_TERRAFX_DISPOSE_WINDOW))))
+            // Unlike the WindowService GCHandle, the Window GCHandle is short lived and
+            // we want to free it after we add the relevant entries to the window map.
+
+            gcHandle = GCHandle.FromIntPtr(userData);
             {
-                // We allow the create and dispose message to be forwarded to the Window instance for xevent->xany.window.
-                // This allows some delayed initialization to occur since most of the fields in Window are lazy.
-
-                userData = Environment.Is64BitProcess
-                         ? (xevent->xclient.data.l[1] << 32) | unchecked((nint)(uint)xevent->xclient.data.l[0])
-                         : xevent->xclient.data.l[0];
-
-                // Unlike the WindowService GCHandle, the Window GCHandle is short lived and
-                // we want to free it after we add the relevant entries to the window map.
-
-                gcHandle = GCHandle.FromIntPtr(userData);
-                {
-                    window = (XlibWindow)gcHandle.Target!;
-                    windowService = window.WindowService;
-                    windows = windowService._windows.Value!;
-                }
-                gcHandle.Free();
-
-                if (xevent->xclient.message_type == dispatchService.GetAtom(_TERRAFX_CREATE_WINDOW))
-                {
-                    if (windows is null)
-                    {
-                        windows = new Dictionary<XWindow, XlibWindow>(capacity: 4);
-                        windowService._windows.Value = windows;
-                    }
-                    windows.Add(xevent->xany.window, window);
-
-                    // We then want to ensure the window service is registered as a property for fast
-                    // subsequent lookups. This proocess also allows everything to be lazily initialized.
-
-                    gcHandle = windowService.NativeHandle;
-                    userData = GCHandle.ToIntPtr(gcHandle);
-
-                    _ = XChangeProperty(
-                        xevent->xany.display,
-                        xevent->xany.window,
-                        dispatchService.GetAtom(_TERRAFX_WINDOWSERVICE),
-                        dispatchService.GetAtom(_TERRAFX_NATIVE_INT),
-                        8,
-                        PropModeReplace,
-                        (byte*)&userData,
-                        sizeof(nint)
-                    );
-                }
-                else
-                {
-                    Assert(AssertionsEnabled && (xevent->xclient.message_type == dispatchService.GetAtom(_TERRAFX_DISPOSE_WINDOW)));
-                    _ = RemoveWindow(windows, xevent->xany.display, xevent->xany.window, dispatchService);
-                }
-
-                forwardMessage = true;
+                window = (XlibWindow)gcHandle.Target!;
+                windowService = window.WindowService;
+                windows = windowService._windows.Value!;
             }
-            else
+            gcHandle.Free();
+
+            if (xevent->xclient.message_type == dispatchService.GetAtom(_TERRAFX_CREATE_WINDOW))
             {
-                Atom actualType;
-                int actualFormat;
-                nuint itemCount;
-                nuint bytesRemaining;
-                nint* pUserData;
+                if (windows is null)
+                {
+                    windows = new Dictionary<XWindow, XlibWindow>(capacity: 4);
+                    windowService._windows.Value = windows;
+                }
+                windows.Add(xevent->xany.window, window);
 
-                // We don't check the result as there are various cases where this might fail
-                // For example, if the property doesn't exist or has already been deleted
+                // We then want to ensure the window service is registered as a property for fast
+                // subsequent lookups. This proocess also allows everything to be lazily initialized.
 
-                _ = XGetWindowProperty(
+                gcHandle = windowService.NativeHandle;
+                userData = GCHandle.ToIntPtr(gcHandle);
+
+                _ = XChangeProperty(
                     xevent->xany.display,
                     xevent->xany.window,
                     dispatchService.GetAtom(_TERRAFX_WINDOWSERVICE),
-                    0,
-                    sizeof(nint) / sizeof(int),
-                    False,
                     dispatchService.GetAtom(_TERRAFX_NATIVE_INT),
-                    &actualType,
-                    &actualFormat,
-                    &itemCount,
-                    &bytesRemaining,
-                    (byte**)&pUserData
+                    8,
+                    PropModeReplace,
+                    (byte*)&userData,
+                    sizeof(nint)
                 );
-
-                if ((actualType == dispatchService.GetAtom(_TERRAFX_NATIVE_INT)) && (actualFormat == 8) && (itemCount == SizeOf<nuint>()) && (bytesRemaining == 0))
-                {
-                    userData = pUserData[0];
-                    gcHandle = GCHandle.FromIntPtr(userData);
-
-                    windowService = (XlibWindowService)gcHandle.Target!;
-                    windows = windowService._windows.Value!;
-
-                    forwardMessage = windows.TryGetValue(xevent->xany.window, out window);
-                }
-                else
-                {
-                    windows = null;
-                    window = null;
-                    forwardMessage = false;
-                }
+            }
+            else
+            {
+                Assert(AssertionsEnabled && (xevent->xclient.message_type == dispatchService.GetAtom(_TERRAFX_DISPOSE_WINDOW)));
+                _ = RemoveWindow(windows, xevent->xany.display, xevent->xany.window, dispatchService);
             }
 
-            if (forwardMessage)
+            forwardMessage = true;
+        }
+        else
+        {
+            Atom actualType;
+            int actualFormat;
+            nuint itemCount;
+            nuint bytesRemaining;
+            nint* pUserData;
+
+            // We don't check the result as there are various cases where this might fail
+            // For example, if the property doesn't exist or has already been deleted
+
+            _ = XGetWindowProperty(
+                xevent->xany.display,
+                xevent->xany.window,
+                dispatchService.GetAtom(_TERRAFX_WINDOWSERVICE),
+                0,
+                sizeof(nint) / sizeof(int),
+                False,
+                dispatchService.GetAtom(_TERRAFX_NATIVE_INT),
+                &actualType,
+                &actualFormat,
+                &itemCount,
+                &bytesRemaining,
+                (byte**)&pUserData
+            );
+
+            if ((actualType == dispatchService.GetAtom(_TERRAFX_NATIVE_INT)) && (actualFormat == 8) && (itemCount == SizeOf<nuint>()) && (bytesRemaining == 0))
             {
-                AssertNotNull(windows);
-                AssertNotNull(window);
+                userData = pUserData[0];
+                gcHandle = GCHandle.FromIntPtr(userData);
 
-                window.ProcessWindowEvent(xevent);
+                windowService = (XlibWindowService)gcHandle.Target!;
+                windows = windowService._windows.Value!;
 
-                if (xevent->type == DestroyNotify)
-                {
-                    _ = RemoveWindow(windows, xevent->xany.display, xevent->xany.window, dispatchService);
-                }
+                forwardMessage = windows.TryGetValue(xevent->xany.window, out window);
+            }
+            else
+            {
+                windows = null;
+                window = null;
+                forwardMessage = false;
             }
         }
 
-        private static XlibWindow RemoveWindow(Dictionary<XWindow, XlibWindow> windows, Display* display, XWindow windowHandle, XlibDispatchService dispatchService)
+        if (forwardMessage)
         {
-            _ = windows.Remove(windowHandle, out var window);
+            AssertNotNull(windows);
             AssertNotNull(window);
 
-            if (windows.Count == 0)
-            {
-                dispatchService.DispatcherForCurrentThread.OnExitRequested();
-            }
+            window.ProcessWindowEvent(xevent);
 
-            return window;
+            if (xevent->type == DestroyNotify)
+            {
+                _ = RemoveWindow(windows, xevent->xany.display, xevent->xany.window, dispatchService);
+            }
+        }
+    }
+
+    private static XlibWindow RemoveWindow(Dictionary<XWindow, XlibWindow> windows, Display* display, XWindow windowHandle, XlibDispatchService dispatchService)
+    {
+        _ = windows.Remove(windowHandle, out var window);
+        AssertNotNull(window);
+
+        if (windows.Count == 0)
+        {
+            dispatchService.DispatcherForCurrentThread.OnExitRequested();
         }
 
-        /// <inheritdoc />
-        protected override void Dispose(bool isDisposing)
+        return window;
+    }
+
+    /// <inheritdoc />
+    protected override void Dispose(bool isDisposing)
+    {
+        var priorState = _state.BeginDispose();
+
+        if (priorState < Disposing)
         {
-            var priorState = _state.BeginDispose();
-
-            if (priorState < Disposing)
-            {
-                DisposeWindows(isDisposing);
-            }
-
-            _state.EndDispose();
+            DisposeWindows(isDisposing);
         }
 
-        private void DisposeWindows(bool isDisposing)
+        _state.EndDispose();
+    }
+
+    private void DisposeWindows(bool isDisposing)
+    {
+        AssertDisposing(_state);
+
+        if (isDisposing)
         {
-            AssertDisposing(_state);
+            var threadWindows = _windows.Values;
 
-            if (isDisposing)
+            for (var i = 0; i < threadWindows.Count; i++)
             {
-                var threadWindows = _windows.Values;
+                var windows = threadWindows[i];
 
-                for (var i = 0; i < threadWindows.Count; i++)
+                if (windows is not null)
                 {
-                    var windows = threadWindows[i];
+                    var windowHandles = windows.Keys;
 
-                    if (windows is not null)
+                    foreach (var windowHandle in windowHandles)
                     {
-                        var windowHandles = windows.Keys;
-
-                        foreach (var windowHandle in windowHandles)
-                        {
-                            var dispatchService = XlibDispatchService.Instance;
-                            var window = RemoveWindow(windows, dispatchService.Display, windowHandle, dispatchService);
-                            window.Dispose();
-                        }
-
-                        Assert(AssertionsEnabled && (windows.Count == 0));
+                        var dispatchService = XlibDispatchService.Instance;
+                        var window = RemoveWindow(windows, dispatchService.Display, windowHandle, dispatchService);
+                        window.Dispose();
                     }
-                }
 
-                _windows.Dispose();
+                    Assert(AssertionsEnabled && (windows.Count == 0));
+                }
             }
+
+            _windows.Dispose();
         }
     }
 }

@@ -4,17 +4,16 @@ using System.Runtime.CompilerServices;
 using TerraFX.Interop.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-namespace TerraFX.Utilities
+namespace TerraFX.Utilities;
+
+internal static unsafe partial class Win32Utilities
 {
-    internal static unsafe partial class Win32Utilities
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowExternalExceptionIfFalse(BOOL value, string methodName)
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowExternalExceptionIfFalse(BOOL value, string methodName)
+        if (!value)
         {
-            if (!value)
-            {
-                ThrowForLastError(methodName);
-            }
+            ThrowForLastError(methodName);
         }
     }
 }

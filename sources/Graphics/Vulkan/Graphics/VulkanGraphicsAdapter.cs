@@ -10,104 +10,103 @@ using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 
-namespace TerraFX.Graphics
+namespace TerraFX.Graphics;
+
+/// <inheritdoc />
+public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
 {
-    /// <inheritdoc />
-    public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
+    private readonly VkPhysicalDevice _vulkanPhysicalDevice;
+
+    private ValueLazy<VkPhysicalDeviceProperties> _vulkanPhysicalDeviceProperties;
+    private ValueLazy<VkPhysicalDeviceMemoryProperties> _vulkanPhysicalDeviceMemoryProperties;
+    private ValueLazy<string> _name;
+
+    private VolatileState _state;
+
+    internal VulkanGraphicsAdapter(VulkanGraphicsService service, VkPhysicalDevice vulkanPhysicalDevice)
+        : base(service)
     {
-        private readonly VkPhysicalDevice _vulkanPhysicalDevice;
+        AssertNotNull(vulkanPhysicalDevice);
 
-        private ValueLazy<VkPhysicalDeviceProperties> _vulkanPhysicalDeviceProperties;
-        private ValueLazy<VkPhysicalDeviceMemoryProperties> _vulkanPhysicalDeviceMemoryProperties;
-        private ValueLazy<string> _name;
+        _vulkanPhysicalDevice = vulkanPhysicalDevice;
 
-        private VolatileState _state;
+        _vulkanPhysicalDeviceMemoryProperties = new ValueLazy<VkPhysicalDeviceMemoryProperties>(GetVulkanPhysicalDeviceMemoryProperties);
+        _vulkanPhysicalDeviceProperties = new ValueLazy<VkPhysicalDeviceProperties>(GetVulkanPhysicalDeviceProperties);
+        _name = new ValueLazy<string>(GetName);
 
-        internal VulkanGraphicsAdapter(VulkanGraphicsService service, VkPhysicalDevice vulkanPhysicalDevice)
-            : base(service)
-        {
-            AssertNotNull(vulkanPhysicalDevice);
+        _ = _state.Transition(to: Initialized);
+    }
 
-            _vulkanPhysicalDevice = vulkanPhysicalDevice;
+    /// <inheritdoc />
+    public override uint DeviceId => VulkanPhysicalDeviceProperties.deviceID;
 
-            _vulkanPhysicalDeviceMemoryProperties = new ValueLazy<VkPhysicalDeviceMemoryProperties>(GetVulkanPhysicalDeviceMemoryProperties);
-            _vulkanPhysicalDeviceProperties = new ValueLazy<VkPhysicalDeviceProperties>(GetVulkanPhysicalDeviceProperties);
-            _name = new ValueLazy<string>(GetName);
+    /// <inheritdoc />
+    public override string Name => _name.Value;
 
-            _ = _state.Transition(to: Initialized);
-        }
+    /// <inheritdoc cref="GraphicsAdapter.Service" />
+    public new VulkanGraphicsService Service => (VulkanGraphicsService)base.Service;
 
-        /// <inheritdoc />
-        public override uint DeviceId => VulkanPhysicalDeviceProperties.deviceID;
+    /// <inheritdoc />
+    public override uint VendorId => VulkanPhysicalDeviceProperties.vendorID;
 
-        /// <inheritdoc />
-        public override string Name => _name.Value;
-
-        /// <inheritdoc cref="GraphicsAdapter.Service" />
-        public new VulkanGraphicsService Service => (VulkanGraphicsService)base.Service;
-
-        /// <inheritdoc />
-        public override uint VendorId => VulkanPhysicalDeviceProperties.vendorID;
-
-        /// <summary>Gets the underlying <see cref="VkPhysicalDevice" /> for the adapter.</summary>
-        /// <exception cref="ObjectDisposedException">The adapter has been disposed.</exception>
-        public VkPhysicalDevice VulkanPhysicalDevice
-        {
-            get
-            {
-                ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
-                return _vulkanPhysicalDevice;
-            }
-        }
-
-        /// <summary>Gets the <see cref="VkPhysicalDeviceProperties" /> for <see cref="VulkanPhysicalDevice" />.</summary>
-        /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
-        public ref readonly VkPhysicalDeviceMemoryProperties VulkanPhysicalDeviceMemoryProperties => ref _vulkanPhysicalDeviceMemoryProperties.ValueRef;
-
-        /// <summary>Gets the <see cref="VkPhysicalDeviceProperties" /> for <see cref="VulkanPhysicalDevice" />.</summary>
-        /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
-        public ref readonly VkPhysicalDeviceProperties VulkanPhysicalDeviceProperties => ref _vulkanPhysicalDeviceProperties.ValueRef;
-
-        /// <inheritdoc />
-        public override GraphicsDevice CreateDevice(IGraphicsSurface surface, int contextCount) => CreateVulkanGraphicsDevice(surface, contextCount);
-
-        /// <inheritdoc cref="CreateDevice(IGraphicsSurface, int)" />
-        public VulkanGraphicsDevice CreateVulkanGraphicsDevice(IGraphicsSurface surface, int contextCount)
+    /// <summary>Gets the underlying <see cref="VkPhysicalDevice" /> for the adapter.</summary>
+    /// <exception cref="ObjectDisposedException">The adapter has been disposed.</exception>
+    public VkPhysicalDevice VulkanPhysicalDevice
+    {
+        get
         {
             ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
-            return new VulkanGraphicsDevice(this, surface, contextCount);
+            return _vulkanPhysicalDevice;
         }
+    }
 
-        /// <inheritdoc />
-        /// <remarks>While there are no unmanaged resources to cleanup, we still want to mark the instance as disposed if, for example, <see cref="GraphicsAdapter.Service" /> was disposed.</remarks>
-        protected override void Dispose(bool isDisposing)
-        {
-            _ = _state.BeginDispose();
-            _state.EndDispose();
-        }
+    /// <summary>Gets the <see cref="VkPhysicalDeviceProperties" /> for <see cref="VulkanPhysicalDevice" />.</summary>
+    /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
+    public ref readonly VkPhysicalDeviceMemoryProperties VulkanPhysicalDeviceMemoryProperties => ref _vulkanPhysicalDeviceMemoryProperties.ValueRef;
 
-        private string GetName()
-        {
-            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
-            return GetUtf8Span(in VulkanPhysicalDeviceProperties.deviceName[0], 256).GetString() ?? string.Empty;
-        }
+    /// <summary>Gets the <see cref="VkPhysicalDeviceProperties" /> for <see cref="VulkanPhysicalDevice" />.</summary>
+    /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
+    public ref readonly VkPhysicalDeviceProperties VulkanPhysicalDeviceProperties => ref _vulkanPhysicalDeviceProperties.ValueRef;
 
-        private VkPhysicalDeviceMemoryProperties GetVulkanPhysicalDeviceMemoryProperties()
-        {
-            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
+    /// <inheritdoc />
+    public override GraphicsDevice CreateDevice(IGraphicsSurface surface, int contextCount) => CreateVulkanGraphicsDevice(surface, contextCount);
 
-            VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
-            vkGetPhysicalDeviceMemoryProperties(VulkanPhysicalDevice, &physicalDeviceMemoryProperties);
-            return physicalDeviceMemoryProperties;
-        }
+    /// <inheritdoc cref="CreateDevice(IGraphicsSurface, int)" />
+    public VulkanGraphicsDevice CreateVulkanGraphicsDevice(IGraphicsSurface surface, int contextCount)
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
+        return new VulkanGraphicsDevice(this, surface, contextCount);
+    }
 
-        private VkPhysicalDeviceProperties GetVulkanPhysicalDeviceProperties()
-        {
-            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
+    /// <inheritdoc />
+    /// <remarks>While there are no unmanaged resources to cleanup, we still want to mark the instance as disposed if, for example, <see cref="GraphicsAdapter.Service" /> was disposed.</remarks>
+    protected override void Dispose(bool isDisposing)
+    {
+        _ = _state.BeginDispose();
+        _state.EndDispose();
+    }
 
-            VkPhysicalDeviceProperties physicalDeviceProperties;
-            vkGetPhysicalDeviceProperties(VulkanPhysicalDevice, &physicalDeviceProperties);
-            return physicalDeviceProperties;
-        }
+    private string GetName()
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
+        return GetUtf8Span(in VulkanPhysicalDeviceProperties.deviceName[0], 256).GetString() ?? string.Empty;
+    }
+
+    private VkPhysicalDeviceMemoryProperties GetVulkanPhysicalDeviceMemoryProperties()
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
+
+        VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
+        vkGetPhysicalDeviceMemoryProperties(VulkanPhysicalDevice, &physicalDeviceMemoryProperties);
+        return physicalDeviceMemoryProperties;
+    }
+
+    private VkPhysicalDeviceProperties GetVulkanPhysicalDeviceProperties()
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
+
+        VkPhysicalDeviceProperties physicalDeviceProperties;
+        vkGetPhysicalDeviceProperties(VulkanPhysicalDevice, &physicalDeviceProperties);
+        return physicalDeviceProperties;
     }
 }
