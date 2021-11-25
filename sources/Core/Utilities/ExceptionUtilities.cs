@@ -393,7 +393,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ObjectDisposedException" /> if <paramref name="state" /> is <see cref="VolatileState.Disposed" /> or <see cref="VolatileState.Disposing" />.</summary>
         /// <param name="state">The state being checked.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="state"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ObjectDisposedException"><paramref name="valueExpression" /> is disposed or being disposed.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfDisposedOrDisposing(VolatileState state, [CallerArgumentExpression("state")] string? valueExpression = null)
@@ -406,7 +406,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>negative</c>.</summary>
         /// <param name="value">The value to be checked if it is <c>negative</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>negative</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNegative(int value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -420,7 +420,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>negative</c>.</summary>
         /// <param name="value">The value to be checked if it is <c>negative</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>negative</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNegative(long value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -434,7 +434,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>negative</c>.</summary>
         /// <param name="value">The value to be checked if it is <c>negative</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>negative</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNegative(nint value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -640,7 +640,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not a <c>power of two</c>.</summary>
         /// <param name="value">The value to check.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not a <c>power of two</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNotPow2(uint value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -654,7 +654,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not a <c>power of two</c>.</summary>
         /// <param name="value">The value to check.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not a <c>power of two</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNotPow2(ulong value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -668,7 +668,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not a <c>power of two</c>.</summary>
         /// <param name="value">The value to check.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not a <c>power of two</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNotPow2(nuint value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -695,7 +695,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not <c>zero</c>.</summary>
         /// <param name="value">The value to be checked if it is not <c>zero</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNotZero(int value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -709,7 +709,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not <c>zero</c>.</summary>
         /// <param name="value">The value to be checked if it is not <c>zero</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNotZero(long value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -723,7 +723,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not <c>zero</c>.</summary>
         /// <param name="value">The value to be checked if it is not <c>zero</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNotZero(nint value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -737,7 +737,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not <c>zero</c>.</summary>
         /// <param name="value">The value to be checked if it is not <c>zero</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNotZero(uint value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -751,7 +751,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not <c>zero</c>.</summary>
         /// <param name="value">The value to be checked if it is not <c>zero</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNotZero(ulong value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -765,7 +765,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not <c>zero</c>.</summary>
         /// <param name="value">The value to be checked if it is not <c>zero</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNotZero(nuint value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -780,7 +780,7 @@ namespace TerraFX.Utilities
         /// <summary>Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <c>null</c>.</summary>
         /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
         /// <param name="value">The value to be checked for <c>null</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNull<T>([NotNull] T? value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -795,7 +795,7 @@ namespace TerraFX.Utilities
         /// <summary>Throws an <see cref="ArgumentNullException" /> if <paramref name="array" /> is <c>null</c>.</summary>
         /// <typeparam name="T">The type of items in <paramref name="array" />.</typeparam>
         /// <param name="array">The array to be checked for <c>null</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the array being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="array"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the array being checked.</param>
         /// <exception cref="ArgumentNullException"><paramref name="array" /> is <c>null</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNull<T>(UnmanagedArray<T> array, [CallerArgumentExpression("array")] string? valueExpression = null)
@@ -809,7 +809,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws a <see cref="ArgumentNullException" /> if <paramref name="value" /> is <c>null</c>.</summary>
         /// <param name="value">The value to be checked for <c>null</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNull(void* value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -822,7 +822,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>zero</c>.</summary>
         /// <param name="value">The value to be checked if it is <c>zero</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfZero(int value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -836,7 +836,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>zero</c>.</summary>
         /// <param name="value">The value to be checked if it is <c>zero</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfZero(long value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -850,7 +850,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>zero</c>.</summary>
         /// <param name="value">The value to be checked if it is <c>zero</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfZero(nint value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -864,7 +864,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>zero</c>.</summary>
         /// <param name="value">The value to be checked if it is <c>zero</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfZero(uint value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -878,7 +878,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>zero</c>.</summary>
         /// <param name="value">The value to be checked if it is <c>zero</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfZero(ulong value, [CallerArgumentExpression("value")] string? valueExpression = null)
@@ -892,7 +892,7 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>zero</c>.</summary>
         /// <param name="value">The value to be checked if it is <c>zero</c>.</param>
-        /// <param name="valueExpression">If specified, the name of the value being checked; otherwise, <see cref="CallerArgumentExpressionAttribute" /> will instruct the compiler to generate a string containing the expression used for <paramref name="value"/>.</param>
+        /// <param name="valueExpression">If specified, the name of the value being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfZero(nuint value, [CallerArgumentExpression("value")] string? valueExpression = null)
