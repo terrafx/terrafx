@@ -18,8 +18,8 @@ namespace TerraFX.Graphics
         /// <exception cref="ArgumentNullException"><paramref name="surface" /> is <c>null</c>.</exception>
         protected GraphicsDevice(GraphicsAdapter adapter, IGraphicsSurface surface)
         {
-            ThrowIfNull(adapter, nameof(adapter));
-            ThrowIfNull(surface, nameof(surface));
+            ThrowIfNull(adapter);
+            ThrowIfNull(surface);
 
             _adapter = adapter;
             _surface = surface;

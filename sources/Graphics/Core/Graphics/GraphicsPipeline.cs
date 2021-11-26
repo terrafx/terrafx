@@ -26,7 +26,7 @@ namespace TerraFX.Graphics
         protected GraphicsPipeline(GraphicsDevice device, GraphicsPipelineSignature signature, GraphicsShader? vertexShader, GraphicsShader? pixelShader)
             : base(device)
         {
-            ThrowIfNull(signature, nameof(signature));
+            ThrowIfNull(signature);
 
             if (vertexShader is not null)
             {

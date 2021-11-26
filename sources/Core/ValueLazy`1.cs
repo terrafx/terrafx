@@ -106,7 +106,7 @@ namespace TerraFX
         public void Reset(Func<T> factory)
         {
             ThrowIfDisposedOrDisposing(_state, nameof(ValueLazy<T>));
-            ThrowIfNull(factory, nameof(factory));
+            ThrowIfNull(factory);
 
             _factory = factory;
             _ = _state.Transition(to: Initialized);

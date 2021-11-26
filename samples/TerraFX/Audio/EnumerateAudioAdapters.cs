@@ -35,7 +35,7 @@ namespace TerraFX.Samples.Audio
 
         public override void Cleanup()
         {
-            ExceptionUtilities.ThrowIfNull(_service, nameof(_service));
+            ExceptionUtilities.ThrowIfNull(_service);
 
             var task = _service.StopAsync();
             if (!task.IsCompleted)
@@ -48,7 +48,7 @@ namespace TerraFX.Samples.Audio
 
         protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
         {
-            ExceptionUtilities.ThrowIfNull(sender, nameof(sender));
+            ExceptionUtilities.ThrowIfNull(sender);
 
             var application = (Application)sender;
             RunAsync(application).Wait();
@@ -56,7 +56,7 @@ namespace TerraFX.Samples.Audio
 
         private async Task RunAsync(Application application)
         {
-            ExceptionUtilities.ThrowIfNull(_service, nameof(_service));
+            ExceptionUtilities.ThrowIfNull(_service);
 
             if (_async)
             {

@@ -24,7 +24,7 @@ namespace TerraFX.Graphics
         protected GraphicsResource(GraphicsDevice device, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess)
             : base(device)
         {
-            ThrowIfNull(blockRegion.Collection, nameof(blockRegion));
+            ThrowIfNull(blockRegion.Collection);
 
             if (blockRegion.Device != device)
             {

@@ -18,7 +18,7 @@ namespace TerraFX.Graphics
         protected GraphicsContext(GraphicsDevice device, int index)
             : base(device)
         {
-            ThrowIfNegative(index, nameof(index));
+            ThrowIfNegative(index);
             _index = index;
         }
 

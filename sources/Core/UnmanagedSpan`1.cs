@@ -54,7 +54,7 @@ namespace TerraFX
             }
             else
             {
-                ThrowIfNotZero(start, nameof(start));
+                ThrowIfNotZero(start);
                 this = Empty;
             }
         }
@@ -79,8 +79,8 @@ namespace TerraFX
             }
             else
             {
-                ThrowIfNotZero(start, nameof(start));
-                ThrowIfNotZero(length, nameof(length));
+                ThrowIfNotZero(start);
+                ThrowIfNotZero(length);
                 this = Empty;
             }
         }
@@ -131,7 +131,7 @@ namespace TerraFX
             var items = _items;
             var length = _length;
 
-            ThrowIfNull(destination, nameof(destination));
+            ThrowIfNull(destination);
             ThrowIfNotInInsertBounds(length, destination.Length, nameof(Length), nameof(destination));
 
             CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), items, length);

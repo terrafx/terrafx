@@ -48,14 +48,14 @@ namespace TerraFX.UI
         /// <inheritdoc />
         public override Dispatcher GetDispatcher(Thread thread)
         {
-            ThrowIfNull(thread, nameof(thread));
+            ThrowIfNull(thread);
             return _dispatchers.GetOrAdd(thread, (parentThread) => new Win32Dispatcher(this, parentThread));
         }
 
         /// <inheritdoc />
         public override bool TryGetDispatcher(Thread thread, [MaybeNullWhen(false)] out Dispatcher dispatcher)
         {
-            ThrowIfNull(thread, nameof(thread));
+            ThrowIfNull(thread);
             return _dispatchers.TryGetValue(thread, out dispatcher!);
         }
 

@@ -33,7 +33,7 @@ namespace TerraFX
         public UnmanagedArray(nuint length, nuint alignment = 0, bool zero = true)
         {
             var actualAlignment = (alignment != 0) ? alignment : DefaultAlignment;
-            ThrowIfNotPow2(actualAlignment, nameof(alignment));
+            ThrowIfNotPow2(actualAlignment);
 
             Metadata* data;
 
@@ -154,7 +154,7 @@ namespace TerraFX
             var items = &_data->Item;
             var length = _data->Length;
 
-            ThrowIfNull(destination, nameof(destination));
+            ThrowIfNull(destination);
             ThrowIfNotInInsertBounds(length, destination.Length, nameof(Length), nameof(destination));
 
             CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), items, length);

@@ -31,7 +31,7 @@ namespace TerraFX.Collections
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is <c>negative</c>.</exception>
         public ValueStack(int capacity)
         {
-            ThrowIfNegative(capacity, nameof(capacity));
+            ThrowIfNegative(capacity);
 
             if (capacity != 0)
             {
@@ -83,7 +83,7 @@ namespace TerraFX.Collections
         /// <exception cref="ArgumentNullException"><paramref name="array" /> is <c>null</c>.</exception>
         public ValueStack(T[] array, bool takeOwnership = false)
         {
-            ThrowIfNull(array, nameof(array));
+            ThrowIfNull(array);
 
             if (takeOwnership)
             {

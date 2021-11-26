@@ -32,8 +32,8 @@ namespace TerraFX.Graphics
         protected GraphicsPrimitive(GraphicsDevice device, GraphicsPipeline pipeline, in GraphicsMemoryRegion<GraphicsResource> vertexBufferRegion, uint vertexBufferStride, in GraphicsMemoryRegion<GraphicsResource> indexBufferRegion, uint indexBufferStride, ReadOnlySpan<GraphicsMemoryRegion<GraphicsResource>> inputResourceRegions)
             : base(device)
         {
-            ThrowIfNull(pipeline, nameof(pipeline));
-            ThrowIfNull(vertexBufferRegion.Collection, nameof(vertexBufferRegion));
+            ThrowIfNull(pipeline);
+            ThrowIfNull(vertexBufferRegion.Collection);
 
             if (pipeline.Device != device)
             {

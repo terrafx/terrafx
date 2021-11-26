@@ -40,7 +40,7 @@ namespace TerraFX.Collections
             {
                 if (alignment != 0)
                 {
-                    ThrowIfNotPow2(alignment, nameof(alignment));
+                    ThrowIfNotPow2(alignment);
                 }
                 _items = UnmanagedArray<T>.Empty;
             }
@@ -67,7 +67,7 @@ namespace TerraFX.Collections
             {
                 if (alignment != 0)
                 {
-                    ThrowIfNotPow2(alignment, nameof(alignment));
+                    ThrowIfNotPow2(alignment);
                 }
                 _items = UnmanagedArray<T>.Empty;
             }
@@ -84,7 +84,7 @@ namespace TerraFX.Collections
         /// <exception cref="ArgumentNullException"><paramref name="array" /> is <c>null</c>.</exception>
         public unsafe UnmanagedValueQueue(UnmanagedArray<T> array, bool takeOwnership = false)
         {
-            ThrowIfNull(array, nameof(array));
+            ThrowIfNull(array);
 
             if (takeOwnership)
             {

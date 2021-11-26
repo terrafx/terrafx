@@ -20,7 +20,7 @@ namespace TerraFX.Graphics
         protected GraphicsShader(GraphicsDevice device, GraphicsShaderKind kind, string entryPointName)
             : base(device)
         {
-            ThrowIfNull(entryPointName, nameof(entryPointName));
+            ThrowIfNull(entryPointName);
 
             _entryPointName = entryPointName;
             _kind = kind;

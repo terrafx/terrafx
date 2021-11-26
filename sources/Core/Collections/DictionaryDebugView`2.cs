@@ -16,7 +16,7 @@ namespace TerraFX.Collections
 
         public DictionaryDebugView(IDictionary<TKey, TValue> dictionary)
         {
-            ThrowIfNull(dictionary, nameof(dictionary));
+            ThrowIfNull(dictionary);
             _dictionary = dictionary;
         }
 

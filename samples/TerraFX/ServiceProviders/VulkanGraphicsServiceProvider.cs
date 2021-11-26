@@ -15,7 +15,7 @@ namespace TerraFX.Samples.ServiceProviders
 
         public VulkanGraphicsServiceProvider(ApplicationServiceProvider baseServiceProvider)
         {
-            ThrowIfNull(baseServiceProvider, nameof(baseServiceProvider));
+            ThrowIfNull(baseServiceProvider);
             _baseServiceProvider = baseServiceProvider;
             _graphicsService = new ValueLazy<VulkanGraphicsService>(() => new VulkanGraphicsService());
         }

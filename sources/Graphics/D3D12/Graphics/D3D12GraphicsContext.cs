@@ -135,8 +135,8 @@ namespace TerraFX.Graphics
         /// <inheritdoc cref="Copy(GraphicsBuffer, GraphicsBuffer)" />
         public void Copy(D3D12GraphicsBuffer destination, D3D12GraphicsBuffer source)
         {
-            ThrowIfNull(destination, nameof(destination));
-            ThrowIfNull(source, nameof(source));
+            ThrowIfNull(destination);
+            ThrowIfNull(source);
 
             var commandList = D3D12GraphicsCommandList;
 
@@ -221,8 +221,8 @@ namespace TerraFX.Graphics
         /// <inheritdoc cref="Copy(GraphicsTexture, GraphicsBuffer)" />
         public void Copy(D3D12GraphicsTexture destination, D3D12GraphicsBuffer source)
         {
-            ThrowIfNull(destination, nameof(destination));
-            ThrowIfNull(source, nameof(source));
+            ThrowIfNull(destination);
+            ThrowIfNull(source);
 
             var device = Device.D3D12Device;
             var commandList = D3D12GraphicsCommandList;
@@ -320,7 +320,7 @@ namespace TerraFX.Graphics
         /// <inheritdoc cref="Draw(GraphicsPrimitive)" />
         public void Draw(D3D12GraphicsPrimitive primitive)
         {
-            ThrowIfNull(primitive, nameof(primitive));
+            ThrowIfNull(primitive);
 
             var commandList = D3D12GraphicsCommandList;
             var pipeline = primitive.Pipeline;
