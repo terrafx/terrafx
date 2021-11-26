@@ -6,104 +6,104 @@ using TerraFX.Graphics;
 using TerraFX.Numerics;
 using static TerraFX.Utilities.UnsafeUtilities;
 
-namespace TerraFX.Samples.Graphics
+namespace TerraFX.Samples.Graphics;
+
+public sealed class HelloTriangle : HelloWindow
 {
-    public sealed class HelloTriangle : HelloWindow
+    private GraphicsPrimitive _trianglePrimitive = null!;
+    private GraphicsBuffer _vertexBuffer = null!;
+
+    public HelloTriangle(string name, ApplicationServiceProvider serviceProvider)
+        : base(name, serviceProvider)
     {
-        private GraphicsPrimitive _trianglePrimitive = null!;
-        private GraphicsBuffer _vertexBuffer = null!;
+    }
 
-        public HelloTriangle(string name, ApplicationServiceProvider serviceProvider)
-            : base(name, serviceProvider)
+    public override void Cleanup()
+    {
+        _trianglePrimitive?.Dispose();
+        _vertexBuffer?.Dispose();
+        base.Cleanup();
+    }
+
+    /// <summary>Initializes the GUI for this sample.</summary>
+    /// <param name="application">The hosting <see cref="Application" />.</param>
+    /// <param name="timeout">The <see cref="TimeSpan" /> after which this sample should stop running.</param>
+    /// <param name="windowLocation">The <see cref="Vector2" /> that defines the initial window location.</param>
+    /// <param name="windowSize">The <see cref="Vector2" /> that defines the initial window client rectangle size.</param>
+    public override void Initialize(Application application, TimeSpan timeout, Vector2? windowLocation, Vector2? windowSize)
+    {
+        base.Initialize(application, timeout, windowLocation, windowSize);
+
+        var graphicsDevice = GraphicsDevice;
+        var currentGraphicsContext = graphicsDevice.CurrentContext;
+
+        using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
+
+        _vertexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
+
+        currentGraphicsContext.BeginFrame();
+        _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer);
+        currentGraphicsContext.EndFrame();
+
+        graphicsDevice.Signal(currentGraphicsContext.Fence);
+        graphicsDevice.WaitForIdle();
+    }
+
+    protected override void Draw(GraphicsContext graphicsContext)
+    {
+        graphicsContext.Draw(_trianglePrimitive);
+        base.Draw(graphicsContext);
+    }
+
+    private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer)
+    {
+        var graphicsDevice = GraphicsDevice;
+        var graphicsSurface = graphicsDevice.Surface;
+
+        var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Identity", "main", "main");
+        var vertexBuffer = _vertexBuffer;
+
+        var vertexBufferRegion = CreateVertexBufferRegion(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+        graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
+
+        return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, SizeOf<IdentityVertex>());
+
+        static GraphicsMemoryRegion<GraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
         {
+            var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<IdentityVertex>() * 3, alignment: 16);
+            var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>(in vertexBufferRegion);
+
+            pVertexBuffer[0] = new IdentityVertex {
+                Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
+                Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f)
+            };
+
+            pVertexBuffer[1] = new IdentityVertex {
+                Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
+                Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f)
+            };
+
+            pVertexBuffer[2] = new IdentityVertex {
+                Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
+                Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f)
+            };
+
+            vertexStagingBuffer.UnmapAndWrite(in vertexBufferRegion);
+            return vertexBufferRegion;
         }
 
-        public override void Cleanup()
+        GraphicsPipeline CreateGraphicsPipeline(GraphicsDevice graphicsDevice, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
         {
-            _trianglePrimitive?.Dispose();
-            _vertexBuffer?.Dispose();
-            base.Cleanup();
+            var signature = CreateGraphicsPipelineSignature(graphicsDevice);
+            var vertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint);
+            var pixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint);
+
+            return graphicsDevice.CreatePipeline(signature, vertexShader, pixelShader);
         }
 
-        /// <summary>Initializes the GUI for this sample.</summary>
-        /// <param name="application">The hosting <see cref="Application" />.</param>
-        /// <param name="timeout">The <see cref="TimeSpan" /> after which this sample should stop running.</param>
-        /// <param name="windowLocation">The <see cref="Vector2" /> that defines the initial window location.</param>
-        /// <param name="windowSize">The <see cref="Vector2" /> that defines the initial window client rectangle size.</param>
-        public override void Initialize(Application application, TimeSpan timeout, Vector2? windowLocation, Vector2? windowSize)
+        static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)
         {
-            base.Initialize(application, timeout, windowLocation, windowSize);
-
-            var graphicsDevice = GraphicsDevice;
-            var currentGraphicsContext = graphicsDevice.CurrentContext;
-
-            using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
-
-            _vertexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
-
-            currentGraphicsContext.BeginFrame();
-            _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer);
-            currentGraphicsContext.EndFrame();
-
-            graphicsDevice.Signal(currentGraphicsContext.Fence);
-            graphicsDevice.WaitForIdle();
-        }
-
-        protected override void Draw(GraphicsContext graphicsContext)
-        {
-            graphicsContext.Draw(_trianglePrimitive);
-            base.Draw(graphicsContext);
-        }
-
-        private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer)
-        {
-            var graphicsDevice = GraphicsDevice;
-            var graphicsSurface = graphicsDevice.Surface;
-
-            var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Identity", "main", "main");
-            var vertexBuffer = _vertexBuffer;
-
-            var vertexBufferRegion = CreateVertexBufferRegion(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
-            graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
-
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, SizeOf<IdentityVertex>());
-
-            static GraphicsMemoryRegion<GraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
-            {
-                var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<IdentityVertex>() * 3, alignment: 16);
-                var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>(in vertexBufferRegion);
-
-                pVertexBuffer[0] = new IdentityVertex {
-                    Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
-                    Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f)
-                };
-
-                pVertexBuffer[1] = new IdentityVertex {
-                    Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
-                    Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f)
-                };
-
-                pVertexBuffer[2] = new IdentityVertex {
-                    Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
-                    Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f)
-                };
-
-                vertexStagingBuffer.UnmapAndWrite(in vertexBufferRegion);
-                return vertexBufferRegion;
-            }
-
-            GraphicsPipeline CreateGraphicsPipeline(GraphicsDevice graphicsDevice, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
-            {
-                var signature = CreateGraphicsPipelineSignature(graphicsDevice);
-                var vertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint);
-                var pixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint);
-
-                return graphicsDevice.CreatePipeline(signature, vertexShader, pixelShader);
-            }
-
-            static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)
-            {
-                var inputs = new GraphicsPipelineInput[1] {
+            var inputs = new GraphicsPipelineInput[1] {
                     new GraphicsPipelineInput(
                         new GraphicsPipelineInputElement[2] {
                             new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
@@ -112,8 +112,7 @@ namespace TerraFX.Samples.Graphics
                     ),
                 };
 
-                return graphicsDevice.CreatePipelineSignature(inputs);
-            }
+            return graphicsDevice.CreatePipelineSignature(inputs);
         }
     }
 }

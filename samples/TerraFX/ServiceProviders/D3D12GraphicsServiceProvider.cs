@@ -5,36 +5,35 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Versioning;
 using TerraFX.Graphics;
 
-namespace TerraFX.Samples.ServiceProviders
+namespace TerraFX.Samples.ServiceProviders;
+
+[SupportedOSPlatform("windows10.0")]
+public sealed class D3D12GraphicsServiceProvider : Win32WindowServiceProvider
 {
-    [SupportedOSPlatform("windows10.0")]
-    public sealed class D3D12GraphicsServiceProvider : Win32WindowServiceProvider
+    private ValueLazy<D3D12GraphicsService> _graphicsService;
+
+    public D3D12GraphicsServiceProvider()
     {
-        private ValueLazy<D3D12GraphicsService> _graphicsService;
-
-        public D3D12GraphicsServiceProvider()
-        {
-            _graphicsService = new ValueLazy<D3D12GraphicsService>(() => new D3D12GraphicsService());
-        }
-
-        public override bool TryGetService(Type serviceType, [NotNullWhen(true)] out object? service)
-        {
-            if (serviceType.IsAssignableFrom(typeof(D3D12GraphicsService)))
-            {
-                service = _graphicsService.Value;
-                return true;
-            }
-
-            return base.TryGetService(serviceType, out service);
-        }
-
-        protected override void DisposeCore(bool isDisposing)
-        {
-            _graphicsService.Dispose(DisposeGraphicsService);
-            base.DisposeCore(isDisposing);
-        }
-
-        private void DisposeGraphicsService(GraphicsService graphicsService)
-            => graphicsService.Dispose();
+        _graphicsService = new ValueLazy<D3D12GraphicsService>(() => new D3D12GraphicsService());
     }
+
+    public override bool TryGetService(Type serviceType, [NotNullWhen(true)] out object? service)
+    {
+        if (serviceType.IsAssignableFrom(typeof(D3D12GraphicsService)))
+        {
+            service = _graphicsService.Value;
+            return true;
+        }
+
+        return base.TryGetService(serviceType, out service);
+    }
+
+    protected override void DisposeCore(bool isDisposing)
+    {
+        _graphicsService.Dispose(DisposeGraphicsService);
+        base.DisposeCore(isDisposing);
+    }
+
+    private void DisposeGraphicsService(GraphicsService graphicsService)
+        => graphicsService.Dispose();
 }

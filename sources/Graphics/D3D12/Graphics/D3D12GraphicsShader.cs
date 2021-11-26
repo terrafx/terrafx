@@ -6,58 +6,57 @@ using TerraFX.Threading;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.MemoryUtilities;
 
-namespace TerraFX.Graphics
+namespace TerraFX.Graphics;
+
+/// <inheritdoc />
+public sealed unsafe class D3D12GraphicsShader : GraphicsShader
 {
-    /// <inheritdoc />
-    public sealed unsafe class D3D12GraphicsShader : GraphicsShader
+    private readonly D3D12_SHADER_BYTECODE _d3d12ShaderBytecode;
+
+    private VolatileState _state;
+
+    internal D3D12GraphicsShader(D3D12GraphicsDevice device, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
+        : base(device, kind, entryPointName)
     {
-        private readonly D3D12_SHADER_BYTECODE _d3d12ShaderBytecode;
+        var bytecodeLength = (nuint)bytecode.Length;
 
-        private VolatileState _state;
+        _d3d12ShaderBytecode.pShaderBytecode = Allocate(bytecodeLength);
+        _d3d12ShaderBytecode.BytecodeLength = bytecodeLength;
 
-        internal D3D12GraphicsShader(D3D12GraphicsDevice device, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
-            : base(device, kind, entryPointName)
+        var destination = new Span<byte>(_d3d12ShaderBytecode.pShaderBytecode, (int)bytecodeLength);
+        bytecode.CopyTo(destination);
+
+        _ = _state.Transition(to: Initialized);
+    }
+
+    /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsShader" /> class.</summary>
+    ~D3D12GraphicsShader() => Dispose(isDisposing: false);
+
+    /// <inheritdoc />
+    public override ReadOnlySpan<byte> Bytecode => new ReadOnlySpan<byte>(_d3d12ShaderBytecode.pShaderBytecode, (int)_d3d12ShaderBytecode.BytecodeLength);
+
+    /// <summary>Gets the underlying <see cref="D3D12_SHADER_BYTECODE" /> for the shader.</summary>
+    public ref readonly D3D12_SHADER_BYTECODE D3D12ShaderBytecode => ref _d3d12ShaderBytecode;
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
+    public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
+
+    /// <inheritdoc />
+    protected override void Dispose(bool isDisposing)
+    {
+        var priorState = _state.BeginDispose();
+
+        if (priorState < Disposing)
         {
-            var bytecodeLength = (nuint)bytecode.Length;
-
-            _d3d12ShaderBytecode.pShaderBytecode = Allocate(bytecodeLength);
-            _d3d12ShaderBytecode.BytecodeLength = bytecodeLength;
-
-            var destination = new Span<byte>(_d3d12ShaderBytecode.pShaderBytecode, (int)bytecodeLength);
-            bytecode.CopyTo(destination);
-
-            _ = _state.Transition(to: Initialized);
+            DisposeD3D12ShaderBytecode();
         }
 
-        /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsShader" /> class.</summary>
-        ~D3D12GraphicsShader() => Dispose(isDisposing: false);
+        _state.EndDispose();
+    }
 
-        /// <inheritdoc />
-        public override ReadOnlySpan<byte> Bytecode => new ReadOnlySpan<byte>(_d3d12ShaderBytecode.pShaderBytecode, (int)_d3d12ShaderBytecode.BytecodeLength);
-
-        /// <summary>Gets the underlying <see cref="D3D12_SHADER_BYTECODE" /> for the shader.</summary>
-        public ref readonly D3D12_SHADER_BYTECODE D3D12ShaderBytecode => ref _d3d12ShaderBytecode;
-
-        /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-        public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
-
-        /// <inheritdoc />
-        protected override void Dispose(bool isDisposing)
-        {
-            var priorState = _state.BeginDispose();
-
-            if (priorState < Disposing)
-            {
-                DisposeD3D12ShaderBytecode();
-            }
-
-            _state.EndDispose();
-        }
-
-        private void DisposeD3D12ShaderBytecode()
-        {
-            var shaderBytecode = _d3d12ShaderBytecode.pShaderBytecode;
-            Free(shaderBytecode);
-        }
+    private void DisposeD3D12ShaderBytecode()
+    {
+        var shaderBytecode = _d3d12ShaderBytecode.pShaderBytecode;
+        Free(shaderBytecode);
     }
 }

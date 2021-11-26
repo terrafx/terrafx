@@ -5,38 +5,37 @@ using System.Diagnostics;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.MathUtilities;
 
-namespace TerraFX
+namespace TerraFX;
+
+public readonly partial struct UnmanagedSpan<T>
 {
-    public readonly partial struct UnmanagedSpan<T>
+    internal sealed class DebugView
     {
-        internal sealed class DebugView
+        private readonly UnmanagedSpan<T> _span;
+
+        public DebugView(UnmanagedSpan<T> span)
         {
-            private readonly UnmanagedSpan<T> _span;
+            _span = span;
+        }
 
-            public DebugView(UnmanagedSpan<T> span)
+        public bool IsEmpty => _span.IsEmpty;
+
+        public nuint Length => _span.Length;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        public unsafe T[] Items
+        {
+            get
             {
-                _span = span;
-            }
+                var count = Min(_span.Length, s_maxArrayLength);
+                var items = GC.AllocateUninitializedArray<T>((int)count);
 
-            public bool IsEmpty => _span.IsEmpty;
-
-            public nuint Length => _span.Length;
-
-            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-            public unsafe T[] Items
-            {
-                get
+                fixed (T* pItems = items)
                 {
-                    var count = Min(_span.Length, s_maxArrayLength);
-                    var items = GC.AllocateUninitializedArray<T>((int)count);
-
-                    fixed (T* pItems = items)
-                    {
-                        var span = new UnmanagedSpan<T>(pItems, count);
-                        _span.CopyTo(span);
-                    }
-                    return items;
+                    var span = new UnmanagedSpan<T>(pItems, count);
+                    _span.CopyTo(span);
                 }
+                return items;
             }
         }
     }

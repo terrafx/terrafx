@@ -5,36 +5,35 @@ using System.Diagnostics;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.MathUtilities;
 
-namespace TerraFX.Collections
+namespace TerraFX.Collections;
+
+public partial struct UnmanagedValueList<T>
 {
-    public partial struct UnmanagedValueList<T>
+    internal sealed class DebugView
     {
-        internal sealed class DebugView
+        private readonly UnmanagedValueList<T> _list;
+
+        public DebugView(UnmanagedValueList<T> list)
         {
-            private readonly UnmanagedValueList<T> _list;
+            _list = list;
+        }
 
-            public DebugView(UnmanagedValueList<T> list)
+        public nuint Count => _list.Count;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        public unsafe T[] Items
+        {
+            get
             {
-                _list = list;
-            }
+                var count = Min(_list.Count, s_maxArrayLength);
+                var items = GC.AllocateUninitializedArray<T>((int)count);
 
-            public nuint Count => _list.Count;
-
-            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-            public unsafe T[] Items
-            {
-                get
+                fixed (T* pItems = items)
                 {
-                    var count = Min(_list.Count, s_maxArrayLength);
-                    var items = GC.AllocateUninitializedArray<T>((int)count);
-
-                    fixed (T* pItems = items)
-                    {
-                        var span = new UnmanagedSpan<T>(pItems, count);
-                        _list.CopyTo(span);
-                    }
-                    return items;
+                    var span = new UnmanagedSpan<T>(pItems, count);
+                    _list.CopyTo(span);
                 }
+                return items;
             }
         }
     }

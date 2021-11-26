@@ -1,14 +1,13 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-namespace TerraFX
+namespace TerraFX;
+
+public readonly partial struct UnmanagedArray<T>
 {
-    public readonly partial struct UnmanagedArray<T>
+    private struct Metadata
     {
-        private struct Metadata
-        {
-            public nuint Length;
-            public nuint Alignment;
-            public T Item;
-        }
+        public nuint Length;
+        public nuint Alignment;
+        public T Item;
     }
 }

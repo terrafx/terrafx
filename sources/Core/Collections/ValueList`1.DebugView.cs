@@ -6,32 +6,31 @@
 using System;
 using System.Diagnostics;
 
-namespace TerraFX.Collections
+namespace TerraFX.Collections;
+
+public partial struct ValueList<T>
 {
-    public partial struct ValueList<T>
+    internal sealed class DebugView
     {
-        internal sealed class DebugView
+        private readonly ValueList<T> _list;
+
+        public DebugView(ValueList<T> list)
         {
-            private readonly ValueList<T> _list;
+            _list = list;
+        }
 
-            public DebugView(ValueList<T> list)
+        public int Capacity => _list.Capacity;
+
+        public int Count => _list.Count;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        public T[] Items
+        {
+            get
             {
-                _list = list;
-            }
-
-            public int Capacity => _list.Capacity;
-
-            public int Count => _list.Count;
-
-            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-            public T[] Items
-            {
-                get
-                {
-                    var items = GC.AllocateUninitializedArray<T>(_list.Count);
-                    _list.CopyTo(items);
-                    return items;
-                }
+                var items = GC.AllocateUninitializedArray<T>(_list.Count);
+                _list.CopyTo(items);
+                return items;
             }
         }
     }
