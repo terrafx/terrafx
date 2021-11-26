@@ -33,7 +33,7 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
     public UnmanagedArray(nuint length, nuint alignment = 0, bool zero = true)
     {
         var actualAlignment = (alignment != 0) ? alignment : DefaultAlignment;
-        ThrowIfNotPow2(actualAlignment);
+        ThrowIfNotPow2(actualAlignment, nameof(alignment));
 
         Metadata* data;
 
