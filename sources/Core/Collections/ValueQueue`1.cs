@@ -33,7 +33,7 @@ public partial struct ValueQueue<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is <c>negative</c>.</exception>
     public ValueQueue(int capacity)
     {
-        ThrowIfNegative(capacity, nameof(capacity));
+        ThrowIfNegative(capacity);
 
         if (capacity != 0)
         {
@@ -91,7 +91,7 @@ public partial struct ValueQueue<T>
     /// <exception cref="ArgumentNullException"><paramref name="array" /> is <c>null</c>.</exception>
     public ValueQueue(T[] array, bool takeOwnership = false)
     {
-        ThrowIfNull(array, nameof(array));
+        ThrowIfNull(array);
 
         if (takeOwnership)
         {

@@ -23,8 +23,8 @@ public abstract class Window : IGraphicsSurface
     /// <exception cref="ArgumentNullException"><paramref name="parentThread" /> is <c>null</c>.</exception>
     protected Window(WindowService windowService, Thread parentThread)
     {
-        ThrowIfNull(windowService, nameof(windowService));
-        ThrowIfNull(parentThread, nameof(parentThread));
+        ThrowIfNull(windowService);
+        ThrowIfNull(parentThread);
 
         _windowService = windowService;
         _parentThread = parentThread;

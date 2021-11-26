@@ -36,7 +36,7 @@ public sealed partial class PropertySet : IPropertySet
     /// <exception cref="ArgumentNullException"><paramref name="items" /> is <c>null</c>.</exception>
     public PropertySet(IEnumerable<KeyValuePair<string, object>> items)
     {
-        ThrowIfNull(items, nameof(items));
+        ThrowIfNull(items);
         _items = new Dictionary<string, object>(items);
     }
 
@@ -45,7 +45,7 @@ public sealed partial class PropertySet : IPropertySet
     /// <exception cref="ArgumentNullException"><paramref name="items" /> is <c>null</c>.</exception>
     public PropertySet(IDictionary<string, object> items)
     {
-        ThrowIfNull(items, nameof(items));
+        ThrowIfNull(items);
         _items = new Dictionary<string, object>(items);
     }
 

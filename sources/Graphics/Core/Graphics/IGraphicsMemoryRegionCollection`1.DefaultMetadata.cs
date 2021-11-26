@@ -130,8 +130,8 @@ public partial interface IGraphicsMemoryRegionCollection<TSelf>
         /// <inheritdoc />
         public void Initialize(TSelf collection, ulong size, ulong minimumAllocatedRegionMarginSize, ulong minimumFreeRegionSizeToRegister)
         {
-            ThrowIfNull(collection, nameof(collection));
-            ThrowIfZero(size, nameof(size));
+            ThrowIfNull(collection);
+            ThrowIfZero(size);
 
             _collection = collection;
 
@@ -149,8 +149,8 @@ public partial interface IGraphicsMemoryRegionCollection<TSelf>
         /// <inheritdoc />
         public bool TryAllocate(ulong size, [Optional, DefaultParameterValue(1UL)] ulong alignment, out GraphicsMemoryRegion<TSelf> region)
         {
-            ThrowIfZero(size, nameof(size));
-            ThrowIfNotPow2(alignment, nameof(alignment));
+            ThrowIfZero(size);
+            ThrowIfNotPow2(alignment);
 
             Unsafe.SkipInit(out region);
 

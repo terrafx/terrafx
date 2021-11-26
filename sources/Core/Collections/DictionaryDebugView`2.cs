@@ -16,7 +16,7 @@ internal sealed class DictionaryDebugView<TKey, TValue>
 
     public DictionaryDebugView(IDictionary<TKey, TValue> dictionary)
     {
-        ThrowIfNull(dictionary, nameof(dictionary));
+        ThrowIfNull(dictionary);
         _dictionary = dictionary;
     }
 

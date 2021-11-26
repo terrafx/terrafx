@@ -15,7 +15,7 @@ public abstract class GraphicsAdapter : IDisposable
     /// <exception cref="ArgumentNullException"><paramref name="service" /> is <c>null</c>.</exception>
     protected GraphicsAdapter(GraphicsService service)
     {
-        ThrowIfNull(service, nameof(service));
+        ThrowIfNull(service);
         _service = service;
     }
 

@@ -24,7 +24,7 @@ public sealed class Application
     /// <exception cref="ArgumentNullException"><paramref name="serviceProvider" /> is <c>null</c>.</exception>
     public Application(ApplicationServiceProvider serviceProvider)
     {
-        ThrowIfNull(serviceProvider, nameof(serviceProvider));
+        ThrowIfNull(serviceProvider);
 
         _parentThread = Thread.CurrentThread;
         _serviceProvider = serviceProvider;

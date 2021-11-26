@@ -18,8 +18,8 @@ public abstract class Dispatcher : IDisposable
     /// <exception cref="ArgumentNullException"><paramref name="dispatchService" /> is <c>null</c>.</exception>
     protected Dispatcher(DispatchService dispatchService, Thread parentThread)
     {
-        ThrowIfNull(dispatchService, nameof(dispatchService));
-        ThrowIfNull(parentThread, nameof(parentThread));
+        ThrowIfNull(dispatchService);
+        ThrowIfNull(parentThread);
 
         _dispatchService = dispatchService;
         _parentThread = parentThread;
