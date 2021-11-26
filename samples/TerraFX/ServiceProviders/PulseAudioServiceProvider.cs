@@ -5,43 +5,42 @@ using System.Diagnostics.CodeAnalysis;
 using TerraFX.ApplicationModel;
 using TerraFX.Audio;
 
-namespace TerraFX.Samples.ServiceProviders
+namespace TerraFX.Samples.ServiceProviders;
+
+public sealed class PulseAudioServiceProvider : ApplicationServiceProvider
 {
-    public sealed class PulseAudioServiceProvider : ApplicationServiceProvider
+    private ValueLazy<PulseAudioService> _audioService;
+
+    public PulseAudioServiceProvider()
     {
-        private ValueLazy<PulseAudioService> _audioService;
+        _audioService = new ValueLazy<PulseAudioService>(() => new PulseAudioService());
+    }
 
-        public PulseAudioServiceProvider()
+    protected override void DisposeCore(bool isDisposing)
+    {
+        if (isDisposing)
         {
-            _audioService = new ValueLazy<PulseAudioService>(() => new PulseAudioService());
+            _audioService.Dispose(DisposeAudioService);
+        }
+    }
+
+    public override bool TryGetService(Type serviceType, [NotNullWhen(true)] out object? service)
+    {
+        if (serviceType.IsAssignableFrom(typeof(PulseAudioService)))
+        {
+            service = _audioService.Value;
+            return true;
         }
 
-        protected override void DisposeCore(bool isDisposing)
-        {
-            if (isDisposing)
-            {
-                _audioService.Dispose(DisposeAudioService);
-            }
-        }
+        service = null;
+        return false;
+    }
 
-        public override bool TryGetService(Type serviceType, [NotNullWhen(true)] out object? service)
+    private void DisposeAudioService(IAudioService audioService)
+    {
+        if (audioService is IDisposable disposableAudioService)
         {
-            if (serviceType.IsAssignableFrom(typeof(PulseAudioService)))
-            {
-                service = _audioService.Value;
-                return true;
-            }
-
-            service = null;
-            return false;
-        }
-
-        private void DisposeAudioService(IAudioService audioService)
-        {
-            if (audioService is IDisposable disposableAudioService)
-            {
-                disposableAudioService.Dispose();
-            }
+            disposableAudioService.Dispose();
         }
     }
 }

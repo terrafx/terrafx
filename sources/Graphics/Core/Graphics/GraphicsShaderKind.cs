@@ -1,21 +1,20 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-namespace TerraFX.Graphics
+namespace TerraFX.Graphics;
+
+/// <summary>Defines a graphics shader kind.</summary>
+public enum GraphicsShaderKind
 {
-    /// <summary>Defines a graphics shader kind.</summary>
-    public enum GraphicsShaderKind
-    {
-        /// <summary>Defines an unknown graphics shader kind.</summary>
-        Unknown,
+    /// <summary>Defines an unknown graphics shader kind.</summary>
+    Unknown,
 
-        /// <summary>Defines a vertex shader which can transform vertices for a graphics device.</summary>
-        Vertex,
+    /// <summary>Defines a vertex shader which can transform vertices for a graphics device.</summary>
+    Vertex,
 
-        /// <summary>Defines a pixel shader which can transform pixels for a graphics device.</summary>
-        Pixel,
+    /// <summary>Defines a pixel shader which can transform pixels for a graphics device.</summary>
+    Pixel,
 
-        /// <inheritdoc cref="Pixel" />
-        /// <remarks>This is an alternative name for <see cref="Pixel" />.</remarks>
-        Fragment = Pixel,
-    }
+    /// <inheritdoc cref="Pixel" />
+    /// <remarks>This is an alternative name for <see cref="Pixel" />.</remarks>
+    Fragment = Pixel,
 }

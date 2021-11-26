@@ -1,10 +1,9 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-namespace TerraFX.Samples.Graphics
+namespace TerraFX.Samples.Graphics;
+
+public enum SierpinskiShape
 {
-    public enum SierpinskiShape
-    {
-        Pyramid,
-        Quad,
-    }
+    Pyramid,
+    Quad,
 }

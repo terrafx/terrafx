@@ -2,13 +2,12 @@
 
 using TerraFX.ApplicationModel;
 
-namespace TerraFX.Samples.Graphics
+namespace TerraFX.Samples.Graphics;
+
+public class HelloSierpinskiQuad : HelloSierpinski
 {
-    public class HelloSierpinskiQuad : HelloSierpinski
+    public HelloSierpinskiQuad(string name, int recursionDepth, ApplicationServiceProvider serviceProvider)
+        : base(name, recursionDepth, SierpinskiShape.Quad, serviceProvider)
     {
-        public HelloSierpinskiQuad(string name, int recursionDepth, ApplicationServiceProvider serviceProvider)
-            : base(name, recursionDepth, SierpinskiShape.Quad, serviceProvider)
-        {
-        }
     }
 }

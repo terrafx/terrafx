@@ -8,22 +8,21 @@
 
 using System.Runtime.InteropServices;
 
-namespace TerraFX.Graphics
+namespace TerraFX.Graphics;
+
+/// <summary>Describes data used for budgeting graphics memory.</summary>
+[StructLayout(LayoutKind.Auto)]
+public readonly struct GraphicsMemoryBudget
 {
-    /// <summary>Describes data used for budgeting graphics memory.</summary>
-    [StructLayout(LayoutKind.Auto)]
-    public readonly struct GraphicsMemoryBudget
-    {
-        /// <summary>Gets the estimated budget of memory, in bytes.</summary>
-        public ulong EstimatedBudget { get; init; }
+    /// <summary>Gets the estimated budget of memory, in bytes.</summary>
+    public ulong EstimatedBudget { get; init; }
 
-        /// <summary>Gets the estimated usage of memory, in bytes.</summary>
-        public ulong EstimatedUsage { get; init; }
+    /// <summary>Gets the estimated usage of memory, in bytes.</summary>
+    public ulong EstimatedUsage { get; init; }
 
-        /// <summary>Gets the size of all allocated regions for a given set of collections, in bytes.</summary>
-        public ulong TotalAllocatedRegionSize { get; init; }
+    /// <summary>Gets the size of all allocated regions for a given set of collections, in bytes.</summary>
+    public ulong TotalAllocatedRegionSize { get; init; }
 
-        /// <summary>Gets the size of all blocks for a given set of collections, in bytes.</summary>
-        public ulong TotalBlockSize { get; init; }
-    }
+    /// <summary>Gets the size of all blocks for a given set of collections, in bytes.</summary>
+    public ulong TotalBlockSize { get; init; }
 }

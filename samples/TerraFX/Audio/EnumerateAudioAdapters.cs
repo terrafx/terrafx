@@ -6,97 +6,96 @@ using TerraFX.ApplicationModel;
 using TerraFX.Audio;
 using TerraFX.Utilities;
 
-namespace TerraFX.Samples.Audio
+namespace TerraFX.Samples.Audio;
+
+public sealed class EnumerateAudioAdapters : Sample
 {
-    public sealed class EnumerateAudioAdapters : Sample
+    private readonly bool _async = false;
+    private IAudioService? _service;
+
+    public EnumerateAudioAdapters(string name, bool @async, ApplicationServiceProvider serviceProvider)
+        : base(name, serviceProvider)
     {
-        private readonly bool _async = false;
-        private IAudioService? _service;
+        _async = @async;
+        _service = null;
+    }
 
-        public EnumerateAudioAdapters(string name, bool @async, ApplicationServiceProvider serviceProvider)
-            : base(name, serviceProvider)
+    public override void Initialize(Application application, TimeSpan timeout)
+    {
+        _service = application.ServiceProvider.AudioService;
+
+        var task = _service.StartAsync();
+        if (!task.IsCompleted)
         {
-            _async = @async;
-            _service = null;
+            task.AsTask().Wait();
         }
 
-        public override void Initialize(Application application, TimeSpan timeout)
+        base.Initialize(application, timeout);
+    }
+
+    public override void Cleanup()
+    {
+        ExceptionUtilities.ThrowIfNull(_service, nameof(_service));
+
+        var task = _service.StopAsync();
+        if (!task.IsCompleted)
         {
-            _service = application.ServiceProvider.AudioService;
-
-            var task = _service.StartAsync();
-            if (!task.IsCompleted)
-            {
-                task.AsTask().Wait();
-            }
-
-            base.Initialize(application, timeout);
+            task.AsTask().Wait();
         }
 
-        public override void Cleanup()
+        base.Cleanup();
+    }
+
+    protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
+    {
+        ExceptionUtilities.ThrowIfNull(sender, nameof(sender));
+
+        var application = (Application)sender;
+        RunAsync(application).Wait();
+    }
+
+    private async Task RunAsync(Application application)
+    {
+        ExceptionUtilities.ThrowIfNull(_service, nameof(_service));
+
+        if (_async)
         {
-            ExceptionUtilities.ThrowIfNull(_service);
-
-            var task = _service.StopAsync();
-            if (!task.IsCompleted)
+            await foreach (var audioAdapter in _service.EnumerateAudioDevices())
             {
-                task.AsTask().Wait();
+                PrintAudioAdapter(audioAdapter);
             }
-
-            base.Cleanup();
+        }
+        else
+        {
+            foreach (var audioAdapter in _service.EnumerateAudioDevices())
+            {
+                PrintAudioAdapter(audioAdapter);
+            }
         }
 
-        protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
+        application.RequestExit();
+
+        static void PrintAudioAdapter(IAudioAdapter audioAdapter)
         {
-            ExceptionUtilities.ThrowIfNull(sender);
+            Console.WriteLine($"    Name: {audioAdapter.Name}");
+            Console.WriteLine($"        Type: {audioAdapter.DeviceType}");
+            Console.WriteLine($"        Channel count: {audioAdapter.Channels}");
+            Console.WriteLine($"        Sample rate: {audioAdapter.SampleRate}");
+            Console.WriteLine($"        Bit depth: {audioAdapter.BitDepth}");
+            Console.WriteLine($"        Endianness: {(audioAdapter.IsBigEndian ? "Big" : "Little")}");
 
-            var application = (Application)sender;
-            RunAsync(application).Wait();
-        }
-
-        private async Task RunAsync(Application application)
-        {
-            ExceptionUtilities.ThrowIfNull(_service);
-
-            if (_async)
+            if (audioAdapter is PulseSourceAdapter source)
             {
-                await foreach (var audioAdapter in _service.EnumerateAudioDevices())
-                {
-                    PrintAudioAdapter(audioAdapter);
-                }
-            }
-            else
-            {
-                foreach (var audioAdapter in _service.EnumerateAudioDevices())
-                {
-                    PrintAudioAdapter(audioAdapter);
-                }
+                Console.WriteLine($"        Number type: {(source.IsFloatingPoint ? "float" : $"{(source.IsUnsigned ? "unsigned " : "signed ")}integer")}");
+                Console.WriteLine($"        Number of bits per sample: {source.PackedSize}");
+                Console.WriteLine($"        Description: {source.Description}");
             }
 
-            application.RequestExit();
-
-            static void PrintAudioAdapter(IAudioAdapter audioAdapter)
+            if (audioAdapter is PulseSinkAdapter sink)
             {
-                Console.WriteLine($"    Name: {audioAdapter.Name}");
-                Console.WriteLine($"        Type: {audioAdapter.DeviceType}");
-                Console.WriteLine($"        Channel count: {audioAdapter.Channels}");
-                Console.WriteLine($"        Sample rate: {audioAdapter.SampleRate}");
-                Console.WriteLine($"        Bit depth: {audioAdapter.BitDepth}");
-                Console.WriteLine($"        Endianness: {(audioAdapter.IsBigEndian ? "Big" : "Little")}");
-
-                if (audioAdapter is PulseSourceAdapter source)
-                {
-                    Console.WriteLine($"        Number type: {(source.IsFloatingPoint ? "float" : $"{(source.IsUnsigned ? "unsigned " : "signed ")}integer")}");
-                    Console.WriteLine($"        Number of bits per sample: {source.PackedSize}");
-                    Console.WriteLine($"        Description: {source.Description}");
-                }
-
-                if (audioAdapter is PulseSinkAdapter sink)
-                {
-                    Console.WriteLine($"        Number type: {(sink.IsFloatingPoint ? "float" : $"{(sink.IsUnsigned ? "unsigned " : "signed ")}integer")}");
-                    Console.WriteLine($"        Number of bits per sample: {sink.PackedSize}");
-                    Console.WriteLine($"        Description: {sink.Description}");
-                }
+                Console.WriteLine($"        Number type: {(sink.IsFloatingPoint ? "float" : $"{(sink.IsUnsigned ? "unsigned " : "signed ")}integer")}");
+                Console.WriteLine($"        Number of bits per sample: {sink.PackedSize}");
+                Console.WriteLine($"        Description: {sink.Description}");
             }
         }
     }

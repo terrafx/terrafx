@@ -2,10 +2,9 @@
 
 using System.Collections.Generic;
 
-namespace TerraFX.Audio
+namespace TerraFX.Audio;
+
+/// <summary>Represents an enumerable collection of audio adapters.</summary>
+public interface IAudioAdapterEnumerable : IEnumerable<IAudioAdapter>, IAsyncEnumerable<IAudioAdapter>
 {
-    /// <summary>Represents an enumerable collection of audio adapters.</summary>
-    public interface IAudioAdapterEnumerable : IEnumerable<IAudioAdapter>, IAsyncEnumerable<IAudioAdapter>
-    {
-    }
 }
