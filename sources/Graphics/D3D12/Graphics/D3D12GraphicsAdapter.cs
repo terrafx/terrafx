@@ -25,7 +25,7 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
     internal D3D12GraphicsAdapter(D3D12GraphicsService service, IDXGIAdapter1* dxgiAdapter)
         : base(service)
     {
-        ThrowIfNull(dxgiAdapter, nameof(dxgiAdapter));
+        ThrowIfNull(dxgiAdapter);
 
         _dxgiAdapter = dxgiAdapter;
 

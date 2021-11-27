@@ -154,7 +154,7 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
         var items = &_data->Item;
         var length = _data->Length;
 
-        ThrowIfNull(destination, nameof(destination));
+        ThrowIfNull(destination);
         ThrowIfNotInInsertBounds(length, destination.Length, nameof(Length), nameof(destination));
 
         CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), items, length);

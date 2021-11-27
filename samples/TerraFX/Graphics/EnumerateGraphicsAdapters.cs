@@ -15,7 +15,7 @@ public sealed class EnumerateGraphicsAdapters : Sample
 
     protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
     {
-        ExceptionUtilities.ThrowIfNull(sender, nameof(sender));
+        ExceptionUtilities.ThrowIfNull(sender);
 
         var application = (Application)sender;
         {

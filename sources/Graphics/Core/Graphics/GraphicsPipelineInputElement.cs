@@ -19,7 +19,7 @@ public readonly struct GraphicsPipelineInputElement
     /// <exception cref="ArgumentNullException"><paramref name="type" /> is <c>null</c>.</exception>
     public GraphicsPipelineInputElement(Type type, GraphicsPipelineInputElementKind kind, uint size)
     {
-        ThrowIfNull(type, nameof(type));
+        ThrowIfNull(type);
 
         _type = type;
         _kind = kind;

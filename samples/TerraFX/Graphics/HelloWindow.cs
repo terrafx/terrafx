@@ -46,7 +46,7 @@ public class HelloWindow : Sample
     /// <param name="windowSize">The <see cref="Vector2" /> that defines the initial window client rectangle size.</param>
     public virtual void Initialize(Application application, TimeSpan timeout, Vector2? windowLocation, Vector2? windowSize)
     {
-        ExceptionUtilities.ThrowIfNull(application, nameof(application));
+        ExceptionUtilities.ThrowIfNull(application);
 
         var windowService = application.ServiceProvider.WindowService;
 
@@ -76,7 +76,7 @@ public class HelloWindow : Sample
 
     protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
     {
-        ExceptionUtilities.ThrowIfNull(sender, nameof(sender));
+        ExceptionUtilities.ThrowIfNull(sender);
 
         _elapsedTime += eventArgs.Delta;
 

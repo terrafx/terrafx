@@ -43,7 +43,7 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
     protected GraphicsMemoryBlockCollection(GraphicsDevice device, GraphicsMemoryAllocator allocator)
         : base(device)
     {
-        ThrowIfNull(allocator, nameof(allocator));
+        ThrowIfNull(allocator);
 
         if (allocator.Device != device)
         {
@@ -130,7 +130,7 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
     public void Free(in GraphicsMemoryRegion<GraphicsMemoryBlock> region)
     {
         var block = region.Collection;
-        ThrowIfNull(block, nameof(region));
+        ThrowIfNull(block);
 
         using var mutex = new DisposableWriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
 

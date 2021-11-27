@@ -27,7 +27,7 @@ public abstract partial class GraphicsMemoryBlock : GraphicsDeviceObject, IGraph
     protected GraphicsMemoryBlock(GraphicsDevice device, GraphicsMemoryBlockCollection collection)
         : base(device)
     {
-        ThrowIfNull(collection, nameof(collection));
+        ThrowIfNull(collection);
 
         if (collection.Device != device)
         {

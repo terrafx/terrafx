@@ -104,14 +104,14 @@ public sealed unsafe class XlibDispatchService : DispatchService
     /// <inheritdoc />
     public override XlibDispatcher GetDispatcher(Thread thread)
     {
-        ThrowIfNull(thread, nameof(thread));
+        ThrowIfNull(thread);
         return _dispatchers.GetOrAdd(thread, (parentThread) => new XlibDispatcher(this, parentThread));
     }
 
     /// <inheritdoc />
     public override bool TryGetDispatcher(Thread thread, [MaybeNullWhen(false)] out Dispatcher dispatcher)
     {
-        ThrowIfNull(thread, nameof(thread));
+        ThrowIfNull(thread);
         Unsafe.SkipInit(out dispatcher);
         return _dispatchers.TryGetValue(thread, out Unsafe.As<Dispatcher, XlibDispatcher>(ref dispatcher)!);
     }

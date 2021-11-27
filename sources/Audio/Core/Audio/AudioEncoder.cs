@@ -20,7 +20,7 @@ public abstract class AudioEncoder : IDisposable
     /// <exception cref="ArgumentNullException"><paramref name="options" /> is <c>null</c>.</exception>
     public AudioEncoder(AudioEncoderOptions options, PipeOptions? pipeOptions = null)
     {
-        ThrowIfNull(options, nameof(options));
+        ThrowIfNull(options);
 
         _inputPipe = new Pipe(pipeOptions ?? PipeOptions.Default);
         _outputPipe = new Pipe(pipeOptions ?? PipeOptions.Default);

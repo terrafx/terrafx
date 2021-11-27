@@ -23,7 +23,7 @@ public sealed unsafe class WinFormsGraphicsSurface : IGraphicsSurface
     /// <param name="control">The control that will be used as the underlying surface.</param>
     public WinFormsGraphicsSurface(Control control)
     {
-        ThrowIfNull(control, nameof(control));
+        ThrowIfNull(control);
 
         _control = control;
         _control.ClientSizeChanged += HandleControlClientSizeChanged;

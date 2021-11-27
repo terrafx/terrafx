@@ -158,8 +158,8 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
     /// <inheritdoc cref="Copy(GraphicsBuffer, GraphicsBuffer)" />
     public void Copy(VulkanGraphicsBuffer destination, VulkanGraphicsBuffer source)
     {
-        ThrowIfNull(destination, nameof(destination));
-        ThrowIfNull(source, nameof(source));
+        ThrowIfNull(destination);
+        ThrowIfNull(source);
 
         var vulkanBufferCopy = new VkBufferCopy {
             srcOffset = 0,
@@ -172,8 +172,8 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
     /// <inheritdoc cref="Copy(GraphicsTexture, GraphicsBuffer)" />
     public void Copy(VulkanGraphicsTexture destination, VulkanGraphicsBuffer source)
     {
-        ThrowIfNull(destination, nameof(destination));
-        ThrowIfNull(source, nameof(source));
+        ThrowIfNull(destination);
+        ThrowIfNull(source);
 
         var vulkanCommandBuffer = VulkanCommandBuffer;
         var vulkanImage = destination.VulkanImage;
@@ -241,7 +241,7 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
     /// <inheritdoc cref="Draw(GraphicsPrimitive)" />
     public void Draw(VulkanGraphicsPrimitive primitive)
     {
-        ThrowIfNull(primitive, nameof(primitive));
+        ThrowIfNull(primitive);
 
         var vulkanCommandBuffer = VulkanCommandBuffer;
         var pipeline = primitive.Pipeline;

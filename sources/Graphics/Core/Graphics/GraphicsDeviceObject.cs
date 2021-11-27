@@ -15,7 +15,7 @@ public abstract class GraphicsDeviceObject : IDisposable
     /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
     protected GraphicsDeviceObject(GraphicsDevice device)
     {
-        ThrowIfNull(device, nameof(device));
+        ThrowIfNull(device);
         _device = device;
     }
 
