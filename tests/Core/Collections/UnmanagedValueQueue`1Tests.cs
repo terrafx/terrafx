@@ -415,7 +415,7 @@ public static class UnmanagedValueQueueTests
             Assert.That(() => valueQueue.CopyTo(UnmanagedArray<int>.Empty),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
                       .And.Property("ActualValue").EqualTo((nuint)4)
-                      .And.Property("ParamName").EqualTo("Count")
+                      .And.Property("ParamName").EqualTo("count")
             );
         }
 

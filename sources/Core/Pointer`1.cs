@@ -75,7 +75,7 @@ public unsafe struct Pointer<T> : IComparable<Pointer<T>>, IEquatable<Pointer<T>
         {
             if (obj is not null)
             {
-                ThrowForInvalidType(obj, typeof(Pointer<T>));
+                ThrowForInvalidType(obj.GetType(), typeof(Pointer<T>));
             }
             return 1;
         }

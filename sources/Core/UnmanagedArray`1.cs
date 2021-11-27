@@ -32,8 +32,11 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
     public UnmanagedArray(nuint length, nuint alignment = 0, bool zero = true)
     {
-        var actualAlignment = (alignment != 0) ? alignment : DefaultAlignment;
-        ThrowIfNotPow2(actualAlignment);
+        if (alignment == 0)
+        {
+            alignment = DefaultAlignment;
+        }
+        ThrowIfNotPow2(alignment);
 
         Metadata* data;
 
@@ -44,7 +47,7 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
 
             data = (Metadata*)Allocate(
                 SizeOf<Metadata>() + (length * SizeOf<T>()),
-                actualAlignment,
+                alignment,
                 offset: SizeOf<nuint>(),
                 zero
             );

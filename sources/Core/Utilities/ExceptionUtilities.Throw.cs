@@ -66,12 +66,15 @@ public static partial class ExceptionUtilities
         => throw new DirectoryNotFoundException(message, innerException);
 
     /// <summary>Throws an <see cref="ExternalException" />.</summary>
-    /// <param name="message">The message detailing the cause of the exception.</param>
+    /// <param name="methodName">The name of the method that caused the exception.</param>
     /// <param name="errorCode">The underlying error code for the exception.</param>
-    /// <exception cref="ExternalException"><paramref name="message"/>.</exception>
+    /// <exception cref="ExternalException">'<paramref name="methodName" />' failed with an error code of '<paramref name="errorCode" />'.</exception>
     [DoesNotReturn]
-    public static void ThrowExternalException(string message, int errorCode)
-        => throw new ExternalException(message, errorCode);
+    public static void ThrowExternalException(string methodName, int errorCode)
+    {
+        var message = string.Format(Resources.UnmanagedMethodFailedMessage, methodName, errorCode);
+        throw new ExternalException(message, errorCode);
+    }
 
     /// <summary>Throws an <see cref="FileNotFoundException" />.</summary>
     /// <param name="message">The message detailing the cause of the exception.</param>

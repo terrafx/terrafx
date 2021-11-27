@@ -95,17 +95,16 @@ public static unsafe partial class ExceptionUtilities
     }
 
     /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> for an invalid type.</summary>
-    /// <param name="obj">The object that caused the exception.</param>
-    /// <param name="expectedType">The expected type of <paramref name="obj" />.</param>
-    /// <param name="objExpression">The expression of the object that is not <paramref name="expectedType" />.</param>
-    /// <exception cref="ArgumentException"><paramref name="objExpression" /> is not an instance of <paramref name="expectedType" />.</exception>
+    /// <param name="type">The object that caused the exception.</param>
+    /// <param name="expectedType">The expected type of <paramref name="type" />.</param>
+    /// <param name="typeExpression">The expression of the object that is not <paramref name="expectedType" />.</param>
+    /// <exception cref="ArgumentException"><paramref name="typeExpression" /> is not an instance of <paramref name="expectedType" />.</exception>
     [DoesNotReturn]
-    public static void ThrowForInvalidType(object obj, Type expectedType, [CallerArgumentExpression("obj")] string? objExpression = null)
+    public static void ThrowForInvalidType(Type type, Type expectedType, [CallerArgumentExpression("type")] string? typeExpression = null)
     {
-        AssertNotNull(objExpression);
-        var type = obj.GetType();
-        var message = string.Format(Resources.InvalidTypeMessage, type, expectedType);
-        ThrowArgumentOutOfRangeException(objExpression, type, message);
+        AssertNotNull(typeExpression);
+        var message = string.Format(Resources.InvalidTypeMessage, typeExpression, expectedType);
+        ThrowArgumentOutOfRangeException(typeExpression, type, message);
     }
 
     /// <summary>Throws an <see cref="ExternalException" /> using the last available error code.</summary>
