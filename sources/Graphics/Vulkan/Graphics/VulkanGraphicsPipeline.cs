@@ -83,7 +83,6 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
             VkPipeline vulkanPipeline;
 
             var device = Device;
-            var surface = device.Surface;
 
             var vertexInputBindingDescription = new VkVertexInputBindingDescription {
                 inputRate = VK_VERTEX_INPUT_RATE_VERTEX,

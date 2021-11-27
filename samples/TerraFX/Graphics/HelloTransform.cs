@@ -38,14 +38,15 @@ public sealed class HelloTransform : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        var currentGraphicsContext = graphicsDevice.CurrentContext;
+        var graphicsSwapchain = GraphicsSwapchain;
+        var currentGraphicsContext = graphicsDevice.Contexts[(int)graphicsSwapchain.FramebufferIndex];
 
         using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
 
         _constantBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Constant, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
         _vertexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
 
-        currentGraphicsContext.BeginFrame();
+        currentGraphicsContext.BeginFrame(graphicsSwapchain);
         _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer);
         currentGraphicsContext.EndFrame();
 
@@ -90,7 +91,7 @@ public sealed class HelloTransform : HelloWindow
     private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer)
     {
         var graphicsDevice = GraphicsDevice;
-        var graphicsSurface = graphicsDevice.Surface;
+        var graphicsSurface = GraphicsSwapchain.Surface;
 
         var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Transform", "main", "main");
 

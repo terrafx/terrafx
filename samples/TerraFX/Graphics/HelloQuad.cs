@@ -37,7 +37,8 @@ public sealed class HelloQuad : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        var currentGraphicsContext = graphicsDevice.CurrentContext;
+        var graphicsSwapchain = GraphicsSwapchain;
+        var currentGraphicsContext = graphicsDevice.Contexts[(int)graphicsSwapchain.FramebufferIndex];
 
         using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
         _vertexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
@@ -45,7 +46,7 @@ public sealed class HelloQuad : HelloWindow
         using var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
         _indexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
 
-        currentGraphicsContext.BeginFrame();
+        currentGraphicsContext.BeginFrame(graphicsSwapchain);
         _quadPrimitive = CreateQuadPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer);
         currentGraphicsContext.EndFrame();
 
@@ -62,7 +63,7 @@ public sealed class HelloQuad : HelloWindow
     private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer)
     {
         var graphicsDevice = GraphicsDevice;
-        var graphicsSurface = graphicsDevice.Surface;
+        var graphicsSurface = GraphicsSwapchain.Surface;
 
         var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Identity", "main", "main");
 

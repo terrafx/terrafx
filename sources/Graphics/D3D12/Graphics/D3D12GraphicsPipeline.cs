@@ -93,7 +93,7 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
             SampleDesc = new DXGI_SAMPLE_DESC(count: 1, quality: 0),
         };
         pipelineStateDesc.DepthStencilState.DepthEnable = FALSE;
-        pipelineStateDesc.RTVFormats[0] = Device.SwapChainFormat;
+        pipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
         var vertexShader = VertexShader;
 

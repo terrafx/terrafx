@@ -69,13 +69,10 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     public ref readonly VkPhysicalDeviceProperties VulkanPhysicalDeviceProperties => ref _vulkanPhysicalDeviceProperties.ValueRef;
 
     /// <inheritdoc />
-    public override GraphicsDevice CreateDevice(IGraphicsSurface surface, int contextCount) => CreateVulkanGraphicsDevice(surface, contextCount);
-
-    /// <inheritdoc cref="CreateDevice(IGraphicsSurface, int)" />
-    public VulkanGraphicsDevice CreateVulkanGraphicsDevice(IGraphicsSurface surface, int contextCount)
+    public override VulkanGraphicsDevice CreateDevice()
     {
         ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
-        return new VulkanGraphicsDevice(this, surface, contextCount);
+        return new VulkanGraphicsDevice(this);
     }
 
     /// <inheritdoc />

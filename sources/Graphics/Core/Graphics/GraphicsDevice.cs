@@ -9,39 +9,28 @@ namespace TerraFX.Graphics;
 public abstract class GraphicsDevice : IDisposable
 {
     private readonly GraphicsAdapter _adapter;
-    private readonly IGraphicsSurface _surface;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsDevice" /> class.</summary>
     /// <param name="adapter">The underlying adapter for the device.</param>
-    /// <param name="surface">The surface on which the device can render.</param>
     /// <exception cref="ArgumentNullException"><paramref name="adapter" /> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="surface" /> is <c>null</c>.</exception>
-    protected GraphicsDevice(GraphicsAdapter adapter, IGraphicsSurface surface)
+    protected GraphicsDevice(GraphicsAdapter adapter)
     {
         ThrowIfNull(adapter);
-        ThrowIfNull(surface);
-
         _adapter = adapter;
-        _surface = surface;
     }
 
     /// <summary>Gets the underlying adapter for the device.</summary>
     public GraphicsAdapter Adapter => _adapter;
 
-    /// <summary>Gets an index which can be used to lookup the current graphics context.</summary>
-    public abstract int ContextIndex { get; }
-
     /// <summary>Gets the contexts for the device.</summary>
     public abstract ReadOnlySpan<GraphicsContext> Contexts { get; }
-
-    /// <summary>Gets the current context.</summary>
-    public GraphicsContext CurrentContext => Contexts[ContextIndex];
 
     /// <summary>Gets the memory allocator for the device.</summary>
     public abstract GraphicsMemoryAllocator MemoryAllocator { get; }
 
-    /// <summary>Gets the surface on which the device can render.</summary>
-    public IGraphicsSurface Surface => _surface;
+    /// <summary>Creates a new graphics fence for the device.</summary>
+    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+    public abstract GraphicsFence CreateFence();
 
     /// <summary>Creates a new graphics pipeline for the device.</summary>
     /// <param name="signature">The signature which details the inputs given and resources available to the graphics pipeline.</param>
@@ -87,16 +76,19 @@ public abstract class GraphicsDevice : IDisposable
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public abstract GraphicsShader CreateShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName);
 
+    /// <summary>Creates a new graphics swapchain for the device.</summary>
+    /// <param name="surface">The surface on which the swapchain can render.</param>
+    /// <returns>A new graphics swapchain created for the device.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="surface" /> is <c>null</c>.</exception>
+    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+    public abstract GraphicsSwapchain CreateSwapchain(IGraphicsSurface surface);
+
     /// <inheritdoc />
     public void Dispose()
     {
         Dispose(isDisposing: true);
         GC.SuppressFinalize(this);
     }
-
-    /// <summary>Presents the last frame rendered.</summary>
-    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-    public abstract void PresentFrame();
 
     /// <summary>Signals a graphics fence.</summary>
     /// <param name="fence">The fence to be signaled</param>

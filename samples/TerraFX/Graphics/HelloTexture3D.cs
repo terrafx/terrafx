@@ -48,7 +48,8 @@ public class HelloTexture3D : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        var currentGraphicsContext = graphicsDevice.CurrentContext;
+        var graphicsSwapchain = GraphicsSwapchain;
+        var currentGraphicsContext = graphicsDevice.Contexts[(int)graphicsSwapchain.FramebufferIndex];
 
         var textureSize = 4u * TEXTURE3D_SIDE_LENGTH * TEXTURE3D_SIDE_LENGTH * TEXTURE3D_SIDE_LENGTH;
         using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
@@ -59,7 +60,7 @@ public class HelloTexture3D : HelloWindow
         _indexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
         _vertexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
 
-        currentGraphicsContext.BeginFrame();
+        currentGraphicsContext.BeginFrame(graphicsSwapchain);
         _quadPrimitive = CreateQuadPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
         currentGraphicsContext.EndFrame();
 
@@ -70,7 +71,7 @@ public class HelloTexture3D : HelloWindow
     protected override unsafe void Update(TimeSpan delta)
     {
         var graphicsDevice = GraphicsDevice;
-        var graphicsSurface = graphicsDevice.Surface;
+        var graphicsSurface = GraphicsSwapchain.Surface;
         var scale255_256 = 255f / 256f;
         var aspectRatio = graphicsSurface.Width / graphicsSurface.Height;
         var scaleX = scale255_256;
@@ -111,7 +112,7 @@ public class HelloTexture3D : HelloWindow
     private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
     {
         var graphicsDevice = GraphicsDevice;
-        var graphicsSurface = graphicsDevice.Surface;
+        var graphicsSurface = GraphicsSwapchain.Surface;
 
         var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Texture3D", "main", "main");
 

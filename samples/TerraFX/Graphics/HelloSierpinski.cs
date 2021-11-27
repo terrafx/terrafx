@@ -46,7 +46,8 @@ public class HelloSierpinski : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        var currentGraphicsContext = graphicsDevice.CurrentContext;
+        var graphicsSwapchain = GraphicsSwapchain;
+        var currentGraphicsContext = graphicsDevice.Contexts[(int)graphicsSwapchain.FramebufferIndex];
 
         var vertices = 2 * 12 * (ulong)MathF.Pow(4, _recursionDepth);
         var vertexBufferSize = vertices * SizeOf<PosNormTex3DVertex>();
@@ -60,7 +61,7 @@ public class HelloSierpinski : HelloWindow
         _indexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.GpuOnly, indexBufferSize);
         _vertexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.GpuOnly, vertexBufferSize);
 
-        currentGraphicsContext.BeginFrame();
+        currentGraphicsContext.BeginFrame(graphicsSwapchain);
         _pyramid = CreateGraphicsPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
         currentGraphicsContext.EndFrame();
 
@@ -106,7 +107,7 @@ public class HelloSierpinski : HelloWindow
     private unsafe GraphicsPrimitive CreateGraphicsPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
     {
         var graphicsDevice = GraphicsDevice;
-        var graphicsSurface = graphicsDevice.Surface;
+        var graphicsSurface = GraphicsSwapchain.Surface;
 
         var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Sierpinski", "main", "main");
 
