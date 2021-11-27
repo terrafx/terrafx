@@ -163,7 +163,7 @@ public partial struct UnmanagedValueQueue<T> : IDisposable
 
         if (count != 0)
         {
-            ThrowIfNotInInsertBounds(count, destination.Length, nameof(Count), nameof(destination));
+            ThrowIfNotInInsertBounds(count, destination.Length);
 
             var head = _head;
             var tail = _tail;
@@ -271,7 +271,7 @@ public partial struct UnmanagedValueQueue<T> : IDisposable
     {
         if (!TryPeek(index, out var item))
         {
-            ThrowIfNotInBounds(index, Count, nameof(index), nameof(Count));
+            ThrowIfNotInBounds(index, Count);
             Fail();
         }
         return item;

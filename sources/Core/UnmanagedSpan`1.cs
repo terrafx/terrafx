@@ -47,7 +47,7 @@ public readonly unsafe partial struct UnmanagedSpan<T>
     {
         if (!array.IsNull)
         {
-            ThrowIfNotInBounds(start, array.Length, nameof(start), nameof(array.Length));
+            ThrowIfNotInBounds(start, array.Length);
 
             _length = array.Length - start;
             _items = array.GetPointerUnsafe(start);
@@ -71,8 +71,8 @@ public readonly unsafe partial struct UnmanagedSpan<T>
     {
         if (!array.IsNull)
         {
-            ThrowIfNotInBounds(start, array.Length, nameof(start), nameof(array.Length));
-            ThrowIfNotInBounds(start + length, array.Length, nameof(length), nameof(array.Length));
+            ThrowIfNotInBounds(start, array.Length);
+            ThrowIfNotInBounds(start + length, array.Length);
 
             _length = length;
             _items = array.GetPointerUnsafe(start);
@@ -132,7 +132,7 @@ public readonly unsafe partial struct UnmanagedSpan<T>
         var length = _length;
 
         ThrowIfNull(destination);
-        ThrowIfNotInInsertBounds(length, destination.Length, nameof(Length), nameof(destination));
+        ThrowIfNotInInsertBounds(length, destination.Length);
 
         CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), items, length);
     }
@@ -145,7 +145,7 @@ public readonly unsafe partial struct UnmanagedSpan<T>
         var items = _items;
         var length = _length;
 
-        ThrowIfNotInInsertBounds(length, destination.Length, nameof(Length), nameof(destination));
+        ThrowIfNotInInsertBounds(length, destination.Length);
 
         CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), items, length);
     }
@@ -156,7 +156,7 @@ public readonly unsafe partial struct UnmanagedSpan<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is greater than or equal to <see cref="Length" />.</exception>
     public T* GetPointer(nuint index)
     {
-        ThrowIfNotInBounds(index, Length, nameof(index), nameof(Length));
+        ThrowIfNotInBounds(index, Length);
         return GetPointerUnsafe(index);
     }
 
@@ -182,7 +182,7 @@ public readonly unsafe partial struct UnmanagedSpan<T>
     /// <returns>A span that covers the same memory as the current span beginning at <paramref name="start" />.</returns>
     public UnmanagedSpan<T> Slice(nuint start)
     {
-        ThrowIfNotInBounds(start, Length, nameof(start), nameof(Length));
+        ThrowIfNotInBounds(start, Length);
         return new UnmanagedSpan<T>(_items + start, Length - start);
     }
 
@@ -192,8 +192,8 @@ public readonly unsafe partial struct UnmanagedSpan<T>
     /// <returns>A span that covers the same memory as the current span beginning at <paramref name="start" /> and continuing for <paramref name="length" /> items.</returns>
     public UnmanagedSpan<T> Slice(nuint start, nuint length)
     {
-        ThrowIfNotInBounds(start, Length, nameof(start), nameof(Length));
-        ThrowIfNotInBounds(start + length, Length, nameof(length), nameof(Length));
+        ThrowIfNotInBounds(start, Length);
+        ThrowIfNotInBounds(start + length, Length);
         return new UnmanagedSpan<T>(_items + start, length);
     }
 }
