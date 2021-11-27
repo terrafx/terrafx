@@ -72,7 +72,7 @@ public static class UnmanagedValueStackTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueStack = new UnmanagedValueStack<int>(array.AsSpan()))
+        using (var valueStack = new UnmanagedValueStack<int>(array.AsUnmanagedSpan()))
         {
             Assert.That(() => valueStack,
                 Has.Property("Capacity").EqualTo((nuint)3)
@@ -80,7 +80,7 @@ public static class UnmanagedValueStackTests
             );
         }
 
-        using (var valueStack = new UnmanagedValueStack<int>(array.AsSpan(), 2))
+        using (var valueStack = new UnmanagedValueStack<int>(array.AsUnmanagedSpan(), 2))
         {
             Assert.That(() => valueStack,
                 Has.Property("Capacity").EqualTo((nuint)3)
@@ -88,13 +88,13 @@ public static class UnmanagedValueStackTests
             );
         }
 
-        Assert.That(() => new UnmanagedValueStack<int>(array.AsSpan(), 3),
+        Assert.That(() => new UnmanagedValueStack<int>(array.AsUnmanagedSpan(), 3),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                     .And.Property("ActualValue").EqualTo((nuint)3)
                     .And.Property("ParamName").EqualTo("alignment")
         );
 
-        using (var valueStack = new UnmanagedValueStack<int>(UnmanagedArray<int>.Empty.AsSpan()))
+        using (var valueStack = new UnmanagedValueStack<int>(UnmanagedArray<int>.Empty.AsUnmanagedSpan()))
         {
             Assert.That(() => valueStack,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -102,7 +102,7 @@ public static class UnmanagedValueStackTests
             );
         }
 
-        using (var valueStack = new UnmanagedValueStack<int>(UnmanagedArray<int>.Empty.AsSpan(), 2))
+        using (var valueStack = new UnmanagedValueStack<int>(UnmanagedArray<int>.Empty.AsUnmanagedSpan(), 2))
         {
             Assert.That(() => valueStack,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -110,13 +110,13 @@ public static class UnmanagedValueStackTests
             );
         }
 
-        Assert.That(() => new UnmanagedValueStack<int>(UnmanagedArray<int>.Empty.AsSpan(), 3),
+        Assert.That(() => new UnmanagedValueStack<int>(UnmanagedArray<int>.Empty.AsUnmanagedSpan(), 3),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                     .And.Property("ActualValue").EqualTo((nuint)3)
                     .And.Property("ParamName").EqualTo("alignment")
         );
 
-        using (var valueStack = new UnmanagedValueStack<int>(new UnmanagedArray<int>().AsSpan()))
+        using (var valueStack = new UnmanagedValueStack<int>(new UnmanagedArray<int>().AsUnmanagedSpan()))
         {
             Assert.That(() => valueStack,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -124,7 +124,7 @@ public static class UnmanagedValueStackTests
             );
         }
 
-        using (var valueStack = new UnmanagedValueStack<int>(new UnmanagedArray<int>().AsSpan(), 2))
+        using (var valueStack = new UnmanagedValueStack<int>(new UnmanagedArray<int>().AsUnmanagedSpan(), 2))
         {
             Assert.That(() => valueStack,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -132,7 +132,7 @@ public static class UnmanagedValueStackTests
             );
         }
 
-        Assert.That(() => new UnmanagedValueStack<int>(new UnmanagedArray<int>().AsSpan(), 3),
+        Assert.That(() => new UnmanagedValueStack<int>(new UnmanagedArray<int>().AsUnmanagedSpan(), 3),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                     .And.Property("ActualValue").EqualTo((nuint)3)
                     .And.Property("ParamName").EqualTo("alignment")

@@ -122,18 +122,18 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
 
     /// <summary>Converts the array to an unmanaged span.</summary>
     /// <returns>An unmanaged span that covers the array.</returns>
-    public UnmanagedSpan<T> AsSpan() => new UnmanagedSpan<T>(this);
+    public UnmanagedSpan<T> AsUnmanagedSpan() => new UnmanagedSpan<T>(this);
 
     /// <summary>Converts the array to an unmanaged span starting at the specified index.</summary>
     /// <param name="start">The index of the array at which the span should start.</param>
     /// <returns>An unmanaged span that covers the array beginning at <paramref name="start" />.</returns>
-    public UnmanagedSpan<T> AsSpan(nuint start) => new UnmanagedSpan<T>(this, start);
+    public UnmanagedSpan<T> AsUnmanagedSpan(nuint start) => new UnmanagedSpan<T>(this, start);
 
     /// <summary>Converts the array to an unmanaged span starting at the specified index and continuing for the specified number of items.</summary>
     /// <param name="start">The index of the array at which the span should start.</param>
     /// <param name="length">The length, in items, of the span.</param>
     /// <returns>An unmanaged span that covers the array beginning at <paramref name="start" /> and continuing for <paramref name="length" /> items.</returns>
-    public UnmanagedSpan<T> AsSpan(nuint start, nuint length) => new UnmanagedSpan<T>(this, start, length);
+    public UnmanagedSpan<T> AsUnmanagedSpan(nuint start, nuint length) => new UnmanagedSpan<T>(this, start, length);
 
     /// <summary>Clears all items in the array to <c>zero</c>.</summary>
     public void Clear()
@@ -204,7 +204,11 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
     /// <summary>Gets a reference to the item at the specified index of the array.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
     /// <returns>A reference to the item that exists at <paramref name="index" /> in the array.</returns>
+    public ref T GetReference(nuint index) => ref AsRef<T>(GetPointer(index));
+
+    /// <summary>Gets a reference to the item at the specified index of the array.</summary>
+    /// <param name="index">The index of the item to get a pointer to.</param>
+    /// <returns>A reference to the item that exists at <paramref name="index" /> in the array.</returns>
     /// <remarks>This method is unsafe because it does not validated that <paramref name="index" /> is less than <see cref="Length" />.</remarks>
-    public ref T GetReferenceUnsafe(nuint index)
-        => ref AsRef<T>(GetPointerUnsafe(index));
+    public ref T GetReferenceUnsafe(nuint index) => ref AsRef<T>(GetPointerUnsafe(index));
 }

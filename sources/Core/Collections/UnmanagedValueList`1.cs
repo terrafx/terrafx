@@ -157,6 +157,14 @@ public partial struct UnmanagedValueList<T> : IDisposable
         _items[count] = item;
     }
 
+    /// <summary>Converts the backing array for the list to an unmanaged span.</summary>
+    /// <returns>An unmanaged span that covers the backing array for the list.</returns>
+    /// <remarks>
+    ///     <para>This method is unsafe because other operations may invalidate the backing array.</para>
+    ///     <para>This method is unsafe because it gives access to uninitialized memory in the backing array when <see cref="Count" /> is less than <see cref="Capacity" />.</para>
+    /// </remarks>
+    public UnmanagedSpan<T> AsUnmanagedSpanUnsafe() => new UnmanagedSpan<T>(_items);
+
     /// <summary>Removes all items from the list.</summary>
     public void Clear()
     {
@@ -272,6 +280,19 @@ public partial struct UnmanagedValueList<T> : IDisposable
         }
 
         _count = newCount;
+    }
+
+    /// <summary>Sets the number of items contained in the list.</summary>
+    /// <param name="count">The new number of items contained in the list.</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="count" /> is greater than <see cref="Capacity" />.</exception>
+    /// <remarks>
+    ///     <para>This method allows you to explicitly shrink the list down to zero or grow it up to <see cref="Capacity" />.</para>
+    ///     <para>This method is unsafe because growing the count may leak uninitialized memory.</para>
+    /// </remarks>
+    public void SetCountUnsafe(nuint count)
+    {
+        ThrowIfNotInInsertBounds(count, Capacity);
+        _count = count;
     }
 
     /// <summary>Trims any excess capacity, up to a given threshold, from the list.</summary>

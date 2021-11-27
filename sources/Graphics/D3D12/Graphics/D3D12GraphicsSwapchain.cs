@@ -54,7 +54,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
 
     /// <summary>Gets the <see cref="ID3D12Resource" /> for the render target used by the context.</summary>
     /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-    public UnmanagedSpan<Pointer<ID3D12Resource>> D3D12RenderTargetResources => _d3d12RtvResources.Value.AsSpan();
+    public UnmanagedSpan<Pointer<ID3D12Resource>> D3D12RenderTargetResources => _d3d12RtvResources.Value.AsUnmanagedSpan();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
