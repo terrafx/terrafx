@@ -3,15 +3,11 @@
 using System;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
-using TerraFX.Numerics;
 using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_FEATURE;
 using static TerraFX.Interop.DirectX.D3D_FEATURE_LEVEL;
 using static TerraFX.Interop.DirectX.DirectX;
-using static TerraFX.Interop.DirectX.DXGI;
-using static TerraFX.Interop.DirectX.DXGI_FORMAT;
-using static TerraFX.Interop.DirectX.DXGI_SWAP_EFFECT;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.D3D12Utilities;
@@ -29,35 +25,29 @@ public sealed unsafe class D3D12GraphicsDevice : GraphicsDevice
     private ValueLazy<Pointer<ID3D12CommandQueue>> _d3d12CommandQueue;
     private ValueLazy<Pointer<ID3D12Device>> _d3d12Device;
     private ValueLazy<D3D12_FEATURE_DATA_D3D12_OPTIONS> _d3d12Options;
-    private ValueLazy<Pointer<ID3D12DescriptorHeap>> _d3d12RenderTargetDescriptorHeap;
-    private ValueLazy<Pointer<IDXGISwapChain3>> _dxgiSwapChain;
     private ValueLazy<D3D12GraphicsMemoryAllocator> _memoryAllocator;
-    private ValueLazy<uint> _cbvSrvUavDescriptorHandleIncrementSize;
-
-    private int _contextIndex;
-    private DXGI_FORMAT _swapChainFormat;
+    private ValueLazy<uint> _d3d12CbvSrvUavDescriptorHandleIncrementSize;
+    private ValueLazy<uint> _d3d12RtvDescriptorHandleIncrementSize;
 
     private VolatileState _state;
 
-    internal D3D12GraphicsDevice(D3D12GraphicsAdapter adapter, IGraphicsSurface surface, int contextCount)
-        : base(adapter, surface)
+    internal D3D12GraphicsDevice(D3D12GraphicsAdapter adapter)
+        : base(adapter)
     {
         _idleFence = new D3D12GraphicsFence(this);
 
         _d3d12CommandQueue = new ValueLazy<Pointer<ID3D12CommandQueue>>(CreateD3D12CommandQueue);
         _d3d12Device = new ValueLazy<Pointer<ID3D12Device>>(CreateD3D12Device);
         _d3d12Options = new ValueLazy<D3D12_FEATURE_DATA_D3D12_OPTIONS>(GetD3D12Options);
-        _d3d12RenderTargetDescriptorHeap = new ValueLazy<Pointer<ID3D12DescriptorHeap>>(CreateD3D12RenderTargetDescriptorHeap);
-        _dxgiSwapChain = new ValueLazy<Pointer<IDXGISwapChain3>>(CreateDxgiSwapChain);
         _memoryAllocator = new ValueLazy<D3D12GraphicsMemoryAllocator>(CreateMemoryAllocator);
-        _cbvSrvUavDescriptorHandleIncrementSize = new ValueLazy<uint>(GetCbvSrvUavDescriptorHandleIncrementSize);
+        _d3d12CbvSrvUavDescriptorHandleIncrementSize = new ValueLazy<uint>(GetD3D12CbvSrvUavDescriptorHandleIncrementSize);
+        _d3d12RtvDescriptorHandleIncrementSize = new ValueLazy<uint>(GetD3D12RtvDescriptorHandleIncrementSize);
 
-        _contexts = CreateContexts(this, contextCount);
+        _contexts = CreateContexts(this, contextCount: 2);
 
         _ = _state.Transition(to: Initialized);
 
         WaitForIdleGraphicsFence.Reset();
-        surface.SizeChanged += OnGraphicsSurfaceSizeChanged;
 
         static D3D12GraphicsContext[] CreateContexts(D3D12GraphicsDevice device, int contextCount)
         {
@@ -65,7 +55,7 @@ public sealed unsafe class D3D12GraphicsDevice : GraphicsDevice
 
             for (var index = 0; index < contexts.Length; index++)
             {
-                contexts[index] = new D3D12GraphicsContext(device, index);
+                contexts[index] = new D3D12GraphicsContext(device);
             }
 
             return contexts;
@@ -79,16 +69,10 @@ public sealed unsafe class D3D12GraphicsDevice : GraphicsDevice
     public new D3D12GraphicsAdapter Adapter => (D3D12GraphicsAdapter)base.Adapter;
 
     /// <summary>Gets the descriptor handle increment size for <see cref="D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV" />.</summary>
-    public uint CbvSrvUavDescriptorHandleIncrementSize => _cbvSrvUavDescriptorHandleIncrementSize.Value;
-
-    /// <inheritdoc />
-    public override int ContextIndex => _contextIndex;
+    public uint D3D12CbvSrvUavDescriptorHandleIncrementSize => _d3d12CbvSrvUavDescriptorHandleIncrementSize.Value;
 
     /// <inheritdoc />
     public override ReadOnlySpan<GraphicsContext> Contexts => _contexts;
-
-    /// <inheritdoc cref="GraphicsDevice.CurrentContext" />
-    public new D3D12GraphicsContext CurrentContext => (D3D12GraphicsContext)base.CurrentContext;
 
     /// <summary>Gets the <see cref="ID3D12CommandQueue" /> used by the device.</summary>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
@@ -101,19 +85,11 @@ public sealed unsafe class D3D12GraphicsDevice : GraphicsDevice
     /// <summary>Gets the <see cref="D3D12_FEATURE_DATA_D3D12_OPTIONS" /> for the device.</summary>
     public ref readonly D3D12_FEATURE_DATA_D3D12_OPTIONS D3D12Options => ref _d3d12Options.ValueRef;
 
-    /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> used by the device for render target resources.</summary>
-    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-    public ID3D12DescriptorHeap* D3D12RenderTargetDescriptorHeap => _d3d12RenderTargetDescriptorHeap.Value;
-
-    /// <summary>Gets the <see cref="IDXGISwapChain3" /> for the device.</summary>
-    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-    public IDXGISwapChain3* DxgiSwapChain => _dxgiSwapChain.Value;
+    /// <summary>Gets the descriptor handle increment size for <see cref="D3D12_DESCRIPTOR_HEAP_TYPE_RTV" />.</summary>
+    public uint D3D12RtvDescriptorHandleIncrementSize => _d3d12RtvDescriptorHandleIncrementSize.Value;
 
     /// <inheritdoc />
     public override D3D12GraphicsMemoryAllocator MemoryAllocator => _memoryAllocator.Value;
-
-    /// <summary>Gets the <see cref="DXGI_FORMAT" /> used by <see cref="DxgiSwapChain" />.</summary>
-    public DXGI_FORMAT SwapChainFormat => _swapChainFormat;
 
     /// <summary>Gets a fence that is used to wait for the device to become idle.</summary>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
@@ -162,12 +138,10 @@ public sealed unsafe class D3D12GraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
-    public override void PresentFrame()
+    public override D3D12GraphicsSwapchain CreateSwapchain(IGraphicsSurface surface)
     {
-        ThrowExternalExceptionIfFailed(DxgiSwapChain->Present(SyncInterval: 1, Flags: 0), nameof(IDXGISwapChain.Present));
-
-        Signal(CurrentContext.Fence);
-        _contextIndex = unchecked((int)DxgiSwapChain->GetCurrentBackBufferIndex());
+        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        return new D3D12GraphicsSwapchain(this, surface);
     }
 
     /// <inheritdoc />
@@ -207,8 +181,6 @@ public sealed unsafe class D3D12GraphicsDevice : GraphicsDevice
             }
 
             _memoryAllocator.Dispose(DisposeMemoryAllocator);
-            _d3d12RenderTargetDescriptorHeap.Dispose(ReleaseIfNotNull);
-            _dxgiSwapChain.Dispose(ReleaseIfNotNull);
             _d3d12CommandQueue.Dispose(ReleaseIfNotNull);
 
             _idleFence?.Dispose();
@@ -240,77 +212,21 @@ public sealed unsafe class D3D12GraphicsDevice : GraphicsDevice
         return d3d12Device;
     }
 
-    private Pointer<ID3D12DescriptorHeap> CreateD3D12RenderTargetDescriptorHeap()
-    {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
-
-        ID3D12DescriptorHeap* renderTargetDescriptorHeap;
-
-        var renderTargetDescriptorHeapDesc = new D3D12_DESCRIPTOR_HEAP_DESC {
-            Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV,
-            NumDescriptors = (uint)Contexts.Length,
-        };
-        ThrowExternalExceptionIfFailed(D3D12Device->CreateDescriptorHeap(&renderTargetDescriptorHeapDesc, __uuidof<ID3D12DescriptorHeap>(), (void**)&renderTargetDescriptorHeap), nameof(ID3D12Device.CreateDescriptorHeap));
-
-        return renderTargetDescriptorHeap;
-    }
-
-    private Pointer<IDXGISwapChain3> CreateDxgiSwapChain()
-    {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
-
-        IDXGISwapChain3* dxgiSwapChain;
-
-        var surface = Surface;
-        var surfaceHandle = (HWND)surface.Handle;
-
-        var swapChainDesc = new DXGI_SWAP_CHAIN_DESC1 {
-            Width = (uint)surface.Width,
-            Height = (uint)surface.Height,
-            Format = DXGI_FORMAT_R8G8B8A8_UNORM,
-            SampleDesc = new DXGI_SAMPLE_DESC(count: 1, quality: 0),
-            BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
-            BufferCount = (uint)Contexts.Length,
-            SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL,
-        };
-
-        var service = Adapter.Service;
-
-        switch (surface.Kind)
-        {
-            case GraphicsSurfaceKind.Win32:
-            {
-                ThrowExternalExceptionIfFailed(service.DxgiFactory->CreateSwapChainForHwnd((IUnknown*)D3D12CommandQueue, surfaceHandle, &swapChainDesc, pFullscreenDesc: null, pRestrictToOutput: null, (IDXGISwapChain1**)&dxgiSwapChain), nameof(IDXGIFactory2.CreateSwapChainForHwnd));
-                break;
-            }
-
-            default:
-            {
-                ThrowForUnsupportedSurfaceKind(surface.Kind.ToString());
-                dxgiSwapChain = null;
-                break;
-            }
-        }
-
-        // Fullscreen transitions are not currently supported
-        ThrowExternalExceptionIfFailed(service.DxgiFactory->MakeWindowAssociation(surfaceHandle, DXGI_MWA_NO_ALT_ENTER), nameof(IDXGIFactory.MakeWindowAssociation));
-
-        _swapChainFormat = swapChainDesc.Format;
-        _contextIndex = unchecked((int)dxgiSwapChain->GetCurrentBackBufferIndex());
-
-        return dxgiSwapChain;
-    }
-
     private D3D12GraphicsMemoryAllocator CreateMemoryAllocator()
     {
         var allocatorSettings = default(GraphicsMemoryAllocatorSettings);
         return new D3D12GraphicsMemoryAllocator(this, in allocatorSettings);
     }
 
-    private uint GetCbvSrvUavDescriptorHandleIncrementSize()
+    private uint GetD3D12CbvSrvUavDescriptorHandleIncrementSize()
         => D3D12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
+    private uint GetD3D12RtvDescriptorHandleIncrementSize()
+        => D3D12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
     private void DisposeMemoryAllocator(D3D12GraphicsMemoryAllocator memoryAllocator) => memoryAllocator?.Dispose();
+
+    private void DisposeSwapchain(D3D12GraphicsSwapchain swapchain) => swapchain?.Dispose();
 
     private D3D12_FEATURE_DATA_D3D12_OPTIONS GetD3D12Options()
     {
@@ -319,22 +235,5 @@ public sealed unsafe class D3D12GraphicsDevice : GraphicsDevice
         D3D12_FEATURE_DATA_D3D12_OPTIONS d3d12Options;
         ThrowExternalExceptionIfFailed(D3D12Device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12Options, SizeOf<D3D12_FEATURE_DATA_D3D12_OPTIONS>()), nameof(ID3D12Device.CheckFeatureSupport));
         return d3d12Options;
-    }
-
-    private void OnGraphicsSurfaceSizeChanged(object? sender, PropertyChangedEventArgs<Vector2> eventArgs)
-    {
-        WaitForIdle();
-
-        foreach (var context in Contexts)
-        {
-            ((D3D12GraphicsContext)context).OnGraphicsSurfaceSizeChanged(sender, eventArgs);
-        }
-
-        if (_dxgiSwapChain.IsValueCreated)
-        {
-            var surface = Surface;
-            ThrowExternalExceptionIfFailed(DxgiSwapChain->ResizeBuffers((uint)Contexts.Length, (uint)surface.Width, (uint)surface.Height, DXGI_FORMAT_R8G8B8A8_UNORM, SwapChainFlags: 0), nameof(IDXGISwapChain.ResizeBuffers));
-            _contextIndex = unchecked((int)DxgiSwapChain->GetCurrentBackBufferIndex());
-        }
     }
 }

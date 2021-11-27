@@ -35,14 +35,15 @@ public sealed class HelloTexture : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        var currentGraphicsContext = graphicsDevice.CurrentContext;
+        var graphicsSwapchain = GraphicsSwapchain;
+        var currentGraphicsContext = graphicsDevice.Contexts[(int)graphicsSwapchain.FramebufferIndex];
 
         using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
         using var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024 * 4);
 
         _vertexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
 
-        currentGraphicsContext.BeginFrame();
+        currentGraphicsContext.BeginFrame(graphicsSwapchain);
         _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer, textureStagingBuffer);
         currentGraphicsContext.EndFrame();
 
@@ -59,7 +60,7 @@ public sealed class HelloTexture : HelloWindow
     private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer textureStagingBuffer)
     {
         var graphicsDevice = GraphicsDevice;
-        var graphicsSurface = graphicsDevice.Surface;
+        var graphicsSurface = GraphicsSwapchain.Surface;
 
         var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Texture", "main", "main");
 

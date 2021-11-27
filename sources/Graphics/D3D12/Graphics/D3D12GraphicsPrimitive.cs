@@ -98,7 +98,7 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
         };
         ThrowExternalExceptionIfFailed(d3d12Device->CreateDescriptorHeap(&cbvSrvUavDescriptorHeapDesc, __uuidof<ID3D12DescriptorHeap>(), (void**)&cbvSrvUavDescriptorHeap), nameof(ID3D12Device.CreateDescriptorHeap));
 
-        var cbvSrvUavDescriptorHandleIncrementSize = Device.CbvSrvUavDescriptorHandleIncrementSize;
+        var cbvSrvUavDescriptorHandleIncrementSize = Device.D3D12CbvSrvUavDescriptorHandleIncrementSize;
         var cbvSrvUavDescriptorIndex = 0;
 
         for (var index = 0; index < inputResourceRegionsLength; index++)

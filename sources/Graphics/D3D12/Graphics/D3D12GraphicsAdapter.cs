@@ -67,10 +67,10 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
     public override uint VendorId => DxgiAdapterDesc.VendorId;
 
     /// <inheritdoc />
-    public override D3D12GraphicsDevice CreateDevice(IGraphicsSurface surface, int contextCount)
+    public override D3D12GraphicsDevice CreateDevice()
     {
         ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsAdapter));
-        return new D3D12GraphicsDevice(this, surface, contextCount);
+        return new D3D12GraphicsDevice(this);
     }
 
     /// <inheritdoc />

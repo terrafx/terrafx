@@ -34,13 +34,9 @@ public abstract class GraphicsAdapter : IDisposable
     /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
     public abstract uint VendorId { get; }
 
-    /// <summary>Creates a new graphics device which utilizes the adapter to render to a surface.</summary>
-    /// <param name="surface">The surface to which the context can render.</param>
-    /// <param name="contextCount">The number of contexts the device should maintain.</param>
-    /// <returns>A new graphics device which utilizes the the adapter to render to <paramref name="surface" />.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="surface" /> is <c>null</c>.</exception>
+    /// <summary>Creates a new graphics device which utilizes the adapter.</summary>
     /// <exception cref="ObjectDisposedException">The adapter has been disposed.</exception>
-    public abstract GraphicsDevice CreateDevice(IGraphicsSurface surface, int contextCount);
+    public abstract GraphicsDevice CreateDevice();
 
     /// <inheritdoc />
     public void Dispose()

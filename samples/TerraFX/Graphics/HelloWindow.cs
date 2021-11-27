@@ -13,6 +13,7 @@ namespace TerraFX.Samples.Graphics;
 public class HelloWindow : Sample
 {
     private GraphicsDevice _graphicsDevice = null!;
+    private GraphicsSwapchain _graphicsSwapchain = null!;
     private Window _window = null!;
     private TimeSpan _elapsedTime;
     private uint _secondsOfLastFpsUpdate;
@@ -23,6 +24,8 @@ public class HelloWindow : Sample
     }
 
     public GraphicsDevice GraphicsDevice => _graphicsDevice;
+
+    public GraphicsSwapchain GraphicsSwapchain => _graphicsSwapchain;
 
     public Window Window => _window;
 
@@ -65,8 +68,10 @@ public class HelloWindow : Sample
         var graphicsService = application.ServiceProvider.GraphicsService;
         var graphicsAdapter = graphicsService.Adapters.First();
 
-        _graphicsDevice = graphicsAdapter.CreateDevice(_window, contextCount: 2);
+        var graphicsDevice = graphicsAdapter.CreateDevice();
+        _graphicsDevice = graphicsDevice;
 
+        _graphicsSwapchain = graphicsDevice.CreateSwapchain(_window);
         base.Initialize(application, timeout);
     }
 
@@ -98,8 +103,9 @@ public class HelloWindow : Sample
             }
 
             // update the rendering
-            var currentGraphicsContext = _graphicsDevice.CurrentContext;
-            currentGraphicsContext.BeginFrame();
+            var graphicsSwapchain = GraphicsSwapchain;
+            var currentGraphicsContext = GraphicsDevice.Contexts[(int)graphicsSwapchain.FramebufferIndex];
+            currentGraphicsContext.BeginFrame(graphicsSwapchain);
 
             Update(eventArgs.Delta);
             Render();
@@ -109,14 +115,17 @@ public class HelloWindow : Sample
         }
     }
 
-    protected void Present() => _graphicsDevice.PresentFrame();
+    protected void Present() => GraphicsSwapchain.Present();
 
     protected void Render()
     {
-        var graphicsContext = GraphicsDevice.CurrentContext;
+        var graphicsSwapchain = GraphicsSwapchain;
+        var framebufferIndex = graphicsSwapchain.FramebufferIndex;
+        var graphicsContext = GraphicsDevice.Contexts[(int)framebufferIndex];
+
         var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
 
-        graphicsContext.BeginDrawing(backgroundColor);
+        graphicsContext.BeginDrawing(framebufferIndex, backgroundColor);
         Draw(graphicsContext);
         graphicsContext.EndDrawing();
     }
