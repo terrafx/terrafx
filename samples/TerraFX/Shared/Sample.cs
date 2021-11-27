@@ -15,6 +15,10 @@ using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using GC = System.GC;
 
+#if DEBUG
+using static TerraFX.Interop.DirectX.D3DCOMPILE;
+#endif
+
 namespace TerraFX.Samples;
 
 public abstract class Sample : IDisposable
