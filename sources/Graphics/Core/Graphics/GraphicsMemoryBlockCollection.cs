@@ -47,7 +47,7 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
 
         if (allocator.Device != device)
         {
-            ThrowForInvalidParent(allocator.Device, nameof(allocator));
+            ThrowForInvalidParent(allocator.Device);
         }
 
         _allocator = allocator;
@@ -512,7 +512,7 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
 
         if (useDedicatedBlock && useExistingBlock)
         {
-            ThrowForInvalidFlagsCombination(flags, nameof(flags));
+            ThrowForInvalidFlagsCombination(flags);
         }
 
         _allocator.GetBudget(this, out var budget);

@@ -102,11 +102,11 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
             pSwapchains = &vulkanSwapchain,
             pImageIndices = &framebufferIndex,
         };
-        ThrowExternalExceptionIfNotSuccess(vkQueuePresentKHR(device.VulkanCommandQueue, &presentInfo), nameof(vkQueuePresentKHR));
+        ThrowExternalExceptionIfNotSuccess(vkQueuePresentKHR(device.VulkanCommandQueue, &presentInfo));
 
         device.Signal(Fence);
 
-        ThrowExternalExceptionIfNotSuccess(vkAcquireNextImageKHR(device.VulkanDevice, vulkanSwapchain, timeout: ulong.MaxValue, VkSemaphore.NULL, VkFence.NULL, &framebufferIndex), nameof(vkAcquireNextImageKHR));
+        ThrowExternalExceptionIfNotSuccess(vkAcquireNextImageKHR(device.VulkanDevice, vulkanSwapchain, timeout: ulong.MaxValue, VkSemaphore.NULL, VkFence.NULL, &framebufferIndex));
         _framebufferIndex = framebufferIndex;
     }
 
@@ -148,7 +148,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
             framebufferCreateInfo.pAttachments = swapchainImageViews.GetPointerUnsafe(i);
 
             VkFramebuffer framebuffer;
-            ThrowExternalExceptionIfNotSuccess(vkCreateFramebuffer(device.VulkanDevice, &framebufferCreateInfo, pAllocator: null, &framebuffer), nameof(vkCreateFramebuffer));
+            ThrowExternalExceptionIfNotSuccess(vkCreateFramebuffer(device.VulkanDevice, &framebufferCreateInfo, pAllocator: null, &framebuffer));
             vulkanFramebuffers[i] = framebuffer;
         }
 
@@ -172,7 +172,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
                     hwnd = Surface.Handle,
                 };
 
-                ThrowExternalExceptionIfNotSuccess(vkCreateWin32SurfaceKHR(vulkanInstance, &surfaceCreateInfo, pAllocator: null, &vulkanSurface), nameof(vkCreateWin32SurfaceKHR));
+                ThrowExternalExceptionIfNotSuccess(vkCreateWin32SurfaceKHR(vulkanInstance, &surfaceCreateInfo, pAllocator: null, &vulkanSurface));
                 break;
             }
 
@@ -184,20 +184,20 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
                     window = (nuint)(nint)Surface.Handle,
                 };
 
-                ThrowExternalExceptionIfNotSuccess(vkCreateXlibSurfaceKHR(vulkanInstance, &surfaceCreateInfo, pAllocator: null, &vulkanSurface), nameof(vkCreateXlibSurfaceKHR));
+                ThrowExternalExceptionIfNotSuccess(vkCreateXlibSurfaceKHR(vulkanInstance, &surfaceCreateInfo, pAllocator: null, &vulkanSurface));
                 break;
             }
 
             default:
             {
-                ThrowForUnsupportedSurfaceKind(Surface.Kind.ToString());
+                ThrowForInvalidKind(Surface.Kind);
                 vulkanSurface = VkSurfaceKHR.NULL;
                 break;
             }
         }
 
         VkBool32 supported;
-        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceSupportKHR(adapter.VulkanPhysicalDevice, Device.VulkanCommandQueueFamilyIndex, vulkanSurface, &supported), nameof(vkGetPhysicalDeviceSurfaceSupportKHR));
+        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceSupportKHR(adapter.VulkanPhysicalDevice, Device.VulkanCommandQueueFamilyIndex, vulkanSurface, &supported));
 
         if (!supported)
         {
@@ -215,13 +215,13 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         var vulkanSurface = VulkanSurface;
 
         VkSurfaceCapabilitiesKHR surfaceCapabilities;
-        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vulkanPhysicalDevice, vulkanSurface, &surfaceCapabilities), nameof(vkGetPhysicalDeviceSurfaceCapabilitiesKHR));
+        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vulkanPhysicalDevice, vulkanSurface, &surfaceCapabilities));
 
         uint presentModeCount;
-        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfacePresentModesKHR(vulkanPhysicalDevice, vulkanSurface, &presentModeCount, pPresentModes: null), nameof(vkGetPhysicalDeviceSurfacePresentModesKHR));
+        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfacePresentModesKHR(vulkanPhysicalDevice, vulkanSurface, &presentModeCount, pPresentModes: null));
 
         var presentModes = stackalloc VkPresentModeKHR[(int)presentModeCount];
-        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfacePresentModesKHR(vulkanPhysicalDevice, vulkanSurface, &presentModeCount, presentModes), nameof(vkGetPhysicalDeviceSurfacePresentModesKHR));
+        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfacePresentModesKHR(vulkanPhysicalDevice, vulkanSurface, &presentModeCount, presentModes));
 
         var surface = Surface;
         var framebufferCount = _framebufferCount;
@@ -253,10 +253,10 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         }
 
         uint surfaceFormatCount;
-        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceFormatsKHR(vulkanPhysicalDevice, VulkanSurface, &surfaceFormatCount, pSurfaceFormats: null), nameof(vkGetPhysicalDeviceSurfaceFormatsKHR));
+        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceFormatsKHR(vulkanPhysicalDevice, VulkanSurface, &surfaceFormatCount, pSurfaceFormats: null));
 
         var surfaceFormats = stackalloc VkSurfaceFormatKHR[(int)surfaceFormatCount];
-        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceFormatsKHR(vulkanPhysicalDevice, VulkanSurface, &surfaceFormatCount, surfaceFormats), nameof(vkGetPhysicalDeviceSurfaceFormatsKHR));
+        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceFormatsKHR(vulkanPhysicalDevice, VulkanSurface, &surfaceFormatCount, surfaceFormats));
 
         for (uint i = 0; i < surfaceFormatCount; i++)
         {
@@ -267,7 +267,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
                 break;
             }
         }
-        ThrowExternalExceptionIfNotSuccess(vkCreateSwapchainKHR(device.VulkanDevice, &swapChainCreateInfo, pAllocator: null, &vulkanSwapchain), nameof(vkCreateSwapchainKHR));
+        ThrowExternalExceptionIfNotSuccess(vkCreateSwapchainKHR(device.VulkanDevice, &swapChainCreateInfo, pAllocator: null, &vulkanSwapchain));
 
         _framebufferFormat = swapChainCreateInfo.imageFormat;
         return vulkanSwapchain;
@@ -303,7 +303,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
             imageViewCreateInfo.image = swapchainImages[i];
 
             VkImageView imageView;
-            ThrowExternalExceptionIfNotSuccess(vkCreateImageView(device.VulkanDevice, &imageViewCreateInfo, pAllocator: null, &imageView), nameof(vkCreateImageView));
+            ThrowExternalExceptionIfNotSuccess(vkCreateImageView(device.VulkanDevice, &imageViewCreateInfo, pAllocator: null, &imageView));
             swapchainImageViews[i] = imageView;
         }
 
@@ -358,13 +358,13 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         var vulkanSwapchain = VulkanSwapchain;
 
         uint swapchainImageCount;
-        ThrowExternalExceptionIfNotSuccess(vkGetSwapchainImagesKHR(vulkanDevice, vulkanSwapchain, &swapchainImageCount, pSwapchainImages: null), nameof(vkGetSwapchainImagesKHR));
+        ThrowExternalExceptionIfNotSuccess(vkGetSwapchainImagesKHR(vulkanDevice, vulkanSwapchain, &swapchainImageCount, pSwapchainImages: null));
 
         var vulkanSwapchainImages = new UnmanagedArray<VkImage>(swapchainImageCount);
-        ThrowExternalExceptionIfNotSuccess(vkGetSwapchainImagesKHR(vulkanDevice, vulkanSwapchain, &swapchainImageCount, vulkanSwapchainImages.GetPointerUnsafe(0)), nameof(vkGetSwapchainImagesKHR));
+        ThrowExternalExceptionIfNotSuccess(vkGetSwapchainImagesKHR(vulkanDevice, vulkanSwapchain, &swapchainImageCount, vulkanSwapchainImages.GetPointerUnsafe(0)));
 
         uint framebufferIndex;
-        ThrowExternalExceptionIfNotSuccess(vkAcquireNextImageKHR(vulkanDevice, vulkanSwapchain, timeout: ulong.MaxValue, VkSemaphore.NULL, VkFence.NULL, &framebufferIndex), nameof(vkAcquireNextImageKHR));
+        ThrowExternalExceptionIfNotSuccess(vkAcquireNextImageKHR(vulkanDevice, vulkanSwapchain, timeout: ulong.MaxValue, VkSemaphore.NULL, VkFence.NULL, &framebufferIndex));
         _framebufferIndex = framebufferIndex;
 
         return vulkanSwapchainImages;

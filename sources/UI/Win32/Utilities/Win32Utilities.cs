@@ -2,6 +2,7 @@
 
 using System.Runtime.CompilerServices;
 using TerraFX.Interop.Windows;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Utilities;
@@ -9,11 +10,12 @@ namespace TerraFX.Utilities;
 internal static unsafe partial class Win32Utilities
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowExternalExceptionIfFalse(BOOL value, string methodName)
+    public static void ThrowExternalExceptionIfFalse(BOOL value, [CallerArgumentExpression("value")] string? valueExpression = null)
     {
         if (!value)
         {
-            ThrowForLastError(methodName);
+            AssertNotNull(valueExpression);
+            ThrowForLastError(valueExpression);
         }
     }
 }

@@ -62,7 +62,7 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
         };
 
         VkBuffer vulkanBuffer;
-        ThrowExternalExceptionIfNotSuccess(vkCreateBuffer(vulkanDevice, &bufferCreateInfo, pAllocator: null, &vulkanBuffer), nameof(vkCreateBuffer));
+        ThrowExternalExceptionIfNotSuccess(vkCreateBuffer(vulkanDevice, &bufferCreateInfo, pAllocator: null, &vulkanBuffer));
 
         VkMemoryRequirements memoryRequirements;
         vkGetBufferMemoryRequirements(vulkanDevice, vulkanBuffer, &memoryRequirements);
@@ -100,7 +100,7 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
         };
 
         VkImage vulkanImage;
-        ThrowExternalExceptionIfNotSuccess(vkCreateImage(vulkanDevice, &imageCreateInfo, pAllocator: null, &vulkanImage), nameof(vkCreateImage));
+        ThrowExternalExceptionIfNotSuccess(vkCreateImage(vulkanDevice, &imageCreateInfo, pAllocator: null, &vulkanImage));
 
         VkMemoryRequirements memoryRequirements;
         vkGetImageMemoryRequirements(vulkanDevice, vulkanImage, &memoryRequirements);

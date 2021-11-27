@@ -115,7 +115,7 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
         AssertNotDisposedOrDisposing(_state);
 
         ID3D12Fence* d3d12Fence;
-        ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateFence(InitialValue: 0, D3D12_FENCE_FLAG_NONE, __uuidof<ID3D12Fence>(), (void**)&d3d12Fence), nameof(ID3D12Device.CreateFence));
+        ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateFence(InitialValue: 0, D3D12_FENCE_FLAG_NONE, __uuidof<ID3D12Fence>(), (void**)&d3d12Fence));
 
         return d3d12Fence;
     }
@@ -124,13 +124,8 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
     {
         AssertNotDisposedOrDisposing(_state);
 
-        var eventHandle = CreateEventW(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
-
-        if (eventHandle == HANDLE.NULL)
-        {
-            ThrowForLastError(nameof(CreateEventW));
-        }
-
+        HANDLE eventHandle;
+        ThrowForLastErrorIfZero(eventHandle = CreateEventW(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null));
         return eventHandle;
     }
 
@@ -153,7 +148,7 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
 
         if (!fenceSignalled)
         {
-            ThrowExternalExceptionIfFailed(D3D12Fence->SetEventOnCompletion(D3D12FenceSignalValue, fenceSignalEvent), nameof(ID3D12Fence.SetEventOnCompletion));
+            ThrowExternalExceptionIfFailed(D3D12Fence->SetEventOnCompletion(D3D12FenceSignalValue, fenceSignalEvent));
 
             var result = WaitForSingleObject(fenceSignalEvent, millisecondsTimeout);
 

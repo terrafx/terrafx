@@ -138,8 +138,8 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
             rootSignatureDesc.NumStaticSamplers = unchecked((uint)staticSamplersLength);
             rootSignatureDesc.pStaticSamplers = staticSamplers;
 
-            ThrowExternalExceptionIfFailed(D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &rootSignatureBlob, &rootSignatureErrorBlob), nameof(D3D12SerializeRootSignature));
-            ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), __uuidof<ID3D12RootSignature>(), (void**)&d3d12RootSignature), nameof(ID3D12Device.CreateRootSignature));
+            ThrowExternalExceptionIfFailed(D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &rootSignatureBlob, &rootSignatureErrorBlob));
+            ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), __uuidof<ID3D12RootSignature>(), (void**)&d3d12RootSignature));
 
             return d3d12RootSignature;
         }

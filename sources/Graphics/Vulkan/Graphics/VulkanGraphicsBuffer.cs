@@ -22,7 +22,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         : base(device, kind, in blockRegion, cpuAccess)
     {
         _vulkanBuffer = vulkanBuffer;
-        ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(Allocator.Device.VulkanDevice, vulkanBuffer, Block.VulkanDeviceMemory, blockRegion.Offset), nameof(vkBindBufferMemory));
+        ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(Allocator.Device.VulkanDevice, vulkanBuffer, Block.VulkanDeviceMemory, blockRegion.Offset));
     }
 
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsBuffer{TMetadata}" /> class.</summary>
@@ -58,7 +58,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         var vulkanDeviceMemory = Block.VulkanDeviceMemory;
 
         byte* pDestination;
-        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination), nameof(vkMapMemory));
+        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
 
         return (T*)pDestination;
     }
@@ -73,7 +73,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         var vulkanDeviceMemory = Block.VulkanDeviceMemory;
 
         byte* pDestination;
-        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination), nameof(vkMapMemory));
+        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
 
         return (T*)(pDestination + rangeOffset);
     }
@@ -88,7 +88,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         var vulkanDeviceMemory = Block.VulkanDeviceMemory;
 
         void* pDestination;
-        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, &pDestination), nameof(vkMapMemory));
+        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, &pDestination));
 
         var nonCoherentAtomSize = device.Adapter.VulkanPhysicalDeviceProperties.limits.nonCoherentAtomSize;
 
@@ -101,7 +101,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
             offset = offset,
             size = size,
         };
-        ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange), nameof(vkInvalidateMappedMemoryRanges));
+        ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
 
         return (T*)pDestination;
     }
@@ -116,7 +116,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         var vulkanDeviceMemory = Block.VulkanDeviceMemory;
 
         byte* pDestination;
-        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination), nameof(vkMapMemory));
+        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
 
         if (readRangeLength != 0)
         {
@@ -131,7 +131,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
                 offset = offset,
                 size = size,
             };
-            ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange), nameof(vkInvalidateMappedMemoryRanges));
+            ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
         }
         return (T*)(pDestination + readRangeOffset);
     }
@@ -168,7 +168,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
             offset = offset,
             size = size,
         };
-        ThrowExternalExceptionIfNotSuccess(vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange), nameof(vkFlushMappedMemoryRanges));
+        ThrowExternalExceptionIfNotSuccess(vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
 
         vkUnmapMemory(vulkanDevice, vulkanDeviceMemory);
     }
@@ -195,7 +195,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
                 offset = offset,
                 size = size,
             };
-            ThrowExternalExceptionIfNotSuccess(vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange), nameof(vkFlushMappedMemoryRanges));
+            ThrowExternalExceptionIfNotSuccess(vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
         }
         vkUnmapMemory(vulkanDevice, vulkanDeviceMemory);
     }

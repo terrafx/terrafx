@@ -56,7 +56,7 @@ public abstract unsafe class D3D12GraphicsTexture : GraphicsTexture
         var readRange = default(D3D12_RANGE);
 
         byte* pDestination;
-        ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, (void**)&pDestination), nameof(ID3D12Resource.Map));
+        ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, (void**)&pDestination));
 
         return (T*)pDestination;
     }
@@ -68,7 +68,7 @@ public abstract unsafe class D3D12GraphicsTexture : GraphicsTexture
         var readRange = default(D3D12_RANGE);
 
         byte* pDestination;
-        ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, (void**)&pDestination), nameof(ID3D12Resource.Map));
+        ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, (void**)&pDestination));
 
         return (T*)(pDestination + rangeOffset);
     }
@@ -78,7 +78,7 @@ public abstract unsafe class D3D12GraphicsTexture : GraphicsTexture
     public override T* MapForRead<T>()
     {
         byte* pDestination;
-        ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, null, (void**)&pDestination), nameof(ID3D12Resource.Map));
+        ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, null, (void**)&pDestination));
 
         return (T*)pDestination;
     }
@@ -93,7 +93,7 @@ public abstract unsafe class D3D12GraphicsTexture : GraphicsTexture
         };
 
         byte* pDestination;
-        ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, (void**)&pDestination), nameof(ID3D12Resource.Map));
+        ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, (void**)&pDestination));
 
         return (T*)(pDestination + readRange.Begin);
     }
@@ -159,7 +159,7 @@ public abstract unsafe class D3D12GraphicsTexture : GraphicsTexture
             pOptimizedClearValue: null,
             __uuidof<ID3D12Resource>(),
             (void**)&d3d12Resource
-        ), nameof(ID3D12Device.CreatePlacedResource));
+        ));
 
         return d3d12Resource;
     }

@@ -1,10 +1,12 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.	
 
+using System.Runtime.CompilerServices;
 using TerraFX.Graphics;
 using TerraFX.Interop.Vulkan;
 using static TerraFX.Interop.Vulkan.VkBufferUsageFlags;
 using static TerraFX.Interop.Vulkan.VkImageUsageFlags;
 using static TerraFX.Interop.Vulkan.VkResult;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Utilities;
@@ -60,11 +62,12 @@ internal static partial class VulkanUtilities
         _ => VkFormat.VK_FORMAT_UNDEFINED,
     };
 
-    public static void ThrowExternalExceptionIfNotSuccess(VkResult result, string methodName)
+    public static void ThrowExternalExceptionIfNotSuccess(VkResult value, [CallerArgumentExpression("value")] string? valueExpression = null)
     {
-        if (result != VK_SUCCESS)
+        if (value != VK_SUCCESS)
         {
-            ThrowExternalException(methodName, (int)result);
+            AssertNotNull(valueExpression);
+            ThrowExternalException(valueExpression, (int)value);
         }
     }
 }

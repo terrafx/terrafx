@@ -257,7 +257,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
                 pipelineVertexInputStateCreateInfo.vertexAttributeDescriptionCount = unchecked((uint)vertexInputAttributeDescriptions.Length);
                 pipelineVertexInputStateCreateInfo.pVertexAttributeDescriptions = pVertexInputAttributeDescriptions;
 
-                ThrowExternalExceptionIfNotSuccess(vkCreateGraphicsPipelines(device.VulkanDevice, pipelineCache: VkPipelineCache.NULL, 1, &pipelineCreateInfo, pAllocator: null, &vulkanPipeline), nameof(vkCreateGraphicsPipelines));
+                ThrowExternalExceptionIfNotSuccess(vkCreateGraphicsPipelines(device.VulkanDevice, pipelineCache: VkPipelineCache.NULL, 1, &pipelineCreateInfo, pAllocator: null, &vulkanPipeline));
             }
 
             return vulkanPipeline;

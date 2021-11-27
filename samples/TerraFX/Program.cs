@@ -28,39 +28,39 @@ public static unsafe class Program
 
     [SupportedOSPlatform("windows10.0")]
     private static readonly Sample[] s_d3d12Samples = {
-            new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_d3d12GraphicsServiceProvider),
-            new HelloWindow("D3D12.HelloWindow", s_d3d12GraphicsServiceProvider),
-            new HelloTriangle("D3D12.HelloTriangle", s_d3d12GraphicsServiceProvider),
-            new HelloQuad("D3D12.HelloQuad", s_d3d12GraphicsServiceProvider),
-            new HelloTransform("D3D12.HelloTransform", s_d3d12GraphicsServiceProvider),
-            new HelloTexture("D3D12.HelloTexture", s_d3d12GraphicsServiceProvider),
-            new HelloTextureTransform("D3D12.HelloTextureTransform", s_d3d12GraphicsServiceProvider),
-            new HelloTexture3D("D3D12.HelloTexture3D", s_d3d12GraphicsServiceProvider),
-            new HelloSmoke("D3D12.HelloSmoke", true, s_d3d12GraphicsServiceProvider),
-            new HelloSierpinskiPyramid("D3D12.HelloSierpinskiPyramid", 5, s_d3d12GraphicsServiceProvider),
-            new HelloSierpinskiQuad("D3D12.HelloSierpinskiQuad", 6, s_d3d12GraphicsServiceProvider),
-        };
+        new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_d3d12GraphicsServiceProvider),
+        new HelloWindow("D3D12.HelloWindow", s_d3d12GraphicsServiceProvider),
+        new HelloTriangle("D3D12.HelloTriangle", s_d3d12GraphicsServiceProvider),
+        new HelloQuad("D3D12.HelloQuad", s_d3d12GraphicsServiceProvider),
+        new HelloTransform("D3D12.HelloTransform", s_d3d12GraphicsServiceProvider),
+        new HelloTexture("D3D12.HelloTexture", s_d3d12GraphicsServiceProvider),
+        new HelloTextureTransform("D3D12.HelloTextureTransform", s_d3d12GraphicsServiceProvider),
+        new HelloTexture3D("D3D12.HelloTexture3D", s_d3d12GraphicsServiceProvider),
+        new HelloSmoke("D3D12.HelloSmoke", true, s_d3d12GraphicsServiceProvider),
+        new HelloSierpinskiPyramid("D3D12.HelloSierpinskiPyramid", 5, s_d3d12GraphicsServiceProvider),
+        new HelloSierpinskiQuad("D3D12.HelloSierpinskiQuad", 6, s_d3d12GraphicsServiceProvider),
+    };
 
     private static readonly Sample[] s_vulkanSamples = {
-            new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapters", s_vulkanGraphicsServiceProvider),
-            new HelloWindow("Vulkan.HelloWindow", s_vulkanGraphicsServiceProvider),
-            new HelloTriangle("Vulkan.HelloTriangle", s_vulkanGraphicsServiceProvider),
-            new HelloQuad("Vulkan.HelloQuad", s_vulkanGraphicsServiceProvider),
-            new HelloTransform("Vulkan.HelloTransform", s_vulkanGraphicsServiceProvider),
-            new HelloTexture("Vulkan.HelloTexture", s_vulkanGraphicsServiceProvider),
-            new HelloTextureTransform("Vulkan.HelloTextureTransform", s_vulkanGraphicsServiceProvider),
-            new HelloTexture3D("Vulkan.HelloTexture3D", s_vulkanGraphicsServiceProvider),
-            new HelloSmoke("Vulkan.HelloSmoke", true, s_vulkanGraphicsServiceProvider),
-            new HelloSierpinskiPyramid("Vulkan.HelloSierpinskiPyramid", 5, s_vulkanGraphicsServiceProvider),
-            new HelloSierpinskiQuad("Vulkan.HelloSierpinskiQuad", 6, s_vulkanGraphicsServiceProvider),
-        };
+        new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapters", s_vulkanGraphicsServiceProvider),
+        new HelloWindow("Vulkan.HelloWindow", s_vulkanGraphicsServiceProvider),
+        new HelloTriangle("Vulkan.HelloTriangle", s_vulkanGraphicsServiceProvider),
+        new HelloQuad("Vulkan.HelloQuad", s_vulkanGraphicsServiceProvider),
+        new HelloTransform("Vulkan.HelloTransform", s_vulkanGraphicsServiceProvider),
+        new HelloTexture("Vulkan.HelloTexture", s_vulkanGraphicsServiceProvider),
+        new HelloTextureTransform("Vulkan.HelloTextureTransform", s_vulkanGraphicsServiceProvider),
+        new HelloTexture3D("Vulkan.HelloTexture3D", s_vulkanGraphicsServiceProvider),
+        new HelloSmoke("Vulkan.HelloSmoke", true, s_vulkanGraphicsServiceProvider),
+        new HelloSierpinskiPyramid("Vulkan.HelloSierpinskiPyramid", 5, s_vulkanGraphicsServiceProvider),
+        new HelloSierpinskiQuad("Vulkan.HelloSierpinskiQuad", 6, s_vulkanGraphicsServiceProvider),
+    };
 
     private static readonly Sample[] s_pulseAudioSamples = {
-            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Sync", false, s_pulseAudioServiceProvider),
-            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Async", true, s_pulseAudioServiceProvider),
+        new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Sync", false, s_pulseAudioServiceProvider),
+        new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Async", true, s_pulseAudioServiceProvider),
 
-            new PlaySampleAudio("PulseAudio.PlaySampleAudio", s_pulseAudioServiceProvider),
-        };
+        new PlaySampleAudio("PulseAudio.PlaySampleAudio", s_pulseAudioServiceProvider),
+    };
 
     private static IEnumerable<Sample> AllSamples
     {

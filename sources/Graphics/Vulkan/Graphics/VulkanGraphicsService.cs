@@ -227,7 +227,7 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
                     instanceCreateInfo.pNext = &debugUtilsMessengerCreateInfo;
                 }
 
-                ThrowExternalExceptionIfNotSuccess(vkCreateInstance(&instanceCreateInfo, pAllocator: null, &vulkanInstance), nameof(vkCreateInstance));
+                ThrowExternalExceptionIfNotSuccess(vkCreateInstance(&instanceCreateInfo, pAllocator: null, &vulkanInstance));
             }
 
             if (DebugModeEnabled)
@@ -300,13 +300,13 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
         static VkExtensionProperties[] GetExtensionProperties()
         {
             uint extensionPropertiesCount = 0;
-            ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceExtensionProperties(pLayerName: null, &extensionPropertiesCount, pProperties: null), nameof(vkEnumerateInstanceExtensionProperties));
+            ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceExtensionProperties(pLayerName: null, &extensionPropertiesCount, pProperties: null));
 
             var extensionProperties = new VkExtensionProperties[extensionPropertiesCount];
 
             fixed (VkExtensionProperties* pExtensionProperties = extensionProperties)
             {
-                ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceExtensionProperties(pLayerName: null, &extensionPropertiesCount, pExtensionProperties), nameof(vkEnumerateInstanceExtensionProperties));
+                ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceExtensionProperties(pLayerName: null, &extensionPropertiesCount, pExtensionProperties));
             }
 
             return extensionProperties;
@@ -315,13 +315,13 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
         static VkLayerProperties[] GetLayerProperties()
         {
             uint layerPropertiesCount = 0;
-            ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceLayerProperties(&layerPropertiesCount, pProperties: null), nameof(vkEnumerateInstanceLayerProperties));
+            ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceLayerProperties(&layerPropertiesCount, pProperties: null));
 
             var layerProperties = new VkLayerProperties[layerPropertiesCount];
 
             fixed (VkLayerProperties* pLayerProperties = layerProperties)
             {
-                ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceLayerProperties(&layerPropertiesCount, pLayerProperties), nameof(vkEnumerateInstanceLayerProperties));
+                ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceLayerProperties(&layerPropertiesCount, pLayerProperties));
             }
 
             return layerProperties;
@@ -392,10 +392,10 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
         var instance = VulkanInstance;
 
         uint physicalDeviceCount;
-        ThrowExternalExceptionIfNotSuccess(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, pPhysicalDevices: null), nameof(vkEnumeratePhysicalDevices));
+        ThrowExternalExceptionIfNotSuccess(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, pPhysicalDevices: null));
 
         var physicalDevices = stackalloc VkPhysicalDevice[unchecked((int)physicalDeviceCount)];
-        ThrowExternalExceptionIfNotSuccess(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, physicalDevices), nameof(vkEnumeratePhysicalDevices));
+        ThrowExternalExceptionIfNotSuccess(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, physicalDevices));
 
         var adapters = ImmutableArray.CreateBuilder<VulkanGraphicsAdapter>(unchecked((int)physicalDeviceCount));
 

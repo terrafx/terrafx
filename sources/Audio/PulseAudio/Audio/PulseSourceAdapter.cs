@@ -91,7 +91,7 @@ public class PulseSourceAdapter : IAudioAdapter
             case pa_sample_format_t.PA_SAMPLE_INVALID:
             default:
             {
-                ThrowForInvalidKind(format, nameof(format));
+                ThrowForInvalidKind(format);
                 break;
             }
         }

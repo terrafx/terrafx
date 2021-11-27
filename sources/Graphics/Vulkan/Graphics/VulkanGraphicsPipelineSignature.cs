@@ -149,7 +149,7 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
                 descriptorPoolCreateInfo.poolSizeCount = unchecked((uint)vulkanDescriptorPoolSizes.Length);
                 descriptorPoolCreateInfo.pPoolSizes = pVulkanDescriptorPoolSizes;
 
-                ThrowExternalExceptionIfNotSuccess(vkCreateDescriptorPool(Device.VulkanDevice, &descriptorPoolCreateInfo, pAllocator: null, &vulkanDescriptorPool), nameof(vkCreateDescriptorPool));
+                ThrowExternalExceptionIfNotSuccess(vkCreateDescriptorPool(Device.VulkanDevice, &descriptorPoolCreateInfo, pAllocator: null, &vulkanDescriptorPool));
             }
         }
 
@@ -171,7 +171,7 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
                 descriptorSetCount = 1,
                 pSetLayouts = &vulkanDescriptorSetLayout,
             };
-            ThrowExternalExceptionIfNotSuccess(vkAllocateDescriptorSets(Device.VulkanDevice, &descriptorSetAllocateInfo, &vulkanDescriptorSet), nameof(vkAllocateDescriptorSets));
+            ThrowExternalExceptionIfNotSuccess(vkAllocateDescriptorSets(Device.VulkanDevice, &descriptorSetAllocateInfo, &vulkanDescriptorSet));
         }
 
         return vulkanDescriptorSet;
@@ -244,7 +244,7 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
                 descriptorSetLayoutCreateInfo.bindingCount = unchecked((uint)descriptorSetLayoutBindings.Length);
                 descriptorSetLayoutCreateInfo.pBindings = pDescriptorSetLayoutBindings;
 
-                ThrowExternalExceptionIfNotSuccess(vkCreateDescriptorSetLayout(Device.VulkanDevice, &descriptorSetLayoutCreateInfo, pAllocator: null, &vulkanDescriptorSetLayout), nameof(vkCreateDescriptorSetLayout));
+                ThrowExternalExceptionIfNotSuccess(vkCreateDescriptorSetLayout(Device.VulkanDevice, &descriptorSetLayoutCreateInfo, pAllocator: null, &vulkanDescriptorSetLayout));
             }
         }
         else
@@ -291,7 +291,7 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
             pipelineLayoutCreateInfo.pSetLayouts = &descriptorSetLayout;
         }
 
-        ThrowExternalExceptionIfNotSuccess(vkCreatePipelineLayout(Device.VulkanDevice, &pipelineLayoutCreateInfo, pAllocator: null, &vulkanPipelineLayout), nameof(vkCreatePipelineLayout));
+        ThrowExternalExceptionIfNotSuccess(vkCreatePipelineLayout(Device.VulkanDevice, &pipelineLayoutCreateInfo, pAllocator: null, &vulkanPipelineLayout));
 
         return vulkanPipelineLayout;
     }

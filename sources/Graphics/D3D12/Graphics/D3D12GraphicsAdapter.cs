@@ -91,7 +91,7 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
         ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsAdapter));
 
         DXGI_ADAPTER_DESC1 adapterDesc;
-        ThrowExternalExceptionIfFailed(DxgiAdapter->GetDesc1(&adapterDesc), nameof(IDXGIAdapter1.GetDesc1));
+        ThrowExternalExceptionIfFailed(DxgiAdapter->GetDesc1(&adapterDesc));
         return adapterDesc;
     }
 

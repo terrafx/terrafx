@@ -230,7 +230,7 @@ public sealed unsafe class XlibWindow : Window
                 dispatchService.Display,
                 Handle,
                 XScreenNumberOfScreen(dispatchService.DefaultScreen)
-            ), nameof(XWithdrawWindow));
+            ));
         }
     }
 
@@ -301,7 +301,7 @@ public sealed unsafe class XlibWindow : Window
                 display,
                 window,
                 XScreenNumberOfScreen(dispatchService.DefaultScreen)
-            ), nameof(XIconifyWindow));
+            ));
         }
     }
 
@@ -633,7 +633,9 @@ public sealed unsafe class XlibWindow : Window
         var defaultScreenWidth = XWidthOfScreen(defaultScreen);
         var defaultScreenHeight = XHeightOfScreen(defaultScreen);
 
-        var window = XCreateWindow(
+        XWindow window;
+
+        ThrowForLastErrorIfZero(window = XCreateWindow(
             display,
             defaultRootWindow,
             (int)(defaultScreenWidth * 0.125f),
@@ -646,8 +648,7 @@ public sealed unsafe class XlibWindow : Window
             (Visual*)CopyFromParent,
             0,
             null
-        );
-        ThrowForLastErrorIfZero(window, nameof(XCreateWindow));
+        ));
 
         _ = XSelectInput(
             display,
@@ -666,7 +667,7 @@ public sealed unsafe class XlibWindow : Window
             window,
             wmProtocols,
             WmProtocolCount
-        ), nameof(XSetWMProtocols));
+        ));
 
         var gcHandle = GCHandle.Alloc(this, GCHandleType.Normal);
         var gcHandlePtr = (nuint)(nint)GCHandle.ToIntPtr(gcHandle);
@@ -767,7 +768,7 @@ public sealed unsafe class XlibWindow : Window
                 &xconfigure->x,
                 &xconfigure->y,
                 &child
-            ), nameof(XTranslateCoordinates));
+            ));
         }
 
         var currentClientLocation = new Vector2(xconfigure->x, xconfigure->y);

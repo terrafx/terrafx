@@ -230,17 +230,6 @@ public static class ResourcesTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="Resources.UnsupportedSurfaceKindMessage" /> property.</summary>
-    [TestCase("en", "'{0}' is not a supported GraphicsSurfaceKind")]
-    public static void UnsupportedSurfaceKindMessageTest(string cultureName, string expectedMessage)
-    {
-        Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
-
-        Assert.That(Resources.UnsupportedSurfaceKindMessage,
-            Is.EqualTo(expectedMessage)
-        );
-    }
-
     /// <summary>Provides validation of the <see cref="Resources.ValueIsNegativeMessage" /> property.</summary>
     [TestCase("en", "'{0}' is negative")]
     public static void ValueIsNegativeMessageTest(string cultureName, string expectedMessage)

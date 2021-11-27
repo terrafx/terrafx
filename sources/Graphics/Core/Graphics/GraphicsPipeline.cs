@@ -32,12 +32,12 @@ public abstract class GraphicsPipeline : GraphicsDeviceObject
         {
             if (vertexShader.Kind != GraphicsShaderKind.Vertex)
             {
-                ThrowForInvalidKind(vertexShader.Kind, nameof(vertexShader), GraphicsShaderKind.Vertex);
+                ThrowForInvalidKind(vertexShader.Kind, GraphicsShaderKind.Vertex);
             }
 
             if (vertexShader.Device != device)
             {
-                ThrowForInvalidParent(vertexShader.Device, nameof(vertexShader));
+                ThrowForInvalidParent(vertexShader.Device);
             }
         }
 
@@ -45,12 +45,12 @@ public abstract class GraphicsPipeline : GraphicsDeviceObject
         {
             if (pixelShader.Kind != GraphicsShaderKind.Pixel)
             {
-                ThrowForInvalidKind(pixelShader.Kind, nameof(pixelShader), GraphicsShaderKind.Pixel);
+                ThrowForInvalidKind(pixelShader.Kind, GraphicsShaderKind.Pixel);
             }
 
             if (pixelShader.Device != device)
             {
-                ThrowForInvalidParent(pixelShader.Device, nameof(pixelShader));
+                ThrowForInvalidParent(pixelShader.Device);
             }
         }
 

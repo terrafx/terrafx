@@ -93,7 +93,7 @@ public readonly unsafe partial struct UnmanagedSpan<T>
     {
         if (pointer == null)
         {
-            ThrowForLastErrorIfNotZero(length, nameof(length));
+            ThrowForLastErrorIfNotZero(length);
         }
 
         _length = length;

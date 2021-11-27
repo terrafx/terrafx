@@ -177,11 +177,8 @@
   <data name="UnmanagedMethodFailedMessage" xml:space="preserve">
     <value>'{0}' failed with an error code of '{1}'</value>
   </data>
-  <data name="UnsupportedSurfaceKindMessage" xml:space="preserve">
-    <value>'{0}' is not a supported GraphicsSurfaceKind</value>
-  </data>
-  <data name="UnsupportedTypeMessage" xml:space="preserve">
-    <value>'{0}' is the unsupported type '{1}'</value>
+  <data name="UnsupportedValueMessage" xml:space="preserve">
+    <value>'{0}' has an unsupported value of '{1}'</value>
   </data>
   <data name="ValueIsNegativeMessage" xml:space="preserve">
     <value>'{0}' is negative</value>

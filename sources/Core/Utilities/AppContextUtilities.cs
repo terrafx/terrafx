@@ -222,15 +222,7 @@ public static unsafe class AppContextUtilities
     public static string GetAppContextData(string name, string defaultValue)
     {
         var data = AppContext.GetData(name);
-
-        if (data is string value)
-        {
-            return value;
-        }
-        else
-        {
-            return defaultValue;
-        }
+        return data is string value ? value : defaultValue;
     }
 
     /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>

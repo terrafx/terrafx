@@ -109,15 +109,7 @@ public partial struct UnmanagedValueQueue<T> : IDisposable
         get
         {
             var items = _items;
-
-            if (!items.IsNull)
-            {
-                return _items.Length;
-            }
-            else
-            {
-                return 0;
-            }
+            return !items.IsNull ? _items.Length : 0;
         }
     }
 

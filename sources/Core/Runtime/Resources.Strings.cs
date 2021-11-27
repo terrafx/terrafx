@@ -65,11 +65,8 @@ public static partial class Resources
     /// <summary>Gets a localized string similar to <c>'{0}' failed with an error code of '{1}'</c>.</summary>
     public static string UnmanagedMethodFailedMessage => GetString(nameof(UnmanagedMethodFailedMessage));
 
-    /// <summary>Gets a localized string similar to <c>'{0}' is not a supported GraphicsSurfaceKind</c>.</summary>
-    public static string UnsupportedSurfaceKindMessage => GetString(nameof(UnsupportedSurfaceKindMessage));
-
-    /// <summary>Gets a localized string similar to <c>'{0}' is the unsupported type '{1}'</c>.</summary>
-    public static string UnsupportedTypeMessage => GetString(nameof(UnsupportedTypeMessage));
+    /// <summary>Gets a localized string similar to <c>'{0}' has an unsupported value of '{1}'</c>.</summary>
+    public static string UnsupportedValueMessage => GetString(nameof(UnsupportedValueMessage));
 
     /// <summary>Gets a localized string similar to <c>'{0}' is negative</c>.</summary>
     public static string ValueIsNegativeMessage => GetString(nameof(ValueIsNegativeMessage));

@@ -16,40 +16,14 @@ public static unsafe class MarshalUtilities
     /// <returns>A string created from <paramref name="span" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string? GetString(this ReadOnlySpan<sbyte> span)
-    {
-        string? result;
-
-        if (span.GetPointer() != null)
-        {
-            result = Encoding.UTF8.GetString(span.As<sbyte, byte>());
-        }
-        else
-        {
-            result = null;
-        }
-
-        return result;
-    }
+        => span.GetPointer() != null ? Encoding.UTF8.GetString(span.As<sbyte, byte>()) : null;
 
     /// <summary>Gets a string for a given span.</summary>
     /// <param name="span">The span for which to create the string.</param>
     /// <returns>A string created from <paramref name="span" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string? GetString(this ReadOnlySpan<ushort> span)
-    {
-        string? result;
-
-        if (span.GetPointer() != null)
-        {
-            result = new string(span.As<ushort, char>());
-        }
-        else
-        {
-            result = null;
-        }
-
-        return result;
-    }
+        => span.GetPointer() != null ? new string(span.As<ushort, char>()) : null;
 
     /// <inheritdoc cref="Marshal.GetLastSystemError" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -70,7 +44,6 @@ public static unsafe class MarshalUtilities
 
             var length = Encoding.ASCII.GetBytes(source, bytes);
             result = bytes.AsSpan(0, length);
-
         }
         else
         {

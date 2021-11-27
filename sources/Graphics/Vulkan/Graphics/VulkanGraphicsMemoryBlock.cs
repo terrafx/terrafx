@@ -64,7 +64,7 @@ public abstract unsafe class VulkanGraphicsMemoryBlock : GraphicsMemoryBlock
             allocationSize = Size,
             memoryTypeIndex = collection.VulkanMemoryTypeIndex,
         };
-        ThrowExternalExceptionIfNotSuccess(vkAllocateMemory(vulkanDevice, &memoryAllocateInfo, pAllocator: null, &vulkanDeviceMemory), nameof(vkAllocateMemory));
+        ThrowExternalExceptionIfNotSuccess(vkAllocateMemory(vulkanDevice, &memoryAllocateInfo, pAllocator: null, &vulkanDeviceMemory));
 
         return vulkanDeviceMemory;
     }

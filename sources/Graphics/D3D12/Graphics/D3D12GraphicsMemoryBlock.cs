@@ -44,7 +44,7 @@ public abstract unsafe class D3D12GraphicsMemoryBlock : GraphicsMemoryBlock
     {
         const D3D12_HEAP_FLAGS DenyAllTexturesFlags = D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES;
         var canContainAnyTextures = (heapFlags & DenyAllTexturesFlags) != DenyAllTexturesFlags;
-        return canContainAnyTextures ? (ulong)D3D12_DEFAULT_MSAA_RESOURCE_PLACEMENT_ALIGNMENT : (ulong)D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
+        return canContainAnyTextures ? D3D12_DEFAULT_MSAA_RESOURCE_PLACEMENT_ALIGNMENT : (ulong)D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
     }
 
     /// <inheritdoc />
@@ -73,7 +73,7 @@ public abstract unsafe class D3D12GraphicsMemoryBlock : GraphicsMemoryBlock
         var heapType = collection.D3D12HeapType;
 
         var heapDesc = new D3D12_HEAP_DESC(Size, heapType, GetAlignment(heapFlags), heapFlags);
-        ThrowExternalExceptionIfFailed(d3d12Device->CreateHeap(&heapDesc, __uuidof<ID3D12Heap>(), (void**)&d3d12Heap), nameof(ID3D12Device.CreateHeap));
+        ThrowExternalExceptionIfFailed(d3d12Device->CreateHeap(&heapDesc, __uuidof<ID3D12Heap>(), (void**)&d3d12Heap));
 
         return d3d12Heap;
     }

@@ -154,18 +154,18 @@ public sealed class HelloTransform : HelloWindow
         static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)
         {
             var inputs = new GraphicsPipelineInput[1] {
-                    new GraphicsPipelineInput(
-                        new GraphicsPipelineInputElement[2] {
-                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
-                            new GraphicsPipelineInputElement(typeof(Vector4), GraphicsPipelineInputElementKind.Color, size: 16),
-                        }
-                    ),
-                };
+                new GraphicsPipelineInput(
+                    new GraphicsPipelineInputElement[2] {
+                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
+                        new GraphicsPipelineInputElement(typeof(Vector4), GraphicsPipelineInputElementKind.Color, size: 16),
+                    }
+                ),
+            };
 
             var resources = new GraphicsPipelineResource[2] {
-                    new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                    new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                };
+                new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
+                new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
+            };
 
             return graphicsDevice.CreatePipelineSignature(inputs, resources);
         }

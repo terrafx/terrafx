@@ -125,10 +125,10 @@ public class HelloSierpinski : HelloWindow
         graphicsContext.Copy(indexBuffer, indexStagingBuffer);
 
         var inputResourceRegions = new GraphicsMemoryRegion<GraphicsResource>[3] {
-                CreateConstantBufferRegion(graphicsContext, constantBuffer),
-                CreateConstantBufferRegion(graphicsContext, constantBuffer),
-                CreateTexture3DRegion(graphicsContext, textureStagingBuffer),
-            };
+            CreateConstantBufferRegion(graphicsContext, constantBuffer),
+            CreateConstantBufferRegion(graphicsContext, constantBuffer),
+            CreateTexture3DRegion(graphicsContext, textureStagingBuffer),
+        };
         return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, SizeOf<PosNormTex3DVertex>(), indexBufferRegion, SizeOf<uint>(), inputResourceRegions);
 
         static GraphicsMemoryRegion<GraphicsResource> CreateConstantBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer)
@@ -222,20 +222,20 @@ public class HelloSierpinski : HelloWindow
         static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)
         {
             var inputs = new GraphicsPipelineInput[1] {
-                    new GraphicsPipelineInput(
-                        new GraphicsPipelineInputElement[3] {
-                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
-                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Normal, size: 12),
-                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.TextureCoordinate, size: 12),
-                        }
-                    ),
-                };
+                new GraphicsPipelineInput(
+                    new GraphicsPipelineInputElement[3] {
+                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
+                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Normal, size: 12),
+                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.TextureCoordinate, size: 12),
+                    }
+                ),
+            };
 
             var resources = new GraphicsPipelineResource[3] {
-                    new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                    new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                    new GraphicsPipelineResource(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
-                };
+                new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
+                new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
+                new GraphicsPipelineResource(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
+            };
 
             return graphicsDevice.CreatePipelineSignature(inputs, resources);
         }

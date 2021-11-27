@@ -55,7 +55,7 @@ public sealed class PulseAudioService : IAudioService, IDisposable, IAsyncDispos
 
         if (context == null)
         {
-            ThrowExternalException(errorCode: -1, methodName: nameof(CreateContext));
+            ThrowExternalException(errorCode: -1, message: nameof(CreateContext));
         }
         return context;
     }
@@ -66,7 +66,7 @@ public sealed class PulseAudioService : IAudioService, IDisposable, IAsyncDispos
 
         if (mainloop == null)
         {
-            ThrowExternalException(errorCode: -1, methodName: nameof(CreateMainLoop));
+            ThrowExternalException(errorCode: -1, message: nameof(CreateMainLoop));
         }
         return mainloop;
     }

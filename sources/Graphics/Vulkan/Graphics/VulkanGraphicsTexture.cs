@@ -34,7 +34,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
         : base(device, kind, in blockRegion, cpuAccess, width, height, depth)
     {
         _vulkanImage = vulkanImage;
-        ThrowExternalExceptionIfNotSuccess(vkBindImageMemory(Allocator.Device.VulkanDevice, vulkanImage, Block.VulkanDeviceMemory, blockRegion.Offset), nameof(vkBindImageMemory));
+        ThrowExternalExceptionIfNotSuccess(vkBindImageMemory(Allocator.Device.VulkanDevice, vulkanImage, Block.VulkanDeviceMemory, blockRegion.Offset));
 
         _vulkanImageView = new ValueLazy<VkImageView>(CreateVulkanImageView);
         _vulkanSampler = new ValueLazy<VkSampler>(CreateVulkanSampler);
@@ -77,7 +77,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
         var vulkanDeviceMemory = Block.VulkanDeviceMemory;
 
         byte* pDestination;
-        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination), nameof(vkMapMemory));
+        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
 
         return (T*)pDestination;
     }
@@ -92,7 +92,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
         var vulkanDeviceMemory = Block.VulkanDeviceMemory;
 
         byte* pDestination;
-        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination), nameof(vkMapMemory));
+        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
 
         return (T*)(pDestination + rangeOffset);
     }
@@ -107,7 +107,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
         var vulkanDeviceMemory = Block.VulkanDeviceMemory;
 
         void* pDestination;
-        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, &pDestination), nameof(vkMapMemory));
+        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, &pDestination));
 
         var nonCoherentAtomSize = device.Adapter.VulkanPhysicalDeviceProperties.limits.nonCoherentAtomSize;
 
@@ -120,7 +120,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
             offset = offset,
             size = size,
         };
-        ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange), nameof(vkInvalidateMappedMemoryRanges));
+        ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
 
         return (T*)pDestination;
     }
@@ -135,7 +135,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
         var vulkanDeviceMemory = Block.VulkanDeviceMemory;
 
         byte* pDestination;
-        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination), nameof(vkMapMemory));
+        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
 
         if (readRangeLength != 0)
         {
@@ -150,7 +150,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
                 offset = offset,
                 size = size,
             };
-            ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange), nameof(vkInvalidateMappedMemoryRanges));
+            ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
         }
         return (T*)(pDestination + readRangeOffset);
     }
@@ -187,7 +187,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
             offset = offset,
             size = size,
         };
-        ThrowExternalExceptionIfNotSuccess(vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange), nameof(vkFlushMappedMemoryRanges));
+        ThrowExternalExceptionIfNotSuccess(vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
 
         vkUnmapMemory(vulkanDevice, vulkanDeviceMemory);
     }
@@ -214,7 +214,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
                 offset = offset,
                 size = size,
             };
-            ThrowExternalExceptionIfNotSuccess(vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange), nameof(vkFlushMappedMemoryRanges));
+            ThrowExternalExceptionIfNotSuccess(vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
         }
         vkUnmapMemory(vulkanDevice, vulkanDeviceMemory);
     }
@@ -272,7 +272,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
             },
         };
 
-        ThrowExternalExceptionIfNotSuccess(vkCreateImageView(vulkanDevice, &imageViewCreateInfo, pAllocator: null, &vulkanImageView), nameof(vkCreateImageView));
+        ThrowExternalExceptionIfNotSuccess(vkCreateImageView(vulkanDevice, &imageViewCreateInfo, pAllocator: null, &vulkanImageView));
 
         return vulkanImageView;
     }
@@ -297,7 +297,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
             borderColor = VK_BORDER_COLOR_INT_OPAQUE_WHITE
         };
 
-        ThrowExternalExceptionIfNotSuccess(vkCreateSampler(vulkanDevice, &samplerCreateInfo, pAllocator: null, &vulkanSampler), nameof(vkCreateSampler));
+        ThrowExternalExceptionIfNotSuccess(vkCreateSampler(vulkanDevice, &samplerCreateInfo, pAllocator: null, &vulkanSampler));
 
         return vulkanSampler;
     }

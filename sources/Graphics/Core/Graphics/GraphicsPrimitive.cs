@@ -37,17 +37,17 @@ public abstract class GraphicsPrimitive : GraphicsDeviceObject
 
         if (pipeline.Device != device)
         {
-            ThrowForInvalidParent(pipeline.Device, nameof(pipeline));
+            ThrowForInvalidParent(pipeline.Device);
         }
 
         if (vertexBufferRegion.Device != device)
         {
-            ThrowForInvalidParent(vertexBufferRegion.Device, nameof(vertexBufferRegion));
+            ThrowForInvalidParent(vertexBufferRegion.Device);
         }
 
         if ((indexBufferRegion.Collection is not null) && (indexBufferRegion.Device != device))
         {
-            ThrowForInvalidParent(indexBufferRegion.Device, nameof(indexBufferRegion));
+            ThrowForInvalidParent(indexBufferRegion.Device);
         }
 
         _pipeline = pipeline;
