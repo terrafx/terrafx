@@ -433,7 +433,7 @@ public static class UnmanagedValueListTests
             Assert.That(() => valueList.CopyTo(UnmanagedArray<int>.Empty),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
                       .And.Property("ActualValue").EqualTo((nuint)3)
-                      .And.Property("ParamName").EqualTo("Count")
+                      .And.Property("ParamName").EqualTo("count")
             );
         }
 

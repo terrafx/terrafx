@@ -64,7 +64,7 @@ internal static unsafe partial class XlibUtilities
             False,
             eventMask,
             (XEvent*)&clientEvent
-        ), nameof(XSendEvent));
+        ));
     }
 
     public static void SetWindowTitle(XlibDispatchService dispatchService, Display* display, XWindow window, string value)

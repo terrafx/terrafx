@@ -128,8 +128,8 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
 
         var d3d12CommandAllocator = D3D12CommandAllocator;
 
-        ThrowExternalExceptionIfFailed(d3d12CommandAllocator->Reset(), nameof(ID3D12CommandAllocator.Reset));
-        ThrowExternalExceptionIfFailed(D3D12GraphicsCommandList->Reset(d3d12CommandAllocator, pInitialState: null), nameof(ID3D12GraphicsCommandList.Reset));
+        ThrowExternalExceptionIfFailed(d3d12CommandAllocator->Reset());
+        ThrowExternalExceptionIfFailed(D3D12GraphicsCommandList->Reset(d3d12CommandAllocator, pInitialState: null));
 
         _state.Transition(from: FrameInitializing, to: FrameInitialized);
     }
@@ -438,11 +438,11 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
         var commandList = D3D12GraphicsCommandList;
 
         var commandQueue = Device.D3D12CommandQueue;
-        ThrowExternalExceptionIfFailed(commandList->Close(), nameof(ID3D12GraphicsCommandList.Close));
+        ThrowExternalExceptionIfFailed(commandList->Close());
         commandQueue->ExecuteCommandLists(1, (ID3D12CommandList**)&commandList);
 
         var fence = Fence;
-        ThrowExternalExceptionIfFailed(commandQueue->Signal(fence.D3D12Fence, fence.D3D12FenceSignalValue), nameof(ID3D12CommandQueue.Signal));
+        ThrowExternalExceptionIfFailed(commandQueue->Signal(fence.D3D12Fence, fence.D3D12FenceSignalValue));
         fence.Wait();
 
         _swapchain = null;
@@ -469,7 +469,7 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
         ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsContext));
 
         ID3D12CommandAllocator* d3d12CommandAllocator;
-        ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof<ID3D12CommandAllocator>(), (void**)&d3d12CommandAllocator), nameof(ID3D12Device.CreateCommandAllocator));
+        ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof<ID3D12CommandAllocator>(), (void**)&d3d12CommandAllocator));
 
         return d3d12CommandAllocator;
     }
@@ -479,11 +479,11 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
         ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsContext));
 
         ID3D12GraphicsCommandList* d3d12GraphicsCommandList;
-        ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateCommandList(nodeMask: 0, D3D12_COMMAND_LIST_TYPE_DIRECT, D3D12CommandAllocator, pInitialState: null, __uuidof<ID3D12GraphicsCommandList>(), (void**)&d3d12GraphicsCommandList), nameof(ID3D12Device.CreateCommandList));
+        ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateCommandList(nodeMask: 0, D3D12_COMMAND_LIST_TYPE_DIRECT, D3D12CommandAllocator, pInitialState: null, __uuidof<ID3D12GraphicsCommandList>(), (void**)&d3d12GraphicsCommandList));
 
         // Command lists are created in the recording state, but there is nothing
         // to record yet. The main loop expects it to be closed, so close it now.
-        ThrowExternalExceptionIfFailed(d3d12GraphicsCommandList->Close(), nameof(ID3D12GraphicsCommandList.Close));
+        ThrowExternalExceptionIfFailed(d3d12GraphicsCommandList->Close());
 
         return d3d12GraphicsCommandList;
     }

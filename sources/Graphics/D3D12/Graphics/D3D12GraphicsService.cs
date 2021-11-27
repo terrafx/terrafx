@@ -96,7 +96,7 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
         IDXGIFactory2* dxgiFactory;
 
         var createFlags = (DebugModeEnabled && TryEnableDebugMode()) ? DXGI_CREATE_FACTORY_DEBUG : 0u;
-        ThrowExternalExceptionIfFailed(CreateDXGIFactory2(createFlags, __uuidof<IDXGIFactory2>(), (void**)&dxgiFactory), nameof(CreateDXGIFactory2));
+        ThrowExternalExceptionIfFailed(CreateDXGIFactory2(createFlags, __uuidof<IDXGIFactory2>(), (void**)&dxgiFactory));
 
         return dxgiFactory;
 

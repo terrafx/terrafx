@@ -150,7 +150,7 @@ public sealed unsafe class D3D12GraphicsDevice : GraphicsDevice
 
     /// <inheritdoc cref="Signal(GraphicsFence)" />
     public void Signal(D3D12GraphicsFence fence)
-        => ThrowExternalExceptionIfFailed(D3D12CommandQueue->Signal(fence.D3D12Fence, fence.D3D12FenceSignalValue), nameof(ID3D12CommandQueue.Signal));
+        => ThrowExternalExceptionIfFailed(D3D12CommandQueue->Signal(fence.D3D12Fence, fence.D3D12FenceSignalValue));
 
     /// <inheritdoc />
     public override void WaitForIdle()
@@ -159,7 +159,7 @@ public sealed unsafe class D3D12GraphicsDevice : GraphicsDevice
         {
             var waitForIdleGraphicsFence = WaitForIdleGraphicsFence;
 
-            ThrowExternalExceptionIfFailed(D3D12CommandQueue->Signal(waitForIdleGraphicsFence.D3D12Fence, waitForIdleGraphicsFence.D3D12FenceSignalValue), nameof(ID3D12CommandQueue.Signal));
+            ThrowExternalExceptionIfFailed(D3D12CommandQueue->Signal(waitForIdleGraphicsFence.D3D12Fence, waitForIdleGraphicsFence.D3D12FenceSignalValue));
 
             waitForIdleGraphicsFence.Wait();
             waitForIdleGraphicsFence.Reset();
@@ -198,7 +198,7 @@ public sealed unsafe class D3D12GraphicsDevice : GraphicsDevice
         ID3D12CommandQueue* d3d12CommandQueue;
         var commandQueueDesc = new D3D12_COMMAND_QUEUE_DESC();
 
-        ThrowExternalExceptionIfFailed(D3D12Device->CreateCommandQueue(&commandQueueDesc, __uuidof<ID3D12CommandQueue>(), (void**)&d3d12CommandQueue), nameof(ID3D12Device.CreateCommandQueue));
+        ThrowExternalExceptionIfFailed(D3D12Device->CreateCommandQueue(&commandQueueDesc, __uuidof<ID3D12CommandQueue>(), (void**)&d3d12CommandQueue));
         return d3d12CommandQueue;
     }
 
@@ -207,7 +207,7 @@ public sealed unsafe class D3D12GraphicsDevice : GraphicsDevice
         ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
 
         ID3D12Device* d3d12Device;
-        ThrowExternalExceptionIfFailed(D3D12CreateDevice((IUnknown*)Adapter.DxgiAdapter, D3D_FEATURE_LEVEL_11_0, __uuidof<ID3D12Device>(), (void**)&d3d12Device), nameof(D3D12CreateDevice));
+        ThrowExternalExceptionIfFailed(D3D12CreateDevice((IUnknown*)Adapter.DxgiAdapter, D3D_FEATURE_LEVEL_11_0, __uuidof<ID3D12Device>(), (void**)&d3d12Device));
 
         return d3d12Device;
     }
@@ -233,7 +233,7 @@ public sealed unsafe class D3D12GraphicsDevice : GraphicsDevice
         ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
 
         D3D12_FEATURE_DATA_D3D12_OPTIONS d3d12Options;
-        ThrowExternalExceptionIfFailed(D3D12Device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12Options, SizeOf<D3D12_FEATURE_DATA_D3D12_OPTIONS>()), nameof(ID3D12Device.CheckFeatureSupport));
+        ThrowExternalExceptionIfFailed(D3D12Device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12Options, SizeOf<D3D12_FEATURE_DATA_D3D12_OPTIONS>()));
         return d3d12Options;
     }
 }

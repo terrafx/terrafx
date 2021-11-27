@@ -66,7 +66,7 @@ public sealed unsafe class XlibDispatchService : DispatchService
         get
         {
             timespec timespec;
-            ThrowForLastErrorIfNotZero(clock_gettime(CLOCK_MONOTONIC, &timespec), nameof(clock_gettime));
+            ThrowForLastErrorIfNotZero(clock_gettime(CLOCK_MONOTONIC, &timespec));
 
             const long NanosecondsPerSecond = TimeSpan.TicksPerSecond * 100;
             Assert(AssertionsEnabled && (NanosecondsPerSecond == 1000000000));
@@ -118,8 +118,8 @@ public sealed unsafe class XlibDispatchService : DispatchService
 
     private static Pointer<Display> CreateDisplayHandle()
     {
-        var display = XOpenDisplay(null);
-        ThrowForLastErrorIfNull(display, nameof(XOpenDisplay));
+        Display* display;
+        ThrowForLastErrorIfNull(display = XOpenDisplay(null));
 
         _ = XSetErrorHandler(&HandleXlibError);
         _ = XSetIOErrorHandler(&HandleXlibIOError);
@@ -253,7 +253,7 @@ public sealed unsafe class XlibDispatchService : DispatchService
                 (int)AtomIdCount,
                 False,
                 pAtoms
-            ), nameof(XInternAtoms));
+            ));
         }
 
         return atoms;

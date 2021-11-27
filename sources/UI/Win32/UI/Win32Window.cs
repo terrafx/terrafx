@@ -400,7 +400,7 @@ public sealed unsafe class Win32Window : Window
 
         fixed (char* lpWindowName = _title)
         {
-            hWnd = CreateWindowExW(
+            ThrowForLastErrorIfZero(hWnd = CreateWindowExW(
                 _extendedStyle,
                 (ushort*)WindowService.ClassAtom,
                 (ushort*)lpWindowName,
@@ -413,9 +413,8 @@ public sealed unsafe class Win32Window : Window
                 hMenu: default,
                 hInstance: EntryPointModule,
                 lpParam: GCHandle.ToIntPtr(GCHandle.Alloc(this, GCHandleType.Normal)).ToPointer()
-            );
+            ));
         }
-        ThrowForLastErrorIfZero(hWnd, nameof(CreateWindowExW));
 
         // Set the initial bounds so that resizing and relocating before showing work as expected
         // For GetClientRect, it always returns the position as (0, 0) annd so we need to remap

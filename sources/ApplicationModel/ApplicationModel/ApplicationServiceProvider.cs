@@ -54,7 +54,7 @@ public abstract class ApplicationServiceProvider : IDisposable, IServiceProvider
     {
         if (!TryGetService<TService>(out var service))
         {
-            ThrowForUnsupportedType(typeof(TService), nameof(TService));
+            ThrowForUnsupportedValue(typeof(TService));
         }
         return service;
     }

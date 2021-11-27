@@ -114,10 +114,10 @@ public sealed class HelloSmoke : HelloWindow
         graphicsContext.Copy(indexBuffer, indexStagingBuffer);
 
         var inputResourceRegions = new GraphicsMemoryRegion<GraphicsResource>[3] {
-                CreateConstantBufferRegion(graphicsContext, constantBuffer),
-                CreateConstantBufferRegion(graphicsContext, constantBuffer),
-                CreateTexture3DRegion(graphicsContext, textureStagingBuffer, _isQuickAndDirty),
-            };
+            CreateConstantBufferRegion(graphicsContext, constantBuffer),
+            CreateConstantBufferRegion(graphicsContext, constantBuffer),
+            CreateTexture3DRegion(graphicsContext, textureStagingBuffer, _isQuickAndDirty),
+        };
         return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, SizeOf<Texture3DVertex>(), indexBufferRegion, SizeOf<ushort>(), inputResourceRegions);
 
         static GraphicsMemoryRegion<GraphicsResource> CreateConstantBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer)
@@ -199,7 +199,7 @@ public sealed class HelloSmoke : HelloWindow
                     rand = 0;
                 }
                 uint value = (byte)(rand * scale * 255);
-                pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
+                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
             }
 
             if (isOnBlurring)
@@ -220,7 +220,7 @@ public sealed class HelloSmoke : HelloWindow
                             if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n - 1] & 0xFF))
                             {
                                 uint value = (byte)(falloffFactor * (pTextureData[n - 1] & 0xFF));
-                                pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
+                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
                             }
                         }
                         for (var x = (int)textureWidth - 2; x >= 0; x--)
@@ -229,11 +229,12 @@ public sealed class HelloSmoke : HelloWindow
                             if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n + 1] & 0xFF))
                             {
                                 uint value = (byte)(falloffFactor * (pTextureData[n + 1] & 0xFF));
-                                pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
+                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
                             }
                         }
                     }
                 }
+
                 for (var z = 0; z < textureDepth; z++)
                 {
                     for (var x = 0; x < textureWidth; x++)
@@ -244,56 +245,62 @@ public sealed class HelloSmoke : HelloWindow
                             if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n - dy] & 0xFF))
                             {
                                 uint value = (byte)(falloffFactor * (pTextureData[n - dy] & 0xFF));
-                                pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
+                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
                             }
                         }
+
                         for (var y = 0; y <= 0; y++)
                         {
                             var n = x + (y * dy) + (z * dz);
                             if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n - dy + dz] & 0xFF))
                             {
                                 uint value = (byte)(falloffFactor * (pTextureData[n - dy + dz] & 0xFF));
-                                pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
+                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
                             }
                         }
+
                         for (var y = 1; y < textureHeight; y++)
                         {
                             var n = x + (y * dy) + (z * dz);
                             if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n - dy] & 0xFF))
                             {
                                 uint value = (byte)(falloffFactor * (pTextureData[n - dy] & 0xFF));
-                                pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
+                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
                             }
                         }
+
                         for (var y = (int)textureHeight - 2; y >= 0; y--)
                         {
                             var n = x + (y * dy) + (z * dz);
                             if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n + dy] & 0xFF))
                             {
                                 uint value = (byte)(falloffFactor * (pTextureData[n + dy] & 0xFF));
-                                pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
+                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
                             }
                         }
+
                         for (var y = (int)textureHeight - 1; y >= (int)textureHeight - 1; y--)
                         {
                             var n = x + (y * dy) + (z * dz);
                             if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n + dy - dz] & 0xFF))
                             {
                                 uint value = (byte)(falloffFactor * (pTextureData[n + dy - dz] & 0xFF));
-                                pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
+                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
                             }
                         }
+
                         for (var y = (int)textureHeight - 2; y >= 0; y--)
                         {
                             var n = x + (y * dy) + (z * dz);
                             if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n + dy] & 0xFF))
                             {
                                 uint value = (byte)(falloffFactor * (pTextureData[n + dy] & 0xFF));
-                                pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
+                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
                             }
                         }
                     }
                 }
+
                 for (var y = 0; y < textureHeight; y++)
                 {
                     for (var x = 0; x < textureWidth; x++)
@@ -304,16 +311,16 @@ public sealed class HelloSmoke : HelloWindow
                             if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n - dz] & 0xFF))
                             {
                                 uint value = (byte)(falloffFactor * (pTextureData[n - 1] & 0xFF));
-                                pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
+                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
                             }
                         }
-                        for (var z = (int)textureDepth - 0; z >= 0; z--)
+                        for (var z = textureDepth - 0; z >= 0; z--)
                         {
                             var n = x + (y * dy) + (z * dz);
                             if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n + dz] & 0xFF))
                             {
                                 uint value = (byte)(falloffFactor * (pTextureData[n + 1] & 0xFF));
-                                pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
+                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
                             }
                         }
                     }
@@ -370,19 +377,19 @@ public sealed class HelloSmoke : HelloWindow
         static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)
         {
             var inputs = new GraphicsPipelineInput[1] {
-                    new GraphicsPipelineInput(
-                        new GraphicsPipelineInputElement[2] {
-                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
-                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.TextureCoordinate, size: 12),
-                        }
-                    ),
-                };
+                new GraphicsPipelineInput(
+                    new GraphicsPipelineInputElement[2] {
+                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
+                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.TextureCoordinate, size: 12),
+                    }
+                ),
+            };
 
             var resources = new GraphicsPipelineResource[3] {
-                    new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                    new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                    new GraphicsPipelineResource(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
-                };
+                new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
+                new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
+                new GraphicsPipelineResource(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
+            };
 
             return graphicsDevice.CreatePipelineSignature(inputs, resources);
         }

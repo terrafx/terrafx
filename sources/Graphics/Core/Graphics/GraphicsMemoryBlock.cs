@@ -31,7 +31,7 @@ public abstract partial class GraphicsMemoryBlock : GraphicsDeviceObject, IGraph
 
         if (collection.Device != device)
         {
-            ThrowForInvalidParent(collection.Device, nameof(collection));
+            ThrowForInvalidParent(collection.Device);
         }
 
         _collection = collection;

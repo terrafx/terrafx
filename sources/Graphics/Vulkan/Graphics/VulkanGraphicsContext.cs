@@ -153,7 +153,7 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
             sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
         };
 
-        ThrowExternalExceptionIfNotSuccess(vkBeginCommandBuffer(VulkanCommandBuffer, &commandBufferBeginInfo), nameof(vkBeginCommandBuffer));
+        ThrowExternalExceptionIfNotSuccess(vkBeginCommandBuffer(VulkanCommandBuffer, &commandBufferBeginInfo));
 
         _state.Transition(from: FrameInitializing, to: FrameInitialized);
     }
@@ -373,7 +373,7 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
         _state.Transition(from: FrameInitialized, to: FrameInitializing);
 
         var commandBuffer = VulkanCommandBuffer;
-        ThrowExternalExceptionIfNotSuccess(vkEndCommandBuffer(commandBuffer), nameof(vkEndCommandBuffer));
+        ThrowExternalExceptionIfNotSuccess(vkEndCommandBuffer(commandBuffer));
 
         var submitInfo = new VkSubmitInfo {
             sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
@@ -382,7 +382,7 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
         };
 
         var fence = Fence;
-        ThrowExternalExceptionIfNotSuccess(vkQueueSubmit(Device.VulkanCommandQueue, submitCount: 1, &submitInfo, fence.VulkanFence), nameof(vkQueueSubmit));
+        ThrowExternalExceptionIfNotSuccess(vkQueueSubmit(Device.VulkanCommandQueue, submitCount: 1, &submitInfo, fence.VulkanFence));
         fence.Wait();
 
         _swapchain = null;
@@ -413,7 +413,7 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
             commandPool = VulkanCommandPool,
             commandBufferCount = 1,
         };
-        ThrowExternalExceptionIfNotSuccess(vkAllocateCommandBuffers(Device.VulkanDevice, &commandBufferAllocateInfo, &vulkanCommandBuffer), nameof(vkAllocateCommandBuffers));
+        ThrowExternalExceptionIfNotSuccess(vkAllocateCommandBuffers(Device.VulkanDevice, &commandBufferAllocateInfo, &vulkanCommandBuffer));
 
         return vulkanCommandBuffer;
     }
@@ -427,7 +427,7 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
             flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
             queueFamilyIndex = Device.VulkanCommandQueueFamilyIndex,
         };
-        ThrowExternalExceptionIfNotSuccess(vkCreateCommandPool(Device.VulkanDevice, &commandPoolCreateInfo, pAllocator: null, &vulkanCommandPool), nameof(vkCreateCommandPool));
+        ThrowExternalExceptionIfNotSuccess(vkCreateCommandPool(Device.VulkanDevice, &commandPoolCreateInfo, pAllocator: null, &vulkanCommandPool));
 
         return vulkanCommandPool;
     }

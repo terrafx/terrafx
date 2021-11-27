@@ -124,13 +124,13 @@ public partial struct UnmanagedValueList<T> : IDisposable
     {
         readonly get
         {
-            ThrowIfNotInBounds(index, Count, nameof(index), nameof(Count));
+            ThrowIfNotInBounds(index, Count);
             return _items[index];
         }
 
         set
         {
-            ThrowIfNotInBounds(index, Count, nameof(index), nameof(Count));
+            ThrowIfNotInBounds(index, Count);
             _version++;
 
             _items[index] = value;
@@ -178,7 +178,7 @@ public partial struct UnmanagedValueList<T> : IDisposable
 
         if (count != 0)
         {
-            ThrowIfNotInInsertBounds(count, destination.Length, nameof(Count), nameof(destination));
+            ThrowIfNotInInsertBounds(count, destination.Length);
             CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), _items.GetPointerUnsafe(0), count);
         }
     }
@@ -216,7 +216,7 @@ public partial struct UnmanagedValueList<T> : IDisposable
     public void Insert(nuint index, T item)
     {
         var count = Count;
-        ThrowIfNotInInsertBounds(index, count, nameof(index), nameof(Count));
+        ThrowIfNotInInsertBounds(index, count);
 
         if (index != count)
         {
@@ -254,7 +254,7 @@ public partial struct UnmanagedValueList<T> : IDisposable
     public unsafe void RemoveAt(nuint index)
     {
         var count = Count;
-        ThrowIfNotInBounds(index, count, nameof(index), nameof(Count));
+        ThrowIfNotInBounds(index, count);
 
         var newCount = count - 1;
         var items = _items;

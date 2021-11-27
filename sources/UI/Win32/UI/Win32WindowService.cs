@@ -204,7 +204,7 @@ public sealed unsafe class Win32WindowService : WindowService
         var desktopWindowHandle = GetDesktopWindow();
 
         var desktopClassName = stackalloc ushort[256]; // 256 is the maximum length of WNDCLASSEX.lpszClassName
-        ThrowForLastErrorIfZero(GetClassNameW(desktopWindowHandle, desktopClassName, 256), nameof(GetClassNameW));
+        ThrowForLastErrorIfZero(GetClassNameW(desktopWindowHandle, desktopClassName, 256));
 
         WNDCLASSEXW desktopWindowClass;
 
@@ -246,9 +246,8 @@ public sealed unsafe class Win32WindowService : WindowService
                     hIconSm = HICON.NULL
                 };
 
-                classAtom = RegisterClassExW(&wndClassEx);
+                ThrowForLastErrorIfZero(classAtom = RegisterClassExW(&wndClassEx));
             }
-            ThrowForLastErrorIfZero(classAtom, nameof(RegisterClassExW));
         }
         return classAtom;
     }

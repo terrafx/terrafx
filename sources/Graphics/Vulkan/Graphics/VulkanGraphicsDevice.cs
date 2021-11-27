@@ -146,14 +146,14 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
 
     /// <inheritdoc cref="Signal(GraphicsFence)" />
     public void Signal(VulkanGraphicsFence fence)
-        => ThrowExternalExceptionIfNotSuccess(vkQueueSubmit(VulkanCommandQueue, submitCount: 0, pSubmits: null, fence.VulkanFence), nameof(vkQueueSubmit));
+        => ThrowExternalExceptionIfNotSuccess(vkQueueSubmit(VulkanCommandQueue, submitCount: 0, pSubmits: null, fence.VulkanFence));
 
     /// <inheritdoc />
     public override void WaitForIdle()
     {
         if (_vulkanDevice.IsValueCreated)
         {
-            ThrowExternalExceptionIfNotSuccess(vkDeviceWaitIdle(_vulkanDevice.Value), nameof(vkDeviceWaitIdle));
+            ThrowExternalExceptionIfNotSuccess(vkDeviceWaitIdle(_vulkanDevice.Value));
         }
     }
 
@@ -227,7 +227,7 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
             enabledLayerNames[enabledLayersNamesCount - 1] = VK_LAYER_KHRONOS_VALIDATION_NAME.GetPointer();
         }
 
-        ThrowExternalExceptionIfNotSuccess(vkCreateDevice(Adapter.VulkanPhysicalDevice, &deviceCreateInfo, pAllocator: null, &vulkanDevice), nameof(vkCreateDevice));
+        ThrowExternalExceptionIfNotSuccess(vkCreateDevice(Adapter.VulkanPhysicalDevice, &deviceCreateInfo, pAllocator: null, &vulkanDevice));
 
         return vulkanDevice;
     }
@@ -262,7 +262,7 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
             subpassCount = 1,
             pSubpasses = &subpass,
         };
-        ThrowExternalExceptionIfNotSuccess(vkCreateRenderPass(VulkanDevice, &renderPassCreateInfo, pAllocator: null, &vulkanRenderPass), nameof(vkCreateRenderPass));
+        ThrowExternalExceptionIfNotSuccess(vkCreateRenderPass(VulkanDevice, &renderPassCreateInfo, pAllocator: null, &vulkanRenderPass));
 
         return vulkanRenderPass;
     }

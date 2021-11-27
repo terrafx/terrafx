@@ -196,7 +196,7 @@ public partial struct ValueStack<T>
     {
         if (!TryPeek(index, out var item))
         {
-            ThrowIfNotInBounds(index, Count, nameof(index), nameof(Count));
+            ThrowIfNotInBounds(index, Count);
             Fail();
         }
         return item;

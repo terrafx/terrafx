@@ -28,7 +28,7 @@ public abstract unsafe partial class GraphicsResource : GraphicsDeviceObject, IG
 
         if (blockRegion.Device != device)
         {
-            ThrowForInvalidParent(blockRegion.Device, nameof(blockRegion));
+            ThrowForInvalidParent(blockRegion.Device);
         }
 
         _allocator = blockRegion.Collection.Collection.Allocator;

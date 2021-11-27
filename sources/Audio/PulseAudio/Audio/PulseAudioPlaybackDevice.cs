@@ -55,7 +55,7 @@ public sealed class PulseAudioPlaybackDevice : IAudioPlaybackDevice
 
         if (adapter.DeviceType != AudioDeviceType.Playback)
         {
-            ThrowForInvalidKind(adapter.DeviceType, nameof(adapter), AudioDeviceType.Playback);
+            ThrowForInvalidKind(adapter.DeviceType, AudioDeviceType.Playback);
         }
 
         _context = context;

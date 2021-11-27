@@ -490,7 +490,7 @@ public static unsafe class MemoryUtilities
     /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c> and <paramref name="destinationLength" /> is not <c>zero</c>.</exception>
     public static void Copy(void* destination, nuint destinationLength, void* source, nuint sourceLength)
     {
-        ThrowIfNotInInsertBounds(sourceLength, destinationLength, nameof(sourceLength), nameof(destinationLength));
+        ThrowIfNotInInsertBounds(sourceLength, destinationLength);
         Copy(destination, source, sourceLength);
     }
 

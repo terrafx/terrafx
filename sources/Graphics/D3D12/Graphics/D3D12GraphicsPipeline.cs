@@ -154,7 +154,7 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
                 pInputElementDescs = pInputElementDescs,
                 NumElements = unchecked((uint)inputElementDescs.Length),
             };
-            ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateGraphicsPipelineState(&pipelineStateDesc, __uuidof<ID3D12PipelineState>(), (void**)&d3d12GraphicsPipelineState), nameof(ID3D12Device.CreateGraphicsPipelineState));
+            ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateGraphicsPipelineState(&pipelineStateDesc, __uuidof<ID3D12PipelineState>(), (void**)&d3d12GraphicsPipelineState));
         }
         return d3d12GraphicsPipelineState;
 

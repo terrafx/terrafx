@@ -48,7 +48,7 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
     public override void Reset()
     {
         var vulkanFence = VulkanFence;
-        ThrowExternalExceptionIfNotSuccess(vkResetFences(Device.VulkanDevice, fenceCount: 1, &vulkanFence), nameof(vkResetFences));
+        ThrowExternalExceptionIfNotSuccess(vkResetFences(Device.VulkanDevice, fenceCount: 1, &vulkanFence));
     }
 
     /// <inheritdoc />
@@ -94,7 +94,7 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
             pNext = null,
             flags = flags,
         };
-        ThrowExternalExceptionIfNotSuccess(vkCreateFence(Device.VulkanDevice, &fenceCreateInfo, pAllocator: null, &vulkanFence), nameof(vkCreateFence));
+        ThrowExternalExceptionIfNotSuccess(vkCreateFence(Device.VulkanDevice, &fenceCreateInfo, pAllocator: null, &vulkanFence));
 
         return vulkanFence;
     }

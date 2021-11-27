@@ -101,12 +101,12 @@ public static class ValueStackTests
                .And.Count.EqualTo(0)
         );
 
-        Assert.That(() => new ValueStack<int>((null as int[])!, takeOwnership: false),
+        Assert.That(() => new ValueStack<int>(null!, takeOwnership: false),
             Throws.ArgumentNullException
                   .And.Property("ParamName").EqualTo("array")
         );
 
-        Assert.That(() => new ValueStack<int>((null as int[])!, takeOwnership: true),
+        Assert.That(() => new ValueStack<int>(null!, takeOwnership: true),
             Throws.ArgumentNullException
                   .And.Property("ParamName").EqualTo("array")
         );

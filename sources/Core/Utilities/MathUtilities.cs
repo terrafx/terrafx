@@ -763,16 +763,7 @@ public static class MathUtilities
     /// <returns><c>true</c> if <paramref name="value" /> is a power of two; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsPow2(nuint value)
-    {
-        if (Is64BitProcess)
-        {
-            return IsPow2((ulong)value);
-        }
-        else
-        {
-            return IsPow2((uint)value);
-        }
-    }
+        => Is64BitProcess ? IsPow2((ulong)value) : IsPow2((uint)value);
 
     /// <summary>Computes the sine for a given 64-bit float.</summary>
     /// <param name="value">The float, in radians, for which to compute the sine.</param>

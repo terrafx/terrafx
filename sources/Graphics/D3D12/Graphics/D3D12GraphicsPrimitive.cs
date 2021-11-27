@@ -96,7 +96,7 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
             NumDescriptors = Math.Max(1, numCbvSrvUavDescriptors),
             Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE,
         };
-        ThrowExternalExceptionIfFailed(d3d12Device->CreateDescriptorHeap(&cbvSrvUavDescriptorHeapDesc, __uuidof<ID3D12DescriptorHeap>(), (void**)&cbvSrvUavDescriptorHeap), nameof(ID3D12Device.CreateDescriptorHeap));
+        ThrowExternalExceptionIfFailed(d3d12Device->CreateDescriptorHeap(&cbvSrvUavDescriptorHeapDesc, __uuidof<ID3D12DescriptorHeap>(), (void**)&cbvSrvUavDescriptorHeap));
 
         var cbvSrvUavDescriptorHandleIncrementSize = Device.D3D12CbvSrvUavDescriptorHandleIncrementSize;
         var cbvSrvUavDescriptorIndex = 0;

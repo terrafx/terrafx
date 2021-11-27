@@ -71,7 +71,7 @@ public sealed unsafe class VulkanGraphicsShader : GraphicsShader
 
         fixed (VkShaderModuleCreateInfo* shaderModuleCreateInfo = &_vulkanShaderModuleCreateInfo)
         {
-            ThrowExternalExceptionIfNotSuccess(vkCreateShaderModule(Device.VulkanDevice, shaderModuleCreateInfo, pAllocator: null, &vulkanShaderModule), nameof(vkCreateShaderModule));
+            ThrowExternalExceptionIfNotSuccess(vkCreateShaderModule(Device.VulkanDevice, shaderModuleCreateInfo, pAllocator: null, &vulkanShaderModule));
         }
 
         return vulkanShaderModule;

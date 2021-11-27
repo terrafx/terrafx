@@ -32,8 +32,11 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
     public UnmanagedArray(nuint length, nuint alignment = 0, bool zero = true)
     {
-        var actualAlignment = (alignment != 0) ? alignment : DefaultAlignment;
-        ThrowIfNotPow2(actualAlignment, nameof(alignment));
+        if (alignment == 0)
+        {
+            alignment = DefaultAlignment;
+        }
+        ThrowIfNotPow2(alignment);
 
         Metadata* data;
 
@@ -44,7 +47,7 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
 
             data = (Metadata*)Allocate(
                 SizeOf<Metadata>() + (length * SizeOf<T>()),
-                actualAlignment,
+                alignment,
                 offset: SizeOf<nuint>(),
                 zero
             );
@@ -117,19 +120,19 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
         }
     }
 
-    /// <summary>Converts the array to a span.</summary>
-    /// <returns>A span that covers the array.</returns>
+    /// <summary>Converts the array to an unmanaged span.</summary>
+    /// <returns>An unmanaged span that covers the array.</returns>
     public UnmanagedSpan<T> AsSpan() => new UnmanagedSpan<T>(this);
 
-    /// <summary>Converts the array to a span starting at the specified index.</summary>
+    /// <summary>Converts the array to an unmanaged span starting at the specified index.</summary>
     /// <param name="start">The index of the array at which the span should start.</param>
-    /// <returns>A span that covers the array beginning at <paramref name="start" />.</returns>
+    /// <returns>An unmanaged span that covers the array beginning at <paramref name="start" />.</returns>
     public UnmanagedSpan<T> AsSpan(nuint start) => new UnmanagedSpan<T>(this, start);
 
-    /// <summary>Converts the array to a span starting at the specified index and continuing for the specified number of items.</summary>
+    /// <summary>Converts the array to an unmanaged span starting at the specified index and continuing for the specified number of items.</summary>
     /// <param name="start">The index of the array at which the span should start.</param>
     /// <param name="length">The length, in items, of the span.</param>
-    /// <returns>A span that covers the array beginning at <paramref name="start" /> and continuing for <paramref name="length" /> items.</returns>
+    /// <returns>An unmanaged span that covers the array beginning at <paramref name="start" /> and continuing for <paramref name="length" /> items.</returns>
     public UnmanagedSpan<T> AsSpan(nuint start, nuint length) => new UnmanagedSpan<T>(this, start, length);
 
     /// <summary>Clears all items in the array to <c>zero</c>.</summary>
@@ -155,7 +158,7 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
         var length = _data->Length;
 
         ThrowIfNull(destination);
-        ThrowIfNotInInsertBounds(length, destination.Length, nameof(Length), nameof(destination));
+        ThrowIfNotInInsertBounds(length, destination.Length);
 
         CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), items, length);
     }
@@ -170,7 +173,7 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
         var items = &_data->Item;
         var length = _data->Length;
 
-        ThrowIfNotInInsertBounds(length, destination.Length, nameof(Length), nameof(destination));
+        ThrowIfNotInInsertBounds(length, destination.Length);
 
         CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), items, length);
     }
@@ -181,7 +184,7 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is greater than or equal to <see cref="Length" />.</exception>
     public T* GetPointer(nuint index)
     {
-        ThrowIfNotInBounds(index, Length, nameof(index), nameof(Length));
+        ThrowIfNotInBounds(index, Length);
         return GetPointerUnsafe(index);
     }
 

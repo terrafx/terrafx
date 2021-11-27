@@ -110,10 +110,10 @@ public sealed class HelloTextureTransform : HelloWindow
         graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
 
         var inputResourceRegions = new GraphicsMemoryRegion<GraphicsResource>[3] {
-                CreateConstantBufferRegion(graphicsContext, constantBuffer),
-                CreateConstantBufferRegion(graphicsContext, constantBuffer),
-                CreateTexture2DRegion(graphicsContext, textureStagingBuffer),
-            };
+            CreateConstantBufferRegion(graphicsContext, constantBuffer),
+            CreateConstantBufferRegion(graphicsContext, constantBuffer),
+            CreateTexture2DRegion(graphicsContext, textureStagingBuffer),
+        };
         return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, SizeOf<TextureVertex>(), inputResourceRegions: inputResourceRegions);
 
         static GraphicsMemoryRegion<GraphicsResource> CreateConstantBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer)
@@ -190,19 +190,19 @@ public sealed class HelloTextureTransform : HelloWindow
         static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)
         {
             var inputs = new GraphicsPipelineInput[1] {
-                new GraphicsPipelineInput(
-                        new GraphicsPipelineInputElement[2] {
-                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
-                            new GraphicsPipelineInputElement(typeof(Vector2), GraphicsPipelineInputElementKind.TextureCoordinate, size: 8),
-                        }
-                    ),
-                };
+            new GraphicsPipelineInput(
+                    new GraphicsPipelineInputElement[2] {
+                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
+                        new GraphicsPipelineInputElement(typeof(Vector2), GraphicsPipelineInputElementKind.TextureCoordinate, size: 8),
+                    }
+                ),
+            };
 
             var resources = new GraphicsPipelineResource[3] {
-                    new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                    new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                    new GraphicsPipelineResource(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
-                };
+                new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
+                new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
+                new GraphicsPipelineResource(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
+            };
 
             return graphicsDevice.CreatePipelineSignature(inputs, resources);
         }

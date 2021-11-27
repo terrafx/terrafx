@@ -1,10 +1,12 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.	
 
+using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using TerraFX.Graphics;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 using static TerraFX.Interop.DirectX.DXGI_FORMAT;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 [assembly: SupportedOSPlatform("windows10.0")]
@@ -35,11 +37,12 @@ internal static unsafe partial class D3D12Utilities
         }
     }
 
-    public static void ThrowExternalExceptionIfFailed(HRESULT hr, string methodName)
+    public static void ThrowExternalExceptionIfFailed(HRESULT value, [CallerArgumentExpression("value")] string? valueExpression = null)
     {
-        if (hr.FAILED)
+        if (value.FAILED)
         {
-            ThrowExternalException(methodName, hr);
+            AssertNotNull(valueExpression);
+            ThrowExternalException(valueExpression, value);
         }
     }
 }

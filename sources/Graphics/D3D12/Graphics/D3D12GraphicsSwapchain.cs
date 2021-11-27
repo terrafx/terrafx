@@ -75,7 +75,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     /// <inheritdoc />
     public override void Present()
     {
-        ThrowExternalExceptionIfFailed(DxgiSwapchain->Present(SyncInterval: 1, Flags: 0), nameof(IDXGISwapChain.Present));
+        ThrowExternalExceptionIfFailed(DxgiSwapchain->Present(SyncInterval: 1, Flags: 0));
         Device.Signal(Fence);
         _framebufferIndex = DxgiSwapchain->GetCurrentBackBufferIndex();
     }
@@ -104,7 +104,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
             Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV,
             NumDescriptors = _framebufferCount,
         };
-        ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateDescriptorHeap(&rtvDescriptorHeapDesc, __uuidof<ID3D12DescriptorHeap>(), (void**)&rtvDescriptorHeap), nameof(ID3D12Device.CreateDescriptorHeap));
+        ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateDescriptorHeap(&rtvDescriptorHeapDesc, __uuidof<ID3D12DescriptorHeap>(), (void**)&rtvDescriptorHeap));
 
         return rtvDescriptorHeap;
     }
@@ -134,7 +134,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
         for (var i = 0u; i < _framebufferCount; i++)
         {
             ID3D12Resource* rtvResource;
-            ThrowExternalExceptionIfFailed(DxgiSwapchain->GetBuffer(i, __uuidof<ID3D12Resource>(), (void**)&rtvResource), nameof(IDXGISwapChain.GetBuffer));
+            ThrowExternalExceptionIfFailed(DxgiSwapchain->GetBuffer(i, __uuidof<ID3D12Resource>(), (void**)&rtvResource));
 
             var rtvDescriptor = new D3D12_CPU_DESCRIPTOR_HANDLE(in firstRtvDescriptor, (int)i, rtvDescriptorIncrementSize);
             _ = firstRtvDescriptor.Offset((int)i, rtvDescriptorIncrementSize);
@@ -171,20 +171,20 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
         {
             case GraphicsSurfaceKind.Win32:
             {
-                ThrowExternalExceptionIfFailed(service.DxgiFactory->CreateSwapChainForHwnd((IUnknown*)Device.D3D12CommandQueue, surfaceHandle, &swapchainDesc, pFullscreenDesc: null, pRestrictToOutput: null, (IDXGISwapChain1**)&dxgiSwapChain), nameof(IDXGIFactory2.CreateSwapChainForHwnd));
+                ThrowExternalExceptionIfFailed(service.DxgiFactory->CreateSwapChainForHwnd((IUnknown*)Device.D3D12CommandQueue, surfaceHandle, &swapchainDesc, pFullscreenDesc: null, pRestrictToOutput: null, (IDXGISwapChain1**)&dxgiSwapChain));
                 break;
             }
 
             default:
             {
-                ThrowForUnsupportedSurfaceKind(surface.Kind.ToString());
+                ThrowForInvalidKind(surface.Kind);
                 dxgiSwapChain = null;
                 break;
             }
         }
 
         // Fullscreen transitions are not currently supported
-        ThrowExternalExceptionIfFailed(service.DxgiFactory->MakeWindowAssociation(surfaceHandle, DXGI_MWA_NO_ALT_ENTER), nameof(IDXGIFactory.MakeWindowAssociation));
+        ThrowExternalExceptionIfFailed(service.DxgiFactory->MakeWindowAssociation(surfaceHandle, DXGI_MWA_NO_ALT_ENTER));
 
         _framebufferFormat = swapchainDesc.Format;
         _framebufferIndex = dxgiSwapChain->GetCurrentBackBufferIndex();
@@ -212,7 +212,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
         if (_dxgiSwapchain.IsValueCreated)
         {
             var dxgiSwapchain = DxgiSwapchain;
-            ThrowExternalExceptionIfFailed(dxgiSwapchain->ResizeBuffers(_framebufferCount, (uint)eventArgs.CurrentValue.X, (uint)eventArgs.CurrentValue.Y, _framebufferFormat, SwapChainFlags: 0), nameof(IDXGISwapChain.ResizeBuffers));
+            ThrowExternalExceptionIfFailed(dxgiSwapchain->ResizeBuffers(_framebufferCount, (uint)eventArgs.CurrentValue.X, (uint)eventArgs.CurrentValue.Y, _framebufferFormat, SwapChainFlags: 0));
             _framebufferIndex = dxgiSwapchain->GetCurrentBackBufferIndex();
         }
     }

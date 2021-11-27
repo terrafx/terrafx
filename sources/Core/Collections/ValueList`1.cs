@@ -127,13 +127,13 @@ public partial struct ValueList<T>
     {
         readonly get
         {
-            ThrowIfNotInBounds(index, Count, nameof(index), nameof(Count));
+            ThrowIfNotInBounds(index, Count);
             return _items[index];
         }
 
         set
         {
-            ThrowIfNotInBounds(index, Count, nameof(index), nameof(Count));
+            ThrowIfNotInBounds(index, Count);
             _version++;
 
             _items[index] = value;
@@ -226,7 +226,7 @@ public partial struct ValueList<T>
     public void Insert(int index, T item)
     {
         var count = Count;
-        ThrowIfNotInInsertBounds(index, count, nameof(index), nameof(Count));
+        ThrowIfNotInInsertBounds(index, count);
 
         if (index != count)
         {
@@ -266,7 +266,7 @@ public partial struct ValueList<T>
     public void RemoveAt(int index)
     {
         var count = Count;
-        ThrowIfNotInBounds(index, count, nameof(index), nameof(Count));
+        ThrowIfNotInBounds(index, count);
 
         var newCount = count - 1;
         var items = _items;

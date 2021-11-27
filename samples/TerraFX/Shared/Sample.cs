@@ -8,13 +8,16 @@ using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Interop.DirectX;
 using static TerraFX.Interop.DirectX.D3D;
-using static TerraFX.Interop.DirectX.D3DCOMPILE;
 using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using GC = System.GC;
+
+#if DEBUG
+using static TerraFX.Interop.DirectX.D3DCOMPILE;
+#endif
 
 namespace TerraFX.Samples;
 
@@ -74,15 +77,15 @@ public abstract class Sample : IDisposable
                 var compileFlags = 0u;
 
 #if DEBUG
-                    // Enable better shader debugging with the graphics debugging tools.
-                    compileFlags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+                // Enable better shader debugging with the graphics debugging tools.
+                compileFlags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
                 ID3DBlob* d3dShaderBlob = null;
                 ID3DBlob* pError = null;
 
                 try
                 {
-                    var result = D3DCompileFromFile((ushort*)assetPath, pDefines: null, (ID3DInclude*)D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).GetPointer(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &pError);
+                    var result = D3DCompileFromFile((ushort*)assetPath, pDefines: null, D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).GetPointer(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &pError);
 
                     if (FAILED(result))
                     {

@@ -112,7 +112,7 @@ public readonly struct Timestamp : IComparable<Timestamp>, IEquatable<Timestamp>
         {
             if (obj is not null)
             {
-                ThrowForInvalidType(obj.GetType(), nameof(obj), typeof(Timestamp));
+                ThrowForInvalidType(obj.GetType(), typeof(Timestamp));
             }
             return 1;
         }

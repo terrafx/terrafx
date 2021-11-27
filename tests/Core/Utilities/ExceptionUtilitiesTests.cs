@@ -58,7 +58,7 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static void ThrowArgumentOutOfRangeExceptionTest()
     {
-        Assert.That(() => ExceptionUtilities.ThrowArgumentOutOfRangeException("message", Guid.Empty, "value"),
+        Assert.That(() => ExceptionUtilities.ThrowArgumentOutOfRangeException("value", Guid.Empty, "message"),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                   .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(Guid.Empty)
                   .And.Message.Contains("message")
@@ -122,11 +122,11 @@ public static class ExceptionUtilitiesTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowForInvalidKind{TEnum}(TEnum, string, TEnum)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowForInvalidKind{TEnum}(TEnum, TEnum, string)" /> method.</summary>
     [Test]
     public static void ThrowForInvalidKindWithExpectedKindTest()
     {
-        Assert.That(() => ExceptionUtilities.ThrowForInvalidKind(AttributeTargets.Class, "value", AttributeTargets.Struct),
+        Assert.That(() => ExceptionUtilities.ThrowForInvalidKind(AttributeTargets.Class, AttributeTargets.Struct, "value"),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                   .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo(AttributeTargets.Class)
                   .And.Message.Contains("'value'")
@@ -161,11 +161,11 @@ public static class ExceptionUtilitiesTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowForInvalidType(Type, string, Type)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowForInvalidType(Type, Type, string)" /> method.</summary>
     [Test]
     public static void ThrowForInvalidTypeTest()
     {
-        Assert.That(() => ExceptionUtilities.ThrowForInvalidType(typeof(object), "value", typeof(string)),
+        Assert.That(() => ExceptionUtilities.ThrowForInvalidType(typeof(object), typeof(string), "value"),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                   .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).SameAs(typeof(object))
                   .And.Message.Contains("'value'")
@@ -361,17 +361,6 @@ public static class ExceptionUtilitiesTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowForUnsupportedSurfaceKind(string)" /> method.</summary>
-    [Test]
-    public static void ThrowForUnsupportedSurfaceKindTest()
-    {
-        Assert.That(() => ExceptionUtilities.ThrowForUnsupportedSurfaceKind("surface"),
-            Throws.InstanceOf<NotSupportedException>()
-                  .And.Message.Contains("'surface'")
-                  .And.Message.Contains("GraphicsSurfaceKind")
-        );
-    }
-
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfDisposedOrDisposing(VolatileState, string)" /> method.</summary>
     [Test]
     public static void ThrowIfDisposedOrDisposingTest()
@@ -515,11 +504,11 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static void ThrowIfNotInBoundsNIntTest()
     {
-        Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds((nint)0, (nint)1, "index", "length"),
+        Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(0, (nint)1, "index", "length"),
             Throws.Nothing
         );
 
-        Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds((nint)(-1), (nint)1, "index", "length"),
+        Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(-1, (nint)1, "index", "length"),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                   .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nint)(-1))
                   .And.Message.Contains("'index'")
@@ -527,7 +516,7 @@ public static class ExceptionUtilitiesTests
                   .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
         );
 
-        Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds((nint)1, (nint)1, "index", "length"),
+        Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(1, (nint)1, "index", "length"),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                   .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nint)1)
                   .And.Message.Contains("'index'")
@@ -535,7 +524,7 @@ public static class ExceptionUtilitiesTests
                   .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
         );
 
-        Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds((nint)2, (nint)1, "index", "length"),
+        Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(2, (nint)1, "index", "length"),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                   .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nint)2)
                   .And.Message.Contains("'index'")
@@ -598,11 +587,11 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static void ThrowIfNotInBoundsNUIntTest()
     {
-        Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds((nuint)0, (nuint)1, "index", "length"),
+        Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(0, (nuint)1, "index", "length"),
             Throws.Nothing
         );
 
-        Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds((nuint)1, (nuint)1, "index", "length"),
+        Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(1, (nuint)1, "index", "length"),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                   .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nuint)1)
                   .And.Message.Contains("'index'")
@@ -610,7 +599,7 @@ public static class ExceptionUtilitiesTests
                   .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
         );
 
-        Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds((nuint)2, (nuint)1, "index", "length"),
+        Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(2, (nuint)1, "index", "length"),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                   .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nuint)2)
                   .And.Message.Contains("'index'")
@@ -681,15 +670,15 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static void ThrowIfNotInInsertBoundsNIntTest()
     {
-        Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds((nint)0, (nint)1, "index", "length"),
+        Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(0, (nint)1, "index", "length"),
             Throws.Nothing
         );
 
-        Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds((nint)1, (nint)1, "index", "length"),
+        Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(1, (nint)1, "index", "length"),
             Throws.Nothing
         );
 
-        Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds((nint)(-1), (nint)1, "index", "length"),
+        Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(-1, (nint)1, "index", "length"),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                   .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nint)(-1))
                   .And.Message.Contains("'index'")
@@ -697,7 +686,7 @@ public static class ExceptionUtilitiesTests
                   .And.Property(nameof(ArgumentOutOfRangeException.ParamName)).EqualTo("index")
         );
 
-        Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds((nint)2, (nint)1, "index", "length"),
+        Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(2, (nint)1, "index", "length"),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                   .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nint)2)
                   .And.Message.Contains("'index'")
@@ -752,15 +741,15 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static void ThrowIfNotInInsertBoundsNUIntTest()
     {
-        Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds((nuint)0, (nuint)1, "index", "length"),
+        Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(0, (nuint)1, "index", "length"),
             Throws.Nothing
         );
 
-        Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds((nuint)1, (nuint)1, "index", "length"),
+        Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(1, (nuint)1, "index", "length"),
             Throws.Nothing
         );
 
-        Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds((nuint)2, (nuint)1, "index", "length"),
+        Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(2, (nuint)1, "index", "length"),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                   .And.Property(nameof(ArgumentOutOfRangeException.ActualValue)).EqualTo((nuint)2)
                   .And.Message.Contains("'index'")
@@ -1192,7 +1181,7 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static unsafe void ThrowOutOfMemoryExceptionNUIntTest()
     {
-        Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException((nuint)42),
+        Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException(42),
             Throws.InstanceOf<OutOfMemoryException>()
                   .And.Message.Contains($"'{(nuint)42}'")
         );
@@ -1203,7 +1192,7 @@ public static class ExceptionUtilitiesTests
     public static unsafe void ThrowOutOfMemoryExceptionNUIntExceptionTest()
     {
         var innerException = new Exception();
-        Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException((nuint)42, innerException),
+        Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException(42, innerException),
             Throws.InstanceOf<OutOfMemoryException>()
                   .And.Message.Contains($"'{(nuint)42}'")
                   .And.InnerException.SameAs(innerException)
@@ -1236,7 +1225,7 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static unsafe void ThrowOutOfMemoryExceptionNUIntNUIntTest()
     {
-        Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException((nuint)42, (nuint)24),
+        Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException(42, 24),
             Throws.InstanceOf<OutOfMemoryException>()
                   .And.Message.Contains($"'{(nuint)42}x{(nuint)24}'")
         );
@@ -1247,7 +1236,7 @@ public static class ExceptionUtilitiesTests
     public static unsafe void ThrowOutOfMemoryExceptionNUIntNUIntExceptionTest()
     {
         var innerException = new Exception();
-        Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException((nuint)42, (nuint)24, innerException),
+        Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException(42, 24, innerException),
             Throws.InstanceOf<OutOfMemoryException>()
                   .And.Message.Contains($"'{(nuint)42}x{(nuint)24}'")
                   .And.InnerException.SameAs(innerException)

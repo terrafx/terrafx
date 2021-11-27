@@ -70,8 +70,8 @@ public sealed class HelloTexture : HelloWindow
         graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
 
         var inputResourceRegions = new GraphicsMemoryRegion<GraphicsResource>[1] {
-                CreateTexture2DRegion(graphicsContext, textureStagingBuffer)
-            };
+            CreateTexture2DRegion(graphicsContext, textureStagingBuffer)
+        };
         return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, SizeOf<TextureVertex>(), inputResourceRegions: inputResourceRegions);
 
         static GraphicsMemoryRegion<GraphicsResource> CreateTexture2DRegion(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
@@ -137,17 +137,17 @@ public sealed class HelloTexture : HelloWindow
         static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)
         {
             var inputs = new GraphicsPipelineInput[1] {
-                    new GraphicsPipelineInput(
-                        new GraphicsPipelineInputElement[2] {
-                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
-                            new GraphicsPipelineInputElement(typeof(Vector2), GraphicsPipelineInputElementKind.TextureCoordinate, size: 8),
-                        }
-                    ),
-                };
+                new GraphicsPipelineInput(
+                    new GraphicsPipelineInputElement[2] {
+                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
+                        new GraphicsPipelineInputElement(typeof(Vector2), GraphicsPipelineInputElementKind.TextureCoordinate, size: 8),
+                    }
+                ),
+            };
 
             var resources = new GraphicsPipelineResource[1] {
-                    new GraphicsPipelineResource(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
-                };
+                new GraphicsPipelineResource(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
+            };
 
             return graphicsDevice.CreatePipelineSignature(inputs, resources);
         }
