@@ -21,8 +21,8 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
     private ValueLazy<Pointer<ID3D12DescriptorHeap>> _d3d12CbvSrvUavDescriptorHeap;
     private VolatileState _state;
 
-    internal D3D12GraphicsPrimitive(D3D12GraphicsDevice device, D3D12GraphicsPipeline pipeline, in GraphicsMemoryRegion<GraphicsResource> vertexBufferRegion, uint vertexBufferStride, in GraphicsMemoryRegion<GraphicsResource> indexBufferRegion, uint indexBufferStride, ReadOnlySpan<GraphicsMemoryRegion<GraphicsResource>> inputResourceRegion)
-        : base(device, pipeline, in vertexBufferRegion, vertexBufferStride, in indexBufferRegion, indexBufferStride, inputResourceRegion)
+    internal D3D12GraphicsPrimitive(D3D12GraphicsDevice device, D3D12GraphicsPipeline pipeline, in GraphicsResourceView vertexBufferView, in GraphicsResourceView indexBufferView, ReadOnlySpan<GraphicsResourceView> inputResourceViews)
+        : base(device, pipeline, in vertexBufferView, in indexBufferView, inputResourceViews)
     {
         _d3d12CbvSrvUavDescriptorHeap = new ValueLazy<Pointer<ID3D12DescriptorHeap>>(CreateD3D12CbvSrvUavDescriptorHeap);
         _ = _state.Transition(to: Initialized);
@@ -56,13 +56,13 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
             // should be freeing the region and something else should control
             // resource disposal.
 
-            foreach (var inputResourceRegion in InputResourceRegions)
+            foreach (var inputResourceRegion in InputResourceViews)
             {
-                inputResourceRegion.Collection?.Dispose();
+                inputResourceRegion.Resource?.Dispose();
             }
 
-            VertexBufferRegion.Collection?.Dispose();
-            IndexBufferRegion.Collection?.Dispose();
+            VertexBufferView.Resource?.Dispose();
+            IndexBufferView.Resource?.Dispose();
         }
 
         _state.EndDispose();
@@ -73,7 +73,7 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
         ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsPrimitive));
 
         var d3d12Device = Device.D3D12Device;
-        var inputResourceRegions = InputResourceRegions;
+        var inputResourceRegions = InputResourceViews;
         var inputResourceRegionsLength = inputResourceRegions.Length;
         var numCbvSrvUavDescriptors = 0u;
 
@@ -81,7 +81,7 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
         {
             var inputResource = inputResourceRegions[index];
 
-            if (inputResource.Collection is not D3D12GraphicsTexture)
+            if (inputResource.Resource is not D3D12GraphicsTexture)
             {
                 continue;
             }
@@ -105,7 +105,7 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
         {
             var inputResourceRegion = inputResourceRegions[index];
 
-            if (inputResourceRegion.Collection is not D3D12GraphicsTexture graphicsTexture)
+            if (inputResourceRegion.Resource is not D3D12GraphicsTexture graphicsTexture)
             {
                 continue;
             }

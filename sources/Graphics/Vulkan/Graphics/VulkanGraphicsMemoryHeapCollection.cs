@@ -3,8 +3,6 @@
 // This file includes code based on the VmaBlockVector struct from https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
-using System;
-using System.Reflection;
 using TerraFX.Interop.Vulkan;
 
 namespace TerraFX.Graphics;
@@ -30,6 +28,5 @@ public sealed class VulkanGraphicsMemoryHeapCollection : GraphicsMemoryHeapColle
     public uint VulkanMemoryTypeIndex => _vulkanMemoryTypeIndex;
 
     /// <inheritdoc />
-    protected override VulkanGraphicsMemoryHeap<TMetadata> CreateHeap<TMetadata>(ulong size)
-        => new VulkanGraphicsMemoryHeap<TMetadata>(Device, this, size);
+    protected override VulkanGraphicsMemoryHeap CreateHeap(ulong size) => new VulkanGraphicsMemoryHeap(Device, this, size);
 }

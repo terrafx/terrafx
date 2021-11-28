@@ -276,10 +276,12 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
 
         vkCmdBindPipeline(vulkanCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline);
 
-        ref readonly var vertexBufferRegion = ref primitive.VertexBufferRegion;
-        var vertexBuffer = (VulkanGraphicsBuffer)vertexBufferRegion.Collection;
+        ref readonly var vertexBufferView = ref primitive.VertexBufferView;
+        var vertexBuffer = vertexBufferView.Resource as VulkanGraphicsBuffer;
+        AssertNotNull(vertexBuffer);
+
         var vulkanVertexBuffer = vertexBuffer.VulkanBuffer;
-        var vulkanVertexBufferOffset = vertexBufferRegion.Offset;
+        var vulkanVertexBufferOffset = (ulong)vertexBufferView.Offset;
 
         vkCmdBindVertexBuffers(vulkanCommandBuffer, firstBinding: 0, bindingCount: 1, &vulkanVertexBuffer, &vulkanVertexBufferOffset);
 
@@ -287,7 +289,7 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
 
         if (vulkanDescriptorSet != VkDescriptorSet.NULL)
         {
-            var inputResourceRegions = primitive.InputResourceRegions;
+            var inputResourceRegions = primitive.InputResourceViews;
             var inputResourceRegionsLength = inputResourceRegions.Length;
 
             for (var index = 0; index < inputResourceRegionsLength; index++)
@@ -296,7 +298,7 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
 
                 VkWriteDescriptorSet writeDescriptorSet;
 
-                if (inputResourceRegion.Collection is VulkanGraphicsBuffer vulkanGraphicsBuffer)
+                if (inputResourceRegion.Resource is VulkanGraphicsBuffer vulkanGraphicsBuffer)
                 {
                     var descriptorBufferInfo = new VkDescriptorBufferInfo {
                         buffer = vulkanGraphicsBuffer.VulkanBuffer,
@@ -313,7 +315,7 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
                         pBufferInfo = &descriptorBufferInfo,
                     };
                 }
-                else if (inputResourceRegion.Collection is VulkanGraphicsTexture vulkanGraphicsTexture)
+                else if (inputResourceRegion.Resource is VulkanGraphicsTexture vulkanGraphicsTexture)
                 {
                     var descriptorImageInfo = new VkDescriptorImageInfo {
                         sampler = vulkanGraphicsTexture.VulkanSampler,
@@ -337,11 +339,11 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
             vkCmdBindDescriptorSets(vulkanCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineSignature.VulkanPipelineLayout, firstSet: 0, 1, &vulkanDescriptorSet, dynamicOffsetCount: 0, pDynamicOffsets: null);
         }
 
-        ref readonly var indexBufferRegion = ref primitive.IndexBufferRegion;
+        ref readonly var indexBufferView = ref primitive.IndexBufferView;
 
-        if (indexBufferRegion.Collection is VulkanGraphicsBuffer indexBuffer)
+        if (indexBufferView.Resource is VulkanGraphicsBuffer indexBuffer)
         {
-            var indexBufferStride = primitive.IndexBufferStride;
+            var indexBufferStride = indexBufferView.Stride;
             var indexType = VK_INDEX_TYPE_UINT16;
 
             if (indexBufferStride != 2)
@@ -349,13 +351,13 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
                 Assert(AssertionsEnabled && (indexBufferStride == 4));
                 indexType = VK_INDEX_TYPE_UINT32;
             }
-            vkCmdBindIndexBuffer(vulkanCommandBuffer, indexBuffer.VulkanBuffer, indexBufferRegion.Offset, indexType);
+            vkCmdBindIndexBuffer(vulkanCommandBuffer, indexBuffer.VulkanBuffer, indexBufferView.Offset, indexType);
 
-            vkCmdDrawIndexed(vulkanCommandBuffer, indexCount: (uint)(indexBufferRegion.Size / indexBufferStride), instanceCount: 1, firstIndex: 0, vertexOffset: 0, firstInstance: 0);
+            vkCmdDrawIndexed(vulkanCommandBuffer, indexCount: (uint)(indexBufferView.Size / indexBufferStride), instanceCount: 1, firstIndex: 0, vertexOffset: 0, firstInstance: 0);
         }
         else
         {
-            vkCmdDraw(vulkanCommandBuffer, vertexCount: (uint)(vertexBufferRegion.Size / primitive.VertexBufferStride), instanceCount: 1, firstVertex: 0, firstInstance: 0);
+            vkCmdDraw(vulkanCommandBuffer, vertexCount: (uint)(vertexBufferView.Size / vertexBufferView.Stride), instanceCount: 1, firstVertex: 0, firstInstance: 0);
         }
     }
 

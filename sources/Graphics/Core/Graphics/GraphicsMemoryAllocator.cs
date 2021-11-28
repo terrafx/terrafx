@@ -102,13 +102,7 @@ public abstract class GraphicsMemoryAllocator : GraphicsDeviceObject, IReadOnlyC
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="kind" /> is unsupported.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ObjectDisposedException">The allocator has been disposed.</exception>
-    public GraphicsBuffer CreateBuffer(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, GraphicsMemoryRegionAllocationFlags allocationFlags = GraphicsMemoryRegionAllocationFlags.None)
-        => CreateBuffer<IGraphicsMemoryRegionCollection<GraphicsResource>.DefaultMetadata>(kind, cpuAccess, size, allocationFlags);
-
-    /// <inheritdoc cref="CreateBuffer(GraphicsBufferKind, GraphicsResourceCpuAccess, ulong, GraphicsMemoryRegionAllocationFlags)" />
-    /// <typeparam name="TMetadata">The type used for metadata in the resource.</typeparam>
-    public abstract GraphicsBuffer CreateBuffer<TMetadata>(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, GraphicsMemoryRegionAllocationFlags allocationFlags = GraphicsMemoryRegionAllocationFlags.None)
-        where TMetadata : struct, IGraphicsMemoryRegionCollection<GraphicsResource>.IMetadata;
+    public abstract GraphicsBuffer CreateBuffer(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, GraphicsMemoryHeapRegionAllocationFlags allocationFlags = GraphicsMemoryHeapRegionAllocationFlags.None);
 
     /// <summary>Creates a new graphics texture.</summary>
     /// <param name="kind">The kind of graphics texture to create.</param>
@@ -124,13 +118,7 @@ public abstract class GraphicsMemoryAllocator : GraphicsDeviceObject, IReadOnlyC
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="height" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="depth" /> is <c>zero</c>.</exception>
     /// <exception cref="ObjectDisposedException">The allocator has been disposed.</exception>
-    public GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, GraphicsMemoryRegionAllocationFlags allocationFlags = GraphicsMemoryRegionAllocationFlags.None, TexelFormat texelFormat = default)
-        => CreateTexture<IGraphicsMemoryRegionCollection<GraphicsResource>.DefaultMetadata>(kind, cpuAccess, width, height, depth, allocationFlags, texelFormat);
-
-    /// <inheritdoc cref="CreateTexture(GraphicsTextureKind, GraphicsResourceCpuAccess, uint, uint, ushort, GraphicsMemoryRegionAllocationFlags, TexelFormat)" />
-    /// <typeparam name="TMetadata">The type used for metadata in the resource.</typeparam>
-    public abstract GraphicsTexture CreateTexture<TMetadata>(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, GraphicsMemoryRegionAllocationFlags allocationFlags = GraphicsMemoryRegionAllocationFlags.None, TexelFormat texelFormat = default)
-        where TMetadata : struct, IGraphicsMemoryRegionCollection<GraphicsResource>.IMetadata;
+    public abstract GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, GraphicsMemoryHeapRegionAllocationFlags allocationFlags = GraphicsMemoryHeapRegionAllocationFlags.None, TexelFormat texelFormat = default);
 
     /// <summary>Gets the budget for a heap collection.</summary>
     /// <param name="heapCollection">The heap collection for which the budget should be retrieved.</param>

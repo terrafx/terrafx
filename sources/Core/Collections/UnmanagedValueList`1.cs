@@ -101,15 +101,7 @@ public partial struct UnmanagedValueList<T> : IDisposable
         get
         {
             var items = _items;
-
-            if (!items.IsNull)
-            {
-                return _items.Length;
-            }
-            else
-            {
-                return 0;
-            }
+            return !items.IsNull ? _items.Length : 0;
         }
     }
 
@@ -221,23 +213,31 @@ public partial struct UnmanagedValueList<T> : IDisposable
     /// <param name="index">The zero-based index at which <paramref name="item" /> is inserted.</param>
     /// <param name="item">The item to insert into the list.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is negative or greater than <see cref="Count" />.</exception>
-    public void Insert(nuint index, T item)
+    public unsafe void Insert(nuint index, T item)
     {
         var count = Count;
         ThrowIfNotInInsertBounds(index, count);
 
-        if (index != count)
+        var newCount = count + 1;
+
+        if (newCount <= Capacity)
         {
             _version++;
         }
         else
         {
-            var newCount = count + 1;
             EnsureCapacity(newCount);
-            _count = newCount;
         }
 
-        _items[index] = item;
+        var items = _items;
+
+        if (index != newCount)
+        {
+            CopyArrayUnsafe<T>(items.GetPointerUnsafe(index), items.GetPointerUnsafe(index + 1), count - index);
+        }
+
+        _count = newCount;
+        items[index] = item;
     }
 
     /// <summary>Removes the first occurence of an item from the list.</summary>

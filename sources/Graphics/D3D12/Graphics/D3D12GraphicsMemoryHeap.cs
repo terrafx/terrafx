@@ -15,15 +15,17 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public abstract unsafe class D3D12GraphicsMemoryHeap : GraphicsMemoryHeap
+public sealed unsafe class D3D12GraphicsMemoryHeap : GraphicsMemoryHeap
 {
     private ValueLazy<Pointer<ID3D12Heap>> _d3d12Heap;
-    private protected VolatileState _state;
+    private VolatileState _state;
 
-    private protected D3D12GraphicsMemoryHeap(D3D12GraphicsDevice device, D3D12GraphicsMemoryHeapCollection collection)
-        : base(device, collection)
+    internal D3D12GraphicsMemoryHeap(D3D12GraphicsDevice device, D3D12GraphicsMemoryHeapCollection collection, ulong size)
+        : base(device, collection, size)
     {
         _d3d12Heap = new ValueLazy<Pointer<ID3D12Heap>>(CreateD3D12Heap);
+
+        _ = _state.Transition(to: Initialized);
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsMemoryHeap" /> class.</summary>

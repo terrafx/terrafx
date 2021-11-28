@@ -70,18 +70,23 @@ public sealed class HelloQuad : HelloWindow
         var indexBuffer = _indexBuffer;
         var vertexBuffer = _vertexBuffer;
 
-        var vertexBufferRegion = CreateVertexBufferRegion(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+        var vertexBufferView = CreateVertexBufferView(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
         graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
 
-        var indexBufferRegion = CreateIndexBufferRegion(graphicsContext, indexBuffer, indexStagingBuffer);
+        var indexBufferView = CreateIndexBufferView(graphicsContext, indexBuffer, indexStagingBuffer);
         graphicsContext.Copy(indexBuffer, indexStagingBuffer);
 
-        return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, SizeOf<IdentityVertex>(), indexBufferRegion, SizeOf<ushort>());
+        return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferView, indexBufferView);
 
-        static GraphicsMemoryRegion<GraphicsResource> CreateIndexBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer indexStagingBuffer)
+        static GraphicsResourceView CreateIndexBufferView(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer indexStagingBuffer)
         {
-            var indexBufferRegion = indexBuffer.Allocate(SizeOf<ushort>() * 6, alignment: 2);
-            var pIndexBuffer = indexStagingBuffer.Map<ushort>(in indexBufferRegion);
+            var indexBufferView = new GraphicsResourceView {
+                Offset = 0,
+                Resource = indexBuffer,
+                Size = SizeOf<ushort>() * 6,
+                Stride = SizeOf<ushort>(),
+            };
+            var pIndexBuffer = indexStagingBuffer.Map<ushort>(indexBufferView.Offset, indexBufferView.Size);
 
             // clockwise when looking at the triangle from the outside
 
@@ -93,14 +98,19 @@ public sealed class HelloQuad : HelloWindow
             pIndexBuffer[4] = 2;
             pIndexBuffer[5] = 3;
 
-            indexStagingBuffer.UnmapAndWrite(in indexBufferRegion);
-            return indexBufferRegion;
+            indexStagingBuffer.UnmapAndWrite(indexBufferView.Offset, indexBufferView.Size);
+            return indexBufferView;
         }
 
-        static GraphicsMemoryRegion<GraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+        static GraphicsResourceView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
         {
-            var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<IdentityVertex>() * 4, alignment: 16);
-            var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>(in vertexBufferRegion);
+            var vertexBufferView = new GraphicsResourceView {
+                Offset = 0,
+                Resource = vertexBuffer,
+                Size = SizeOf<IdentityVertex>() * 4,
+                Stride = SizeOf<IdentityVertex>(),
+            };
+            var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>(vertexBufferView.Offset, vertexBufferView.Size);
 
             pVertexBuffer[0] = new IdentityVertex {                         //
                 Position = new Vector3(-0.25f, 0.25f * aspectRatio, 0.0f),  //   y          in this setup
@@ -122,8 +132,8 @@ public sealed class HelloQuad : HelloWindow
                 Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f),
             };
 
-            vertexStagingBuffer.UnmapAndWrite(in vertexBufferRegion);
-            return vertexBufferRegion;
+            vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);
+            return vertexBufferView;
         }
 
         GraphicsPipeline CreateGraphicsPipeline(GraphicsDevice graphicsDevice, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)

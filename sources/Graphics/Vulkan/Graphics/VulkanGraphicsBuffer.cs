@@ -13,19 +13,21 @@ using static TerraFX.Utilities.VulkanUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
+public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
 {
     private readonly VkBuffer _vulkanBuffer;
-    private protected VolatileState _state;
+    private VolatileState _state;
 
-    private protected VulkanGraphicsBuffer(VulkanGraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryHeap> heapRegion, GraphicsResourceCpuAccess cpuAccess, VkBuffer vulkanBuffer)
+    internal VulkanGraphicsBuffer(VulkanGraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryHeapRegion heapRegion, GraphicsResourceCpuAccess cpuAccess, VkBuffer vulkanBuffer)
         : base(device, kind, in heapRegion, cpuAccess)
     {
         _vulkanBuffer = vulkanBuffer;
         ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(Allocator.Device.VulkanDevice, vulkanBuffer, Heap.VulkanDeviceMemory, heapRegion.Offset));
+
+        _ = _state.Transition(to: Initialized);
     }
 
-    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsBuffer{TMetadata}" /> class.</summary>
+    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsBuffer" /> class.</summary>
     ~VulkanGraphicsBuffer() => Dispose(isDisposing: true);
 
     /// <inheritdoc cref="GraphicsResource.Allocator" />
@@ -208,7 +210,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         if (priorState < Disposing)
         {
             DisposeVulkanBuffer(_vulkanBuffer);
-            HeapRegion.Collection.Free(in HeapRegion);
+            HeapRegion.Heap.Free(in HeapRegion);
         }
 
         _state.EndDispose();

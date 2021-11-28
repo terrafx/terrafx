@@ -20,17 +20,19 @@ using static TerraFX.Utilities.VulkanUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
+public sealed unsafe class VulkanGraphicsTexture : GraphicsTexture
 {
     private const int Binding = 2;
     private const int Bound = 3;
 
     private readonly VkImage _vulkanImage;
+
     private ValueLazy<VkImageView> _vulkanImageView;
     private ValueLazy<VkSampler> _vulkanSampler;
-    private protected VolatileState _state;
 
-    private protected VulkanGraphicsTexture(VulkanGraphicsDevice device, GraphicsTextureKind kind, in GraphicsMemoryRegion<GraphicsMemoryHeap> heapRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth, VkImage vulkanImage)
+    private VolatileState _state;
+
+    internal VulkanGraphicsTexture(VulkanGraphicsDevice device, GraphicsTextureKind kind, in GraphicsMemoryHeapRegion heapRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth, VkImage vulkanImage)
         : base(device, kind, in heapRegion, cpuAccess, width, height, depth)
     {
         _vulkanImage = vulkanImage;
@@ -38,9 +40,11 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
 
         _vulkanImageView = new ValueLazy<VkImageView>(CreateVulkanImageView);
         _vulkanSampler = new ValueLazy<VkSampler>(CreateVulkanSampler);
+
+        _ = _state.Transition(to: Initialized);
     }
 
-    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsTexture{TMetadata}" /> class.</summary>
+    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsTexture" /> class.</summary>
     ~VulkanGraphicsTexture() => Dispose(isDisposing: true);
 
     /// <inheritdoc cref="GraphicsResource.Allocator" />
@@ -230,7 +234,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
             _vulkanImageView.Dispose(DisposeVulkanImageView);
 
             DisposeVulkanImage(_vulkanImage);
-            HeapRegion.Collection.Free(in HeapRegion);
+            HeapRegion.Heap.Free(in HeapRegion);
         }
 
         _state.EndDispose();

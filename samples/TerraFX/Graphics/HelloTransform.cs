@@ -76,16 +76,15 @@ public sealed class HelloTransform : HelloWindow
         }
         _trianglePrimitiveTranslationX = trianglePrimitiveTranslationX;
 
-        var constantBufferRegion = _trianglePrimitive.InputResourceRegions[1];
-        var constantBuffer = _constantBuffer;
-        var pConstantBuffer = constantBuffer.Map<Matrix4x4>(in constantBufferRegion);
+        var constantBufferView = _trianglePrimitive.InputResourceViews[1];
+        var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
 
         // Shaders take transposed matrices, so we want to set X.W
         pConstantBuffer[0] = Matrix4x4.Identity.WithX(
             new Vector4(1.0f, 0.0f, 0.0f, trianglePrimitiveTranslationX)
         );
 
-        constantBuffer.UnmapAndWrite(in constantBufferRegion);
+        constantBufferView.UnmapAndWrite();
     }
 
     private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer)
@@ -98,30 +97,40 @@ public sealed class HelloTransform : HelloWindow
         var constantBuffer = _constantBuffer;
         var vertexBuffer = _vertexBuffer;
 
-        var vertexBufferRegion = CreateVertexBufferRegion(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+        var vertexBufferView = CreateVertexBufferView(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
         graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
 
-        var inputResourceRegions = new GraphicsMemoryRegion<GraphicsResource>[2] {
-                CreateConstantBufferRegion(graphicsContext, constantBuffer),
-                CreateConstantBufferRegion(graphicsContext, constantBuffer),
-            };
-        return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, SizeOf<IdentityVertex>(), inputResourceRegions: inputResourceRegions);
+        var inputResourceViews = new GraphicsResourceView[2] {
+            CreateConstantBufferView(graphicsContext, constantBuffer, index: 0),
+            CreateConstantBufferView(graphicsContext, constantBuffer, index: 1),
+        };
+        return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferView, inputResourceViews: inputResourceViews);
 
-        static GraphicsMemoryRegion<GraphicsResource> CreateConstantBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer)
+        static GraphicsResourceView CreateConstantBufferView(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer, uint index)
         {
-            var constantBufferRegion = constantBuffer.Allocate(SizeOf<Matrix4x4>(), alignment: 256);
-            var pConstantBuffer = constantBuffer.Map<Matrix4x4>(in constantBufferRegion);
+            var constantBufferView = new GraphicsResourceView {
+                Offset = 256 * index,
+                Resource = constantBuffer,
+                Size = SizeOf<Matrix4x4>(),
+                Stride = SizeOf<Matrix4x4>(),
+            };
+            var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
 
             pConstantBuffer[0] = Matrix4x4.Identity;
 
-            constantBuffer.UnmapAndWrite(in constantBufferRegion);
-            return constantBufferRegion;
+            constantBufferView.UnmapAndWrite();
+            return constantBufferView;
         }
 
-        static GraphicsMemoryRegion<GraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+        static GraphicsResourceView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
         {
-            var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<IdentityVertex>() * 3, alignment: 16);
-            var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>(in vertexBufferRegion);
+            var vertexBufferView = new GraphicsResourceView {
+                Offset = 0,
+                Resource = vertexBuffer,
+                Size = SizeOf<IdentityVertex>() * 3,
+                Stride = SizeOf<IdentityVertex>(),
+            };
+            var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>(vertexBufferView.Offset, vertexBufferView.Size);
 
             pVertexBuffer[0] = new IdentityVertex {
                 Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
@@ -138,8 +147,8 @@ public sealed class HelloTransform : HelloWindow
                 Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f)
             };
 
-            vertexStagingBuffer.UnmapAndWrite(in vertexBufferRegion);
-            return vertexBufferRegion;
+            vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);
+            return vertexBufferView;
         }
 
         GraphicsPipeline CreateGraphicsPipeline(GraphicsDevice graphicsDevice, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)

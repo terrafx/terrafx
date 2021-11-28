@@ -14,18 +14,21 @@ using static TerraFX.Utilities.VulkanUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public abstract unsafe class VulkanGraphicsMemoryHeap : GraphicsMemoryHeap
+public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsMemoryHeap
 {
     private ValueLazy<VkDeviceMemory> _vulkanDeviceMemory;
-    private protected VolatileState _state;
 
-    private protected VulkanGraphicsMemoryHeap(VulkanGraphicsDevice device, VulkanGraphicsMemoryHeapCollection collection)
-        : base(device, collection)
+    private VolatileState _state;
+
+    internal VulkanGraphicsMemoryHeap(VulkanGraphicsDevice device, VulkanGraphicsMemoryHeapCollection collection, ulong size)
+        : base(device, collection, size)
     {
         _vulkanDeviceMemory = new ValueLazy<VkDeviceMemory>(CreateVulkanDeviceMemory);
+
+        _ = _state.Transition(to: Initialized);
     }
 
-    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsMemoryHeap{TMetadata}" /> class.</summary>
+    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsMemoryHeap" /> class.</summary>
     ~VulkanGraphicsMemoryHeap() => Dispose(isDisposing: true);
 
     /// <inheritdoc cref="GraphicsMemoryHeap.Collection" />

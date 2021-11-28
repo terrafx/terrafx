@@ -66,15 +66,15 @@ public sealed class HelloTexture : HelloWindow
 
         var vertexBuffer = _vertexBuffer;
 
-        var vertexBufferRegion = CreateVertexBufferRegion(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+        var vertexBufferView = CreateVertexBufferView(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
         graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
 
-        var inputResourceRegions = new GraphicsMemoryRegion<GraphicsResource>[1] {
-            CreateTexture2DRegion(graphicsContext, textureStagingBuffer)
+        var inputResourceViews = new GraphicsResourceView[1] {
+            CreateTextureRegion(graphicsContext, textureStagingBuffer)
         };
-        return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, SizeOf<TextureVertex>(), inputResourceRegions: inputResourceRegions);
+        return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferView, inputResourceViews: inputResourceViews);
 
-        static GraphicsMemoryRegion<GraphicsResource> CreateTexture2DRegion(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
+        static GraphicsResourceView CreateTextureRegion(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
         {
             const uint TextureWidth = 256;
             const uint TextureHeight = 256;
@@ -82,9 +82,14 @@ public sealed class HelloTexture : HelloWindow
             const uint CellWidth = TextureWidth / 8;
             const uint CellHeight = TextureHeight / 8;
 
-            var texture2D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.TwoDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight);
-            var texture2DRegion = texture2D.Allocate(texture2D.Size, alignment: 4);
-            var pTextureData = textureStagingBuffer.Map<uint>(in texture2DRegion);
+            var texture = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.TwoDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight);
+            var textureView = new GraphicsResourceView {
+                Offset = 0,
+                Resource = texture,
+                Size = checked((uint)texture.Size),
+                Stride = SizeOf<uint>(),
+            };
+            var pTextureData = textureStagingBuffer.Map<uint>(textureView.Offset, textureView.Size);
 
             for (uint n = 0; n < TexturePixels; n++)
             {
@@ -95,16 +100,21 @@ public sealed class HelloTexture : HelloWindow
                                 ? 0xFF000000 : 0xFFFFFFFF;
             }
 
-            textureStagingBuffer.UnmapAndWrite(in texture2DRegion);
-            graphicsContext.Copy(texture2D, textureStagingBuffer);
+            textureStagingBuffer.UnmapAndWrite(textureView.Offset, textureView.Size);
+            graphicsContext.Copy(texture, textureStagingBuffer);
 
-            return texture2DRegion;
+            return textureView;
         }
 
-        static GraphicsMemoryRegion<GraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+        static GraphicsResourceView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
         {
-            var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<TextureVertex>() * 3, alignment: 16);
-            var pVertexBuffer = vertexStagingBuffer.Map<TextureVertex>(in vertexBufferRegion);
+            var vertexBufferView = new GraphicsResourceView {
+                Offset = 0,
+                Resource = vertexBuffer,
+                Size = SizeOf<TextureVertex>() * 3,
+                Stride = SizeOf<TextureVertex>(),
+            };
+            var pVertexBuffer = vertexStagingBuffer.Map<TextureVertex>(vertexBufferView.Offset, vertexBufferView.Size);
 
             pVertexBuffer[0] = new TextureVertex {
                 Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
@@ -121,8 +131,8 @@ public sealed class HelloTexture : HelloWindow
                 UV = new Vector2(0.0f, 1.0f)
             };
 
-            vertexStagingBuffer.UnmapAndWrite(in vertexBufferRegion);
-            return vertexBufferRegion;
+            vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);
+            return vertexBufferView;
         }
 
         GraphicsPipeline CreateGraphicsPipeline(GraphicsDevice graphicsDevice, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
