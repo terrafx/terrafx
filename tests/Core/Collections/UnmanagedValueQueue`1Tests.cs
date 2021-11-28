@@ -72,7 +72,7 @@ public static class UnmanagedValueQueueTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array.AsSpan()))
+        using (var valueQueue = new UnmanagedValueQueue<int>(array.AsUnmanagedSpan()))
         {
             Assert.That(() => valueQueue,
                 Has.Property("Capacity").EqualTo((nuint)3)
@@ -80,7 +80,7 @@ public static class UnmanagedValueQueueTests
             );
         }
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array.AsSpan(), 2))
+        using (var valueQueue = new UnmanagedValueQueue<int>(array.AsUnmanagedSpan(), 2))
         {
             Assert.That(() => valueQueue,
                 Has.Property("Capacity").EqualTo((nuint)3)
@@ -88,13 +88,13 @@ public static class UnmanagedValueQueueTests
             );
         }
 
-        Assert.That(() => new UnmanagedValueQueue<int>(array.AsSpan(), 3),
+        Assert.That(() => new UnmanagedValueQueue<int>(array.AsUnmanagedSpan(), 3),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                     .And.Property("ActualValue").EqualTo((nuint)3)
                     .And.Property("ParamName").EqualTo("alignment")
         );
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(UnmanagedArray<int>.Empty.AsSpan()))
+        using (var valueQueue = new UnmanagedValueQueue<int>(UnmanagedArray<int>.Empty.AsUnmanagedSpan()))
         {
             Assert.That(() => valueQueue,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -102,7 +102,7 @@ public static class UnmanagedValueQueueTests
             );
         }
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(UnmanagedArray<int>.Empty.AsSpan(), 2))
+        using (var valueQueue = new UnmanagedValueQueue<int>(UnmanagedArray<int>.Empty.AsUnmanagedSpan(), 2))
         {
             Assert.That(() => valueQueue,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -110,13 +110,13 @@ public static class UnmanagedValueQueueTests
             );
         }
 
-        Assert.That(() => new UnmanagedValueQueue<int>(UnmanagedArray<int>.Empty.AsSpan(), 3),
+        Assert.That(() => new UnmanagedValueQueue<int>(UnmanagedArray<int>.Empty.AsUnmanagedSpan(), 3),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                     .And.Property("ActualValue").EqualTo((nuint)3)
                     .And.Property("ParamName").EqualTo("alignment")
         );
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(new UnmanagedArray<int>().AsSpan()))
+        using (var valueQueue = new UnmanagedValueQueue<int>(new UnmanagedArray<int>().AsUnmanagedSpan()))
         {
             Assert.That(() => valueQueue,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -124,7 +124,7 @@ public static class UnmanagedValueQueueTests
             );
         }
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(new UnmanagedArray<int>().AsSpan(), 2))
+        using (var valueQueue = new UnmanagedValueQueue<int>(new UnmanagedArray<int>().AsUnmanagedSpan(), 2))
         {
             Assert.That(() => valueQueue,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -132,7 +132,7 @@ public static class UnmanagedValueQueueTests
             );
         }
 
-        Assert.That(() => new UnmanagedValueQueue<int>(new UnmanagedArray<int>().AsSpan(), 3),
+        Assert.That(() => new UnmanagedValueQueue<int>(new UnmanagedArray<int>().AsUnmanagedSpan(), 3),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                     .And.Property("ActualValue").EqualTo((nuint)3)
                     .And.Property("ParamName").EqualTo("alignment")

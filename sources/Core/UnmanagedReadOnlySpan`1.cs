@@ -56,6 +56,15 @@ public readonly unsafe partial struct UnmanagedReadOnlySpan<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is greater than or equal to <see cref="Length" />.</exception>
     public ref readonly T this[nuint index] => ref _span[index];
 
+    /// <inheritdoc cref="UnmanagedSpan{T}.AsSpan()" />
+    public ReadOnlySpan<T> AsSpan() => _span.AsSpan();
+
+    /// <inheritdoc cref="UnmanagedSpan{T}.AsSpan(nuint)" />
+    public ReadOnlySpan<T> AsSpan(nuint start) => _span.AsSpan(start);
+
+    /// <inheritdoc cref="UnmanagedSpan{T}.AsSpan(nuint, nuint)" />
+    public ReadOnlySpan<T> AsSpan(nuint start, nuint length) => _span.AsSpan(start, length);
+
     /// <inheritdoc cref="UnmanagedSpan{T}.CopyTo(UnmanagedArray{T})" />
     public void CopyTo(UnmanagedArray<T> destination) => _span.CopyTo(destination);
 
