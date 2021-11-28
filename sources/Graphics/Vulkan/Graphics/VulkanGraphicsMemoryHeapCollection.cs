@@ -10,32 +10,26 @@ using TerraFX.Interop.Vulkan;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public sealed class VulkanGraphicsMemoryBlockCollection : GraphicsMemoryBlockCollection
+public sealed class VulkanGraphicsMemoryHeapCollection : GraphicsMemoryHeapCollection
 {
     private readonly uint _vulkanMemoryTypeIndex;
 
-    internal VulkanGraphicsMemoryBlockCollection(VulkanGraphicsDevice device, VulkanGraphicsMemoryAllocator allocator, uint memoryTypeIndex)
+    internal VulkanGraphicsMemoryHeapCollection(VulkanGraphicsDevice device, VulkanGraphicsMemoryAllocator allocator, uint memoryTypeIndex)
         : base(device, allocator)
     {
         _vulkanMemoryTypeIndex = memoryTypeIndex;
     }
 
-    /// <inheritdoc cref="GraphicsMemoryBlockCollection.Allocator" />
+    /// <inheritdoc cref="GraphicsMemoryHeapCollection.Allocator" />
     public new VulkanGraphicsMemoryAllocator Allocator => (VulkanGraphicsMemoryAllocator)base.Allocator;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
-    /// <summary>Gets the memory type index used when creating the <see cref="VkDeviceMemory" /> instance for a memory block.</summary>
+    /// <summary>Gets the memory type index used when creating the <see cref="VkDeviceMemory" /> instance for a memory heap.</summary>
     public uint VulkanMemoryTypeIndex => _vulkanMemoryTypeIndex;
 
     /// <inheritdoc />
-    protected override VulkanGraphicsMemoryBlock CreateBlock(ulong size) => (VulkanGraphicsMemoryBlock)Activator.CreateInstance(
-        typeof(VulkanGraphicsMemoryBlock<>).MakeGenericType(Allocator.Settings.RegionCollectionMetadataType!),
-        bindingAttr: BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.CreateInstance,
-        binder: null,
-        args: new object[] { Device, this, size },
-        culture: null,
-        activationAttributes: null
-    )!;
+    protected override VulkanGraphicsMemoryHeap<TMetadata> CreateHeap<TMetadata>(ulong size)
+        => new VulkanGraphicsMemoryHeap<TMetadata>(Device, this, size);
 }

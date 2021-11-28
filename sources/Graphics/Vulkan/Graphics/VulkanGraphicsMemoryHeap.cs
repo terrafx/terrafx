@@ -14,27 +14,27 @@ using static TerraFX.Utilities.VulkanUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public abstract unsafe class VulkanGraphicsMemoryBlock : GraphicsMemoryBlock
+public abstract unsafe class VulkanGraphicsMemoryHeap : GraphicsMemoryHeap
 {
     private ValueLazy<VkDeviceMemory> _vulkanDeviceMemory;
     private protected VolatileState _state;
 
-    private protected VulkanGraphicsMemoryBlock(VulkanGraphicsDevice device, VulkanGraphicsMemoryBlockCollection collection)
+    private protected VulkanGraphicsMemoryHeap(VulkanGraphicsDevice device, VulkanGraphicsMemoryHeapCollection collection)
         : base(device, collection)
     {
         _vulkanDeviceMemory = new ValueLazy<VkDeviceMemory>(CreateVulkanDeviceMemory);
     }
 
-    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsMemoryBlock{TMetadata}" /> class.</summary>
-    ~VulkanGraphicsMemoryBlock() => Dispose(isDisposing: true);
+    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsMemoryHeap{TMetadata}" /> class.</summary>
+    ~VulkanGraphicsMemoryHeap() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsMemoryBlock.Collection" />
-    public new VulkanGraphicsMemoryBlockCollection Collection => (VulkanGraphicsMemoryBlockCollection)base.Collection;
+    /// <inheritdoc cref="GraphicsMemoryHeap.Collection" />
+    public new VulkanGraphicsMemoryHeapCollection Collection => (VulkanGraphicsMemoryHeapCollection)base.Collection;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
-    /// <summary>Gets the <see cref="VkDeviceMemory" /> for the memory block.</summary>
+    /// <summary>Gets the <see cref="VkDeviceMemory" /> for the memory heap.</summary>
     public VkDeviceMemory VulkanDeviceMemory => _vulkanDeviceMemory.Value;
 
     /// <inheritdoc />
@@ -52,7 +52,7 @@ public abstract unsafe class VulkanGraphicsMemoryBlock : GraphicsMemoryBlock
 
     private VkDeviceMemory CreateVulkanDeviceMemory()
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsMemoryBlock));
+        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsMemoryHeap));
 
         VkDeviceMemory vulkanDeviceMemory;
 

@@ -30,11 +30,11 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
     private ValueLazy<VkSampler> _vulkanSampler;
     private protected VolatileState _state;
 
-    private protected VulkanGraphicsTexture(VulkanGraphicsDevice device, GraphicsTextureKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth, VkImage vulkanImage)
-        : base(device, kind, in blockRegion, cpuAccess, width, height, depth)
+    private protected VulkanGraphicsTexture(VulkanGraphicsDevice device, GraphicsTextureKind kind, in GraphicsMemoryRegion<GraphicsMemoryHeap> heapRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth, VkImage vulkanImage)
+        : base(device, kind, in heapRegion, cpuAccess, width, height, depth)
     {
         _vulkanImage = vulkanImage;
-        ThrowExternalExceptionIfNotSuccess(vkBindImageMemory(Allocator.Device.VulkanDevice, vulkanImage, Block.VulkanDeviceMemory, blockRegion.Offset));
+        ThrowExternalExceptionIfNotSuccess(vkBindImageMemory(Allocator.Device.VulkanDevice, vulkanImage, Heap.VulkanDeviceMemory, heapRegion.Offset));
 
         _vulkanImageView = new ValueLazy<VkImageView>(CreateVulkanImageView);
         _vulkanSampler = new ValueLazy<VkSampler>(CreateVulkanSampler);
@@ -47,7 +47,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
     public new VulkanGraphicsMemoryAllocator Allocator => (VulkanGraphicsMemoryAllocator)base.Allocator;
 
     /// <inheritdoc />
-    public new VulkanGraphicsMemoryBlock Block => (VulkanGraphicsMemoryBlock)base.Block;
+    public new VulkanGraphicsMemoryHeap Heap => (VulkanGraphicsMemoryHeap)base.Heap;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
@@ -74,7 +74,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
         var device = Allocator.Device;
 
         var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
 
         byte* pDestination;
         ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
@@ -89,7 +89,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
         var device = Allocator.Device;
 
         var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
 
         byte* pDestination;
         ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
@@ -104,7 +104,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
         var device = Allocator.Device;
 
         var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
 
         void* pDestination;
         ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, &pDestination));
@@ -132,7 +132,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
         var device = Allocator.Device;
 
         var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
 
         byte* pDestination;
         ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
@@ -162,7 +162,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
         var device = Allocator.Device;
 
         var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
 
         vkUnmapMemory(vulkanDevice, vulkanDeviceMemory);
     }
@@ -174,7 +174,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
         var device = Allocator.Device;
 
         var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
 
         var nonCoherentAtomSize = device.Adapter.VulkanPhysicalDeviceProperties.limits.nonCoherentAtomSize;
 
@@ -199,7 +199,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
         var device = Allocator.Device;
 
         var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
 
         if (writtenRangeLength != 0)
         {
@@ -230,7 +230,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
             _vulkanImageView.Dispose(DisposeVulkanImageView);
 
             DisposeVulkanImage(_vulkanImage);
-            BlockRegion.Collection.Free(in BlockRegion);
+            HeapRegion.Collection.Free(in HeapRegion);
         }
 
         _state.EndDispose();
@@ -245,7 +245,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
         var device = Allocator.Device;
 
         var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
 
         var viewType = Kind switch {
             GraphicsTextureKind.OneDimensional => VK_IMAGE_VIEW_TYPE_1D,
@@ -286,7 +286,7 @@ public abstract unsafe class VulkanGraphicsTexture : GraphicsTexture
         var device = Allocator.Device;
 
         var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
 
         var samplerCreateInfo = new VkSamplerCreateInfo {
             sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,

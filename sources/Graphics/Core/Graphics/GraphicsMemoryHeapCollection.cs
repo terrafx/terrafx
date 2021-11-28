@@ -19,28 +19,28 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics;
 
-/// <summary>Represents a collection of memory blocks.</summary>
-public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IReadOnlyCollection<GraphicsMemoryBlock>
+/// <summary>Represents a collection of memory heaps.</summary>
+public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IReadOnlyCollection<GraphicsMemoryHeap>
 {
     private readonly GraphicsMemoryAllocator _allocator;
 
-    private readonly List<GraphicsMemoryBlock> _blocks;
+    private readonly List<GraphicsMemoryHeap> _heaps;
     private readonly ReaderWriterLockSlim _mutex;
 
-    private GraphicsMemoryBlock? _emptyBlock;
+    private GraphicsMemoryHeap? _emptyHeap;
 
     private ulong _minimumSize;
     private ulong _size;
 
     private VolatileState _state;
 
-    /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryBlockCollection" /> class.</summary>
-    /// <param name="device">The device for which the memory block collection is being created</param>
+    /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryHeapCollection" /> class.</summary>
+    /// <param name="device">The device for which the memory heap collection is being created</param>
     /// <param name="allocator">The allocator that manages the collection.</param>
     /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="allocator" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="allocator" /> was not created for <paramref name="device" />.</exception>
-    protected GraphicsMemoryBlockCollection(GraphicsDevice device, GraphicsMemoryAllocator allocator)
+    protected GraphicsMemoryHeapCollection(GraphicsDevice device, GraphicsMemoryAllocator allocator)
         : base(device)
     {
         ThrowIfNull(allocator);
@@ -52,18 +52,18 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
 
         _allocator = allocator;
 
-        _blocks = new List<GraphicsMemoryBlock>();
+        _heaps = new List<GraphicsMemoryHeap>();
         _mutex = new ReaderWriterLockSlim();
 
         ref readonly var allocatorSettings = ref _allocator.Settings;
 
-        var minimumBlockCount = allocatorSettings.MinimumBlockCountPerCollection;
-        var maximumSharedBlockSize = allocatorSettings.MaximumSharedBlockSize.GetValueOrDefault();
+        var minimumHeapCount = allocatorSettings.MinimumHeapCountPerCollection;
+        var maximumSharedHeapSize = allocatorSettings.MaximumSharedHeapSize.GetValueOrDefault();
 
-        for (var i = 0; i < minimumBlockCount; ++i)
+        for (var i = 0; i < minimumHeapCount; ++i)
         {
-            var blockSize = GetAdjustedBlockSize(maximumSharedBlockSize);
-            _ = AddBlock(blockSize);
+            var heapSize = GetAdjustedHeapSize(maximumSharedHeapSize);
+            _ = AddHeap(heapSize);
         }
 
         _ = _state.Transition(to: Initialized);
@@ -72,30 +72,30 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
     /// <summary>Gets the allocator that manages the collection.</summary>
     public GraphicsMemoryAllocator Allocator => _allocator;
 
-    /// <summary>Gets the number of blocks in the collection.</summary>
-    public int Count => _blocks.Count;
+    /// <summary>Gets the number of heaps in the collection.</summary>
+    public int Count => _heaps.Count;
 
-    /// <summary>Gets <c>true</c> if the block collection is empty; otherwise, <c>false</c>.</summary>
+    /// <summary>Gets <c>true</c> if the heap collection is empty; otherwise, <c>false</c>.</summary>
     public bool IsEmpty
     {
         get
         {
             using var mutex = new DisposableReaderLockSlim(_mutex, _allocator.IsExternallySynchronized);
-            return _blocks.Count == 0;
+            return _heaps.Count == 0;
         }
     }
 
-    /// <summary>Gets the maximum number of blocks allowed in the collection.</summary>
-    public int MaximumBlockCount => _allocator.Settings.MaximumBlockCountPerCollection;
+    /// <summary>Gets the maximum number of heaps allowed in the collection.</summary>
+    public int MaximumHeapCount => _allocator.Settings.MaximumHeapCountPerCollection;
 
-    /// <summary>Gets the maximum size of any new shared memory blocks created for the collection, in bytes.</summary>
-    public ulong MaximumSharedBlockSize => _allocator.Settings.MaximumSharedBlockSize.GetValueOrDefault();
+    /// <summary>Gets the maximum size of any new shared memory heaps created for the collection, in bytes.</summary>
+    public ulong MaximumSharedHeapSize => _allocator.Settings.MaximumSharedHeapSize.GetValueOrDefault();
 
-    /// <summary>Gets the minimum number of blocks allowed in the collection.</summary>
-    public int MinimumBlockCount => _allocator.Settings.MinimumBlockCountPerCollection;
+    /// <summary>Gets the minimum number of heaps allowed in the collection.</summary>
+    public int MinimumHeapCount => _allocator.Settings.MinimumHeapCountPerCollection;
 
-    /// <summary>Gets the minimum size of any new memory blocks created for the collection, in bytes.</summary>
-    public ulong MinimumBlockSize => _allocator.Settings.MinimumBlockSize;
+    /// <summary>Gets the minimum size of any new memory heaps created for the collection, in bytes.</summary>
+    public ulong MinimumHeapSize => _allocator.Settings.MinimumHeapSize;
 
     /// <summary>Gets the minimum size of the collection, in bytes.</summary>
     public ulong MinimumSize => _minimumSize;
@@ -112,7 +112,7 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not a <c>power of two</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="flags" /> has an invalid combination.</exception>
     /// <exception cref="OutOfMemoryException">There was not a large enough region of free memory to complete the allocation.</exception>
-    public GraphicsMemoryRegion<GraphicsMemoryBlock> Allocate(ulong size, ulong alignment = 1, GraphicsMemoryRegionAllocationFlags flags = GraphicsMemoryRegionAllocationFlags.None)
+    public GraphicsMemoryRegion<GraphicsMemoryHeap> Allocate(ulong size, ulong alignment = 1, GraphicsMemoryRegionAllocationFlags flags = GraphicsMemoryRegionAllocationFlags.None)
     {
         var succeeded = TryAllocate(size, alignment, flags, out var region);
 
@@ -125,95 +125,95 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
 
     /// <summary>Frees a region of memory from the collection.</summary>
     /// <param name="region">The region to be freed.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="region" />.<see cref="GraphicsMemoryRegion{GraphicsMemoryBlock}.Collection" /> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="region" />.<see cref="GraphicsMemoryRegion{GraphicsMemoryHeap}.Collection" /> is <c>null</c>.</exception>
     /// <exception cref="KeyNotFoundException"><paramref name="region" /> was not found in the collection.</exception>
-    public void Free(in GraphicsMemoryRegion<GraphicsMemoryBlock> region)
+    public void Free(in GraphicsMemoryRegion<GraphicsMemoryHeap> region)
     {
-        var block = region.Collection;
-        ThrowIfNull(block);
+        var heap = region.Collection;
+        ThrowIfNull(heap);
 
         using var mutex = new DisposableWriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
 
-        var blocks = _blocks;
-        var blockIndex = blocks.IndexOf(block);
+        var heaps = _heaps;
+        var heapIndex = heaps.IndexOf(heap);
 
-        if (blockIndex == -1)
+        if (heapIndex == -1)
         {
-            ThrowKeyNotFoundException(region, nameof(blocks));
+            ThrowKeyNotFoundException(region, nameof(heaps));
         }
 
-        block.Free(in region);
+        heap.Free(in region);
 
-        if (block.IsEmpty)
+        if (heap.IsEmpty)
         {
-            var emptyBlock = _emptyBlock;
-            var blocksCount = blocks.Count;
+            var emptyHeap = _emptyHeap;
+            var heapsCount = heaps.Count;
 
-            if (emptyBlock is not null)
+            if (emptyHeap is not null)
             {
-                if (blocksCount > MinimumBlockCount)
+                if (heapsCount > MinimumHeapCount)
                 {
                     var size = _size;
                     var minimumSize = _minimumSize;
 
-                    // We have two empty blocks, we want to prefer removing the larger of the two
+                    // We have two empty heaps, we want to prefer removing the larger of the two
 
-                    if (block.Size > emptyBlock.Size)
+                    if (heap.Size > emptyHeap.Size)
                     {
-                        if ((size - block.Size) >= minimumSize)
+                        if ((size - heap.Size) >= minimumSize)
                         {
-                            RemoveBlockAt(blockIndex);
+                            RemoveHeapAt(heapIndex);
                         }
-                        else if ((size - emptyBlock.Size) >= minimumSize)
+                        else if ((size - emptyHeap.Size) >= minimumSize)
                         {
-                            RemoveBlock(emptyBlock);
+                            RemoveHeap(emptyHeap);
                         }
                     }
-                    else if ((size - emptyBlock.Size) >= minimumSize)
+                    else if ((size - emptyHeap.Size) >= minimumSize)
                     {
-                        RemoveBlockAt(blockIndex);
+                        RemoveHeapAt(heapIndex);
                     }
-                    else if ((size - block.Size) >= minimumSize)
+                    else if ((size - heap.Size) >= minimumSize)
                     {
-                        RemoveBlock(emptyBlock);
+                        RemoveHeap(emptyHeap);
                     }
                     else
                     {
                         // Removing either would put us below the minimum size, so we can't remove
                     }
                 }
-                else if (block.Size > emptyBlock.Size)
+                else if (heap.Size > emptyHeap.Size)
                 {
-                    // We can't remove the block, so set empty block to the larger
-                    _emptyBlock = block;
+                    // We can't remove the heap, so set empty heap to the larger
+                    _emptyHeap = heap;
                 }
             }
             else
             {
-                // We have no existing empty blocks, so we want to set the index to this block unless
-                // we are currently exceeding our memory budget, in which case we want to free the block
-                // instead. However, we still need to maintain the minimum block count and minimum size
+                // We have no existing empty heaps, so we want to set the index to this heap unless
+                // we are currently exceeding our memory budget, in which case we want to free the heap
+                // instead. However, we still need to maintain the minimum heap count and minimum size
                 // placed on the collection, so we will only respect the budget if those can be maintained.
 
                 _allocator.GetBudget(this, out var budget);
 
-                if ((budget.EstimatedUsage >= budget.EstimatedBudget) && (blocksCount > MinimumBlockCount) && ((_size - block.Size) >= _minimumSize))
+                if ((budget.EstimatedUsage >= budget.EstimatedBudget) && (heapsCount > MinimumHeapCount) && ((_size - heap.Size) >= _minimumSize))
                 {
-                    RemoveBlockAt(blockIndex);
+                    RemoveHeapAt(heapIndex);
                 }
                 else
                 {
-                    _emptyBlock = block;
+                    _emptyHeap = heap;
                 }
             }
         }
 
-        IncrementallySortBlocks();
+        IncrementallySortHeaps();
     }
 
-    /// <summary>Gets an enumerator that can be used to iterate through the blocks of the collection.</summary>
-    /// <returns>An enumerator that can be used to iterate through the blocks of the collection.</returns>
-    public IEnumerator<GraphicsMemoryBlock> GetEnumerator() => _blocks.GetEnumerator();
+    /// <summary>Gets an enumerator that can be used to iterate through the heaps of the collection.</summary>
+    /// <returns>An enumerator that can be used to iterate through the heaps of the collection.</returns>
+    public IEnumerator<GraphicsMemoryHeap> GetEnumerator() => _heaps.GetEnumerator();
 
     /// <summary>Tries to allocation a region of memory in the collection.</summary>
     /// <param name="size">The size of the region to allocate, in bytes.</param>
@@ -224,7 +224,7 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="flags" /> has an invalid combination.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not a <c>power of two</c>.</exception>
-    public bool TryAllocate(ulong size, [Optional, DefaultParameterValue(1UL)] ulong alignment, [Optional, DefaultParameterValue(GraphicsMemoryRegionAllocationFlags.None)] GraphicsMemoryRegionAllocationFlags flags, out GraphicsMemoryRegion<GraphicsMemoryBlock> region)
+    public bool TryAllocate(ulong size, [Optional, DefaultParameterValue(1UL)] ulong alignment, [Optional, DefaultParameterValue(GraphicsMemoryRegionAllocationFlags.None)] GraphicsMemoryRegionAllocationFlags flags, out GraphicsMemoryRegion<GraphicsMemoryHeap> region)
     {
         using var mutex = new DisposableWriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
         return TryAllocateRegion(size, alignment, flags, out region);
@@ -239,7 +239,7 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="flags" /> has an invalid combination.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not a <c>power of two</c>.</exception>
-    public bool TryAllocate(ulong size, [Optional, DefaultParameterValue(1UL)] ulong alignment, [Optional, DefaultParameterValue(GraphicsMemoryRegionAllocationFlags.None)] GraphicsMemoryRegionAllocationFlags flags, Span<GraphicsMemoryRegion<GraphicsMemoryBlock>> regions)
+    public bool TryAllocate(ulong size, [Optional, DefaultParameterValue(1UL)] ulong alignment, [Optional, DefaultParameterValue(GraphicsMemoryRegionAllocationFlags.None)] GraphicsMemoryRegionAllocationFlags flags, Span<GraphicsMemoryRegion<GraphicsMemoryHeap>> regions)
     {
         var succeeded = true;
         nuint index;
@@ -286,78 +286,78 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
         }
 
         var size = _size;
-        var blockCount = _blocks.Count;
+        var heapCount = _heaps.Count;
 
         if (minimumSize < currentMinimumSize)
         {
             // The new minimum size is less than the previous, so we will iterate the
-            // blocks from last to first (largest to smallest) to try and free space
+            // heaps from last to first (largest to smallest) to try and free space
             // that may now be available.
 
-            var emptyBlock = default(GraphicsMemoryBlock);
-            var minimumBlockCount = MinimumBlockCount;
+            var emptyHeap = default(GraphicsMemoryHeap);
+            var minimumHeapCount = MinimumHeapCount;
 
-            for (var blockIndex = blockCount; blockIndex-- != 0;)
+            for (var heapIndex = heapCount; heapIndex-- != 0;)
             {
-                var block = _blocks[blockIndex];
+                var heap = _heaps[heapIndex];
 
-                var blockSize = block.Size;
-                var blockIsEmpty = block.IsEmpty;
+                var heapSize = heap.Size;
+                var heapIsEmpty = heap.IsEmpty;
 
-                if (blockIsEmpty)
+                if (heapIsEmpty)
                 {
-                    if (((size - blockSize) >= minimumSize) && ((blockCount - 1) >= minimumBlockCount))
+                    if (((size - heapSize) >= minimumSize) && ((heapCount - 1) >= minimumHeapCount))
                     {
-                        RemoveBlockAt(blockIndex);
-                        size -= blockSize;
-                        --blockCount;
+                        RemoveHeapAt(heapIndex);
+                        size -= heapSize;
+                        --heapCount;
                     }
                     else
                     {
-                        emptyBlock ??= block;
+                        emptyHeap ??= heap;
                     }
                 }
             }
 
-            _emptyBlock = emptyBlock;
+            _emptyHeap = emptyHeap;
         }
         else
         {
             // The new minimum size is greater than the previous, so we will allocate
-            // new blocks until we exceed the minimum size, but ensuring we don't exceed
-            // preferredBlockSize while doing so.
+            // new heaps until we exceed the minimum size, but ensuring we don't exceed
+            // preferredHeapSize while doing so.
 
-            var emptyBlock = default(GraphicsMemoryBlock);
-            var maximumBlockCount = MaximumBlockCount;
-            var maximumSharedBlockSize = MaximumSharedBlockSize;
-            var minimumBlockSize = MinimumBlockSize;
+            var emptyHeap = default(GraphicsMemoryHeap);
+            var maximumHeapCount = MaximumHeapCount;
+            var maximumSharedHeapSize = MaximumSharedHeapSize;
+            var minimumHeapSize = MinimumHeapSize;
 
             while (size < minimumSize)
             {
-                if (blockCount < maximumBlockCount)
+                if (heapCount < maximumHeapCount)
                 {
-                    var blockSize = GetAdjustedBlockSize(maximumSharedBlockSize);
+                    var heapSize = GetAdjustedHeapSize(maximumSharedHeapSize);
 
-                    if (((size + blockSize) > minimumSize) && (blockSize != minimumBlockSize))
+                    if (((size + heapSize) > minimumSize) && (heapSize != minimumHeapSize))
                     {
-                        // The current size plus the new block will exceed the minimum
+                        // The current size plus the new heap will exceed the minimum
                         // size requested, so adjust it to be just large enough.
-                        blockSize = minimumSize - size;
+                        heapSize = minimumSize - size;
                     }
 
-                    emptyBlock ??= AddBlock(blockSize);
-                    size += blockSize;
+                    emptyHeap ??= AddHeap(heapSize);
+                    size += heapSize;
 
-                    ++blockCount;
+                    ++heapCount;
                 }
                 else
                 {
-                    _emptyBlock ??= emptyBlock;
+                    _emptyHeap ??= emptyHeap;
                     return false;
                 }
             }
 
-            _emptyBlock ??= emptyBlock;
+            _emptyHeap ??= emptyHeap;
         }
 
         _minimumSize = minimumSize;
@@ -366,10 +366,16 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
         return true;
     }
 
-    /// <summary>Adds a new block to the collection.</summary>
-    /// <param name="size">The size of the block, in bytes.</param>
-    /// <returns>The created graphics memory block.</returns>
-    protected abstract GraphicsMemoryBlock CreateBlock(ulong size);
+    /// <summary>Adds a new heap to the collection.</summary>
+    /// <param name="size">The size of the heap, in bytes.</param>
+    /// <returns>The created graphics memory heap.</returns>
+    protected GraphicsMemoryHeap CreateHeap(ulong size)
+        => CreateHeap<IGraphicsMemoryRegionCollection<GraphicsMemoryHeap>.DefaultMetadata>(size);
+
+    /// <inheritdoc cref="CreateHeap(ulong)" />
+    /// <typeparam name="TMetadata">The type used for metadata in the resource.</typeparam>
+    protected abstract GraphicsMemoryHeap CreateHeap<TMetadata>(ulong size)
+        where TMetadata : struct, IGraphicsMemoryRegionCollection<GraphicsMemoryHeap>.IMetadata;
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
@@ -378,9 +384,9 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
 
         if (priorState < Disposing)
         {
-            foreach (var block in _blocks)
+            foreach (var heap in _heaps)
             {
-                block?.Dispose();
+                heap?.Dispose();
             }
 
             _mutex?.Dispose();
@@ -389,38 +395,38 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
         _state.EndDispose();
     }
 
-    private GraphicsMemoryBlock AddBlock(ulong size)
+    private GraphicsMemoryHeap AddHeap(ulong size)
     {
-        var block = CreateBlock(size);
+        var heap = CreateHeap(size);
 
-        _blocks.Add(block);
+        _heaps.Add(heap);
         _size += size;
 
-        return block;
+        return heap;
     }
 
-    private ulong GetAdjustedBlockSize(ulong size)
+    private ulong GetAdjustedHeapSize(ulong size)
     {
-        var maximumSharedBlockSize = MaximumSharedBlockSize;
-        var blockSize = size;
+        var maximumSharedHeapSize = MaximumSharedHeapSize;
+        var heapSize = size;
 
-        if (blockSize < maximumSharedBlockSize)
+        if (heapSize < maximumSharedHeapSize)
         {
-            var minimumBlockSize = MinimumBlockSize;
-            blockSize = maximumSharedBlockSize;
+            var minimumHeapSize = MinimumHeapSize;
+            heapSize = maximumSharedHeapSize;
 
-            if (minimumBlockSize != maximumSharedBlockSize)
+            if (minimumHeapSize != maximumSharedHeapSize)
             {
-                // Allocate 1/8, 1/4, 1/2 as first blocks, ensuring we don't go smaller than the minimum
-                var largestBlockSize = GetLargestSharedBlockSize();
+                // Allocate 1/8, 1/4, 1/2 as first heaps, ensuring we don't go smaller than the minimum
+                var largestHeapSize = GetLargestSharedHeapSize();
 
                 for (var i = 0; i < 3; ++i)
                 {
-                    var smallerBlockSize = blockSize / 2;
+                    var smallerHeapSize = heapSize / 2;
 
-                    if ((smallerBlockSize > largestBlockSize) && (smallerBlockSize >= (size * 2)))
+                    if ((smallerHeapSize > largestHeapSize) && (smallerHeapSize >= (size * 2)))
                     {
-                        blockSize = Math.Max(smallerBlockSize, minimumBlockSize);
+                        heapSize = Math.Max(smallerHeapSize, minimumHeapSize);
                     }
                     else
                     {
@@ -431,30 +437,30 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
         }
         else
         {
-            blockSize = size;
+            heapSize = size;
         }
 
-        return blockSize;
+        return heapSize;
     }
 
-    private ulong GetLargestSharedBlockSize()
+    private ulong GetLargestSharedHeapSize()
     {
         var result = 0UL;
 
-        var blocks = CollectionsMarshal.AsSpan(_blocks);
-        var maximumSharedBlockSize = MaximumSharedBlockSize;
+        var heaps = CollectionsMarshal.AsSpan(_heaps);
+        var maximumSharedHeapSize = MaximumSharedHeapSize;
 
-        for (var i = blocks.Length; i-- != 0;)
+        for (var i = heaps.Length; i-- != 0;)
         {
-            var blockSize = blocks[i].Size;
+            var heapSize = heaps[i].Size;
 
-            if (blockSize < maximumSharedBlockSize)
+            if (heapSize < maximumSharedHeapSize)
             {
-                result = Math.Max(result, blockSize);
+                result = Math.Max(result, heapSize);
             }
-            else if (blockSize == maximumSharedBlockSize)
+            else if (heapSize == maximumSharedHeapSize)
             {
-                result = maximumSharedBlockSize;
+                result = maximumSharedHeapSize;
                 break;
             }
         }
@@ -462,29 +468,29 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
         return result;
     }
 
-    private void IncrementallySortBlocks()
+    private void IncrementallySortHeaps()
     {
         // Bubble sort only until first swap. This is called after
         // freeing a region and will result in eventual consistency
 
-        var blocks = CollectionsMarshal.AsSpan(_blocks);
+        var heaps = CollectionsMarshal.AsSpan(_heaps);
 
-        if (blocks.Length >= 2)
+        if (heaps.Length >= 2)
         {
-            var previousBlock = blocks[0];
+            var previousHeap = heaps[0];
 
-            for (var i = 1; i < blocks.Length; ++i)
+            for (var i = 1; i < heaps.Length; ++i)
             {
-                var block = blocks[i];
+                var heap = heaps[i];
 
-                if (previousBlock.TotalFreeRegionSize <= block.TotalFreeRegionSize)
+                if (previousHeap.TotalFreeRegionSize <= heap.TotalFreeRegionSize)
                 {
-                    previousBlock = block;
+                    previousHeap = heap;
                 }
                 else
                 {
-                    blocks[i - 1] = block;
-                    blocks[i] = previousBlock;
+                    heaps[i - 1] = heap;
+                    heaps[i] = previousHeap;
 
                     return;
                 }
@@ -492,78 +498,78 @@ public abstract class GraphicsMemoryBlockCollection : GraphicsDeviceObject, IRea
         }
     }
 
-    private void RemoveBlock(GraphicsMemoryBlock block)
+    private void RemoveHeap(GraphicsMemoryHeap heap)
     {
-        var blockIndex = _blocks.IndexOf(block);
-        RemoveBlockAt(blockIndex);
+        var heapIndex = _heaps.IndexOf(heap);
+        RemoveHeapAt(heapIndex);
     }
 
-    private void RemoveBlockAt(int index)
+    private void RemoveHeapAt(int index)
     {
-        var block = _blocks[index];
-        _blocks.RemoveAt(index);
-        _size -= block.Size;
+        var heap = _heaps[index];
+        _heaps.RemoveAt(index);
+        _size -= heap.Size;
     }
 
-    private bool TryAllocateRegion(ulong size, ulong alignment, GraphicsMemoryRegionAllocationFlags flags, out GraphicsMemoryRegion<GraphicsMemoryBlock> region)
+    private bool TryAllocateRegion(ulong size, ulong alignment, GraphicsMemoryRegionAllocationFlags flags, out GraphicsMemoryRegion<GraphicsMemoryHeap> region)
     {
-        var useDedicatedBlock = flags.HasFlag(GraphicsMemoryRegionAllocationFlags.DedicatedCollection);
-        var useExistingBlock = flags.HasFlag(GraphicsMemoryRegionAllocationFlags.ExistingCollection);
+        var useDedicatedHeap = flags.HasFlag(GraphicsMemoryRegionAllocationFlags.DedicatedCollection);
+        var useExistingHeap = flags.HasFlag(GraphicsMemoryRegionAllocationFlags.ExistingCollection);
 
-        if (useDedicatedBlock && useExistingBlock)
+        if (useDedicatedHeap && useExistingHeap)
         {
             ThrowForInvalidFlagsCombination(flags);
         }
 
         _allocator.GetBudget(this, out var budget);
 
-        var maximumSharedBlockSize = MaximumSharedBlockSize;
+        var maximumSharedHeapSize = MaximumSharedHeapSize;
         var sizeWithMargins = size + (2 * _allocator.Settings.MinimumAllocatedRegionMarginSize.GetValueOrDefault());
 
-        var blocks = CollectionsMarshal.AsSpan(_blocks);
-        var blocksLength = blocks.Length;
+        var heaps = CollectionsMarshal.AsSpan(_heaps);
+        var heapsLength = heaps.Length;
 
         var availableMemory = (budget.EstimatedUsage < budget.EstimatedBudget) ? (budget.EstimatedBudget - budget.EstimatedUsage) : 0;
-        var canCreateNewBlock = !useExistingBlock && (blocksLength < MaximumBlockCount) && (availableMemory >= sizeWithMargins);
+        var canCreateNewHeap = !useExistingHeap && (heapsLength < MaximumHeapCount) && (availableMemory >= sizeWithMargins);
 
-        // 1. Search existing blocks
+        // 1. Search existing heaps
 
-        if (!useDedicatedBlock && (size <= maximumSharedBlockSize))
+        if (!useDedicatedHeap && (size <= maximumSharedHeapSize))
         {
-            for (var blockIndex = 0; blockIndex < blocksLength; ++blockIndex)
+            for (var heapIndex = 0; heapIndex < heapsLength; ++heapIndex)
             {
-                var currentBlock = blocks[blockIndex];
-                AssertNotNull(currentBlock);
+                var currentHeap = heaps[heapIndex];
+                AssertNotNull(currentHeap);
 
-                if (currentBlock.TryAllocate(size, alignment, out region))
+                if (currentHeap.TryAllocate(size, alignment, out region))
                 {
-                    if (currentBlock == _emptyBlock)
+                    if (currentHeap == _emptyHeap)
                     {
-                        _emptyBlock = null;
+                        _emptyHeap = null;
                     }
                     return true;
                 }
             }
         }
 
-        // 2. Try to create a new block
+        // 2. Try to create a new heap
 
-        if (!canCreateNewBlock)
+        if (!canCreateNewHeap)
         {
             region = default;
             return false;
         }
 
-        var blockSize = GetAdjustedBlockSize(sizeWithMargins);
+        var heapSize = GetAdjustedHeapSize(sizeWithMargins);
 
-        if (blockSize >= availableMemory)
+        if (heapSize >= availableMemory)
         {
             region = default;
             return false;
         }
 
-        var block = AddBlock(blockSize);
-        return block.TryAllocate(size, alignment, out region);
+        var heap = AddHeap(heapSize);
+        return heap.TryAllocate(size, alignment, out region);
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

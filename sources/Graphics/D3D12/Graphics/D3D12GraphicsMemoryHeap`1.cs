@@ -10,14 +10,14 @@ using static TerraFX.Threading.VolatileState;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public sealed unsafe class D3D12GraphicsMemoryBlock<TMetadata> : D3D12GraphicsMemoryBlock
-    where TMetadata : struct, IGraphicsMemoryRegionCollection<GraphicsMemoryBlock>.IMetadata
+public sealed unsafe class D3D12GraphicsMemoryHeap<TMetadata> : D3D12GraphicsMemoryHeap
+    where TMetadata : struct, IGraphicsMemoryRegionCollection<GraphicsMemoryHeap>.IMetadata
 {
 #pragma warning disable IDE0044
     private TMetadata _metadata;
 #pragma warning restore IDE0044
 
-    internal D3D12GraphicsMemoryBlock(D3D12GraphicsDevice device, D3D12GraphicsMemoryBlockCollection collection, ulong size)
+    internal D3D12GraphicsMemoryHeap(D3D12GraphicsDevice device, D3D12GraphicsMemoryHeapCollection collection, ulong size)
         : base(device, collection)
     {
         ref readonly var allocatorSettings = ref collection.Allocator.Settings;
@@ -64,7 +64,7 @@ public sealed unsafe class D3D12GraphicsMemoryBlock<TMetadata> : D3D12GraphicsMe
         => _metadata.TotalFreeRegionSize;
 
     /// <inheritdoc />
-    public override GraphicsMemoryRegion<GraphicsMemoryBlock> Allocate(ulong size, ulong alignment = 1)
+    public override GraphicsMemoryRegion<GraphicsMemoryHeap> Allocate(ulong size, ulong alignment = 1)
         => _metadata.Allocate(size, alignment);
 
     /// <inheritdoc />
@@ -72,14 +72,14 @@ public sealed unsafe class D3D12GraphicsMemoryBlock<TMetadata> : D3D12GraphicsMe
         => _metadata.Clear();
 
     /// <inheritdoc />
-    public override void Free(in GraphicsMemoryRegion<GraphicsMemoryBlock> region)
+    public override void Free(in GraphicsMemoryRegion<GraphicsMemoryHeap> region)
         => _metadata.Free(in region);
 
     /// <inheritdoc />
-    public override IEnumerator<GraphicsMemoryRegion<GraphicsMemoryBlock>> GetEnumerator()
+    public override IEnumerator<GraphicsMemoryRegion<GraphicsMemoryHeap>> GetEnumerator()
         => _metadata.GetEnumerator();
 
     /// <inheritdoc />
-    public override bool TryAllocate(ulong size, [Optional, DefaultParameterValue(1UL)] ulong alignment, out GraphicsMemoryRegion<GraphicsMemoryBlock> region)
+    public override bool TryAllocate(ulong size, [Optional, DefaultParameterValue(1UL)] ulong alignment, out GraphicsMemoryRegion<GraphicsMemoryHeap> region)
         => _metadata.TryAllocate(size, alignment, out region);
 }

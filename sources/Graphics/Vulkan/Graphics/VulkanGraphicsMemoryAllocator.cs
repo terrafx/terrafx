@@ -23,18 +23,18 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocator
 {
-    private readonly VulkanGraphicsMemoryBlockCollection[] _blockCollections;
+    private readonly VulkanGraphicsMemoryHeapCollection[] _heapCollections;
     private VolatileState _state;
 
     internal VulkanGraphicsMemoryAllocator(VulkanGraphicsDevice device, in GraphicsMemoryAllocatorSettings settings)
         : base(device, in settings)
     {
         var memoryTypeCount = Device.Adapter.VulkanPhysicalDeviceMemoryProperties.memoryTypeCount;
-        _blockCollections = new VulkanGraphicsMemoryBlockCollection[memoryTypeCount];
+        _heapCollections = new VulkanGraphicsMemoryHeapCollection[memoryTypeCount];
 
         for (uint memoryTypeIndex = 0; memoryTypeIndex < memoryTypeCount; memoryTypeIndex++)
         {
-            _blockCollections[memoryTypeIndex] = new VulkanGraphicsMemoryBlockCollection(Device, this, memoryTypeIndex);
+            _heapCollections[memoryTypeIndex] = new VulkanGraphicsMemoryHeapCollection(Device, this, memoryTypeIndex);
         }
 
         // TODO: UpdateBudget
@@ -45,7 +45,7 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
     ~VulkanGraphicsMemoryAllocator() => Dispose(isDisposing: true);
 
     /// <inheritdoc />
-    public override int Count => _blockCollections.Length;
+    public override int Count => _heapCollections.Length;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
@@ -67,11 +67,11 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
         VkMemoryRequirements memoryRequirements;
         vkGetBufferMemoryRequirements(vulkanDevice, vulkanBuffer, &memoryRequirements);
 
-        var index = GetBlockCollectionIndex(cpuAccess, memoryRequirements.memoryTypeBits);
-        ref readonly var blockCollection = ref _blockCollections[index];
+        var index = GetHeapCollectionIndex(cpuAccess, memoryRequirements.memoryTypeBits);
+        ref readonly var heapCollection = ref _heapCollections[index];
 
-        var blockRegion = blockCollection.Allocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags);
-        return new VulkanGraphicsBuffer<TMetadata>(Device, kind, in blockRegion, cpuAccess, vulkanBuffer);
+        var heapRegion = heapCollection.Allocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags);
+        return new VulkanGraphicsBuffer<TMetadata>(Device, kind, in heapRegion, cpuAccess, vulkanBuffer);
     }
 
     /// <inheritdoc />
@@ -105,26 +105,26 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
         VkMemoryRequirements memoryRequirements;
         vkGetImageMemoryRequirements(vulkanDevice, vulkanImage, &memoryRequirements);
 
-        var index = GetBlockCollectionIndex(cpuAccess, memoryRequirements.memoryTypeBits);
-        ref readonly var blockCollection = ref _blockCollections[index];
+        var index = GetHeapCollectionIndex(cpuAccess, memoryRequirements.memoryTypeBits);
+        ref readonly var heapCollection = ref _heapCollections[index];
 
-        var blockRegion = blockCollection.Allocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags);
-        return new VulkanGraphicsTexture<TMetadata>(Device, kind, in blockRegion, cpuAccess, width, height, depth, vulkanImage);
+        var heapRegion = heapCollection.Allocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags);
+        return new VulkanGraphicsTexture<TMetadata>(Device, kind, in heapRegion, cpuAccess, width, height, depth, vulkanImage);
     }
 
     /// <inheritdoc />
-    public override void GetBudget(GraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget) => GetBudget((VulkanGraphicsMemoryBlockCollection)blockCollection, out budget);
+    public override void GetBudget(GraphicsMemoryHeapCollection heapCollection, out GraphicsMemoryBudget budget) => GetBudget((VulkanGraphicsMemoryHeapCollection)heapCollection, out budget);
 
-    /// <inheritdoc cref="GetBudget(GraphicsMemoryBlockCollection, out GraphicsMemoryBudget)" />
-    public void GetBudget(VulkanGraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget) => budget = new GraphicsMemoryBudget {
+    /// <inheritdoc cref="GetBudget(GraphicsMemoryHeapCollection, out GraphicsMemoryBudget)" />
+    public void GetBudget(VulkanGraphicsMemoryHeapCollection heapCollection, out GraphicsMemoryBudget budget) => budget = new GraphicsMemoryBudget {
         EstimatedBudget = ulong.MaxValue,
         EstimatedUsage = 0,
         TotalAllocatedRegionSize = 0,
-        TotalBlockSize = 0,
+        TotalHeapSize = 0,
     };
 
     /// <inheritdoc />
-    public override IEnumerator<VulkanGraphicsMemoryBlockCollection> GetEnumerator() => throw new NotImplementedException();
+    public override IEnumerator<VulkanGraphicsMemoryHeapCollection> GetEnumerator() => throw new NotImplementedException();
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
@@ -133,16 +133,16 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
 
         if (priorState < Disposing)
         {
-            foreach (var blockCollection in _blockCollections)
+            foreach (var heapCollection in _heapCollections)
             {
-                blockCollection?.Dispose();
+                heapCollection?.Dispose();
             }
         }
 
         _state.EndDispose();
     }
 
-    private int GetBlockCollectionIndex(GraphicsResourceCpuAccess cpuAccess, uint memoryTypeBits)
+    private int GetHeapCollectionIndex(GraphicsResourceCpuAccess cpuAccess, uint memoryTypeBits)
     {
         var isIntegratedGpu = Device.Adapter.VulkanPhysicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU;
         var canBeMultiInstance = false;
@@ -180,7 +180,7 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
 
         ref readonly var memoryProperties = ref Device.Adapter.VulkanPhysicalDeviceMemoryProperties;
 
-        for (var i = 0; i < _blockCollections.Length; i++)
+        for (var i = 0; i < _heapCollections.Length; i++)
         {
             if ((memoryTypeBits & (1 << i)) == 0)
             {

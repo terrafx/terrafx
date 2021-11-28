@@ -15,26 +15,26 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public abstract unsafe class D3D12GraphicsMemoryBlock : GraphicsMemoryBlock
+public abstract unsafe class D3D12GraphicsMemoryHeap : GraphicsMemoryHeap
 {
     private ValueLazy<Pointer<ID3D12Heap>> _d3d12Heap;
     private protected VolatileState _state;
 
-    private protected D3D12GraphicsMemoryBlock(D3D12GraphicsDevice device, D3D12GraphicsMemoryBlockCollection collection)
+    private protected D3D12GraphicsMemoryHeap(D3D12GraphicsDevice device, D3D12GraphicsMemoryHeapCollection collection)
         : base(device, collection)
     {
         _d3d12Heap = new ValueLazy<Pointer<ID3D12Heap>>(CreateD3D12Heap);
     }
 
-    /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsMemoryBlock" /> class.</summary>
-    ~D3D12GraphicsMemoryBlock()
+    /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsMemoryHeap" /> class.</summary>
+    ~D3D12GraphicsMemoryHeap()
         => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsMemoryBlock.Collection" />
-    public new D3D12GraphicsMemoryBlockCollection Collection
-        => (D3D12GraphicsMemoryBlockCollection)base.Collection;
+    /// <inheritdoc cref="GraphicsMemoryHeap.Collection" />
+    public new D3D12GraphicsMemoryHeapCollection Collection
+        => (D3D12GraphicsMemoryHeapCollection)base.Collection;
 
-    /// <summary>Gets the <see cref="ID3D12Heap" /> for the memory block.</summary>
+    /// <summary>Gets the <see cref="ID3D12Heap" /> for the memory heap.</summary>
     public ID3D12Heap* D3D12Heap => _d3d12Heap.Value;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
@@ -62,7 +62,7 @@ public abstract unsafe class D3D12GraphicsMemoryBlock : GraphicsMemoryBlock
 
     private Pointer<ID3D12Heap> CreateD3D12Heap()
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsMemoryBlock));
+        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsMemoryHeap));
 
         ID3D12Heap* d3d12Heap;
 

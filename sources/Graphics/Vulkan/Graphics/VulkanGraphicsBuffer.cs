@@ -18,11 +18,11 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
     private readonly VkBuffer _vulkanBuffer;
     private protected VolatileState _state;
 
-    private protected VulkanGraphicsBuffer(VulkanGraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, VkBuffer vulkanBuffer)
-        : base(device, kind, in blockRegion, cpuAccess)
+    private protected VulkanGraphicsBuffer(VulkanGraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryHeap> heapRegion, GraphicsResourceCpuAccess cpuAccess, VkBuffer vulkanBuffer)
+        : base(device, kind, in heapRegion, cpuAccess)
     {
         _vulkanBuffer = vulkanBuffer;
-        ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(Allocator.Device.VulkanDevice, vulkanBuffer, Block.VulkanDeviceMemory, blockRegion.Offset));
+        ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(Allocator.Device.VulkanDevice, vulkanBuffer, Heap.VulkanDeviceMemory, heapRegion.Offset));
     }
 
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsBuffer{TMetadata}" /> class.</summary>
@@ -32,7 +32,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
     public new VulkanGraphicsMemoryAllocator Allocator => (VulkanGraphicsMemoryAllocator)base.Allocator;
 
     /// <inheritdoc />
-    public new VulkanGraphicsMemoryBlock Block => (VulkanGraphicsMemoryBlock)base.Block;
+    public new VulkanGraphicsMemoryHeap Heap => (VulkanGraphicsMemoryHeap)base.Heap;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
@@ -55,7 +55,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         var device = Allocator.Device;
 
         var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
 
         byte* pDestination;
         ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
@@ -70,7 +70,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         var device = Allocator.Device;
 
         var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
 
         byte* pDestination;
         ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
@@ -85,7 +85,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         var device = Allocator.Device;
 
         var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
 
         void* pDestination;
         ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, &pDestination));
@@ -113,7 +113,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         var device = Allocator.Device;
 
         var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
 
         byte* pDestination;
         ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
@@ -143,7 +143,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         var device = Allocator.Device;
 
         var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
 
         vkUnmapMemory(vulkanDevice, vulkanDeviceMemory);
     }
@@ -155,7 +155,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         var device = Allocator.Device;
 
         var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
 
         var nonCoherentAtomSize = device.Adapter.VulkanPhysicalDeviceProperties.limits.nonCoherentAtomSize;
 
@@ -180,7 +180,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         var device = Allocator.Device;
 
         var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
 
         if (writtenRangeLength != 0)
         {
@@ -208,7 +208,7 @@ public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         if (priorState < Disposing)
         {
             DisposeVulkanBuffer(_vulkanBuffer);
-            BlockRegion.Collection.Free(in BlockRegion);
+            HeapRegion.Collection.Free(in HeapRegion);
         }
 
         _state.EndDispose();
