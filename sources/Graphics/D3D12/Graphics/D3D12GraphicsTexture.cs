@@ -21,8 +21,8 @@ public abstract unsafe class D3D12GraphicsTexture : GraphicsTexture
 
     private protected VolatileState _state;
 
-    internal D3D12GraphicsTexture(D3D12GraphicsDevice device, GraphicsTextureKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth)
-        : base(device, kind, in blockRegion, cpuAccess, width, height, depth)
+    internal D3D12GraphicsTexture(D3D12GraphicsDevice device, GraphicsTextureKind kind, in GraphicsMemoryRegion<GraphicsMemoryHeap> heapRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth)
+        : base(device, kind, in heapRegion, cpuAccess, width, height, depth)
     {
         _d3d12Resource = new ValueLazy<Pointer<ID3D12Resource>>(CreateD3D12Resource);
         _d3d12ResourceState = new ValueLazy<D3D12_RESOURCE_STATES>(GetD3D12ResourceState);
@@ -35,8 +35,8 @@ public abstract unsafe class D3D12GraphicsTexture : GraphicsTexture
     /// <inheritdoc cref="GraphicsResource.Allocator" />
     public new D3D12GraphicsMemoryAllocator Allocator => (D3D12GraphicsMemoryAllocator)base.Allocator;
 
-    /// <inheritdoc cref="GraphicsResource.Block" />
-    public new D3D12GraphicsMemoryBlock Block => (D3D12GraphicsMemoryBlock)base.Block;
+    /// <inheritdoc cref="GraphicsResource.Heap" />
+    public new D3D12GraphicsMemoryHeap Heap => (D3D12GraphicsMemoryHeap)base.Heap;
 
     /// <summary>Gets the underlying <see cref="ID3D12Resource" /> for the texture.</summary>
     /// <exception cref="ExternalException">The call to <see cref="ID3D12Device.CreateCommittedResource(D3D12_HEAP_PROPERTIES*, D3D12_HEAP_FLAGS, D3D12_RESOURCE_DESC*, D3D12_RESOURCE_STATES, D3D12_CLEAR_VALUE*, Guid*, void**)" /> failed.</exception>
@@ -126,7 +126,7 @@ public abstract unsafe class D3D12GraphicsTexture : GraphicsTexture
         if (priorState < Disposing)
         {
             _d3d12Resource.Dispose(ReleaseIfNotNull);
-            BlockRegion.Collection.Free(in BlockRegion);
+            HeapRegion.Collection.Free(in HeapRegion);
         }
 
         _state.EndDispose();
@@ -138,7 +138,7 @@ public abstract unsafe class D3D12GraphicsTexture : GraphicsTexture
 
         ID3D12Resource* d3d12Resource;
 
-        ref readonly var blockRegion = ref BlockRegion;
+        ref readonly var heapRegion = ref HeapRegion;
 
         var textureDesc = Kind switch {
             GraphicsTextureKind.OneDimensional => D3D12_RESOURCE_DESC.Tex1D(DXGI_FORMAT_R8G8B8A8_UNORM, Width, mipLevels: 1),
@@ -149,11 +149,11 @@ public abstract unsafe class D3D12GraphicsTexture : GraphicsTexture
 
         var device = Allocator.Device;
         var d3d12Device = device.D3D12Device;
-        var d3d12Heap = Block.D3D12Heap;
+        var d3d12Heap = Heap.D3D12Heap;
 
         ThrowExternalExceptionIfFailed(d3d12Device->CreatePlacedResource(
             d3d12Heap,
-            blockRegion.Offset,
+            heapRegion.Offset,
             &textureDesc,
             D3D12ResourceState,
             pOptimizedClearValue: null,

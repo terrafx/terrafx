@@ -22,7 +22,7 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocator
 {
-    private readonly D3D12GraphicsMemoryBlockCollection[] _blockCollections;
+    private readonly D3D12GraphicsMemoryHeapCollection[] _heapCollections;
     private readonly bool _supportsResourceHeapTier2;
 
     private VolatileState _state;
@@ -32,22 +32,22 @@ public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocato
     {
         var supportsResourceHeapTier2 = Device.D3D12Options.ResourceHeapTier >= D3D12_RESOURCE_HEAP_TIER_2;
 
-        _blockCollections = supportsResourceHeapTier2
-            ? new D3D12GraphicsMemoryBlockCollection[3] {
-                new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_DEFAULT),
-                new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_UPLOAD),
-                new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_READBACK),
+        _heapCollections = supportsResourceHeapTier2
+            ? new D3D12GraphicsMemoryHeapCollection[3] {
+                new D3D12GraphicsMemoryHeapCollection(Device, this, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_DEFAULT),
+                new D3D12GraphicsMemoryHeapCollection(Device, this, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_UPLOAD),
+                new D3D12GraphicsMemoryHeapCollection(Device, this, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_READBACK),
             }
-            : new D3D12GraphicsMemoryBlockCollection[9] {
-                new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
-                new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
-                new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
-                new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_UPLOAD),
-                new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES, D3D12_HEAP_TYPE_UPLOAD),
-                new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_UPLOAD),
-                new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_READBACK),
-                new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES, D3D12_HEAP_TYPE_READBACK),
-                new D3D12GraphicsMemoryBlockCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_READBACK),
+            : new D3D12GraphicsMemoryHeapCollection[9] {
+                new D3D12GraphicsMemoryHeapCollection(Device, this, D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
+                new D3D12GraphicsMemoryHeapCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
+                new D3D12GraphicsMemoryHeapCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
+                new D3D12GraphicsMemoryHeapCollection(Device, this, D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_UPLOAD),
+                new D3D12GraphicsMemoryHeapCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES, D3D12_HEAP_TYPE_UPLOAD),
+                new D3D12GraphicsMemoryHeapCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_UPLOAD),
+                new D3D12GraphicsMemoryHeapCollection(Device, this, D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_READBACK),
+                new D3D12GraphicsMemoryHeapCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES, D3D12_HEAP_TYPE_READBACK),
+                new D3D12GraphicsMemoryHeapCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_READBACK),
             };
 
         _supportsResourceHeapTier2 = supportsResourceHeapTier2;
@@ -60,7 +60,7 @@ public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocato
     ~D3D12GraphicsMemoryAllocator() => Dispose(isDisposing: true);
 
     /// <inheritdoc />
-    public override int Count => _blockCollections.Length;
+    public override int Count => _heapCollections.Length;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
@@ -71,15 +71,15 @@ public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocato
     /// <inheritdoc />
     public override D3D12GraphicsBuffer<TMetadata> CreateBuffer<TMetadata>(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, GraphicsMemoryRegionAllocationFlags allocationFlags = GraphicsMemoryRegionAllocationFlags.None)
     {
-        var index = GetBlockCollectionIndex(cpuAccess, 0);
+        var index = GetHeapCollectionIndex(cpuAccess, 0);
         var alignment = (ulong)D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
 
         var resourceDesc = D3D12_RESOURCE_DESC.Buffer(size, D3D12_RESOURCE_FLAG_NONE, alignment);
         var resourceAllocationInfo = Device.D3D12Device->GetResourceAllocationInfo(visibleMask: 0, numResourceDescs: 1, &resourceDesc);
-        ref readonly var blockCollection = ref _blockCollections[index];
+        ref readonly var heapCollection = ref _heapCollections[index];
 
-        var memoryBlockRegion = blockCollection.Allocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags);
-        return new D3D12GraphicsBuffer<TMetadata>(Device, kind, in memoryBlockRegion, cpuAccess);
+        var memoryHeapRegion = heapCollection.Allocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags);
+        return new D3D12GraphicsBuffer<TMetadata>(Device, kind, in memoryHeapRegion, cpuAccess);
     }
 
     /// <inheritdoc />
@@ -87,7 +87,7 @@ public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocato
     {
         var dxgiFormat = Map(texelFormat);
 
-        var index = GetBlockCollectionIndex(cpuAccess, 1);
+        var index = GetHeapCollectionIndex(cpuAccess, 1);
         var alignment = (ulong)D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
 
         var resourceDesc = kind switch {
@@ -98,26 +98,26 @@ public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocato
         };
 
         var resourceAllocationInfo = Device.D3D12Device->GetResourceAllocationInfo(visibleMask: 0, numResourceDescs: 1, &resourceDesc);
-        ref readonly var blockCollection = ref _blockCollections[index];
+        ref readonly var heapCollection = ref _heapCollections[index];
 
-        var memoryBlockRegion = blockCollection.Allocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags);
-        return new D3D12GraphicsTexture<TMetadata>(Device, kind, in memoryBlockRegion, cpuAccess, width, height, depth);
+        var memoryHeapRegion = heapCollection.Allocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags);
+        return new D3D12GraphicsTexture<TMetadata>(Device, kind, in memoryHeapRegion, cpuAccess, width, height, depth);
     }
 
     /// <inheritdoc />
-    public override void GetBudget(GraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget)
-        => GetBudget((D3D12GraphicsMemoryBlockCollection)blockCollection, out budget);
+    public override void GetBudget(GraphicsMemoryHeapCollection heapCollection, out GraphicsMemoryBudget budget)
+        => GetBudget((D3D12GraphicsMemoryHeapCollection)heapCollection, out budget);
 
-    /// <inheritdoc cref="GetBudget(GraphicsMemoryBlockCollection, out GraphicsMemoryBudget)" />
-    public void GetBudget(D3D12GraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget) => budget = new GraphicsMemoryBudget {
+    /// <inheritdoc cref="GetBudget(GraphicsMemoryHeapCollection, out GraphicsMemoryBudget)" />
+    public void GetBudget(D3D12GraphicsMemoryHeapCollection heapCollection, out GraphicsMemoryBudget budget) => budget = new GraphicsMemoryBudget {
         EstimatedBudget = ulong.MaxValue,
         EstimatedUsage = 0,
         TotalAllocatedRegionSize = 0,
-        TotalBlockSize = 0,
+        TotalHeapSize = 0,
     };
 
     /// <inheritdoc />
-    public override IEnumerator<D3D12GraphicsMemoryBlockCollection> GetEnumerator() => throw new NotImplementedException();
+    public override IEnumerator<D3D12GraphicsMemoryHeapCollection> GetEnumerator() => throw new NotImplementedException();
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
@@ -126,16 +126,16 @@ public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocato
 
         if (priorState < Disposing)
         {
-            foreach (var blockCollection in _blockCollections)
+            foreach (var heapCollection in _heapCollections)
             {
-                blockCollection?.Dispose();
+                heapCollection?.Dispose();
             }
         }
 
         _state.EndDispose();
     }
 
-    private int GetBlockCollectionIndex(GraphicsResourceCpuAccess cpuAccess, int kind)
+    private int GetHeapCollectionIndex(GraphicsResourceCpuAccess cpuAccess, int kind)
     {
         var index = cpuAccess switch {
             GraphicsResourceCpuAccess.None => 0,        // DEFAULT

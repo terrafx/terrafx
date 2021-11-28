@@ -15,16 +15,16 @@ public sealed unsafe class VulkanGraphicsBuffer<TMetadata> : VulkanGraphicsBuffe
     private TMetadata _metadata;
 #pragma warning restore IDE0044
 
-    internal VulkanGraphicsBuffer(VulkanGraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, VkBuffer vulkanBuffer)
-        : base(device, kind, in blockRegion, cpuAccess, vulkanBuffer)
+    internal VulkanGraphicsBuffer(VulkanGraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryHeap> heapRegion, GraphicsResourceCpuAccess cpuAccess, VkBuffer vulkanBuffer)
+        : base(device, kind, in heapRegion, cpuAccess, vulkanBuffer)
     {
-        var block = blockRegion.Collection;
+        var heap = heapRegion.Collection;
 
-        var minimumAllocatedRegionMarginSize = block.MinimumAllocatedRegionMarginSize;
-        var minimumFreeRegionSizeToRegister = block.MinimumFreeRegionSizeToRegister;
+        var minimumAllocatedRegionMarginSize = heap.MinimumAllocatedRegionMarginSize;
+        var minimumFreeRegionSizeToRegister = heap.MinimumFreeRegionSizeToRegister;
 
         _metadata = new TMetadata();
-        _metadata.Initialize(this, blockRegion.Size, minimumAllocatedRegionMarginSize, minimumFreeRegionSizeToRegister);
+        _metadata.Initialize(this, heapRegion.Size, minimumAllocatedRegionMarginSize, minimumFreeRegionSizeToRegister);
 
         _ = _state.Transition(to: Initialized);
     }

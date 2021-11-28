@@ -11,33 +11,33 @@ namespace TerraFX.Graphics;
 public abstract unsafe partial class GraphicsResource : GraphicsDeviceObject, IGraphicsMemoryRegionCollection<GraphicsResource>
 {
     private readonly GraphicsMemoryAllocator _allocator;
-    private readonly GraphicsMemoryRegion<GraphicsMemoryBlock> _blockRegion;
+    private readonly GraphicsMemoryRegion<GraphicsMemoryHeap> _heapRegion;
     private readonly GraphicsResourceCpuAccess _cpuAccess;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsResource" /> class.</summary>
     /// <param name="device">The device for which the resource was created.</param>
-    /// <param name="blockRegion">The memory block region in which the resource exists.</param>
+    /// <param name="heapRegion">The memory heap region in which the resource exists.</param>
     /// <param name="cpuAccess">The CPU access capabilities of the resource.</param>
     /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c></exception>
-    /// <exception cref="ArgumentNullException"><paramref name="blockRegion" />.<see cref="GraphicsMemoryRegion{TCollection}.Collection"/> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="blockRegion" /> was not created for <paramref name="device" />.</exception>
-    protected GraphicsResource(GraphicsDevice device, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess)
+    /// <exception cref="ArgumentNullException"><paramref name="heapRegion" />.<see cref="GraphicsMemoryRegion{TCollection}.Collection"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="heapRegion" /> was not created for <paramref name="device" />.</exception>
+    protected GraphicsResource(GraphicsDevice device, in GraphicsMemoryRegion<GraphicsMemoryHeap> heapRegion, GraphicsResourceCpuAccess cpuAccess)
         : base(device)
     {
-        ThrowIfNull(blockRegion.Collection);
+        ThrowIfNull(heapRegion.Collection);
 
-        if (blockRegion.Device != device)
+        if (heapRegion.Device != device)
         {
-            ThrowForInvalidParent(blockRegion.Device);
+            ThrowForInvalidParent(heapRegion.Device);
         }
 
-        _allocator = blockRegion.Collection.Collection.Allocator;
-        _blockRegion = blockRegion;
+        _allocator = heapRegion.Collection.Collection.Allocator;
+        _heapRegion = heapRegion;
         _cpuAccess = cpuAccess;
     }
 
     /// <summary>Gets the alignment of the resource, in bytes.</summary>
-    public ulong Alignment => BlockRegion.Alignment;
+    public ulong Alignment => HeapRegion.Alignment;
 
     /// <inheritdoc />
     public abstract int AllocatedRegionCount { get; }
@@ -45,11 +45,11 @@ public abstract unsafe partial class GraphicsResource : GraphicsDeviceObject, IG
     /// <summary>Gets the allocator which created the resource.</summary>
     public GraphicsMemoryAllocator Allocator => _allocator;
 
-    /// <summary>Gets the block which contains the resource.</summary>
-    public GraphicsMemoryBlock Block => BlockRegion.Collection;
+    /// <summary>Gets the heap which contains the resource.</summary>
+    public GraphicsMemoryHeap Heap => HeapRegion.Collection;
 
     /// <summary>Gets the memory block region in which the resource exists.</summary>
-    public ref readonly GraphicsMemoryRegion<GraphicsMemoryBlock> BlockRegion => ref _blockRegion;
+    public ref readonly GraphicsMemoryRegion<GraphicsMemoryHeap> HeapRegion => ref _heapRegion;
 
     /// <summary>Gets the number of regions in the resource.</summary>
     public abstract int Count { get; }
@@ -70,10 +70,10 @@ public abstract unsafe partial class GraphicsResource : GraphicsDeviceObject, IG
     public abstract ulong MinimumAllocatedRegionMarginSize { get; }
 
     /// <summary>Gets the offset of the resource, in bytes.</summary>
-    public ulong Offset => BlockRegion.Offset;
+    public ulong Offset => HeapRegion.Offset;
 
     /// <inheritdoc />
-    public ulong Size => BlockRegion.Size;
+    public ulong Size => HeapRegion.Size;
 
     /// <inheritdoc />
     public abstract ulong TotalFreeRegionSize { get; }

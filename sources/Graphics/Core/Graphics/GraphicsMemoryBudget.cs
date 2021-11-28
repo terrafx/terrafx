@@ -23,6 +23,6 @@ public readonly struct GraphicsMemoryBudget
     /// <summary>Gets the size of all allocated regions for a given set of collections, in bytes.</summary>
     public ulong TotalAllocatedRegionSize { get; init; }
 
-    /// <summary>Gets the size of all blocks for a given set of collections, in bytes.</summary>
-    public ulong TotalBlockSize { get; init; }
+    /// <summary>Gets the size of all heaps for a given set of collections, in bytes.</summary>
+    public ulong TotalHeapSize { get; init; }
 }

@@ -21,8 +21,8 @@ public abstract unsafe class D3D12GraphicsBuffer : GraphicsBuffer
 
     private protected VolatileState _state;
 
-    private protected D3D12GraphicsBuffer(D3D12GraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess)
-        : base(device, kind, in blockRegion, cpuAccess)
+    private protected D3D12GraphicsBuffer(D3D12GraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryHeap> heapRegion, GraphicsResourceCpuAccess cpuAccess)
+        : base(device, kind, in heapRegion, cpuAccess)
     {
         _d3d12Resource = new ValueLazy<Pointer<ID3D12Resource>>(CreateD3D12Resource);
         _d3d12ResourceState = new ValueLazy<D3D12_RESOURCE_STATES>(GetD3D12ResourceState);
@@ -35,8 +35,8 @@ public abstract unsafe class D3D12GraphicsBuffer : GraphicsBuffer
     /// <inheritdoc cref="GraphicsResource.Allocator" />
     public new D3D12GraphicsMemoryAllocator Allocator => (D3D12GraphicsMemoryAllocator)base.Allocator;
 
-    /// <inheritdoc cref="GraphicsResource.Block" />
-    public new D3D12GraphicsMemoryBlock Block => (D3D12GraphicsMemoryBlock)base.Block;
+    /// <inheritdoc cref="GraphicsResource.Heap" />
+    public new D3D12GraphicsMemoryHeap Heap => (D3D12GraphicsMemoryHeap)base.Heap;
 
     /// <summary>Gets the underlying <see cref="ID3D12Resource" /> for the buffer.</summary>
     /// <exception cref="ExternalException">The call to <see cref="ID3D12Device.CreateCommittedResource(D3D12_HEAP_PROPERTIES*, D3D12_HEAP_FLAGS, D3D12_RESOURCE_DESC*, D3D12_RESOURCE_STATES, D3D12_CLEAR_VALUE*, Guid*, void**)" /> failed.</exception>
@@ -126,7 +126,7 @@ public abstract unsafe class D3D12GraphicsBuffer : GraphicsBuffer
         if (priorState < Disposing)
         {
             _d3d12Resource.Dispose(ReleaseIfNotNull);
-            BlockRegion.Collection.Free(in BlockRegion);
+            HeapRegion.Collection.Free(in HeapRegion);
         }
 
         _state.EndDispose();
@@ -138,15 +138,15 @@ public abstract unsafe class D3D12GraphicsBuffer : GraphicsBuffer
 
         ID3D12Resource* d3d12Resource;
 
-        ref readonly var blockRegion = ref BlockRegion;
+        ref readonly var heapRegion = ref HeapRegion;
 
-        var bufferDesc = D3D12_RESOURCE_DESC.Buffer(blockRegion.Size, D3D12_RESOURCE_FLAG_NONE, Alignment);
+        var bufferDesc = D3D12_RESOURCE_DESC.Buffer(heapRegion.Size, D3D12_RESOURCE_FLAG_NONE, Alignment);
         var d3d12Device = Allocator.Device.D3D12Device;
-        var d3d12Heap = Block.D3D12Heap;
+        var d3d12Heap = Heap.D3D12Heap;
 
         ThrowExternalExceptionIfFailed(d3d12Device->CreatePlacedResource(
             d3d12Heap,
-            blockRegion.Offset,
+            heapRegion.Offset,
             &bufferDesc,
             D3D12ResourceState,
             pOptimizedClearValue: null,

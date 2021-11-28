@@ -13,7 +13,7 @@ using System.Collections.Generic;
 namespace TerraFX.Graphics;
 
 /// <summary>A memory allocator which manages memory for a graphics device.</summary>
-public abstract class GraphicsMemoryAllocator : GraphicsDeviceObject, IReadOnlyCollection<GraphicsMemoryBlockCollection>
+public abstract class GraphicsMemoryAllocator : GraphicsDeviceObject, IReadOnlyCollection<GraphicsMemoryHeapCollection>
 {
     private readonly GraphicsMemoryAllocatorSettings _settings;
 
@@ -30,33 +30,33 @@ public abstract class GraphicsMemoryAllocator : GraphicsDeviceObject, IReadOnlyC
             settings.IsExternallySynchronized.GetValueOrDefault()
         );
 
-        // Default to effectively no maximum block count
-        var maximumBlockCountPerCollection = GetDataNameValue(
-            GraphicsMemoryAllocatorSettings.MaximumBlockCountPerCollectionDataName,
-            settings.MaximumBlockCountPerCollection > 0 ? settings.MaximumBlockCountPerCollection : int.MaxValue
+        // Default to effectively no maximum heap count
+        var maximumHeapCountPerCollection = GetDataNameValue(
+            GraphicsMemoryAllocatorSettings.MaximumHeapCountPerCollectionDataName,
+            settings.MaximumHeapCountPerCollection > 0 ? settings.MaximumHeapCountPerCollection : int.MaxValue
         );
 
-        // Default to a 256MB max shared block size so anything larger gets a dedicated block
+        // Default to a 256MB max shared heap size so anything larger gets a dedicated heap
         // Given D3D12, this will be up to:
         //  * 64k small textures
         //  * 4k  buffers
         //  * 64  MSAA textures
-        var maximumSharedBlockSize = GetDataNameValue(
-            GraphicsMemoryAllocatorSettings.MaximumSharedBlockSizeDataName,
-            settings.MaximumSharedBlockSize.HasValue ? settings.MaximumSharedBlockSize.GetValueOrDefault() : 256 * 1024 * 1024
+        var maximumSharedHeapSize = GetDataNameValue(
+            GraphicsMemoryAllocatorSettings.MaximumSharedHeapSizeDataName,
+            settings.MaximumSharedHeapSize.HasValue ? settings.MaximumSharedHeapSize.GetValueOrDefault() : 256 * 1024 * 1024
         );
 
-        // Default to no minimum block count
-        var minimumBlockCountPerCollection = GetDataNameValue(
-            GraphicsMemoryAllocatorSettings.MinimumBlockCountPerCollectionDataName,
-            settings.MinimumBlockCountPerCollection >= 0 ? settings.MinimumBlockCountPerCollection : 0
+        // Default to no minimum heap count
+        var minimumHeapCountPerCollection = GetDataNameValue(
+            GraphicsMemoryAllocatorSettings.MinimumHeapCountPerCollectionDataName,
+            settings.MinimumHeapCountPerCollection >= 0 ? settings.MinimumHeapCountPerCollection : 0
         );
 
-        // Default to 1/8th the maximum shared block size or 4096 if the user specified some really small max block size
-        // Given the other defaults, this will be typically be a 32MB minimum block size
-        var minimumBlockSize = GetDataNameValue(
-            GraphicsMemoryAllocatorSettings.MinimumBlockSizeDataName,
-            settings.MinimumBlockSize != 0 ? settings.MinimumBlockSize : Math.Max(4096, maximumSharedBlockSize / 8)
+        // Default to 1/8th the maximum shared heap size or 4096 if the user specified some really small max heap size
+        // Given the other defaults, this will be typically be a 32MB minimum heap size
+        var minimumHeapSize = GetDataNameValue(
+            GraphicsMemoryAllocatorSettings.MinimumHeapSizeDataName,
+            settings.MinimumHeapSize != 0 ? settings.MinimumHeapSize : Math.Max(4096, maximumSharedHeapSize / 8)
         );
 
         // Default to no margins
@@ -72,18 +72,18 @@ public abstract class GraphicsMemoryAllocator : GraphicsDeviceObject, IReadOnlyC
             settings.MinimumFreeRegionSizeToRegister != 0 ? settings.MinimumFreeRegionSizeToRegister : 4096
         );
 
-        // Default to IGraphicsMemoryRegionCoollection<GraphicsMemoryBlock>.DefaultMetadata
+        // Default to IGraphicsMemoryRegionCoollection<GraphicsMemoryHeap>.DefaultMetadata
         var regionCollectionMetadataType = GetDataNameValue(
             GraphicsMemoryAllocatorSettings.RegionCollectionMetadataTypeDataName,
-            settings.RegionCollectionMetadataType ?? typeof(IGraphicsMemoryRegionCollection<GraphicsMemoryBlock>.DefaultMetadata)
+            settings.RegionCollectionMetadataType ?? typeof(IGraphicsMemoryRegionCollection<GraphicsMemoryHeap>.DefaultMetadata)
         );
 
         _settings = new GraphicsMemoryAllocatorSettings {
             IsExternallySynchronized = isExternallySynchronized,
-            MaximumBlockCountPerCollection = maximumBlockCountPerCollection,
-            MaximumSharedBlockSize = maximumSharedBlockSize,
-            MinimumBlockCountPerCollection = minimumBlockCountPerCollection,
-            MinimumBlockSize = minimumBlockSize,
+            MaximumHeapCountPerCollection = maximumHeapCountPerCollection,
+            MaximumSharedHeapSize = maximumSharedHeapSize,
+            MinimumHeapCountPerCollection = minimumHeapCountPerCollection,
+            MinimumHeapSize = minimumHeapSize,
             MinimumAllocatedRegionMarginSize = minimumAllocatedRegionMarginSize,
             MinimumFreeRegionSizeToRegister = minimumFreeRegionSizeToRegister,
             RegionCollectionMetadataType = regionCollectionMetadataType,
@@ -95,7 +95,7 @@ public abstract class GraphicsMemoryAllocator : GraphicsDeviceObject, IReadOnlyC
         }
     }
 
-    /// <summary>Gets the number of block collections in the allocator.</summary>
+    /// <summary>Gets the number of heap collections in the allocator.</summary>
     public abstract int Count { get; }
 
     /// <summary>Gets a <c>true</c> if the memory allocator should be externally synchronized; otherwise, <c>false</c>.</summary>
@@ -143,16 +143,16 @@ public abstract class GraphicsMemoryAllocator : GraphicsDeviceObject, IReadOnlyC
     public abstract GraphicsTexture CreateTexture<TMetadata>(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, GraphicsMemoryRegionAllocationFlags allocationFlags = GraphicsMemoryRegionAllocationFlags.None, TexelFormat texelFormat = default)
         where TMetadata : struct, IGraphicsMemoryRegionCollection<GraphicsResource>.IMetadata;
 
-    /// <summary>Gets the budget for a block collection.</summary>
-    /// <param name="blockCollection">The block collection for which the budget should be retrieved.</param>
-    /// <param name="budget">On return, contains the budget for <paramref name="blockCollection" />.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="blockCollection" /> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="blockCollection" /> is not managed by the allocator.</exception>
-    public abstract void GetBudget(GraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget);
+    /// <summary>Gets the budget for a heap collection.</summary>
+    /// <param name="heapCollection">The heap collection for which the budget should be retrieved.</param>
+    /// <param name="budget">On return, contains the budget for <paramref name="heapCollection" />.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="heapCollection" /> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="heapCollection" /> is not managed by the allocator.</exception>
+    public abstract void GetBudget(GraphicsMemoryHeapCollection heapCollection, out GraphicsMemoryBudget budget);
 
-    /// <summary>Gets an enumerator that can be used to iterate through the block collections of the allocator.</summary>
-    /// <returns>An enumerator that can be used to iterate through the block collections of the allocator.</returns>
-    public abstract IEnumerator<GraphicsMemoryBlockCollection> GetEnumerator();
+    /// <summary>Gets an enumerator that can be used to iterate through the heap collections of the allocator.</summary>
+    /// <returns>An enumerator that can be used to iterate through the heap collections of the allocator.</returns>
+    public abstract IEnumerator<GraphicsMemoryHeapCollection> GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
