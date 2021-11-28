@@ -35,12 +35,6 @@ public sealed class D3D12GraphicsMemoryHeapCollection : GraphicsMemoryHeapCollec
     public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
     /// <inheritdoc />
-    protected override D3D12GraphicsMemoryHeap CreateHeap(ulong size) => (D3D12GraphicsMemoryHeap)Activator.CreateInstance(
-        typeof(D3D12GraphicsMemoryHeap<>).MakeGenericType(Allocator.Settings.RegionCollectionMetadataType!),
-        bindingAttr: BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.CreateInstance,
-        binder: null,
-        args: new object[] { Device, this, size },
-        culture: null,
-        activationAttributes: null
-    )!;
+    protected override D3D12GraphicsMemoryHeap<TMetadata> CreateHeap<TMetadata>(ulong size)
+        => new D3D12GraphicsMemoryHeap<TMetadata>(Device, this, size);
 }

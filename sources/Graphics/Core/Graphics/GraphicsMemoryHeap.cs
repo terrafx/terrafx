@@ -19,8 +19,8 @@ public abstract partial class GraphicsMemoryHeap : GraphicsDeviceObject, IGraphi
     private readonly GraphicsMemoryHeapCollection _collection;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryHeap" /> class.</summary>
-    /// <param name="device">The device for which the memory block is being created</param>
-    /// <param name="collection">The memory block collection which contains the block.</param>
+    /// <param name="device">The device for which the memory heap is being created</param>
+    /// <param name="collection">The memory heap collection which contains the heap.</param>
     /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="collection" /> was not created for <paramref name="device" />.</exception>
@@ -40,10 +40,10 @@ public abstract partial class GraphicsMemoryHeap : GraphicsDeviceObject, IGraphi
     /// <inheritdoc />
     public abstract int AllocatedRegionCount { get; }
 
-    /// <summary>Gets the memory block collection which contains the block.</summary>
+    /// <summary>Gets the memory heap collection which contains the heap.</summary>
     public GraphicsMemoryHeapCollection Collection => _collection;
 
-    /// <summary>Gets the number of regions in the block.</summary>
+    /// <summary>Gets the number of regions in the heap.</summary>
     public abstract int Count { get; }
 
     /// <inheritdoc />
@@ -73,8 +73,8 @@ public abstract partial class GraphicsMemoryHeap : GraphicsDeviceObject, IGraphi
     /// <inheritdoc />
     public abstract void Free(in GraphicsMemoryRegion<GraphicsMemoryHeap> region);
 
-    /// <summary>Gets an enumerator that can be used to iterate through the regions of the block.</summary>
-    /// <returns>An enumerator that can be used to iterate through the regions of the block.</returns>
+    /// <summary>Gets an enumerator that can be used to iterate through the regions of the heap.</summary>
+    /// <returns>An enumerator that can be used to iterate through the regions of the heap.</returns>
     public abstract IEnumerator<GraphicsMemoryRegion<GraphicsMemoryHeap>> GetEnumerator();
 
     /// <inheritdoc />

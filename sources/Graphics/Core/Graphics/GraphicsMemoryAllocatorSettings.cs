@@ -65,14 +65,6 @@ public struct GraphicsMemoryAllocatorSettings
     /// </remarks>
     public const string MinimumFreeRegionSizeToRegisterDataName = "TerraFX.Graphics.GraphicsMemoryAllocatorSettings." + nameof(MinimumFreeRegionSizeToRegister);
 
-    /// <summary>The name of the data value that controls the default value of <see cref="RegionCollectionMetadataType" />.</summary>
-    /// <remarks>
-    ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
-    ///     <para>Setting this data value has no affect on allocators that have already been created or which have an explicit value specified.</para>
-    ///     <para>This data value is interpreted as a <c>Type</c> name.</para>
-    /// </remarks>
-    public const string RegionCollectionMetadataTypeDataName = "TerraFX.Graphics.GraphicsMemoryAllocatorSettings." + nameof(RegionCollectionMetadataType);
-
     /// <summary>Gets a <c>true</c> if the memory allocator should be externally synchronized; otherwise, <c>false</c>.</summary>
     /// <remarks>This will default to checking the <see cref="IsExternallySynchronizedDataName"/> if <c>null</c>; otherwise, <c>false</c> if no AppContext data has been provided.</remarks>
     public bool? IsExternallySynchronized { get; init; }
@@ -107,11 +99,4 @@ public struct GraphicsMemoryAllocatorSettings
     /// <summary>Gets the minimum size a free region should be for it to be placed in the collection of available free regions.</summary>
     /// <remarks>This will default to checking <see cref="MinimumFreeRegionSizeToRegisterDataName"/> if <c>zero</c>; otherwise, a <c>non-zero</c> system-defined value if no AppContext data has been provided.</remarks>
     public ulong MinimumFreeRegionSizeToRegister { get; init; }
-
-    /// <summary>Gets the type used to track the metadata for a region collection.</summary>
-    /// <remarks>
-    ///     <para>This type must be a value type and must inherit from <see cref="IGraphicsMemoryRegionCollection{TSelf}.IMetadata" />.</para>
-    ///     <para>This will default to checking <see cref="RegionCollectionMetadataTypeDataName"/> if <c>null</c>; otherwise, a system-defined value if no AppContext data has been provided.</para>
-    /// </remarks>
-    public Type? RegionCollectionMetadataType { get; init; }
 }

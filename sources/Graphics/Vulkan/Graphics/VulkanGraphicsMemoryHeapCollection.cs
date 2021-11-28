@@ -26,16 +26,10 @@ public sealed class VulkanGraphicsMemoryHeapCollection : GraphicsMemoryHeapColle
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
-    /// <summary>Gets the memory type index used when creating the <see cref="VkDeviceMemory" /> instance for a memory block.</summary>
+    /// <summary>Gets the memory type index used when creating the <see cref="VkDeviceMemory" /> instance for a memory heap.</summary>
     public uint VulkanMemoryTypeIndex => _vulkanMemoryTypeIndex;
 
     /// <inheritdoc />
-    protected override VulkanGraphicsMemoryHeap CreateHeap(ulong size) => (VulkanGraphicsMemoryHeap)Activator.CreateInstance(
-        typeof(VulkanGraphicsMemoryHeap<>).MakeGenericType(Allocator.Settings.RegionCollectionMetadataType!),
-        bindingAttr: BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.CreateInstance,
-        binder: null,
-        args: new object[] { Device, this, size },
-        culture: null,
-        activationAttributes: null
-    )!;
+    protected override VulkanGraphicsMemoryHeap<TMetadata> CreateHeap<TMetadata>(ulong size)
+        => new VulkanGraphicsMemoryHeap<TMetadata>(Device, this, size);
 }

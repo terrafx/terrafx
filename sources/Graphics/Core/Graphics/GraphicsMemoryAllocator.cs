@@ -9,6 +9,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using static TerraFX.Utilities.AppContextUtilities;
 
 namespace TerraFX.Graphics;
 
@@ -25,13 +26,13 @@ public abstract class GraphicsMemoryAllocator : GraphicsDeviceObject, IReadOnlyC
         : base(device)
     {
         // Default to no external synchronization
-        var isExternallySynchronized = GetDataNameValue(
+        var isExternallySynchronized = GetAppContextData(
             GraphicsMemoryAllocatorSettings.IsExternallySynchronizedDataName,
             settings.IsExternallySynchronized.GetValueOrDefault()
         );
 
         // Default to effectively no maximum heap count
-        var maximumHeapCountPerCollection = GetDataNameValue(
+        var maximumHeapCountPerCollection = GetAppContextData(
             GraphicsMemoryAllocatorSettings.MaximumHeapCountPerCollectionDataName,
             settings.MaximumHeapCountPerCollection > 0 ? settings.MaximumHeapCountPerCollection : int.MaxValue
         );
@@ -41,41 +42,35 @@ public abstract class GraphicsMemoryAllocator : GraphicsDeviceObject, IReadOnlyC
         //  * 64k small textures
         //  * 4k  buffers
         //  * 64  MSAA textures
-        var maximumSharedHeapSize = GetDataNameValue(
+        var maximumSharedHeapSize = GetAppContextData(
             GraphicsMemoryAllocatorSettings.MaximumSharedHeapSizeDataName,
             settings.MaximumSharedHeapSize.HasValue ? settings.MaximumSharedHeapSize.GetValueOrDefault() : 256 * 1024 * 1024
         );
 
         // Default to no minimum heap count
-        var minimumHeapCountPerCollection = GetDataNameValue(
+        var minimumHeapCountPerCollection = GetAppContextData(
             GraphicsMemoryAllocatorSettings.MinimumHeapCountPerCollectionDataName,
             settings.MinimumHeapCountPerCollection >= 0 ? settings.MinimumHeapCountPerCollection : 0
         );
 
         // Default to 1/8th the maximum shared heap size or 4096 if the user specified some really small max heap size
         // Given the other defaults, this will be typically be a 32MB minimum heap size
-        var minimumHeapSize = GetDataNameValue(
+        var minimumHeapSize = GetAppContextData(
             GraphicsMemoryAllocatorSettings.MinimumHeapSizeDataName,
             settings.MinimumHeapSize != 0 ? settings.MinimumHeapSize : Math.Max(4096, maximumSharedHeapSize / 8)
         );
 
         // Default to no margins
-        var minimumAllocatedRegionMarginSize = GetDataNameValue(
+        var minimumAllocatedRegionMarginSize = GetAppContextData(
             GraphicsMemoryAllocatorSettings.MinimumAllocatedRegionMarginSizeDataName,
             settings.MinimumAllocatedRegionMarginSize.HasValue ? settings.MinimumAllocatedRegionMarginSize.GetValueOrDefault() : 0
         );
 
         // Default to registering 4096 byte or larger free regions
         // This default exists due to the small resource textures and would otherwise be 64k 
-        var minimumFreeRegionSizeToRegister = GetDataNameValue(
+        var minimumFreeRegionSizeToRegister = GetAppContextData(
             GraphicsMemoryAllocatorSettings.MinimumAllocatedRegionMarginSizeDataName,
             settings.MinimumFreeRegionSizeToRegister != 0 ? settings.MinimumFreeRegionSizeToRegister : 4096
-        );
-
-        // Default to IGraphicsMemoryRegionCoollection<GraphicsMemoryHeap>.DefaultMetadata
-        var regionCollectionMetadataType = GetDataNameValue(
-            GraphicsMemoryAllocatorSettings.RegionCollectionMetadataTypeDataName,
-            settings.RegionCollectionMetadataType ?? typeof(IGraphicsMemoryRegionCollection<GraphicsMemoryHeap>.DefaultMetadata)
         );
 
         _settings = new GraphicsMemoryAllocatorSettings {
@@ -86,13 +81,7 @@ public abstract class GraphicsMemoryAllocator : GraphicsDeviceObject, IReadOnlyC
             MinimumHeapSize = minimumHeapSize,
             MinimumAllocatedRegionMarginSize = minimumAllocatedRegionMarginSize,
             MinimumFreeRegionSizeToRegister = minimumFreeRegionSizeToRegister,
-            RegionCollectionMetadataType = regionCollectionMetadataType,
         };
-
-        static T GetDataNameValue<T>(string dataName, T defaultValue)
-        {
-            return AppContext.GetData(dataName) is T value ? value : defaultValue;
-        }
     }
 
     /// <summary>Gets the number of heap collections in the allocator.</summary>

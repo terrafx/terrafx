@@ -369,7 +369,13 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
     /// <summary>Adds a new heap to the collection.</summary>
     /// <param name="size">The size of the heap, in bytes.</param>
     /// <returns>The created graphics memory heap.</returns>
-    protected abstract GraphicsMemoryHeap CreateHeap(ulong size);
+    protected GraphicsMemoryHeap CreateHeap(ulong size)
+        => CreateHeap<IGraphicsMemoryRegionCollection<GraphicsMemoryHeap>.DefaultMetadata>(size);
+
+    /// <inheritdoc cref="CreateHeap(ulong)" />
+    /// <typeparam name="TMetadata">The type used for metadata in the resource.</typeparam>
+    protected abstract GraphicsMemoryHeap CreateHeap<TMetadata>(ulong size)
+        where TMetadata : struct, IGraphicsMemoryRegionCollection<GraphicsMemoryHeap>.IMetadata;
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)

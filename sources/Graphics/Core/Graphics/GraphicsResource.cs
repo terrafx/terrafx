@@ -48,7 +48,7 @@ public abstract unsafe partial class GraphicsResource : GraphicsDeviceObject, IG
     /// <summary>Gets the heap which contains the resource.</summary>
     public GraphicsMemoryHeap Heap => HeapRegion.Collection;
 
-    /// <summary>Gets the memory block region in which the resource exists.</summary>
+    /// <summary>Gets the memory heap region in which the resource exists.</summary>
     public ref readonly GraphicsMemoryRegion<GraphicsMemoryHeap> HeapRegion => ref _heapRegion;
 
     /// <summary>Gets the number of regions in the resource.</summary>
