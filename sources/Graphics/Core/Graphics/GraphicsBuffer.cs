@@ -15,9 +15,9 @@ public abstract unsafe class GraphicsBuffer : GraphicsResource
     /// <param name="heapRegion">The memory heap region in which the resource exists.</param>
     /// <param name="cpuAccess">The CPU access capabilities of the resource.</param>
     /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c></exception>
-    /// <exception cref="ArgumentNullException"><paramref name="heapRegion" />.<see cref="GraphicsMemoryRegion{TCollection}.Collection"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="heapRegion" />.<see cref="GraphicsMemoryHeapRegion.Heap" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="heapRegion" /> was not created for <paramref name="device" />.</exception>
-    protected GraphicsBuffer(GraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryHeap> heapRegion, GraphicsResourceCpuAccess cpuAccess)
+    protected GraphicsBuffer(GraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryHeapRegion heapRegion, GraphicsResourceCpuAccess cpuAccess)
         : base(device, in heapRegion, cpuAccess)
     {
         _kind = kind;

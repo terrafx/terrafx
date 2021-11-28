@@ -9,72 +9,59 @@ namespace TerraFX.Graphics;
 public abstract class GraphicsPrimitive : GraphicsDeviceObject
 {
     private readonly GraphicsPipeline _pipeline;
-    private readonly GraphicsMemoryRegion<GraphicsResource> _vertexBufferRegion;
-    private readonly GraphicsMemoryRegion<GraphicsResource> _indexBufferRegion;
-    private readonly GraphicsMemoryRegion<GraphicsResource>[] _inputResourceRegions;
-    private readonly uint _vertexBufferStride;
-    private readonly uint _indexBufferStride;
+    private readonly GraphicsResourceView _vertexBufferView;
+    private readonly GraphicsResourceView _indexBufferView;
+    private readonly GraphicsResourceView[] _inputResourceViews;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsPrimitive" /> class.</summary>
     /// <param name="device">The device which manages the primitive.</param>
     /// <param name="pipeline">The pipeline used for rendering the primitive.</param>
-    /// <param name="vertexBufferRegion">The buffer region which holds the vertices for the primitive.</param>
-    /// <param name="vertexBufferStride">The stride of the vertices in <paramref name="vertexBufferRegion" />.</param>
-    /// <param name="indexBufferRegion">The buffer region which holds the indices for the primitive or <c>default</c> if none exists.</param>
-    /// <param name="indexBufferStride">The stride of the indices in <paramref name="indexBufferRegion" />.</param>
-    /// <param name="inputResourceRegions">The resource regions which hold the input data for the primitive or an empty span if none exist.</param>
+    /// <param name="vertexBufferView">The vertex buffer view which holds the vertices for the primitive.</param>
+    /// <param name="indexBufferView">The index buffer view which holds the indices for the primitive or <c>default</c> if none exists.</param>
+    /// <param name="inputResourceViews">The resource views which hold the input data for the primitive or an empty span if none exist.</param>
     /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="pipeline" /> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="vertexBufferRegion" /> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="vertexBufferView" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="pipeline" /> is incompatible as it belongs to a different device.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBufferRegion" /> was not created for <paramref name="device" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBufferRegion" /> was not created for <paramref name="device" />.</exception>
-    protected GraphicsPrimitive(GraphicsDevice device, GraphicsPipeline pipeline, in GraphicsMemoryRegion<GraphicsResource> vertexBufferRegion, uint vertexBufferStride, in GraphicsMemoryRegion<GraphicsResource> indexBufferRegion, uint indexBufferStride, ReadOnlySpan<GraphicsMemoryRegion<GraphicsResource>> inputResourceRegions)
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBufferView" /> was not created for <paramref name="device" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBufferView" /> was not created for <paramref name="device" />.</exception>
+    protected GraphicsPrimitive(GraphicsDevice device, GraphicsPipeline pipeline, in GraphicsResourceView vertexBufferView, in GraphicsResourceView indexBufferView, ReadOnlySpan<GraphicsResourceView> inputResourceViews)
         : base(device)
     {
         ThrowIfNull(pipeline);
-        ThrowIfNull(vertexBufferRegion.Collection);
+        ThrowIfNull(vertexBufferView.Resource);
 
         if (pipeline.Device != device)
         {
             ThrowForInvalidParent(pipeline.Device);
         }
 
-        if (vertexBufferRegion.Device != device)
+        if (vertexBufferView.Resource.Device != device)
         {
-            ThrowForInvalidParent(vertexBufferRegion.Device);
+            ThrowForInvalidParent(vertexBufferView.Resource.Device);
         }
 
-        if ((indexBufferRegion.Collection is not null) && (indexBufferRegion.Device != device))
+        if ((indexBufferView.Resource is not null) && (indexBufferView.Resource.Device != device))
         {
-            ThrowForInvalidParent(indexBufferRegion.Device);
+            ThrowForInvalidParent(indexBufferView.Resource.Device);
         }
 
         _pipeline = pipeline;
 
-        _vertexBufferRegion = vertexBufferRegion;
-        _indexBufferRegion = indexBufferRegion;
-        _inputResourceRegions = inputResourceRegions.ToArray();
-
-        _vertexBufferStride = vertexBufferStride;
-        _indexBufferStride = indexBufferStride;
+        _vertexBufferView = vertexBufferView;
+        _indexBufferView = indexBufferView;
+        _inputResourceViews = inputResourceViews.ToArray();
     }
 
-    /// <summary>Gets the buffer region which holds the indices for the primitive or <c>default</c> if none exists.</summary>
-    public ref readonly GraphicsMemoryRegion<GraphicsResource> IndexBufferRegion => ref _indexBufferRegion;
+    /// <summary>Gets the index buffer view which holds the indices for the primitive or <c>default</c> if none exists.</summary>
+    public ref readonly GraphicsResourceView IndexBufferView => ref _indexBufferView;
 
-    /// <summary>Gets the stride of the index buffer region, in bytes.</summary>
-    public uint IndexBufferStride => _indexBufferStride;
-
-    /// <summary>Gets the resource regions which hold the input data for the primitive or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</summary>
-    public ReadOnlySpan<GraphicsMemoryRegion<GraphicsResource>> InputResourceRegions => _inputResourceRegions;
+    /// <summary>Gets the resource views which hold the input data for the primitive or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</summary>
+    public ReadOnlySpan<GraphicsResourceView> InputResourceViews => _inputResourceViews;
 
     /// <summary>Gets the pipeline used for rendering the primitive.</summary>
     public GraphicsPipeline Pipeline => _pipeline;
 
-    /// <summary>Gets the buffer region which holds the vertices for the primitive.</summary>
-    public ref readonly GraphicsMemoryRegion<GraphicsResource> VertexBufferRegion => ref _vertexBufferRegion;
-
-    /// <summary>Gets the stride of the vertex buffer region, in bytes.</summary>
-    public uint VertexBufferStride => _vertexBufferStride;
+    /// <summary>Gets the vertex buffer view which holds the vertices for the primitive.</summary>
+    public ref readonly GraphicsResourceView VertexBufferView => ref _vertexBufferView;
 }

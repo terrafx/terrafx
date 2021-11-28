@@ -14,29 +14,27 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public abstract unsafe class D3D12GraphicsBuffer : GraphicsBuffer
+public sealed unsafe class D3D12GraphicsBuffer : GraphicsBuffer
 {
     private ValueLazy<Pointer<ID3D12Resource>> _d3d12Resource;
     private ValueLazy<D3D12_RESOURCE_STATES> _d3d12ResourceState;
 
-    private protected VolatileState _state;
+    private VolatileState _state;
 
-    private protected D3D12GraphicsBuffer(D3D12GraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryHeap> heapRegion, GraphicsResourceCpuAccess cpuAccess)
+    internal D3D12GraphicsBuffer(D3D12GraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryHeapRegion heapRegion, GraphicsResourceCpuAccess cpuAccess)
         : base(device, kind, in heapRegion, cpuAccess)
     {
         _d3d12Resource = new ValueLazy<Pointer<ID3D12Resource>>(CreateD3D12Resource);
         _d3d12ResourceState = new ValueLazy<D3D12_RESOURCE_STATES>(GetD3D12ResourceState);
+
+        _ = _state.Transition(to: Initialized);
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsBuffer" /> class.</summary>
-    ~D3D12GraphicsBuffer()
-        => Dispose(isDisposing: true);
+    ~D3D12GraphicsBuffer() => Dispose(isDisposing: true);
 
     /// <inheritdoc cref="GraphicsResource.Allocator" />
     public new D3D12GraphicsMemoryAllocator Allocator => (D3D12GraphicsMemoryAllocator)base.Allocator;
-
-    /// <inheritdoc cref="GraphicsResource.Heap" />
-    public new D3D12GraphicsMemoryHeap Heap => (D3D12GraphicsMemoryHeap)base.Heap;
 
     /// <summary>Gets the underlying <see cref="ID3D12Resource" /> for the buffer.</summary>
     /// <exception cref="ExternalException">The call to <see cref="ID3D12Device.CreateCommittedResource(D3D12_HEAP_PROPERTIES*, D3D12_HEAP_FLAGS, D3D12_RESOURCE_DESC*, D3D12_RESOURCE_STATES, D3D12_CLEAR_VALUE*, Guid*, void**)" /> failed.</exception>
@@ -48,6 +46,9 @@ public abstract unsafe class D3D12GraphicsBuffer : GraphicsBuffer
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
+
+    /// <inheritdoc cref="GraphicsResource.Heap" />
+    public new D3D12GraphicsMemoryHeap Heap => (D3D12GraphicsMemoryHeap)base.Heap;
 
     /// <inheritdoc />
     /// <exception cref="ExternalException">The call to <see cref="ID3D12Resource.Map(uint, D3D12_RANGE*, void**)" /> failed.</exception>
@@ -126,7 +127,7 @@ public abstract unsafe class D3D12GraphicsBuffer : GraphicsBuffer
         if (priorState < Disposing)
         {
             _d3d12Resource.Dispose(ReleaseIfNotNull);
-            HeapRegion.Collection.Free(in HeapRegion);
+            HeapRegion.Heap.Free(in HeapRegion);
         }
 
         _state.EndDispose();

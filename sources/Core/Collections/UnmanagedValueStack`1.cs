@@ -101,15 +101,7 @@ public partial struct UnmanagedValueStack<T> : IDisposable
         get
         {
             var items = _items;
-
-            if (!items.IsNull)
-            {
-                return _items.Length;
-            }
-            else
-            {
-                return 0;
-            }
+            return !items.IsNull ? items.Length : 0;
         }
     }
 
@@ -129,15 +121,7 @@ public partial struct UnmanagedValueStack<T> : IDisposable
     public readonly unsafe bool Contains(T item)
     {
         var items = _items;
-
-        if (!items.IsNull)
-        {
-            return TryGetLastIndexOfUnsafe(items.GetPointerUnsafe(0), Count, item, out _);
-        }
-        else
-        {
-            return false;
-        }
+        return !items.IsNull && TryGetLastIndexOfUnsafe(items.GetPointerUnsafe(0), Count, item, out _);
     }
 
     /// <summary>Copies the items of the stack to a span.</summary>

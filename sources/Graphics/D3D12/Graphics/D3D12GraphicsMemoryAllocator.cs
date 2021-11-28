@@ -69,7 +69,7 @@ public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocato
     public bool SupportsResourceHeapTier2 => _supportsResourceHeapTier2;
 
     /// <inheritdoc />
-    public override D3D12GraphicsBuffer<TMetadata> CreateBuffer<TMetadata>(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, GraphicsMemoryRegionAllocationFlags allocationFlags = GraphicsMemoryRegionAllocationFlags.None)
+    public override D3D12GraphicsBuffer CreateBuffer(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, GraphicsMemoryHeapRegionAllocationFlags allocationFlags = GraphicsMemoryHeapRegionAllocationFlags.None)
     {
         var index = GetHeapCollectionIndex(cpuAccess, 0);
         var alignment = (ulong)D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
@@ -79,11 +79,11 @@ public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocato
         ref readonly var heapCollection = ref _heapCollections[index];
 
         var memoryHeapRegion = heapCollection.Allocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags);
-        return new D3D12GraphicsBuffer<TMetadata>(Device, kind, in memoryHeapRegion, cpuAccess);
+        return new D3D12GraphicsBuffer(Device, kind, in memoryHeapRegion, cpuAccess);
     }
 
     /// <inheritdoc />
-    public override D3D12GraphicsTexture<TMetadata> CreateTexture<TMetadata>(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, GraphicsMemoryRegionAllocationFlags allocationFlags = GraphicsMemoryRegionAllocationFlags.None, TexelFormat texelFormat = default)
+    public override D3D12GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, GraphicsMemoryHeapRegionAllocationFlags allocationFlags = GraphicsMemoryHeapRegionAllocationFlags.None, TexelFormat texelFormat = default)
     {
         var dxgiFormat = Map(texelFormat);
 
@@ -101,7 +101,7 @@ public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocato
         ref readonly var heapCollection = ref _heapCollections[index];
 
         var memoryHeapRegion = heapCollection.Allocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags);
-        return new D3D12GraphicsTexture<TMetadata>(Device, kind, in memoryHeapRegion, cpuAccess, width, height, depth);
+        return new D3D12GraphicsTexture(Device, kind, in memoryHeapRegion, cpuAccess, width, height, depth);
     }
 
     /// <inheritdoc />

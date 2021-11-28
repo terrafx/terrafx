@@ -88,9 +88,9 @@ public class HelloTexture3D : HelloWindow
         _texturePosition = radians;
         var z = scaleZ * (0.5f + (0.5f * MathF.Cos(radians)));
 
-        var constantBufferRegion = _quadPrimitive.InputResourceRegions[1];
+        var constantBufferView = _quadPrimitive.InputResourceViews[1];
         var constantBuffer = _constantBuffer;
-        var pConstantBuffer = constantBuffer.Map<Matrix4x4>(in constantBufferRegion);
+        var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
 
         // Shaders take transposed matrices, so we want to set X.W
         pConstantBuffer[0] = new Matrix4x4(
@@ -100,7 +100,7 @@ public class HelloTexture3D : HelloWindow
             new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
         );
 
-        constantBuffer.UnmapAndWrite(in constantBufferRegion);
+        constantBufferView.UnmapAndWrite();
     }
 
     protected override void Draw(GraphicsContext graphicsContext)
@@ -120,34 +120,44 @@ public class HelloTexture3D : HelloWindow
         var indexBuffer = _indexBuffer;
         var vertexBuffer = _vertexBuffer;
 
-        var vertexBufferRegion = CreateVertexBufferRegion(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+        var vertexBufferView = CreateVertexBufferView(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
         graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
 
-        var indexBufferRegion = CreateIndexBufferRegion(graphicsContext, indexBuffer, indexStagingBuffer);
+        var indexBufferView = CreateIndexBufferView(graphicsContext, indexBuffer, indexStagingBuffer);
         graphicsContext.Copy(indexBuffer, indexStagingBuffer);
 
-        var inputResourceRegions = new GraphicsMemoryRegion<GraphicsResource>[3] {
-            CreateConstantBufferRegion(graphicsContext, constantBuffer),
-            CreateConstantBufferRegion(graphicsContext, constantBuffer),
-            CreateTexture3DRegion(graphicsContext, textureStagingBuffer),
+        var inputResourceViews = new GraphicsResourceView[3] {
+            CreateConstantBufferView(graphicsContext, constantBuffer, index: 0),
+            CreateConstantBufferView(graphicsContext, constantBuffer, index: 1),
+            CreateTextureView(graphicsContext, textureStagingBuffer),
         };
-        return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, SizeOf<Texture3DVertex>(), indexBufferRegion, SizeOf<ushort>(), inputResourceRegions);
+        return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferView, indexBufferView, inputResourceViews);
 
-        static GraphicsMemoryRegion<GraphicsResource> CreateConstantBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer)
+        static GraphicsResourceView CreateConstantBufferView(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer, uint index)
         {
-            var constantBufferRegion = constantBuffer.Allocate(SizeOf<Matrix4x4>(), alignment: 256);
-            var pConstantBuffer = constantBuffer.Map<Matrix4x4>(in constantBufferRegion);
+            var constantBufferView = new GraphicsResourceView {
+                Offset = 256 * index,
+                Resource = constantBuffer,
+                Size = SizeOf<Matrix4x4>(),
+                Stride = SizeOf<Matrix4x4>(),
+            };
+            var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
 
             pConstantBuffer[0] = Matrix4x4.Identity;
 
-            constantBuffer.UnmapAndWrite(in constantBufferRegion);
-            return constantBufferRegion;
+            constantBufferView.UnmapAndWrite();
+            return constantBufferView;
         }
 
-        static GraphicsMemoryRegion<GraphicsResource> CreateIndexBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer indexStagingBuffer)
+        static GraphicsResourceView CreateIndexBufferView(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer indexStagingBuffer)
         {
-            var indexBufferRegion = indexBuffer.Allocate(SizeOf<ushort>() * 6, alignment: 2);
-            var pIndexBuffer = indexStagingBuffer.Map<ushort>(in indexBufferRegion);
+            var indexBufferView = new GraphicsResourceView {
+                Offset = 0,
+                Resource = indexBuffer,
+                Size = SizeOf<ushort>() * 6,
+                Stride = SizeOf<ushort>(),
+            };
+            var pIndexBuffer = indexStagingBuffer.Map<ushort>(indexBufferView.Offset, indexBufferView.Size);
 
             // clockwise when looking at the triangle from the outside
 
@@ -159,11 +169,11 @@ public class HelloTexture3D : HelloWindow
             pIndexBuffer[4] = 2;
             pIndexBuffer[5] = 3;
 
-            indexStagingBuffer.UnmapAndWrite(in indexBufferRegion);
-            return indexBufferRegion;
+            indexStagingBuffer.UnmapAndWrite(indexBufferView.Offset, indexBufferView.Size);
+            return indexBufferView;
         }
 
-        static GraphicsMemoryRegion<GraphicsResource> CreateTexture3DRegion(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
+        static GraphicsResourceView CreateTextureView(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
         {
             const uint TextureWidth = TEXTURE3D_SIDE_LENGTH;
             const uint TextureHeight = TEXTURE3D_SIDE_LENGTH;
@@ -171,9 +181,14 @@ public class HelloTexture3D : HelloWindow
             const uint TextureDz = TextureWidth * TextureHeight;
             const uint TexturePixels = TextureDz * TextureDepth;
 
-            var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight, (ushort)TextureDepth);
-            var texture3DRegion = texture3D.Allocate(texture3D.Size, alignment: 4);
-            var pTextureData = textureStagingBuffer.Map<uint>(in texture3DRegion);
+            var texture = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight, (ushort)TextureDepth);
+            var textureView = new GraphicsResourceView {
+                Offset = 0,
+                Resource = texture,
+                Size = checked((uint)texture.Size),
+                Stride = SizeOf<uint>(),
+            };
+            var pTextureData = textureStagingBuffer.Map<uint>(textureView.Offset, textureView.Size);
 
             for (uint n = 0; n < TexturePixels; n++)
             {
@@ -187,16 +202,21 @@ public class HelloTexture3D : HelloWindow
                 pTextureData[n] = 0xFF000000 | (z << 16) | (y << 8) | (x << 0);
             }
 
-            textureStagingBuffer.UnmapAndWrite(in texture3DRegion);
-            graphicsContext.Copy(texture3D, textureStagingBuffer);
+            textureStagingBuffer.UnmapAndWrite(textureView.Offset, textureView.Size);
+            graphicsContext.Copy(texture, textureStagingBuffer);
 
-            return texture3DRegion;
+            return textureView;
         }
 
-        static GraphicsMemoryRegion<GraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+        static GraphicsResourceView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
         {
-            var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<Texture3DVertex>() * 4, alignment: 16);
-            var pVertexBuffer = vertexStagingBuffer.Map<Texture3DVertex>(in vertexBufferRegion);
+            var vertexBufferView = new GraphicsResourceView {
+                Offset = 0,
+                Resource = vertexBuffer,
+                Size = SizeOf<Texture3DVertex>() * 4,
+                Stride = SizeOf<Texture3DVertex>(),
+            };
+            var pVertexBuffer = vertexStagingBuffer.Map<Texture3DVertex>(vertexBufferView.Offset, vertexBufferView.Size);
 
             pVertexBuffer[0] = new Texture3DVertex {             //
                 Position = new Vector3(-0.5f, 0.5f, 0.0f),       //   y          in this setup
@@ -218,8 +238,8 @@ public class HelloTexture3D : HelloWindow
                 UVW = new Vector3(0, 0, 0.5f),
             };
 
-            vertexStagingBuffer.UnmapAndWrite(in vertexBufferRegion);
-            return vertexBufferRegion;
+            vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);
+            return vertexBufferView;
         }
 
         GraphicsPipeline CreateGraphicsPipeline(GraphicsDevice graphicsDevice, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)

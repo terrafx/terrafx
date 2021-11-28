@@ -106,15 +106,7 @@ public partial struct ValueStack<T>
         get
         {
             var items = _items;
-
-            if (items is not null)
-            {
-                return _items.Length;
-            }
-            else
-            {
-                return 0;
-            }
+            return items is not null ? _items.Length : 0;
         }
     }
 

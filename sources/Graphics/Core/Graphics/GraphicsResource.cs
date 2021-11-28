@@ -1,17 +1,15 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics;
 
 /// <summary>A graphics resource bound to a graphics device.</summary>
-public abstract unsafe partial class GraphicsResource : GraphicsDeviceObject, IGraphicsMemoryRegionCollection<GraphicsResource>
+public abstract unsafe partial class GraphicsResource : GraphicsDeviceObject
 {
     private readonly GraphicsMemoryAllocator _allocator;
-    private readonly GraphicsMemoryRegion<GraphicsMemoryHeap> _heapRegion;
+    private readonly GraphicsMemoryHeapRegion _heapRegion;
     private readonly GraphicsResourceCpuAccess _cpuAccess;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsResource" /> class.</summary>
@@ -19,19 +17,19 @@ public abstract unsafe partial class GraphicsResource : GraphicsDeviceObject, IG
     /// <param name="heapRegion">The memory heap region in which the resource exists.</param>
     /// <param name="cpuAccess">The CPU access capabilities of the resource.</param>
     /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c></exception>
-    /// <exception cref="ArgumentNullException"><paramref name="heapRegion" />.<see cref="GraphicsMemoryRegion{TCollection}.Collection"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="heapRegion" />.<see cref="GraphicsMemoryHeapRegion.Heap" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="heapRegion" /> was not created for <paramref name="device" />.</exception>
-    protected GraphicsResource(GraphicsDevice device, in GraphicsMemoryRegion<GraphicsMemoryHeap> heapRegion, GraphicsResourceCpuAccess cpuAccess)
+    protected GraphicsResource(GraphicsDevice device, in GraphicsMemoryHeapRegion heapRegion, GraphicsResourceCpuAccess cpuAccess)
         : base(device)
     {
-        ThrowIfNull(heapRegion.Collection);
+        ThrowIfNull(heapRegion.Heap);
 
         if (heapRegion.Device != device)
         {
             ThrowForInvalidParent(heapRegion.Device);
         }
 
-        _allocator = heapRegion.Collection.Collection.Allocator;
+        _allocator = heapRegion.Heap.Collection.Allocator;
         _heapRegion = heapRegion;
         _cpuAccess = cpuAccess;
     }
@@ -39,35 +37,17 @@ public abstract unsafe partial class GraphicsResource : GraphicsDeviceObject, IG
     /// <summary>Gets the alignment of the resource, in bytes.</summary>
     public ulong Alignment => HeapRegion.Alignment;
 
-    /// <inheritdoc />
-    public abstract int AllocatedRegionCount { get; }
-
     /// <summary>Gets the allocator which created the resource.</summary>
     public GraphicsMemoryAllocator Allocator => _allocator;
-
-    /// <summary>Gets the heap which contains the resource.</summary>
-    public GraphicsMemoryHeap Heap => HeapRegion.Collection;
-
-    /// <summary>Gets the memory heap region in which the resource exists.</summary>
-    public ref readonly GraphicsMemoryRegion<GraphicsMemoryHeap> HeapRegion => ref _heapRegion;
-
-    /// <summary>Gets the number of regions in the resource.</summary>
-    public abstract int Count { get; }
 
     /// <summary>Gets the CPU access capabilities of the resource.</summary>
     public GraphicsResourceCpuAccess CpuAccess => _cpuAccess;
 
-    /// <inheritdoc />
-    public abstract bool IsEmpty { get; }
+    /// <summary>Gets the heap which contains the resource.</summary>
+    public GraphicsMemoryHeap Heap => HeapRegion.Heap;
 
-    /// <inheritdoc />
-    public abstract ulong LargestFreeRegionSize { get; }
-
-    /// <inheritdoc />
-    public abstract ulong MinimumFreeRegionSizeToRegister { get; }
-
-    /// <inheritdoc />
-    public abstract ulong MinimumAllocatedRegionMarginSize { get; }
+    /// <summary>Gets the memory heap region in which the resource exists.</summary>
+    public ref readonly GraphicsMemoryHeapRegion HeapRegion => ref _heapRegion;
 
     /// <summary>Gets the offset of the resource, in bytes.</summary>
     public ulong Offset => HeapRegion.Offset;
@@ -75,35 +55,12 @@ public abstract unsafe partial class GraphicsResource : GraphicsDeviceObject, IG
     /// <inheritdoc />
     public ulong Size => HeapRegion.Size;
 
-    /// <inheritdoc />
-    public abstract ulong TotalFreeRegionSize { get; }
-
-    /// <inheritdoc />
-    public abstract GraphicsMemoryRegion<GraphicsResource> Allocate(ulong size, ulong alignment = 1);
-
-    /// <inheritdoc />
-    public abstract void Clear();
-
-    /// <inheritdoc />
-    public abstract void Free(in GraphicsMemoryRegion<GraphicsResource> region);
-
-    /// <summary>Gets an enumerator that can be used to iterate through the regions of the resource.</summary>
-    /// <returns>An enumerator that can be used to iterate through the regions of the resource.</returns>
-    public abstract IEnumerator<GraphicsMemoryRegion<GraphicsResource>> GetEnumerator();
-
     /// <summary>Maps the resource into CPU memory.</summary>
     /// <typeparam name="T">The type of data contained by the resource.</typeparam>
     /// <returns>A pointer to the mapped resource.</returns>
     /// <remarks>This overload should be used when all memory should be mapped.</remarks>
     public abstract T* Map<T>()
         where T : unmanaged;
-
-    /// <summary>Maps the resource into CPU memory.</summary>
-    /// <typeparam name="T">The type of data contained by the resource.</typeparam>
-    /// <param name="region">The region of memory that will be mapped.</param>
-    /// <returns>A pointer to the mapped resource.</returns>
-    public T* Map<T>(in GraphicsMemoryRegion<GraphicsResource> region)
-        where T : unmanaged => Map<T>((nuint)region.Offset, (nuint)region.Size);
 
     /// <summary>Maps the resource into CPU memory.</summary>
     /// <typeparam name="T">The type of data contained by the resource.</typeparam>
@@ -134,13 +91,6 @@ public abstract unsafe partial class GraphicsResource : GraphicsDeviceObject, IG
 
     /// <summary>Maps the resource into CPU memory.</summary>
     /// <typeparam name="T">The type of data contained by the resource.</typeparam>
-    /// <param name="readRegion">The region of memory that will be read.</param>
-    /// <returns>A pointer to the mapped resource.</returns>
-    public T* MapForRead<T>(in GraphicsMemoryRegion<GraphicsResource> readRegion)
-        where T : unmanaged => Map<T>((nuint)readRegion.Offset, (nuint)readRegion.Size);
-
-    /// <summary>Maps the resource into CPU memory.</summary>
-    /// <typeparam name="T">The type of data contained by the resource.</typeparam>
     /// <param name="readRange">The range of memory that will be read.</param>
     /// <returns>A pointer to the mapped resource.</returns>
     public T* MapForRead<T>(Range readRange)
@@ -159,9 +109,6 @@ public abstract unsafe partial class GraphicsResource : GraphicsDeviceObject, IG
     public abstract T* MapForRead<T>(nuint readRangeOffset, nuint readRangeLength)
         where T : unmanaged;
 
-    /// <inheritdoc />
-    public abstract bool TryAllocate(ulong size, [Optional, DefaultParameterValue(1UL)] ulong alignment, out GraphicsMemoryRegion<GraphicsResource> region);
-
     /// <summary>Unmaps the resource from CPU memory.</summary>
     /// <remarks>This overload should be used when no memory was written.</remarks>
     public abstract void Unmap();
@@ -169,11 +116,6 @@ public abstract unsafe partial class GraphicsResource : GraphicsDeviceObject, IG
     /// <summary>Unmaps the resource from CPU memory.</summary>
     /// <remarks>This overload should be used when all memory was written.</remarks>
     public abstract void UnmapAndWrite();
-
-    /// <summary>Unmaps the resource from CPU memory.</summary>
-    /// <param name="writtenRegion">The region of memory which was written.</param>
-    public void UnmapAndWrite(in GraphicsMemoryRegion<GraphicsResource> writtenRegion)
-        => UnmapAndWrite((nuint)writtenRegion.Offset, (nuint)writtenRegion.Size);
 
     /// <summary>Unmaps the resource from CPU memory.</summary>
     /// <param name="writtenRange">The range of memory which was written.</param>

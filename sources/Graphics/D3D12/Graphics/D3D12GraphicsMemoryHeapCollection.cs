@@ -3,8 +3,6 @@
 // This file includes code based on the BlockVector class from https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator/
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
-using System;
-using System.Reflection;
 using TerraFX.Interop.DirectX;
 
 namespace TerraFX.Graphics;
@@ -35,6 +33,5 @@ public sealed class D3D12GraphicsMemoryHeapCollection : GraphicsMemoryHeapCollec
     public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
     /// <inheritdoc />
-    protected override D3D12GraphicsMemoryHeap<TMetadata> CreateHeap<TMetadata>(ulong size)
-        => new D3D12GraphicsMemoryHeap<TMetadata>(Device, this, size);
+    protected override D3D12GraphicsMemoryHeap CreateHeap(ulong size) => new D3D12GraphicsMemoryHeap(Device, this, size);
 }

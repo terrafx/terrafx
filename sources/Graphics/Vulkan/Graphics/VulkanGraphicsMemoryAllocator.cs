@@ -51,7 +51,7 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
     public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
     /// <inheritdoc />
-    public override VulkanGraphicsBuffer<TMetadata> CreateBuffer<TMetadata>(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, GraphicsMemoryRegionAllocationFlags allocationFlags = GraphicsMemoryRegionAllocationFlags.None)
+    public override VulkanGraphicsBuffer CreateBuffer(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, GraphicsMemoryHeapRegionAllocationFlags allocationFlags = GraphicsMemoryHeapRegionAllocationFlags.None)
     {
         var vulkanDevice = Device.VulkanDevice;
 
@@ -71,11 +71,11 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
         ref readonly var heapCollection = ref _heapCollections[index];
 
         var heapRegion = heapCollection.Allocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags);
-        return new VulkanGraphicsBuffer<TMetadata>(Device, kind, in heapRegion, cpuAccess, vulkanBuffer);
+        return new VulkanGraphicsBuffer(Device, kind, in heapRegion, cpuAccess, vulkanBuffer);
     }
 
     /// <inheritdoc />
-    public override VulkanGraphicsTexture<TMetadata> CreateTexture<TMetadata>(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, GraphicsMemoryRegionAllocationFlags allocationFlags = GraphicsMemoryRegionAllocationFlags.None, TexelFormat texelFormat = default)
+    public override VulkanGraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, GraphicsMemoryHeapRegionAllocationFlags allocationFlags = GraphicsMemoryHeapRegionAllocationFlags.None, TexelFormat texelFormat = default)
     {
         var vulkanDevice = Device.VulkanDevice;
 
@@ -109,7 +109,7 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
         ref readonly var heapCollection = ref _heapCollections[index];
 
         var heapRegion = heapCollection.Allocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags);
-        return new VulkanGraphicsTexture<TMetadata>(Device, kind, in heapRegion, cpuAccess, width, height, depth, vulkanImage);
+        return new VulkanGraphicsTexture(Device, kind, in heapRegion, cpuAccess, width, height, depth, vulkanImage);
     }
 
     /// <inheritdoc />

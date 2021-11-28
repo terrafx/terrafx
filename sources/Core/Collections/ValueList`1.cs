@@ -104,15 +104,7 @@ public partial struct ValueList<T>
         get
         {
             var items = _items;
-
-            if (items is not null)
-            {
-                return _items.Length;
-            }
-            else
-            {
-                return 0;
-            }
+            return items is not null ? _items.Length : 0;
         }
     }
 
@@ -153,7 +145,7 @@ public partial struct ValueList<T>
         }
         else
         {
-            EnsureCapacity(count + 1);
+            EnsureCapacity(newCount);
         }
 
         _count = newCount;
@@ -173,7 +165,7 @@ public partial struct ValueList<T>
     {
         _version++;
 
-        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>() && (_items is not null))
         {
             Array.Clear(_items, 0, Count);
         }
@@ -216,15 +208,7 @@ public partial struct ValueList<T>
     public readonly int IndexOf(T item)
     {
         var items = _items;
-
-        if (items is not null)
-        {
-            return Array.IndexOf(items, item, 0, Count);
-        }
-        else
-        {
-            return -1;
-        }
+        return items is not null ? Array.IndexOf(items, item, 0, Count) : -1;
     }
 
     /// <summary>Inserts an item into list at the specified index.</summary>
@@ -236,18 +220,26 @@ public partial struct ValueList<T>
         var count = Count;
         ThrowIfNotInInsertBounds(index, count);
 
-        if (index != count)
+        var newCount = count + 1;
+
+        if (newCount <= Capacity)
         {
             _version++;
         }
         else
         {
-            var newCount = count + 1;
             EnsureCapacity(newCount);
-            _count = newCount;
         }
 
-        _items[index] = item;
+        var items = _items;
+
+        if (index != newCount)
+        {
+            Array.Copy(items, index, items, index + 1, count - index);
+        }
+
+        _count = newCount;
+        items[index] = item;
     }
 
     /// <summary>Removes the first occurence of an item from the list.</summary>

@@ -14,18 +14,20 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public abstract unsafe class D3D12GraphicsTexture : GraphicsTexture
+public sealed unsafe class D3D12GraphicsTexture : GraphicsTexture
 {
     private ValueLazy<Pointer<ID3D12Resource>> _d3d12Resource;
     private ValueLazy<D3D12_RESOURCE_STATES> _d3d12ResourceState;
 
-    private protected VolatileState _state;
+    private VolatileState _state;
 
-    internal D3D12GraphicsTexture(D3D12GraphicsDevice device, GraphicsTextureKind kind, in GraphicsMemoryRegion<GraphicsMemoryHeap> heapRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth)
+    internal D3D12GraphicsTexture(D3D12GraphicsDevice device, GraphicsTextureKind kind, in GraphicsMemoryHeapRegion heapRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth)
         : base(device, kind, in heapRegion, cpuAccess, width, height, depth)
     {
         _d3d12Resource = new ValueLazy<Pointer<ID3D12Resource>>(CreateD3D12Resource);
         _d3d12ResourceState = new ValueLazy<D3D12_RESOURCE_STATES>(GetD3D12ResourceState);
+
+        _ = _state.Transition(to: Initialized);
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsTexture" /> class.</summary>
@@ -126,7 +128,7 @@ public abstract unsafe class D3D12GraphicsTexture : GraphicsTexture
         if (priorState < Disposing)
         {
             _d3d12Resource.Dispose(ReleaseIfNotNull);
-            HeapRegion.Collection.Free(in HeapRegion);
+            HeapRegion.Heap.Free(in HeapRegion);
         }
 
         _state.EndDispose();

@@ -12,7 +12,7 @@ namespace TerraFX.Graphics;
 
 /// <summary>Defines flags that modify how a memory region is allocated.</summary>
 [Flags]
-public enum GraphicsMemoryRegionAllocationFlags
+public enum GraphicsMemoryHeapRegionAllocationFlags
 {
     /// <summary>No flags are specified.</summary>
     None = 0,

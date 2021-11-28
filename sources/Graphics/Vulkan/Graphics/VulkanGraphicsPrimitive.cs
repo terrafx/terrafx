@@ -11,8 +11,8 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
 {
     private VolatileState _state;
 
-    internal VulkanGraphicsPrimitive(VulkanGraphicsDevice device, VulkanGraphicsPipeline pipeline, in GraphicsMemoryRegion<GraphicsResource> vertexBufferView, uint vertexBufferStride, in GraphicsMemoryRegion<GraphicsResource> indexBufferView, uint indexBufferStride, ReadOnlySpan<GraphicsMemoryRegion<GraphicsResource>> inputResourceRegions = default)
-        : base(device, pipeline, in vertexBufferView, vertexBufferStride, in indexBufferView, indexBufferStride, inputResourceRegions)
+    internal VulkanGraphicsPrimitive(VulkanGraphicsDevice device, VulkanGraphicsPipeline pipeline, in GraphicsResourceView vertexBufferView, in GraphicsResourceView indexBufferView, ReadOnlySpan<GraphicsResourceView> inputResourceViews)
+        : base(device, pipeline, in vertexBufferView, in indexBufferView, inputResourceViews)
     {
         _ = _state.Transition(to: Initialized);
     }
@@ -39,13 +39,13 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
             // should be freeing the region and something else should control
             // resource disposal.
 
-            foreach (var inputResourceRegion in InputResourceRegions)
+            foreach (var inputResourceRegion in InputResourceViews)
             {
-                inputResourceRegion.Collection?.Dispose();
+                inputResourceRegion.Resource?.Dispose();
             }
 
-            VertexBufferRegion.Collection?.Dispose();
-            IndexBufferRegion.Collection?.Dispose();
+            VertexBufferView.Resource?.Dispose();
+            IndexBufferView.Resource?.Dispose();
         }
 
         _state.EndDispose();

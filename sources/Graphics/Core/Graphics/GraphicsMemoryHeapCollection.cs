@@ -112,24 +112,24 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not a <c>power of two</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="flags" /> has an invalid combination.</exception>
     /// <exception cref="OutOfMemoryException">There was not a large enough region of free memory to complete the allocation.</exception>
-    public GraphicsMemoryRegion<GraphicsMemoryHeap> Allocate(ulong size, ulong alignment = 1, GraphicsMemoryRegionAllocationFlags flags = GraphicsMemoryRegionAllocationFlags.None)
+    public GraphicsMemoryHeapRegion Allocate(ulong size, ulong alignment = 1, GraphicsMemoryHeapRegionAllocationFlags flags = GraphicsMemoryHeapRegionAllocationFlags.None)
     {
-        var succeeded = TryAllocate(size, alignment, flags, out var region);
+        var succeeded = TryAllocate(size, alignment, flags, out var heapRegion);
 
         if (!succeeded)
         {
             ThrowOutOfMemoryException(size);
         }
-        return region;
+        return heapRegion;
     }
 
     /// <summary>Frees a region of memory from the collection.</summary>
-    /// <param name="region">The region to be freed.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="region" />.<see cref="GraphicsMemoryRegion{GraphicsMemoryHeap}.Collection" /> is <c>null</c>.</exception>
-    /// <exception cref="KeyNotFoundException"><paramref name="region" /> was not found in the collection.</exception>
-    public void Free(in GraphicsMemoryRegion<GraphicsMemoryHeap> region)
+    /// <param name="heapRegion">The region to be freed.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="heapRegion" />.<see cref="GraphicsMemoryHeapRegion.Heap" /> is <c>null</c>.</exception>
+    /// <exception cref="KeyNotFoundException"><paramref name="heapRegion" /> was not found in the collection.</exception>
+    public void Free(in GraphicsMemoryHeapRegion heapRegion)
     {
-        var heap = region.Collection;
+        var heap = heapRegion.Heap;
         ThrowIfNull(heap);
 
         using var mutex = new DisposableWriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
@@ -139,10 +139,10 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
 
         if (heapIndex == -1)
         {
-            ThrowKeyNotFoundException(region, nameof(heaps));
+            ThrowKeyNotFoundException(heapRegion, nameof(heaps));
         }
 
-        heap.Free(in region);
+        heap.Free(in heapRegion);
 
         if (heap.IsEmpty)
         {
@@ -219,36 +219,36 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
     /// <param name="size">The size of the region to allocate, in bytes.</param>
     /// <param name="alignment">The alignment of the region to allocate, in bytes.</param>
     /// <param name="flags">The flags that modify how the region is allocated.</param>
-    /// <param name="region">On return, contains the allocated region or <c>default</c> if the allocation failed.</param>
+    /// <param name="heapRegion">On return, contains the allocated region or <c>default</c> if the allocation failed.</param>
     /// <returns><c>true</c> if a region was sucesfully allocated; otherwise, <c>false</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="flags" /> has an invalid combination.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not a <c>power of two</c>.</exception>
-    public bool TryAllocate(ulong size, [Optional, DefaultParameterValue(1UL)] ulong alignment, [Optional, DefaultParameterValue(GraphicsMemoryRegionAllocationFlags.None)] GraphicsMemoryRegionAllocationFlags flags, out GraphicsMemoryRegion<GraphicsMemoryHeap> region)
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
+    public bool TryAllocate(ulong size, [Optional] ulong alignment, [Optional] GraphicsMemoryHeapRegionAllocationFlags flags, out GraphicsMemoryHeapRegion heapRegion)
     {
         using var mutex = new DisposableWriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
-        return TryAllocateRegion(size, alignment, flags, out region);
+        return TryAllocateHeapRegion(size, alignment, flags, out heapRegion);
     }
 
     /// <summary>Tries to allocate a set of memory regions in the collection.</summary>
     /// <param name="size">The size of the regions to allocate, in bytes.</param>
     /// <param name="alignment">The alignment of the regions to allocate, in bytes.</param>
     /// <param name="flags">The flags that modify how the regions are allocated.</param>
-    /// <param name="regions">On return, will be filled with the allocated regions.</param>
+    /// <param name="heapRegions">On return, will be filled with the allocated regions.</param>
     /// <returns><c>true</c> if the regions were sucesfully allocated; otherwise, <c>false</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="flags" /> has an invalid combination.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not a <c>power of two</c>.</exception>
-    public bool TryAllocate(ulong size, [Optional, DefaultParameterValue(1UL)] ulong alignment, [Optional, DefaultParameterValue(GraphicsMemoryRegionAllocationFlags.None)] GraphicsMemoryRegionAllocationFlags flags, Span<GraphicsMemoryRegion<GraphicsMemoryHeap>> regions)
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
+    public bool TryAllocate(ulong size, [Optional] ulong alignment, [Optional] GraphicsMemoryHeapRegionAllocationFlags flags, Span<GraphicsMemoryHeapRegion> heapRegions)
     {
         var succeeded = true;
-        nuint index;
+        int index;
 
         using (var mutex = new DisposableWriterLockSlim(_mutex, _allocator.IsExternallySynchronized))
         {
-            for (index = 0; index < (nuint)regions.Length; ++index)
+            for (index = 0; index < heapRegions.Length; ++index)
             {
-                succeeded = TryAllocateRegion(size, alignment, flags, out regions[(int)index]);
+                succeeded = TryAllocateHeapRegion(size, alignment, flags, out heapRegions[index]);
 
                 if (!succeeded)
                 {
@@ -263,8 +263,8 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
 
             while (index-- != 0)
             {
-                Free(in regions[(int)index]);
-                regions[(int)index] = default;
+                Free(in heapRegions[index]);
+                heapRegions[index] = default;
             }
         }
 
@@ -369,13 +369,7 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
     /// <summary>Adds a new heap to the collection.</summary>
     /// <param name="size">The size of the heap, in bytes.</param>
     /// <returns>The created graphics memory heap.</returns>
-    protected GraphicsMemoryHeap CreateHeap(ulong size)
-        => CreateHeap<IGraphicsMemoryRegionCollection<GraphicsMemoryHeap>.DefaultMetadata>(size);
-
-    /// <inheritdoc cref="CreateHeap(ulong)" />
-    /// <typeparam name="TMetadata">The type used for metadata in the resource.</typeparam>
-    protected abstract GraphicsMemoryHeap CreateHeap<TMetadata>(ulong size)
-        where TMetadata : struct, IGraphicsMemoryRegionCollection<GraphicsMemoryHeap>.IMetadata;
+    protected abstract GraphicsMemoryHeap CreateHeap(ulong size);
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
@@ -511,10 +505,10 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
         _size -= heap.Size;
     }
 
-    private bool TryAllocateRegion(ulong size, ulong alignment, GraphicsMemoryRegionAllocationFlags flags, out GraphicsMemoryRegion<GraphicsMemoryHeap> region)
+    private bool TryAllocateHeapRegion(ulong size, ulong alignment, GraphicsMemoryHeapRegionAllocationFlags flags, out GraphicsMemoryHeapRegion heapRegion)
     {
-        var useDedicatedHeap = flags.HasFlag(GraphicsMemoryRegionAllocationFlags.DedicatedCollection);
-        var useExistingHeap = flags.HasFlag(GraphicsMemoryRegionAllocationFlags.ExistingCollection);
+        var useDedicatedHeap = flags.HasFlag(GraphicsMemoryHeapRegionAllocationFlags.DedicatedCollection);
+        var useExistingHeap = flags.HasFlag(GraphicsMemoryHeapRegionAllocationFlags.ExistingCollection);
 
         if (useDedicatedHeap && useExistingHeap)
         {
@@ -541,7 +535,7 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
                 var currentHeap = heaps[heapIndex];
                 AssertNotNull(currentHeap);
 
-                if (currentHeap.TryAllocate(size, alignment, out region))
+                if (currentHeap.TryAllocate(size, alignment, out heapRegion))
                 {
                     if (currentHeap == _emptyHeap)
                     {
@@ -556,7 +550,7 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
 
         if (!canCreateNewHeap)
         {
-            region = default;
+            heapRegion = default;
             return false;
         }
 
@@ -564,12 +558,12 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
 
         if (heapSize >= availableMemory)
         {
-            region = default;
+            heapRegion = default;
             return false;
         }
 
         var heap = AddHeap(heapSize);
-        return heap.TryAllocate(size, alignment, out region);
+        return heap.TryAllocate(size, alignment, out heapRegion);
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

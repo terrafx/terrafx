@@ -143,6 +143,10 @@ public static unsafe class UnsafeUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint SizeOf<T>() => unchecked((uint)Unsafe.SizeOf<T>());
 
+    /// <inheritdoc cref="Unsafe.SkipInit{T}(out T)" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SkipInit<T>(out T value) => Unsafe.SkipInit(out value);
+
     /// <inheritdoc cref="Unsafe.WriteUnaligned{T}(void*, T)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteUnaligned<T>(void* source, T value)
