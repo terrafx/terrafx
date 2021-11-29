@@ -60,7 +60,6 @@ public sealed class HelloSmoke : HelloWindow
         _quadPrimitive = CreateQuadPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
         currentGraphicsContext.EndFrame();
 
-        graphicsDevice.Signal(currentGraphicsContext.Fence);
         graphicsDevice.WaitForIdle();
     }
 

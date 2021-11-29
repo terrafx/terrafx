@@ -6,11 +6,9 @@ using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkAccessFlags;
 using static TerraFX.Interop.Vulkan.VkCommandPoolCreateFlags;
-using static TerraFX.Interop.Vulkan.VkComponentSwizzle;
 using static TerraFX.Interop.Vulkan.VkDescriptorType;
 using static TerraFX.Interop.Vulkan.VkImageAspectFlags;
 using static TerraFX.Interop.Vulkan.VkImageLayout;
-using static TerraFX.Interop.Vulkan.VkImageViewType;
 using static TerraFX.Interop.Vulkan.VkIndexType;
 using static TerraFX.Interop.Vulkan.VkPipelineBindPoint;
 using static TerraFX.Interop.Vulkan.VkPipelineStageFlags;
@@ -21,6 +19,7 @@ using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics;
@@ -37,31 +36,59 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
     private const uint DrawingInitialized = 5;
 
     private readonly VulkanGraphicsFence _fence;
+    private readonly VkCommandBuffer _vkCommandBuffer;
+    private readonly VkCommandPool _vkCommandPool;
 
     private uint _framebufferIndex;
     private VulkanGraphicsSwapchain? _swapchain;
-
-    private ValueLazy<VkCommandBuffer> _vulkanCommandBuffer;
-    private ValueLazy<VkCommandPool> _vulkanCommandPool;
 
     private VolatileState _state;
 
     internal VulkanGraphicsContext(VulkanGraphicsDevice device)
         : base(device)
     {
-        _fence = new VulkanGraphicsFence(device, isSignaled: true);
+        var vkCommandPool = CreateVkCommandPool(device);
+        _vkCommandPool = vkCommandPool;
 
-        _vulkanCommandBuffer = new ValueLazy<VkCommandBuffer>(CreateVulkanCommandBuffer);
-        _vulkanCommandPool = new ValueLazy<VkCommandPool>(CreateVulkanCommandPool);
+        _vkCommandBuffer = CreateVkCommandBuffer(device, vkCommandPool);
+        _fence = device.CreateFence(isSignalled: true);
 
         _ = _state.Transition(to: Initialized);
+
+        static VkCommandBuffer CreateVkCommandBuffer(VulkanGraphicsDevice device, VkCommandPool vkCommandPool)
+        {
+            VkCommandBuffer vkCommandBuffer;
+
+            var vkCommandBufferAllocateInfo = new VkCommandBufferAllocateInfo {
+                sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+                commandPool = vkCommandPool,
+                commandBufferCount = 1,
+            };
+            ThrowExternalExceptionIfNotSuccess(vkAllocateCommandBuffers(device.VkDevice, &vkCommandBufferAllocateInfo, &vkCommandBuffer));
+
+            return vkCommandBuffer;
+        }
+
+        static VkCommandPool CreateVkCommandPool(VulkanGraphicsDevice device)
+        {
+            VkCommandPool vkCommandPool;
+
+            var commandPoolCreateInfo = new VkCommandPoolCreateInfo {
+                sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+                flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+                queueFamilyIndex = device.VkCommandQueueFamilyIndex,
+            };
+            ThrowExternalExceptionIfNotSuccess(vkCreateCommandPool(device.VkDevice, &commandPoolCreateInfo, pAllocator: null, &vkCommandPool));
+
+            return vkCommandPool;
+        }
     }
 
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsContext" /> class.</summary>
     ~VulkanGraphicsContext() => Dispose(isDisposing: false);
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-    public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
+    public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
     /// <inheritdoc />
     public override VulkanGraphicsFence Fence => _fence;
@@ -69,13 +96,25 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
     /// <inheritdoc />
     public override VulkanGraphicsSwapchain? Swapchain => _swapchain;
 
-    /// <summary>Gets the <see cref="VkCommandBuffer" /> used by the context.</summary>
-    /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-    public VkCommandBuffer VulkanCommandBuffer => _vulkanCommandBuffer.Value;
+    /// <summary>Gets the <see cref="Interop.Vulkan.VkCommandBuffer" /> used by the context.</summary>
+    public VkCommandBuffer VkCommandBuffer
+    {
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _vkCommandBuffer;
+        }
+    }
 
-    /// <summary>Gets the <see cref="VkCommandPool" /> used by the context.</summary>
-    /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-    public VkCommandPool VulkanCommandPool => _vulkanCommandPool.Value;
+    /// <summary>Gets the <see cref="Interop.Vulkan.VkCommandPool" /> used by the context.</summary>
+    public VkCommandPool VkCommandPool
+    {
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _vkCommandPool;
+        }
+    }
 
     /// <inheritdoc />
     public override void BeginDrawing(uint framebufferIndex, ColorRgba backgroundColor)
@@ -83,12 +122,12 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
         _state.Transition(from: FrameInitialized, to: DrawingInitializing);
         Debug.Assert(Swapchain is not null);
 
-        var clearValue = new VkClearValue();
+        var vkClearValue = new VkClearValue();
 
-        clearValue.color.float32[0] = backgroundColor.Red;
-        clearValue.color.float32[1] = backgroundColor.Green;
-        clearValue.color.float32[2] = backgroundColor.Blue;
-        clearValue.color.float32[3] = backgroundColor.Alpha;
+        vkClearValue.color.float32[0] = backgroundColor.Red;
+        vkClearValue.color.float32[1] = backgroundColor.Green;
+        vkClearValue.color.float32[2] = backgroundColor.Blue;
+        vkClearValue.color.float32[3] = backgroundColor.Alpha;
 
         var device = Device;
         var surface = Swapchain.Surface;
@@ -96,10 +135,10 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
         var surfaceWidth = surface.Width;
         var surfaceHeight = surface.Height;
 
-        var renderPassBeginInfo = new VkRenderPassBeginInfo {
+        var vkRenderPassBeginInfo = new VkRenderPassBeginInfo {
             sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-            renderPass = device.VulkanRenderPass,
-            framebuffer = Swapchain.VulkanFramebuffers[framebufferIndex],
+            renderPass = device.VkRenderPass,
+            framebuffer = Swapchain.VkFramebuffers[framebufferIndex],
             renderArea = new VkRect2D {
                 extent = new VkExtent2D {
                     width = (uint)surface.Width,
@@ -107,13 +146,13 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
                 },
             },
             clearValueCount = 1,
-            pClearValues = &clearValue,
+            pClearValues = &vkClearValue,
         };
 
-        var commandBuffer = VulkanCommandBuffer;
-        vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+        var vkCommandBuffer = VkCommandBuffer;
+        vkCmdBeginRenderPass(vkCommandBuffer, &vkRenderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        var viewport = new VkViewport {
+        var vkViewport = new VkViewport {
             x = 0,
             y = surface.Height,
             width = surface.Width,
@@ -121,15 +160,15 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
             minDepth = 0.0f,
             maxDepth = 1.0f,
         };
-        vkCmdSetViewport(commandBuffer, firstViewport: 0, viewportCount: 1, &viewport);
+        vkCmdSetViewport(vkCommandBuffer, firstViewport: 0, viewportCount: 1, &vkViewport);
 
-        var scissorRect = new VkRect2D {
+        var vkScissorRect = new VkRect2D {
             extent = new VkExtent2D {
                 width = (uint)surface.Width,
                 height = (uint)surface.Height,
             },
         };
-        vkCmdSetScissor(commandBuffer, firstScissor: 0, scissorCount: 1, &scissorRect);
+        vkCmdSetScissor(vkCommandBuffer, firstScissor: 0, scissorCount: 1, &vkScissorRect);
 
         _framebufferIndex = framebufferIndex;
         _state.Transition(from: DrawingInitializing, to: DrawingInitialized);
@@ -149,11 +188,10 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
 
         Fence.Reset();
 
-        var commandBufferBeginInfo = new VkCommandBufferBeginInfo {
+        var vkCommandBufferBeginInfo = new VkCommandBufferBeginInfo {
             sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
         };
-
-        ThrowExternalExceptionIfNotSuccess(vkBeginCommandBuffer(VulkanCommandBuffer, &commandBufferBeginInfo));
+        ThrowExternalExceptionIfNotSuccess(vkBeginCommandBuffer(VkCommandBuffer, &vkCommandBufferBeginInfo));
 
         _state.Transition(from: FrameInitializing, to: FrameInitialized);
     }
@@ -177,12 +215,12 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
             ThrowInvalidOperationException("GraphicsContext.BeginFrame has not been called");
         }
 
-        var vulkanBufferCopy = new VkBufferCopy {
+        var vkBufferCopy = new VkBufferCopy {
             srcOffset = 0,
             dstOffset = 0,
             size = Math.Min(destination.Size, source.Size),
         };
-        vkCmdCopyBuffer(VulkanCommandBuffer, source.VulkanBuffer, destination.VulkanBuffer, 1, &vulkanBufferCopy);
+        vkCmdCopyBuffer(VkCommandBuffer, source.VkBuffer, destination.VkBuffer, 1, &vkBufferCopy);
     }
 
     /// <inheritdoc cref="Copy(GraphicsTexture, GraphicsBuffer)" />
@@ -196,12 +234,12 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
             ThrowInvalidOperationException("GraphicsContext.BeginFrame has not been called");
         }
 
-        var vulkanCommandBuffer = VulkanCommandBuffer;
-        var vulkanImage = destination.VulkanImage;
+        var vkCommandBuffer = VkCommandBuffer;
+        var vkImage = destination.VkImage;
 
         BeginCopy();
 
-        var vulkanBufferImageCopy = new VkBufferImageCopy {
+        var vkBufferImageCopy = new VkBufferImageCopy {
             imageSubresource = new VkImageSubresourceLayers {
                 aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
                 layerCount = 1,
@@ -213,18 +251,18 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
             },
         };
 
-        vkCmdCopyBufferToImage(vulkanCommandBuffer, source.VulkanBuffer, vulkanImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &vulkanBufferImageCopy);
+        vkCmdCopyBufferToImage(vkCommandBuffer, source.VkBuffer, vkImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &vkBufferImageCopy);
 
         EndCopy();
 
         void BeginCopy()
         {
-            var vulkanImageMemoryBarrier = new VkImageMemoryBarrier {
+            var vkImageMemoryBarrier = new VkImageMemoryBarrier {
                 sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
                 dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
                 oldLayout = VK_IMAGE_LAYOUT_UNDEFINED,
                 newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                image = vulkanImage,
+                image = vkImage,
                 subresourceRange = new VkImageSubresourceRange {
                     aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
                     levelCount = 1,
@@ -232,18 +270,18 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
                 },
             };
 
-            vkCmdPipelineBarrier(vulkanCommandBuffer, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, dependencyFlags: 0, memoryBarrierCount: 0, pMemoryBarriers: null, bufferMemoryBarrierCount: 0, pBufferMemoryBarriers: null, imageMemoryBarrierCount: 1, &vulkanImageMemoryBarrier);
+            vkCmdPipelineBarrier(vkCommandBuffer, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, dependencyFlags: 0, memoryBarrierCount: 0, pMemoryBarriers: null, bufferMemoryBarrierCount: 0, pBufferMemoryBarriers: null, imageMemoryBarrierCount: 1, &vkImageMemoryBarrier);
         }
 
         void EndCopy()
         {
-            var vulkanImageMemoryBarrier = new VkImageMemoryBarrier {
+            var vkImageMemoryBarrier = new VkImageMemoryBarrier {
                 sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
                 srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
                 dstAccessMask = VK_ACCESS_SHADER_READ_BIT,
                 oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                 newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-                image = vulkanImage,
+                image = vkImage,
                 subresourceRange = new VkImageSubresourceRange {
                     aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
                     levelCount = 1,
@@ -251,7 +289,7 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
                 },
             };
 
-            vkCmdPipelineBarrier(vulkanCommandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, dependencyFlags: 0, memoryBarrierCount: 0, pMemoryBarriers: null, bufferMemoryBarrierCount: 0, pBufferMemoryBarriers: null, imageMemoryBarrierCount: 1, &vulkanImageMemoryBarrier);
+            vkCmdPipelineBarrier(vkCommandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, dependencyFlags: 0, memoryBarrierCount: 0, pMemoryBarriers: null, bufferMemoryBarrierCount: 0, pBufferMemoryBarriers: null, imageMemoryBarrierCount: 1, &vkImageMemoryBarrier);
         }
     }
 
@@ -269,74 +307,73 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
             ThrowInvalidOperationException("GraphicsContext.BeginDraw has not been called");
         }
 
-        var vulkanCommandBuffer = VulkanCommandBuffer;
+        var vkCommandBuffer = VkCommandBuffer;
         var pipeline = primitive.Pipeline;
         var pipelineSignature = pipeline.Signature;
-        var vulkanPipeline = pipeline.VulkanPipeline;
+        var vkPipeline = pipeline.VkPipeline;
 
-        vkCmdBindPipeline(vulkanCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline);
+        vkCmdBindPipeline(vkCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vkPipeline);
 
         ref readonly var vertexBufferView = ref primitive.VertexBufferView;
-        var vertexBuffer = vertexBufferView.Resource as VulkanGraphicsBuffer;
+        var vertexBuffer = vertexBufferView.Resource.As<VulkanGraphicsBuffer>();
         AssertNotNull(vertexBuffer);
 
-        var vulkanVertexBuffer = vertexBuffer.VulkanBuffer;
-        var vulkanVertexBufferOffset = (ulong)vertexBufferView.Offset;
+        var vkVertexBuffer = vertexBuffer.VkBuffer;
+        var vkVertexBufferOffset = (ulong)vertexBufferView.Offset;
 
-        vkCmdBindVertexBuffers(vulkanCommandBuffer, firstBinding: 0, bindingCount: 1, &vulkanVertexBuffer, &vulkanVertexBufferOffset);
+        vkCmdBindVertexBuffers(vkCommandBuffer, firstBinding: 0, bindingCount: 1, &vkVertexBuffer, &vkVertexBufferOffset);
 
-        var vulkanDescriptorSet = pipelineSignature.VulkanDescriptorSet;
+        var vkDescriptorSet = pipelineSignature.VkDescriptorSet;
 
-        if (vulkanDescriptorSet != VkDescriptorSet.NULL)
+        if (vkDescriptorSet != VkDescriptorSet.NULL)
         {
-            var inputResourceRegions = primitive.InputResourceViews;
-            var inputResourceRegionsLength = inputResourceRegions.Length;
+            var inputResourceViews = primitive.InputResourceViews;
 
-            for (var index = 0; index < inputResourceRegionsLength; index++)
+            for (var index = 0; index < inputResourceViews.Length; index++)
             {
-                var inputResourceRegion = inputResourceRegions[index];
+                ref readonly var inputResourceView = ref inputResourceViews[index];
 
-                VkWriteDescriptorSet writeDescriptorSet;
+                VkWriteDescriptorSet vkWriteDescriptorSet;
 
-                if (inputResourceRegion.Resource is VulkanGraphicsBuffer vulkanGraphicsBuffer)
+                if (inputResourceView.Resource is VulkanGraphicsBuffer vulkanGraphicsBuffer)
                 {
-                    var descriptorBufferInfo = new VkDescriptorBufferInfo {
-                        buffer = vulkanGraphicsBuffer.VulkanBuffer,
-                        offset = inputResourceRegion.Offset,
-                        range = inputResourceRegion.Size,
+                    var vkDescriptorBufferInfo = new VkDescriptorBufferInfo {
+                        buffer = vulkanGraphicsBuffer.VkBuffer,
+                        offset = inputResourceView.Offset,
+                        range = inputResourceView.Size,
                     };
 
-                    writeDescriptorSet = new VkWriteDescriptorSet {
+                    vkWriteDescriptorSet = new VkWriteDescriptorSet {
                         sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-                        dstSet = vulkanDescriptorSet,
+                        dstSet = vkDescriptorSet,
                         dstBinding = unchecked((uint)index),
                         descriptorCount = 1,
                         descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-                        pBufferInfo = &descriptorBufferInfo,
+                        pBufferInfo = &vkDescriptorBufferInfo,
                     };
                 }
-                else if (inputResourceRegion.Resource is VulkanGraphicsTexture vulkanGraphicsTexture)
+                else if (inputResourceView.Resource is VulkanGraphicsTexture vulkanGraphicsTexture)
                 {
-                    var descriptorImageInfo = new VkDescriptorImageInfo {
-                        sampler = vulkanGraphicsTexture.VulkanSampler,
-                        imageView = vulkanGraphicsTexture.VulkanImageView,
+                    var vkDescriptorImageInfo = new VkDescriptorImageInfo {
+                        sampler = vulkanGraphicsTexture.VkSampler,
+                        imageView = vulkanGraphicsTexture.VkImageView,
                         imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                     };
 
-                    writeDescriptorSet = new VkWriteDescriptorSet {
+                    vkWriteDescriptorSet = new VkWriteDescriptorSet {
                         sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-                        dstSet = vulkanDescriptorSet,
+                        dstSet = vkDescriptorSet,
                         dstBinding = unchecked((uint)index),
                         descriptorCount = 1,
                         descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-                        pImageInfo = &descriptorImageInfo,
+                        pImageInfo = &vkDescriptorImageInfo,
                     };
                 }
 
-                vkUpdateDescriptorSets(Device.VulkanDevice, 1, &writeDescriptorSet, 0, pDescriptorCopies: null);
+                vkUpdateDescriptorSets(Device.VkDevice, 1, &vkWriteDescriptorSet, 0, pDescriptorCopies: null);
             }
 
-            vkCmdBindDescriptorSets(vulkanCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineSignature.VulkanPipelineLayout, firstSet: 0, 1, &vulkanDescriptorSet, dynamicOffsetCount: 0, pDynamicOffsets: null);
+            vkCmdBindDescriptorSets(vkCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineSignature.VkPipelineLayout, firstSet: 0, 1, &vkDescriptorSet, dynamicOffsetCount: 0, pDynamicOffsets: null);
         }
 
         ref readonly var indexBufferView = ref primitive.IndexBufferView;
@@ -351,13 +388,13 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
                 Assert(AssertionsEnabled && (indexBufferStride == 4));
                 indexType = VK_INDEX_TYPE_UINT32;
             }
-            vkCmdBindIndexBuffer(vulkanCommandBuffer, indexBuffer.VulkanBuffer, indexBufferView.Offset, indexType);
+            vkCmdBindIndexBuffer(vkCommandBuffer, indexBuffer.VkBuffer, indexBufferView.Offset, indexType);
 
-            vkCmdDrawIndexed(vulkanCommandBuffer, indexCount: (uint)(indexBufferView.Size / indexBufferStride), instanceCount: 1, firstIndex: 0, vertexOffset: 0, firstInstance: 0);
+            vkCmdDrawIndexed(vkCommandBuffer, indexCount: indexBufferView.Size / indexBufferStride, instanceCount: 1, firstIndex: 0, vertexOffset: 0, firstInstance: 0);
         }
         else
         {
-            vkCmdDraw(vulkanCommandBuffer, vertexCount: (uint)(vertexBufferView.Size / vertexBufferView.Stride), instanceCount: 1, firstVertex: 0, firstInstance: 0);
+            vkCmdDraw(vkCommandBuffer, vertexCount: vertexBufferView.Size / vertexBufferView.Stride, instanceCount: 1, firstVertex: 0, firstInstance: 0);
         }
     }
 
@@ -365,7 +402,7 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
     public override void EndDrawing()
     {
         _state.Transition(from: DrawingInitialized, to: DrawingInitializing);
-        vkCmdEndRenderPass(VulkanCommandBuffer);
+        vkCmdEndRenderPass(VkCommandBuffer);
         _state.Transition(from: DrawingInitializing, to: FrameInitialized);
     }
 
@@ -374,17 +411,17 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
     {
         _state.Transition(from: FrameInitialized, to: FrameInitializing);
 
-        var commandBuffer = VulkanCommandBuffer;
-        ThrowExternalExceptionIfNotSuccess(vkEndCommandBuffer(commandBuffer));
+        var vkCommandBuffer = VkCommandBuffer;
+        ThrowExternalExceptionIfNotSuccess(vkEndCommandBuffer(vkCommandBuffer));
 
-        var submitInfo = new VkSubmitInfo {
+        var vkSubmitInfo = new VkSubmitInfo {
             sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
             commandBufferCount = 1,
-            pCommandBuffers = &commandBuffer,
+            pCommandBuffers = &vkCommandBuffer,
         };
 
         var fence = Fence;
-        ThrowExternalExceptionIfNotSuccess(vkQueueSubmit(Device.VulkanCommandQueue, submitCount: 1, &submitInfo, fence.VulkanFence));
+        ThrowExternalExceptionIfNotSuccess(vkQueueSubmit(Device.VkCommandQueue, submitCount: 1, &vkSubmitInfo, fence.VkFence));
         fence.Wait();
 
         _swapchain = null;
@@ -398,59 +435,34 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
 
         if (priorState < Disposing)
         {
-            _vulkanCommandBuffer.Dispose(DisposeVulkanCommandBuffer);
-            _vulkanCommandPool.Dispose(DisposeVulkanCommandPool);
-            _fence?.Dispose();
+            var vkDevice = Device.VkDevice;
+            var vkCommandPool = _vkCommandPool;
+
+            DisposeVkCommandBuffer(vkDevice, vkCommandPool, _vkCommandBuffer);
+            DisposeVkCommandPool(vkDevice, vkCommandPool);
+
+            if (isDisposing)
+            {
+                _fence?.Dispose();
+            }
         }
 
         _state.EndDispose();
-    }
 
-    private VkCommandBuffer CreateVulkanCommandBuffer()
-    {
-        VkCommandBuffer vulkanCommandBuffer;
-
-        var commandBufferAllocateInfo = new VkCommandBufferAllocateInfo {
-            sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-            commandPool = VulkanCommandPool,
-            commandBufferCount = 1,
-        };
-        ThrowExternalExceptionIfNotSuccess(vkAllocateCommandBuffers(Device.VulkanDevice, &commandBufferAllocateInfo, &vulkanCommandBuffer));
-
-        return vulkanCommandBuffer;
-    }
-
-    private VkCommandPool CreateVulkanCommandPool()
-    {
-        VkCommandPool vulkanCommandPool;
-
-        var commandPoolCreateInfo = new VkCommandPoolCreateInfo {
-            sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-            flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
-            queueFamilyIndex = Device.VulkanCommandQueueFamilyIndex,
-        };
-        ThrowExternalExceptionIfNotSuccess(vkCreateCommandPool(Device.VulkanDevice, &commandPoolCreateInfo, pAllocator: null, &vulkanCommandPool));
-
-        return vulkanCommandPool;
-    }
-
-    private void DisposeVulkanCommandBuffer(VkCommandBuffer vulkanCommandBuffer)
-    {
-        AssertDisposing(_state);
-
-        if (vulkanCommandBuffer != VkCommandBuffer.NULL)
+        static void DisposeVkCommandBuffer(VkDevice vkDevice, VkCommandPool vkCommandPool, VkCommandBuffer vkCommandBuffer)
         {
-            vkFreeCommandBuffers(Device.VulkanDevice, VulkanCommandPool, 1, &vulkanCommandBuffer);
+            if (vkCommandBuffer != VkCommandBuffer.NULL)
+            {
+                vkFreeCommandBuffers(vkDevice, vkCommandPool, 1, &vkCommandBuffer);
+            }
         }
-    }
 
-    private void DisposeVulkanCommandPool(VkCommandPool vulkanCommandPool)
-    {
-        AssertDisposing(_state);
-
-        if (vulkanCommandPool != VkCommandPool.NULL)
+        static void DisposeVkCommandPool(VkDevice vkDevice, VkCommandPool vkCommandPool)
         {
-            vkDestroyCommandPool(Device.VulkanDevice, vulkanCommandPool, pAllocator: null);
+            if (vkCommandPool != VkCommandPool.NULL)
+            {
+                vkDestroyCommandPool(vkDevice, vkCommandPool, pAllocator: null);
+            }
         }
     }
 }

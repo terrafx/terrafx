@@ -521,16 +521,15 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
         var sizeWithMargins = size + (2 * _allocator.Settings.MinimumAllocatedRegionMarginSize.GetValueOrDefault());
 
         var heaps = CollectionsMarshal.AsSpan(_heaps);
-        var heapsLength = heaps.Length;
 
         var availableMemory = (budget.EstimatedUsage < budget.EstimatedBudget) ? (budget.EstimatedBudget - budget.EstimatedUsage) : 0;
-        var canCreateNewHeap = !useExistingHeap && (heapsLength < MaximumHeapCount) && (availableMemory >= sizeWithMargins);
+        var canCreateNewHeap = !useExistingHeap && (heaps.Length < MaximumHeapCount) && (availableMemory >= sizeWithMargins);
 
         // 1. Search existing heaps
 
         if (!useDedicatedHeap && (size <= maximumSharedHeapSize))
         {
-            for (var heapIndex = 0; heapIndex < heapsLength; ++heapIndex)
+            for (var heapIndex = 0; heapIndex < heaps.Length; ++heapIndex)
             {
                 var currentHeap = heaps[heapIndex];
                 AssertNotNull(currentHeap);

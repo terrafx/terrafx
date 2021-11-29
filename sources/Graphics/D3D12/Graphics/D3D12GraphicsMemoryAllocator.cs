@@ -16,6 +16,8 @@ using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
 
@@ -23,16 +25,16 @@ namespace TerraFX.Graphics;
 public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocator
 {
     private readonly D3D12GraphicsMemoryHeapCollection[] _heapCollections;
-    private readonly bool _supportsResourceHeapTier2;
+    private readonly bool _supportsD3D12ResourceHeapTier2;
 
     private VolatileState _state;
 
     internal D3D12GraphicsMemoryAllocator(D3D12GraphicsDevice device, in GraphicsMemoryAllocatorSettings settings)
         : base(device, in settings)
     {
-        var supportsResourceHeapTier2 = Device.D3D12Options.ResourceHeapTier >= D3D12_RESOURCE_HEAP_TIER_2;
+        var supportsD3D12ResourceHeapTier2 = Device.D3D12Options.ResourceHeapTier >= D3D12_RESOURCE_HEAP_TIER_2;
 
-        _heapCollections = supportsResourceHeapTier2
+        _heapCollections = supportsD3D12ResourceHeapTier2
             ? new D3D12GraphicsMemoryHeapCollection[3] {
                 new D3D12GraphicsMemoryHeapCollection(Device, this, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_DEFAULT),
                 new D3D12GraphicsMemoryHeapCollection(Device, this, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_UPLOAD),
@@ -50,7 +52,7 @@ public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocato
                 new D3D12GraphicsMemoryHeapCollection(Device, this, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_READBACK),
             };
 
-        _supportsResourceHeapTier2 = supportsResourceHeapTier2;
+        _supportsD3D12ResourceHeapTier2 = supportsD3D12ResourceHeapTier2;
 
         // TODO: UpdateBudget
         _ = _state.Transition(to: Initialized);
@@ -63,45 +65,64 @@ public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocato
     public override int Count => _heapCollections.Length;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-    public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
+    public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
 
     /// <summary>Gets <c>true</c> if <see cref="Device" /> supports <see cref="D3D12_RESOURCE_HEAP_TIER_2" />; otherwise, <c>false</c>.</summary>
-    public bool SupportsResourceHeapTier2 => _supportsResourceHeapTier2;
+    public bool SupportsD3D12ResourceHeapTier2 => _supportsD3D12ResourceHeapTier2;
 
     /// <inheritdoc />
     public override D3D12GraphicsBuffer CreateBuffer(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, GraphicsMemoryHeapRegionAllocationFlags allocationFlags = GraphicsMemoryHeapRegionAllocationFlags.None)
     {
-        var index = GetHeapCollectionIndex(cpuAccess, 0);
-        var alignment = (ulong)D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
+        var heapCollectionIndex = GetHeapCollectionIndex(cpuAccess, 0);
 
-        var resourceDesc = D3D12_RESOURCE_DESC.Buffer(size, D3D12_RESOURCE_FLAG_NONE, alignment);
-        var resourceAllocationInfo = Device.D3D12Device->GetResourceAllocationInfo(visibleMask: 0, numResourceDescs: 1, &resourceDesc);
-        ref readonly var heapCollection = ref _heapCollections[index];
+        var d3d12ResourceDesc = D3D12_RESOURCE_DESC.Buffer(size, D3D12_RESOURCE_FLAG_NONE, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
+        var d3d12ResourceAllocationInfo = Device.D3D12Device->GetResourceAllocationInfo(visibleMask: 0, numResourceDescs: 1, &d3d12ResourceDesc);
+        ref readonly var heapCollection = ref _heapCollections[heapCollectionIndex];
 
-        var memoryHeapRegion = heapCollection.Allocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags);
-        return new D3D12GraphicsBuffer(Device, kind, in memoryHeapRegion, cpuAccess);
+        var heapRegion = heapCollection.Allocate(d3d12ResourceAllocationInfo.SizeInBytes, d3d12ResourceAllocationInfo.Alignment, allocationFlags);
+        return new D3D12GraphicsBuffer(Device, kind, in heapRegion, cpuAccess);
     }
 
     /// <inheritdoc />
     public override D3D12GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, GraphicsMemoryHeapRegionAllocationFlags allocationFlags = GraphicsMemoryHeapRegionAllocationFlags.None, TexelFormat texelFormat = default)
     {
         var dxgiFormat = Map(texelFormat);
+        var heapCollectionIndex = GetHeapCollectionIndex(cpuAccess, 1);
 
-        var index = GetHeapCollectionIndex(cpuAccess, 1);
-        var alignment = (ulong)D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
+        D3D12_RESOURCE_DESC d3d12ResourceDesc;
 
-        var resourceDesc = kind switch {
-            GraphicsTextureKind.OneDimensional => D3D12_RESOURCE_DESC.Tex1D(dxgiFormat, width, mipLevels: 1, alignment: alignment),
-            GraphicsTextureKind.TwoDimensional => D3D12_RESOURCE_DESC.Tex2D(dxgiFormat, width, height, mipLevels: 1, alignment: alignment),
-            GraphicsTextureKind.ThreeDimensional => D3D12_RESOURCE_DESC.Tex3D(dxgiFormat, width, height, depth, mipLevels: 1, alignment: alignment),
-            _ => default,
-        };
+        switch (kind)
+        {
+            case GraphicsTextureKind.OneDimensional:
+            {
+                d3d12ResourceDesc = D3D12_RESOURCE_DESC.Tex1D(dxgiFormat, width, mipLevels: 1, alignment: D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
+                break;
+            }
 
-        var resourceAllocationInfo = Device.D3D12Device->GetResourceAllocationInfo(visibleMask: 0, numResourceDescs: 1, &resourceDesc);
-        ref readonly var heapCollection = ref _heapCollections[index];
+            case GraphicsTextureKind.TwoDimensional:
+            {
+                d3d12ResourceDesc = D3D12_RESOURCE_DESC.Tex2D(dxgiFormat, width, height, mipLevels: 1, alignment: D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
+                break;
+            }
 
-        var memoryHeapRegion = heapCollection.Allocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags);
-        return new D3D12GraphicsTexture(Device, kind, in memoryHeapRegion, cpuAccess, width, height, depth);
+            case GraphicsTextureKind.ThreeDimensional:
+            {
+                d3d12ResourceDesc = D3D12_RESOURCE_DESC.Tex3D(dxgiFormat, width, height, depth, mipLevels: 1, alignment: D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
+                break;
+            }
+
+            default:
+            {
+                ThrowForInvalidKind(kind);
+                break;
+            }
+        }
+
+        var d3d12ResourceAllocationInfo = Device.D3D12Device->GetResourceAllocationInfo(visibleMask: 0, numResourceDescs: 1, &d3d12ResourceDesc);
+        ref readonly var heapCollection = ref _heapCollections[heapCollectionIndex];
+
+        var heapRegion = heapCollection.Allocate(d3d12ResourceAllocationInfo.SizeInBytes, d3d12ResourceAllocationInfo.Alignment, allocationFlags);
+        return new D3D12GraphicsTexture(Device, kind, in heapRegion, cpuAccess, width, height, depth);
     }
 
     /// <inheritdoc />
@@ -126,9 +147,12 @@ public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocato
 
         if (priorState < Disposing)
         {
-            foreach (var heapCollection in _heapCollections)
+            if (isDisposing)
             {
-                heapCollection?.Dispose();
+                foreach (var heapCollection in _heapCollections)
+                {
+                    heapCollection?.Dispose();
+                }
             }
         }
 
@@ -137,22 +161,22 @@ public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocato
 
     private int GetHeapCollectionIndex(GraphicsResourceCpuAccess cpuAccess, int kind)
     {
-        var index = cpuAccess switch {
+        var heapCollectionIndex = cpuAccess switch {
             GraphicsResourceCpuAccess.None => 0,        // DEFAULT
             GraphicsResourceCpuAccess.Read => 2,        // READBACK
             GraphicsResourceCpuAccess.Write => 1,       // UPLOAD
             _ => -1,
         };
 
-        Assert(AssertionsEnabled && (index >= 0));
+        Assert(AssertionsEnabled && (heapCollectionIndex >= 0));
 
-        if (!_supportsResourceHeapTier2)
+        if (!SupportsD3D12ResourceHeapTier2)
         {
             // Scale to account for resource kind
-            index *= 3;
-            index += kind;
+            heapCollectionIndex *= 3;
+            heapCollectionIndex += kind;
         }
 
-        return index;
+        return heapCollectionIndex;
     }
 }

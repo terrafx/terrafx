@@ -9,22 +9,185 @@ using static TerraFX.Interop.DirectX.D3D12_PRIMITIVE_TOPOLOGY_TYPE;
 using static TerraFX.Interop.DirectX.DXGI_FORMAT;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
-using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
 {
-    private ValueLazy<Pointer<ID3D12PipelineState>> _d3d12PipelineState;
+    private readonly ID3D12PipelineState* _d3d12PipelineState;
+
     private VolatileState _state;
 
     internal D3D12GraphicsPipeline(D3D12GraphicsDevice device, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
         : base(device, signature, vertexShader, pixelShader)
     {
-        _d3d12PipelineState = new ValueLazy<Pointer<ID3D12PipelineState>>(CreateD3D12GraphicsPipelineState);
+        _d3d12PipelineState = CreateD3D12GraphicsPipelineState(device, signature, vertexShader, pixelShader);
+
         _ = _state.Transition(to: Initialized);
+
+        static ID3D12PipelineState* CreateD3D12GraphicsPipelineState(D3D12GraphicsDevice device, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
+        {
+            var d3d12InputElementDescs = UnmanagedArray<D3D12_INPUT_ELEMENT_DESC>.Empty;
+
+            try
+            {
+                // We split this into two methods so the JIT can still optimize the "core" part
+                return CreateD3D12GraphicsPipelineStateInternal(device, signature, vertexShader, pixelShader, ref d3d12InputElementDescs);
+            }
+            finally
+            {
+                d3d12InputElementDescs.Dispose();
+            }
+        }
+
+        static ID3D12PipelineState* CreateD3D12GraphicsPipelineStateInternal(D3D12GraphicsDevice device, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader, ref UnmanagedArray<D3D12_INPUT_ELEMENT_DESC> d3d12InputElementDescs)
+        {
+            ID3D12PipelineState* d3d12GraphicsPipelineState;
+
+            var d3d12GraphicsPipelineStateDesc = new D3D12_GRAPHICS_PIPELINE_STATE_DESC {
+                pRootSignature = signature.D3D12RootSignature,
+                RasterizerState = D3D12_RASTERIZER_DESC.DEFAULT,
+                BlendState = D3D12_BLEND_DESC.DEFAULT,
+                DepthStencilState = D3D12_DEPTH_STENCIL_DESC.DEFAULT,
+                SampleMask = uint.MaxValue,
+                PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE,
+                NumRenderTargets = 1,
+                SampleDesc = new DXGI_SAMPLE_DESC(count: 1, quality: 0),
+            };
+            d3d12GraphicsPipelineStateDesc.DepthStencilState.DepthEnable = FALSE;
+            d3d12GraphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+            if (vertexShader is not null)
+            {
+                var inputs = signature.Inputs;
+
+                var inputElementsCount = GetInputElementCount(inputs);
+                var inputElementsIndex = (nuint)0;
+
+                var inputSlotIndex = 0;
+
+                if (inputElementsCount != 0)
+                {
+                    d3d12InputElementDescs = new UnmanagedArray<D3D12_INPUT_ELEMENT_DESC>(inputElementsCount);
+
+                    for (var inputIndex = 0; inputIndex < inputs.Length; inputIndex++)
+                    {
+                        var input = inputs[inputIndex];
+
+                        var inputElements = input.Elements;
+
+                        uint inputLayoutStride = 0;
+
+                        for (var inputElementIndex = 0; inputElementIndex < inputElements.Length; inputElementIndex++)
+                        {
+                            var inputElement = inputElements[inputElementIndex];
+
+                            d3d12InputElementDescs[inputElementsIndex] = new D3D12_INPUT_ELEMENT_DESC {
+                                SemanticName = GetInputElementSemanticName(inputElement.Kind).GetPointer(),
+                                Format = GetInputElementFormat(inputElement.Type),
+                                InputSlot = unchecked((uint)inputSlotIndex),
+                                AlignedByteOffset = inputLayoutStride,
+                            };
+
+                            inputLayoutStride += inputElement.Size;
+                            inputElementsIndex++;
+                        }
+                        inputSlotIndex++;
+                    }
+                }
+
+                d3d12GraphicsPipelineStateDesc.VS = vertexShader.D3D12ShaderBytecode;
+            }
+
+            if (pixelShader is not null)
+            {
+                d3d12GraphicsPipelineStateDesc.PS = pixelShader.D3D12ShaderBytecode;
+            }
+
+            d3d12GraphicsPipelineStateDesc.InputLayout = new D3D12_INPUT_LAYOUT_DESC {
+                pInputElementDescs = d3d12InputElementDescs.GetPointerUnsafe(0),
+                NumElements = (uint)d3d12InputElementDescs.Length,
+            };
+            ThrowExternalExceptionIfFailed(device.D3D12Device->CreateGraphicsPipelineState(&d3d12GraphicsPipelineStateDesc, __uuidof<ID3D12PipelineState>(), (void**)&d3d12GraphicsPipelineState));
+
+            return d3d12GraphicsPipelineState;
+        }
+
+        static nuint GetInputElementCount(ReadOnlySpan<GraphicsPipelineInput> inputs)
+        {
+            var inputElementCount = (nuint)0;
+
+            foreach (var input in inputs)
+            {
+                inputElementCount += (uint)input.Elements.Length;
+            }
+
+            return inputElementCount;
+        }
+
+        static DXGI_FORMAT GetInputElementFormat(Type type)
+        {
+            var inputElementFormat = DXGI_FORMAT_UNKNOWN;
+
+            if (type == typeof(Vector2))
+            {
+                inputElementFormat = DXGI_FORMAT_R32G32_FLOAT;
+            }
+            else if (type == typeof(Vector3))
+            {
+                inputElementFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+            }
+            else if (type == typeof(Vector4))
+            {
+                inputElementFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
+            }
+
+            return inputElementFormat;
+        }
+
+        static ReadOnlySpan<sbyte> GetInputElementSemanticName(GraphicsPipelineInputElementKind inputElementKind)
+        {
+            ReadOnlySpan<sbyte> inputElementSemanticName;
+
+            switch (inputElementKind)
+            {
+                case GraphicsPipelineInputElementKind.Position:
+                {
+                    inputElementSemanticName = POSITION_SEMANTIC_NAME;
+                    break;
+                }
+
+                case GraphicsPipelineInputElementKind.Color:
+                {
+                    inputElementSemanticName = COLOR_SEMANTIC_NAME;
+                    break;
+                }
+
+                case GraphicsPipelineInputElementKind.Normal:
+                {
+                    inputElementSemanticName = NORMAL_SEMANTIC_NAME;
+                    break;
+                }
+
+                case GraphicsPipelineInputElementKind.TextureCoordinate:
+                {
+                    inputElementSemanticName = TEXCOORD_SEMANTIC_NAME;
+                    break;
+                }
+
+                default:
+                {
+                    inputElementSemanticName = default;
+                    break;
+                }
+            }
+
+            return inputElementSemanticName;
+        }
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsPipeline" /> class.</summary>
@@ -43,19 +206,26 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
     private static ReadOnlySpan<sbyte> TEXCOORD_SEMANTIC_NAME => new sbyte[] { 0x54, 0x45, 0x58, 0x43, 0x4F, 0x4F, 0x52, 0x44, 0x00 };
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-    public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
+    public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
 
     /// <summary>Gets the underlying <see cref="ID3D12PipelineState" /> for the pipeline.</summary>
-    public ID3D12PipelineState* D3D12PipelineState => _d3d12PipelineState.Value;
+    public ID3D12PipelineState* D3D12PipelineState
+    {
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _d3d12PipelineState;
+        }
+    }
 
     /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
-    public new D3D12GraphicsShader? PixelShader => (D3D12GraphicsShader?)base.PixelShader;
+    public new D3D12GraphicsShader? PixelShader => base.PixelShader.As<D3D12GraphicsShader>();
 
     /// <inheritdoc cref="GraphicsPipeline.Signature" />
-    public new D3D12GraphicsPipelineSignature Signature => (D3D12GraphicsPipelineSignature)base.Signature;
+    public new D3D12GraphicsPipelineSignature Signature => base.Signature.As<D3D12GraphicsPipelineSignature>();
 
     /// <inheritdoc cref="GraphicsPipeline.VertexShader" />
-    public new D3D12GraphicsShader? VertexShader => (D3D12GraphicsShader?)base.VertexShader;
+    public new D3D12GraphicsShader? VertexShader => base.VertexShader.As<D3D12GraphicsShader>();
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
@@ -64,170 +234,16 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
 
         if (priorState < Disposing)
         {
-            _d3d12PipelineState.Dispose(ReleaseIfNotNull);
+            ReleaseIfNotNull(_d3d12PipelineState);
 
-            Signature?.Dispose();
-            PixelShader?.Dispose();
-            VertexShader?.Dispose();
+            if (isDisposing)
+            {
+                Signature?.Dispose();
+                PixelShader?.Dispose();
+                VertexShader?.Dispose();
+            }
         }
 
         _state.EndDispose();
-    }
-
-    private Pointer<ID3D12PipelineState> CreateD3D12GraphicsPipelineState()
-    {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsPipeline));
-
-        ID3D12PipelineState* d3d12GraphicsPipelineState;
-
-        var inputElementDescs = Array.Empty<D3D12_INPUT_ELEMENT_DESC>();
-
-        var pipelineStateDesc = new D3D12_GRAPHICS_PIPELINE_STATE_DESC {
-            pRootSignature = Signature.D3D12RootSignature,
-            RasterizerState = D3D12_RASTERIZER_DESC.DEFAULT,
-            BlendState = D3D12_BLEND_DESC.DEFAULT,
-            DepthStencilState = D3D12_DEPTH_STENCIL_DESC.DEFAULT,
-            SampleMask = uint.MaxValue,
-            PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE,
-            NumRenderTargets = 1,
-            SampleDesc = new DXGI_SAMPLE_DESC(count: 1, quality: 0),
-        };
-        pipelineStateDesc.DepthStencilState.DepthEnable = FALSE;
-        pipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-
-        var vertexShader = VertexShader;
-
-        if (vertexShader is not null)
-        {
-            var inputs = Signature.Inputs;
-            var inputsLength = inputs.Length;
-
-            var inputElementsCount = GetInputElementsCount(inputs);
-            var inputElementsIndex = 0;
-
-            var inputSlotIndex = 0;
-
-            if (inputElementsCount != 0)
-            {
-                inputElementDescs = new D3D12_INPUT_ELEMENT_DESC[inputElementsCount];
-
-                for (var inputIndex = 0; inputIndex < inputsLength; inputIndex++)
-                {
-                    var input = inputs[inputIndex];
-
-                    var inputElements = input.Elements;
-                    var inputElementsLength = inputElements.Length;
-
-                    uint inputLayoutStride = 0;
-
-                    for (var inputElementIndex = 0; inputElementIndex < inputElementsLength; inputElementIndex++)
-                    {
-                        var inputElement = inputElements[inputElementIndex];
-
-                        inputElementDescs[inputElementsIndex] = new D3D12_INPUT_ELEMENT_DESC {
-                            SemanticName = GetInputElementSemanticName(inputElement.Kind).GetPointer(),
-                            Format = GetInputElementFormat(inputElement.Type),
-                            InputSlot = unchecked((uint)inputSlotIndex),
-                            AlignedByteOffset = inputLayoutStride,
-                        };
-
-                        inputLayoutStride += inputElement.Size;
-                        inputElementsIndex++;
-                    }
-                    inputSlotIndex++;
-                }
-            }
-
-            pipelineStateDesc.VS = vertexShader.D3D12ShaderBytecode;
-        }
-
-        var pixelShader = PixelShader;
-
-        if (pixelShader is not null)
-        {
-            pipelineStateDesc.PS = pixelShader.D3D12ShaderBytecode;
-        }
-
-        fixed (D3D12_INPUT_ELEMENT_DESC* pInputElementDescs = inputElementDescs)
-        {
-            pipelineStateDesc.InputLayout = new D3D12_INPUT_LAYOUT_DESC {
-                pInputElementDescs = pInputElementDescs,
-                NumElements = unchecked((uint)inputElementDescs.Length),
-            };
-            ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateGraphicsPipelineState(&pipelineStateDesc, __uuidof<ID3D12PipelineState>(), (void**)&d3d12GraphicsPipelineState));
-        }
-        return d3d12GraphicsPipelineState;
-
-        static int GetInputElementsCount(ReadOnlySpan<GraphicsPipelineInput> inputs)
-        {
-            var inputElementsCount = 0;
-
-            foreach (var input in inputs)
-            {
-                inputElementsCount += input.Elements.Length;
-            }
-
-            return inputElementsCount;
-        }
-    }
-
-    private static DXGI_FORMAT GetInputElementFormat(Type type)
-    {
-        var inputElementFormat = DXGI_FORMAT_UNKNOWN;
-
-        if (type == typeof(Vector2))
-        {
-            inputElementFormat = DXGI_FORMAT_R32G32_FLOAT;
-        }
-        else if (type == typeof(Vector3))
-        {
-            inputElementFormat = DXGI_FORMAT_R32G32B32_FLOAT;
-        }
-        else if (type == typeof(Vector4))
-        {
-            inputElementFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
-        }
-
-        return inputElementFormat;
-    }
-
-    private static ReadOnlySpan<sbyte> GetInputElementSemanticName(GraphicsPipelineInputElementKind inputElementKind)
-    {
-        ReadOnlySpan<sbyte> inputElementSemanticName;
-
-        switch (inputElementKind)
-        {
-            case GraphicsPipelineInputElementKind.Position:
-            {
-                inputElementSemanticName = POSITION_SEMANTIC_NAME;
-                break;
-            }
-
-            case GraphicsPipelineInputElementKind.Color:
-            {
-                inputElementSemanticName = COLOR_SEMANTIC_NAME;
-                break;
-            }
-
-            case GraphicsPipelineInputElementKind.Normal:
-            {
-                inputElementSemanticName = NORMAL_SEMANTIC_NAME;
-                break;
-            }
-
-            case GraphicsPipelineInputElementKind.TextureCoordinate:
-            {
-                inputElementSemanticName = TEXCOORD_SEMANTIC_NAME;
-                break;
-            }
-
-            default:
-            {
-                inputElementSemanticName = default;
-                break;
-            }
-        }
-
-        return inputElementSemanticName;
     }
 }

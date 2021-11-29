@@ -13,7 +13,7 @@ namespace TerraFX.Utilities;
 
 internal static partial class VulkanUtilities
 {
-    public static VkBufferUsageFlags GetVulkanBufferUsageKind(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess)
+    public static VkBufferUsageFlags GetVkBufferUsageKind(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess)
     {
         var vulkanBufferUsageKind = kind switch {
             GraphicsBufferKind.Vertex => VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,

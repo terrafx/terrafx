@@ -2,15 +2,15 @@
 
 using System;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Numerics;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkDescriptorPoolCreateFlags;
 using static TerraFX.Interop.Vulkan.VkDescriptorType;
-using static TerraFX.Interop.Vulkan.VkFormat;
 using static TerraFX.Interop.Vulkan.VkShaderStageFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics;
@@ -18,243 +18,240 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSignature
 {
-    private ValueLazy<VkDescriptorPool> _vulkanDescriptorPool;
-    private ValueLazy<VkDescriptorSet> _vulkanDescriptorSet;
-    private ValueLazy<VkDescriptorSetLayout> _vulkanDescriptorSetLayout;
-    private ValueLazy<VkPipelineLayout> _vulkanPipelineLayout;
+    private readonly VkDescriptorPool _vkDescriptorPool;
+    private readonly VkDescriptorSet _vkDescriptorSet;
+    private readonly VkDescriptorSetLayout _vkDescriptorSetLayout;
+    private readonly VkPipelineLayout _vkPipelineLayout;
 
     private VolatileState _state;
 
     internal VulkanGraphicsPipelineSignature(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResource> resources)
         : base(device, inputs, resources)
     {
-        _vulkanDescriptorPool = new ValueLazy<VkDescriptorPool>(CreateVulkanDescriptorPool);
-        _vulkanDescriptorSet = new ValueLazy<VkDescriptorSet>(CreateVulkanDescriptorSet);
-        _vulkanDescriptorSetLayout = new ValueLazy<VkDescriptorSetLayout>(CreateVulkanDescriptorSetLayout);
-        _vulkanPipelineLayout = new ValueLazy<VkPipelineLayout>(CreateVulkanPipelineLayout);
+        var vkDescriptorPool = CreateVkDescriptorPool(device, resources);
+        _vkDescriptorPool = vkDescriptorPool;
+
+        var vkDescriptorSetLayout = CreateVkDescriptorSetLayout(device, resources);
+        _vkDescriptorSetLayout = vkDescriptorSetLayout;
+
+        _vkDescriptorSet = CreateVkDescriptorSet(device, vkDescriptorPool, vkDescriptorSetLayout);
+        _vkPipelineLayout = CreateVkPipelineLayout(device, vkDescriptorSetLayout);
 
         _ = _state.Transition(to: Initialized);
-    }
 
-    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPipelineSignature" /> class.</summary>
-    ~VulkanGraphicsPipelineSignature() => Dispose(isDisposing: true);
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-    public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
-
-    /// <summary>Gets the <see cref="VkDescriptorPool" /> for the pipeline.</summary>
-    public VkDescriptorPool VulkanDescriptorPool => _vulkanDescriptorPool.Value;
-
-    /// <summary>Gets the <see cref="VkDescriptorSet" /> for the pipeline.</summary>
-    public VkDescriptorSet VulkanDescriptorSet => _vulkanDescriptorSet.Value;
-
-    /// <summary>Gets the underlying <see cref="VkDescriptorSetLayout" /> for the pipeline.</summary>
-    public VkDescriptorSetLayout VulkanDescriptorSetLayout => _vulkanDescriptorSetLayout.Value;
-
-    /// <summary>Gets the underlying <see cref="VkPipelineLayout" /> for the pipeline.</summary>
-    public VkPipelineLayout VulkanPipelineLayout => _vulkanPipelineLayout.Value;
-
-    /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
-    {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
+        static VkDescriptorPool CreateVkDescriptorPool(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineResource> resources)
         {
-            _vulkanDescriptorSet.Dispose(DisposeVulkanDescriptorSet);
-            _vulkanDescriptorSetLayout.Dispose(DisposeVulkanDescriptorSetLayout);
-            _vulkanDescriptorPool.Dispose(DisposeVulkanDescriptorPool);
-            _vulkanPipelineLayout.Dispose(DisposeVulkanPipelineLayout);
+            var vkDescriptorPoolSizes = UnmanagedArray<VkDescriptorPoolSize>.Empty;
+
+            try
+            {
+                // We split this into two methods so the JIT can still optimize the "core" part
+                return CreateVkDescriptorPoolInternal(device, resources, ref vkDescriptorPoolSizes);
+            }
+            finally
+            {
+                vkDescriptorPoolSizes.Dispose();
+            }
         }
 
-        _state.EndDispose();
-    }
-
-    private VkDescriptorPool CreateVulkanDescriptorPool()
-    {
-        var vulkanDescriptorPool = VkDescriptorPool.NULL;
-        var vulkanDescriptorPoolSizes = Array.Empty<VkDescriptorPoolSize>();
-
-        var descriptorPoolCreateInfo = new VkDescriptorPoolCreateInfo {
-            sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
-            flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
-            maxSets = 1,
-        };
-
-        var resources = Resources;
-        var resourcesLength = resources.Length;
-
-        if (resourcesLength != 0)
+        static VkDescriptorPool CreateVkDescriptorPoolInternal(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineResource> resources, ref UnmanagedArray< VkDescriptorPoolSize> vkDescriptorPoolSizes)
         {
-            var vulkanDescriptorPoolSizesCount = 0;
-            var constantBufferCount = 0;
-            var textureCount = 0;
+            var vkDescriptorPool = VkDescriptorPool.NULL;
 
-            for (var resourceIndex = 0; resourceIndex < resourcesLength; resourceIndex++)
+            if (resources.Length != 0)
             {
-                var resource = resources[resourceIndex];
+                var vkDescriptorPoolCreateInfo = new VkDescriptorPoolCreateInfo {
+                    sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+                    flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
+                    maxSets = 1,
+                };
 
-                switch (resource.Kind)
+                var vkDescriptorPoolSizesCount = 0u;
+                var constantBufferCount = 0u;
+                var textureCount = 0u;
+
+                for (var resourceIndex = 0; resourceIndex < resources.Length; resourceIndex++)
                 {
-                    case GraphicsPipelineResourceKind.ConstantBuffer:
-                    {
-                        if (constantBufferCount == 0)
-                        {
-                            vulkanDescriptorPoolSizesCount++;
-                        }
-                        constantBufferCount++;
-                        break;
-                    }
+                    var resource = resources[resourceIndex];
 
-                    case GraphicsPipelineResourceKind.Texture:
+                    switch (resource.Kind)
                     {
-                        if (textureCount == 0)
+                        case GraphicsPipelineResourceKind.ConstantBuffer:
                         {
-                            vulkanDescriptorPoolSizesCount++;
+                            if (constantBufferCount == 0)
+                            {
+                                vkDescriptorPoolSizesCount++;
+                            }
+                            constantBufferCount++;
+                            break;
                         }
-                        textureCount++;
-                        break;
-                    }
 
-                    default:
-                    {
-                        break;
+                        case GraphicsPipelineResourceKind.Texture:
+                        {
+                            if (textureCount == 0)
+                            {
+                                vkDescriptorPoolSizesCount++;
+                            }
+                            textureCount++;
+                            break;
+                        }
+
+                        default:
+                        {
+                            break;
+                        }
                     }
                 }
+
+                vkDescriptorPoolSizes = new UnmanagedArray<VkDescriptorPoolSize>(vkDescriptorPoolSizesCount);
+                var vkDescriptorPoolSizesIndex = 0u;
+
+                if (constantBufferCount != 0)
+                {
+                    vkDescriptorPoolSizes[vkDescriptorPoolSizesIndex] = new VkDescriptorPoolSize {
+                        type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                        descriptorCount = constantBufferCount,
+                    };
+                    vkDescriptorPoolSizesIndex++;
+                }
+
+                if (textureCount != 0)
+                {
+                    vkDescriptorPoolSizes[vkDescriptorPoolSizesIndex] = new VkDescriptorPoolSize {
+                        type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+                        descriptorCount = textureCount,
+                    };
+                    vkDescriptorPoolSizesIndex++;
+                }
+
+                vkDescriptorPoolCreateInfo.poolSizeCount = (uint)vkDescriptorPoolSizes.Length;
+                vkDescriptorPoolCreateInfo.pPoolSizes = vkDescriptorPoolSizes.GetPointerUnsafe(0);
+
+                ThrowExternalExceptionIfNotSuccess(vkCreateDescriptorPool(device.VkDevice, &vkDescriptorPoolCreateInfo, pAllocator: null, &vkDescriptorPool));
             }
 
-            vulkanDescriptorPoolSizes = new VkDescriptorPoolSize[vulkanDescriptorPoolSizesCount];
-            var vulkanDescriptorPoolSizesIndex = 0;
+            return vkDescriptorPool;
+        }
 
-            if (constantBufferCount != 0)
+        static VkDescriptorSet CreateVkDescriptorSet(VulkanGraphicsDevice device, VkDescriptorPool vkDescriptorPool, VkDescriptorSetLayout vkDescriptorSetLayout)
+        {
+            var vkDescriptorSet = VkDescriptorSet.NULL;
+
+            if (vkDescriptorPool != VkDescriptorPool.NULL)
             {
-                vulkanDescriptorPoolSizes[vulkanDescriptorPoolSizesIndex] = new VkDescriptorPoolSize {
-                    type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-                    descriptorCount = unchecked((uint)constantBufferCount),
+                var descriptorSetAllocateInfo = new VkDescriptorSetAllocateInfo {
+                    sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+                    descriptorPool = vkDescriptorPool,
+                    descriptorSetCount = 1,
+                    pSetLayouts = &vkDescriptorSetLayout,
                 };
-                vulkanDescriptorPoolSizesIndex++;
+                ThrowExternalExceptionIfNotSuccess(vkAllocateDescriptorSets(device.VkDevice, &descriptorSetAllocateInfo, &vkDescriptorSet));
             }
 
-            if (textureCount != 0)
+            return vkDescriptorSet;
+        }
+
+        static VkDescriptorSetLayout CreateVkDescriptorSetLayout(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineResource> resources)
+        {
+            var vkDescriptorSetLayoutBindings = UnmanagedArray<VkDescriptorSetLayoutBinding>.Empty;
+
+            try
             {
-                vulkanDescriptorPoolSizes[vulkanDescriptorPoolSizesIndex] = new VkDescriptorPoolSize {
-                    type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-                    descriptorCount = unchecked((uint)textureCount),
-                };
-                vulkanDescriptorPoolSizesIndex++;
+                // We split this into two methods so the JIT can still optimize the "core" part
+                return CreateVkDescriptorSetLayoutInternal(device, resources, ref vkDescriptorSetLayoutBindings);
             }
-
-            fixed (VkDescriptorPoolSize* pVulkanDescriptorPoolSizes = vulkanDescriptorPoolSizes)
+            finally
             {
-                descriptorPoolCreateInfo.poolSizeCount = unchecked((uint)vulkanDescriptorPoolSizes.Length);
-                descriptorPoolCreateInfo.pPoolSizes = pVulkanDescriptorPoolSizes;
-
-                ThrowExternalExceptionIfNotSuccess(vkCreateDescriptorPool(Device.VulkanDevice, &descriptorPoolCreateInfo, pAllocator: null, &vulkanDescriptorPool));
+                vkDescriptorSetLayoutBindings.Dispose();
             }
         }
 
-        return vulkanDescriptorPool;
-    }
-
-    private VkDescriptorSet CreateVulkanDescriptorSet()
-    {
-        var vulkanDescriptorSet = VkDescriptorSet.NULL;
-        var vulkanDescriptorPool = VulkanDescriptorPool;
-
-        if (vulkanDescriptorPool != VkDescriptorPool.NULL)
+        static VkDescriptorSetLayout CreateVkDescriptorSetLayoutInternal(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineResource> resources, ref UnmanagedArray<VkDescriptorSetLayoutBinding> vkDescriptorSetLayoutBindings)
         {
-            var vulkanDescriptorSetLayout = VulkanDescriptorSetLayout;
+            var vkDescriptorSetLayout = VkDescriptorSetLayout.NULL;
 
-            var descriptorSetAllocateInfo = new VkDescriptorSetAllocateInfo {
-                sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
-                descriptorPool = vulkanDescriptorPool,
-                descriptorSetCount = 1,
-                pSetLayouts = &vulkanDescriptorSetLayout,
+            if (resources.Length != 0)
+            {
+                var vkDescriptorSetLayoutCreateInfo = new VkDescriptorSetLayoutCreateInfo {
+                    sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+                };
+
+                var vkDescriptorSetLayoutBindingsIndex = 0u;
+
+                vkDescriptorSetLayoutBindings = new UnmanagedArray<VkDescriptorSetLayoutBinding>((uint)resources.Length);
+
+                for (var resourceIndex = 0; resourceIndex < resources.Length; resourceIndex++)
+                {
+                    var resource = resources[resourceIndex];
+
+                    switch (resource.Kind)
+                    {
+                        case GraphicsPipelineResourceKind.ConstantBuffer:
+                        {
+                            var stageFlags = GetVkShaderStageFlags(resource.ShaderVisibility);
+
+                            vkDescriptorSetLayoutBindings[vkDescriptorSetLayoutBindingsIndex] = new VkDescriptorSetLayoutBinding {
+                                binding = vkDescriptorSetLayoutBindingsIndex,
+                                descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                                descriptorCount = 1,
+                                stageFlags = stageFlags,
+                            };
+
+                            vkDescriptorSetLayoutBindingsIndex++;
+                            break;
+                        }
+
+                        case GraphicsPipelineResourceKind.Texture:
+                        {
+                            var stageFlags = GetVkShaderStageFlags(resource.ShaderVisibility);
+
+                            vkDescriptorSetLayoutBindings[vkDescriptorSetLayoutBindingsIndex] = new VkDescriptorSetLayoutBinding {
+                                binding = vkDescriptorSetLayoutBindingsIndex,
+                                descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+                                descriptorCount = 1,
+                                stageFlags = stageFlags,
+                            };
+
+                            vkDescriptorSetLayoutBindingsIndex++;
+                            break;
+                        }
+
+                        default:
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                vkDescriptorSetLayoutCreateInfo.bindingCount = (uint)vkDescriptorSetLayoutBindings.Length;
+                vkDescriptorSetLayoutCreateInfo.pBindings = vkDescriptorSetLayoutBindings.GetPointerUnsafe(0);
+
+                ThrowExternalExceptionIfNotSuccess(vkCreateDescriptorSetLayout(device.VkDevice, &vkDescriptorSetLayoutCreateInfo, pAllocator: null, &vkDescriptorSetLayout));
+            }
+
+            return vkDescriptorSetLayout;
+        }
+
+        static VkPipelineLayout CreateVkPipelineLayout(VulkanGraphicsDevice device, VkDescriptorSetLayout vkDescriptorSetLayout)
+        {
+            VkPipelineLayout vkPipelineLayout;
+
+            var pipelineLayoutCreateInfo = new VkPipelineLayoutCreateInfo {
+                sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO
             };
-            ThrowExternalExceptionIfNotSuccess(vkAllocateDescriptorSets(Device.VulkanDevice, &descriptorSetAllocateInfo, &vulkanDescriptorSet));
-        }
 
-        return vulkanDescriptorSet;
-    }
-
-    private VkDescriptorSetLayout CreateVulkanDescriptorSetLayout()
-    {
-        VkDescriptorSetLayout vulkanDescriptorSetLayout;
-
-        var descriptorSetLayoutBindings = Array.Empty<VkDescriptorSetLayoutBinding>();
-
-        var descriptorSetLayoutCreateInfo = new VkDescriptorSetLayoutCreateInfo {
-            sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
-        };
-
-        var resources = Resources;
-        var resourcesLength = resources.Length;
-
-        var descriptorSetLayoutBindingsIndex = 0;
-
-        if (resourcesLength != 0)
-        {
-            descriptorSetLayoutBindings = new VkDescriptorSetLayoutBinding[resourcesLength];
-
-            for (var resourceIndex = 0; resourceIndex < resourcesLength; resourceIndex++)
+            if (vkDescriptorSetLayout != VkDescriptorSetLayout.NULL)
             {
-                var resource = resources[resourceIndex];
-
-                switch (resource.Kind)
-                {
-                    case GraphicsPipelineResourceKind.ConstantBuffer:
-                    {
-                        var stageFlags = GetVulkanShaderStageFlags(resource.ShaderVisibility);
-
-                        descriptorSetLayoutBindings[descriptorSetLayoutBindingsIndex] = new VkDescriptorSetLayoutBinding {
-                            binding = unchecked((uint)descriptorSetLayoutBindingsIndex),
-                            descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-                            descriptorCount = 1,
-                            stageFlags = stageFlags,
-                        };
-
-                        descriptorSetLayoutBindingsIndex++;
-                        break;
-                    }
-
-                    case GraphicsPipelineResourceKind.Texture:
-                    {
-                        var stageFlags = GetVulkanShaderStageFlags(resource.ShaderVisibility);
-
-                        descriptorSetLayoutBindings[descriptorSetLayoutBindingsIndex] = new VkDescriptorSetLayoutBinding {
-                            binding = unchecked((uint)descriptorSetLayoutBindingsIndex),
-                            descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-                            descriptorCount = 1,
-                            stageFlags = stageFlags,
-                        };
-
-                        descriptorSetLayoutBindingsIndex++;
-                        break;
-                    }
-
-                    default:
-                    {
-                        break;
-                    }
-                }
+                pipelineLayoutCreateInfo.setLayoutCount = 1;
+                pipelineLayoutCreateInfo.pSetLayouts = &vkDescriptorSetLayout;
             }
 
-            fixed (VkDescriptorSetLayoutBinding* pDescriptorSetLayoutBindings = descriptorSetLayoutBindings)
-            {
-                descriptorSetLayoutCreateInfo.bindingCount = unchecked((uint)descriptorSetLayoutBindings.Length);
-                descriptorSetLayoutCreateInfo.pBindings = pDescriptorSetLayoutBindings;
+            ThrowExternalExceptionIfNotSuccess(vkCreatePipelineLayout(device.VkDevice, &pipelineLayoutCreateInfo, pAllocator: null, &vkPipelineLayout));
 
-                ThrowExternalExceptionIfNotSuccess(vkCreateDescriptorSetLayout(Device.VulkanDevice, &descriptorSetLayoutCreateInfo, pAllocator: null, &vulkanDescriptorSetLayout));
-            }
-        }
-        else
-        {
-            vulkanDescriptorSetLayout = VkDescriptorSetLayout.NULL;
+            return vkPipelineLayout;
         }
 
-        return vulkanDescriptorSetLayout;
-
-        static VkShaderStageFlags GetVulkanShaderStageFlags(GraphicsShaderVisibility shaderVisibility)
+        static VkShaderStageFlags GetVkShaderStageFlags(GraphicsShaderVisibility shaderVisibility)
         {
             var stageFlags = VK_SHADER_STAGE_ALL;
 
@@ -275,76 +272,100 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
         }
     }
 
-    private VkPipelineLayout CreateVulkanPipelineLayout()
+    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPipelineSignature" /> class.</summary>
+    ~VulkanGraphicsPipelineSignature() => Dispose(isDisposing: true);
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
+    public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <summary>Gets the <see cref="Interop.Vulkan.VkDescriptorPool" /> for the pipeline.</summary>
+    public VkDescriptorPool VkDescriptorPool
     {
-        VkPipelineLayout vulkanPipelineLayout;
-
-        var pipelineLayoutCreateInfo = new VkPipelineLayoutCreateInfo {
-            sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO
-        };
-
-        var descriptorSetLayout = VulkanDescriptorSetLayout;
-
-        if (descriptorSetLayout != VkDescriptorSetLayout.NULL)
+        get
         {
-            pipelineLayoutCreateInfo.setLayoutCount = 1;
-            pipelineLayoutCreateInfo.pSetLayouts = &descriptorSetLayout;
-        }
-
-        ThrowExternalExceptionIfNotSuccess(vkCreatePipelineLayout(Device.VulkanDevice, &pipelineLayoutCreateInfo, pAllocator: null, &vulkanPipelineLayout));
-
-        return vulkanPipelineLayout;
-    }
-
-    private void DisposeVulkanDescriptorPool(VkDescriptorPool vulkanDescriptorPool)
-    {
-        if (vulkanDescriptorPool != VkDescriptorPool.NULL)
-        {
-            vkDestroyDescriptorPool(Device.VulkanDevice, vulkanDescriptorPool, pAllocator: null);
+            AssertNotDisposedOrDisposing(_state);
+            return _vkDescriptorPool;
         }
     }
 
-    private void DisposeVulkanDescriptorSet(VkDescriptorSet vulkanDescriptorSet)
+    /// <summary>Gets the <see cref="Interop.Vulkan.VkDescriptorSet" /> for the pipeline.</summary>
+    public VkDescriptorSet VkDescriptorSet
     {
-        if (vulkanDescriptorSet != VkDescriptorSet.NULL)
+        get
         {
-            _ = vkFreeDescriptorSets(Device.VulkanDevice, VulkanDescriptorPool, 1, &vulkanDescriptorSet);
+            AssertNotDisposedOrDisposing(_state);
+            return _vkDescriptorSet;
         }
     }
 
-    private void DisposeVulkanDescriptorSetLayout(VkDescriptorSetLayout vulkanDescriptorSetLayout)
+    /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkDescriptorSetLayout" /> for the pipeline.</summary>
+    public VkDescriptorSetLayout VkDescriptorSetLayout
     {
-        if (vulkanDescriptorSetLayout != VkDescriptorSetLayout.NULL)
+        get
         {
-            vkDestroyDescriptorSetLayout(Device.VulkanDevice, vulkanDescriptorSetLayout, pAllocator: null);
+            AssertNotDisposedOrDisposing(_state);
+            return _vkDescriptorSetLayout;
         }
     }
 
-    private void DisposeVulkanPipelineLayout(VkPipelineLayout vulkanPipelineLayout)
+    /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkPipelineLayout" /> for the pipeline.</summary>
+    public VkPipelineLayout VkPipelineLayout
     {
-        if (vulkanPipelineLayout != VkPipelineLayout.NULL)
+        get
         {
-            vkDestroyPipelineLayout(Device.VulkanDevice, vulkanPipelineLayout, pAllocator: null);
+            AssertNotDisposedOrDisposing(_state);
+            return _vkPipelineLayout;
         }
     }
 
-    private static VkFormat GetInputElementFormat(Type type)
+    /// <inheritdoc />
+    protected override void Dispose(bool isDisposing)
     {
-        var inputElementFormat = VK_FORMAT_UNDEFINED;
+        var priorState = _state.BeginDispose();
 
-        if (type == typeof(Vector2))
+        if (priorState < Disposing)
         {
-            inputElementFormat = VK_FORMAT_R32G32_SFLOAT;
-        }
-        else if (type == typeof(Vector3))
-        {
-            inputElementFormat = VK_FORMAT_R32G32B32_SFLOAT;
-        }
-        else if (type == typeof(Vector4))
-        {
-            inputElementFormat = VK_FORMAT_R32G32B32A32_SFLOAT;
+            var vkDevice = Device.VkDevice;
+            var vkDescriptorPool = _vkDescriptorPool;
+
+            DisposeVkDescriptorSet(vkDevice, vkDescriptorPool, _vkDescriptorSet);
+            DisposeVkDescriptorSetLayout(vkDevice, _vkDescriptorSetLayout);
+            DisposeVkDescriptorPool(vkDevice, _vkDescriptorPool);
+            DisposeVkPipelineLayout(vkDevice, _vkPipelineLayout);
         }
 
-        return inputElementFormat;
+        _state.EndDispose();
+
+        static void DisposeVkDescriptorPool(VkDevice vkDevice, VkDescriptorPool vkDescriptorPool)
+        {
+            if (vkDescriptorPool != VkDescriptorPool.NULL)
+            {
+                vkDestroyDescriptorPool(vkDevice, vkDescriptorPool, pAllocator: null);
+            }
+        }
+
+        static void DisposeVkDescriptorSet(VkDevice vkDevice, VkDescriptorPool vkDescriptorPool, VkDescriptorSet vkDescriptorSet)
+        {
+            if (vkDescriptorSet != VkDescriptorSet.NULL)
+            {
+                _ = vkFreeDescriptorSets(vkDevice, vkDescriptorPool, 1, &vkDescriptorSet);
+            }
+        }
+
+        static void DisposeVkDescriptorSetLayout(VkDevice vkDevice, VkDescriptorSetLayout vulkanDescriptorSetLayout)
+        {
+            if (vulkanDescriptorSetLayout != VkDescriptorSetLayout.NULL)
+            {
+                vkDestroyDescriptorSetLayout(vkDevice, vulkanDescriptorSetLayout, pAllocator: null);
+            }
+        }
+
+        static void DisposeVkPipelineLayout(VkDevice vkDevice, VkPipelineLayout vkPipelineLayout)
+        {
+            if (vkPipelineLayout != VkPipelineLayout.NULL)
+            {
+                vkDestroyPipelineLayout(vkDevice, vkPipelineLayout, pAllocator: null);
+            }
+        }
     }
 }

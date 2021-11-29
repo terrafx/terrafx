@@ -4,6 +4,7 @@
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
 using TerraFX.Interop.DirectX;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
 
@@ -30,7 +31,7 @@ public sealed class D3D12GraphicsMemoryHeapCollection : GraphicsMemoryHeapCollec
     public D3D12_HEAP_TYPE D3D12HeapType => _d3d12HeapType;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-    public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
+    public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
 
     /// <inheritdoc />
     protected override D3D12GraphicsMemoryHeap CreateHeap(ulong size) => new D3D12GraphicsMemoryHeap(Device, this, size);

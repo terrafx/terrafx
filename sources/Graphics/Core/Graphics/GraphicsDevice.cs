@@ -28,9 +28,13 @@ public abstract class GraphicsDevice : IDisposable
     /// <summary>Gets the memory allocator for the device.</summary>
     public abstract GraphicsMemoryAllocator MemoryAllocator { get; }
 
+    /// <summary>Gets the service which enumerated <see cref="Adapter" />.</summary>
+    public GraphicsService Service => Adapter.Service;
+
     /// <summary>Creates a new graphics fence for the device.</summary>
+    /// <param name="isSignalled">The default state of <see cref="GraphicsFence.IsSignalled" /> for the created fence.</param>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-    public abstract GraphicsFence CreateFence();
+    public abstract GraphicsFence CreateFence(bool isSignalled);
 
     /// <summary>Creates a new graphics pipeline for the device.</summary>
     /// <param name="signature">The signature which details the inputs given and resources available to the graphics pipeline.</param>
@@ -89,7 +93,7 @@ public abstract class GraphicsDevice : IDisposable
     }
 
     /// <summary>Signals a graphics fence.</summary>
-    /// <param name="fence">The fence to be signaled</param>
+    /// <param name="fence">The fence to be signalled</param>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public abstract void Signal(GraphicsFence fence);
 

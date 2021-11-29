@@ -7,7 +7,10 @@ namespace TerraFX.Graphics;
 /// <summary>A graphics pipeline signature which details the inputs given and resources available to a graphics pipeline.</summary>
 public abstract class GraphicsPipelineSignature : GraphicsDeviceObject
 {
+    // TODO: Make this UnmanagedArray<GraphicsPipelineInput>
     private readonly GraphicsPipelineInput[] _inputs;
+
+    // TODO: Make this UnmanagedArray<GraphicsPipelineResource>
     private readonly GraphicsPipelineResource[] _resources;
 
     /// <summary>Creates a new instance of the <see cref="GraphicsPipelineSignature" /> class.</summary>

@@ -3,6 +3,7 @@
 using System;
 using TerraFX.Threading;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
 
@@ -21,10 +22,10 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
     ~VulkanGraphicsPrimitive() => Dispose(isDisposing: true);
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-    public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
+    public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
     /// <inheritdoc cref="GraphicsPrimitive.Pipeline" />
-    public new VulkanGraphicsPipeline Pipeline => (VulkanGraphicsPipeline)base.Pipeline;
+    public new VulkanGraphicsPipeline Pipeline => base.Pipeline.As<VulkanGraphicsPipeline>();
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
@@ -33,19 +34,22 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
 
         if (priorState < Disposing)
         {
-            Pipeline?.Dispose();
-
-            // TODO: The primitive shouldn't dispose the collections, it
-            // should be freeing the region and something else should control
-            // resource disposal.
-
-            foreach (var inputResourceRegion in InputResourceViews)
+            if (isDisposing)
             {
-                inputResourceRegion.Resource?.Dispose();
-            }
+                Pipeline?.Dispose();
 
-            VertexBufferView.Resource?.Dispose();
-            IndexBufferView.Resource?.Dispose();
+                // TODO: The primitive shouldn't dispose the collections, it
+                // should be freeing the region and something else should control
+                // resource disposal.
+
+                foreach (var inputResourceView in InputResourceViews)
+                {
+                    inputResourceView.Resource?.Dispose();
+                }
+
+                VertexBufferView.Resource?.Dispose();
+                IndexBufferView.Resource?.Dispose();
+            }
         }
 
         _state.EndDispose();

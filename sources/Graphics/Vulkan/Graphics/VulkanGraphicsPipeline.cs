@@ -17,8 +17,10 @@ using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.VkVertexInputRate;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics;
@@ -26,100 +28,76 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
 {
-    private ValueLazy<VkPipeline> _vulkanPipeline;
+    private readonly VkPipeline _vkPipeline;
 
     private VolatileState _state;
 
     internal VulkanGraphicsPipeline(VulkanGraphicsDevice device, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
         : base(device, signature, vertexShader, pixelShader)
     {
-        _vulkanPipeline = new ValueLazy<VkPipeline>(CreateVulkanPipeline);
+        _vkPipeline = CreateVkPipeline(device, signature, vertexShader, pixelShader);
 
         _ = _state.Transition(to: Initialized);
-    }
 
-    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPipeline" /> class.</summary>
-    ~VulkanGraphicsPipeline() => Dispose(isDisposing: true);
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-    public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
-
-    /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
-    public new VulkanGraphicsShader? PixelShader => (VulkanGraphicsShader?)base.PixelShader;
-
-    /// <inheritdoc cref="GraphicsPipeline.Signature" />
-    public new VulkanGraphicsPipelineSignature Signature => (VulkanGraphicsPipelineSignature)base.Signature;
-
-    /// <inheritdoc cref="GraphicsPipeline.VertexShader" />
-    public new VulkanGraphicsShader? VertexShader => (VulkanGraphicsShader?)base.VertexShader;
-
-    /// <summary>Gets the underlying <see cref="VkPipeline" /> for the pipeline.</summary>
-    public VkPipeline VulkanPipeline => _vulkanPipeline.Value;
-
-    /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
-    {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
+        static VkPipeline CreateVkPipeline(VulkanGraphicsDevice device, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
         {
-            _vulkanPipeline.Dispose(DisposeVulkanPipeline);
+            var vkPipelineShaderStageCreateInfos = new UnmanagedArray<VkPipelineShaderStageCreateInfo>(2);
+            var vkVertexInputAttributeDescriptions = UnmanagedArray<VkVertexInputAttributeDescription>.Empty;
 
-            Signature?.Dispose();
-            PixelShader?.Dispose();
-            VertexShader?.Dispose();
+            try
+            {
+                // We split this into two methods so the JIT can still optimize the "core" part
+                return CreateVkPipelineInternal(device, signature, vertexShader, pixelShader, vkPipelineShaderStageCreateInfos, ref vkVertexInputAttributeDescriptions);
+            }
+            finally
+            {
+                for (var index = 0u; index < vkPipelineShaderStageCreateInfos.Length; index++)
+                {
+                    var entryPointName = vkPipelineShaderStageCreateInfos[index].pName;
+                    Free(entryPointName);
+                }
+                vkPipelineShaderStageCreateInfos.Dispose();
+            }
         }
 
-        _state.EndDispose();
-    }
-
-    private VkPipeline CreateVulkanPipeline()
-    {
-        var pipelineShaderStageCreateInfos = stackalloc VkPipelineShaderStageCreateInfo[2];
-        uint pipelineShaderStageCreateInfosCount = 0;
-
-        try
+        static VkPipeline CreateVkPipelineInternal(VulkanGraphicsDevice device, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader, UnmanagedArray<VkPipelineShaderStageCreateInfo> vkPipelineShaderStageCreateInfos, ref UnmanagedArray<VkVertexInputAttributeDescription> vkVertexInputAttributeDescriptions)
         {
-            VkPipeline vulkanPipeline;
+            VkPipeline vkPipeline;
 
-            var device = Device;
-
-            var vertexInputBindingDescription = new VkVertexInputBindingDescription {
+            var vkVertexInputBindingDescription = new VkVertexInputBindingDescription {
                 inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
             };
 
-            var vertexInputAttributeDescriptions = Array.Empty<VkVertexInputAttributeDescription>();
-
-            var pipelineVertexInputStateCreateInfo = new VkPipelineVertexInputStateCreateInfo {
+            var vkPipelineVertexInputStateCreateInfo = new VkPipelineVertexInputStateCreateInfo {
                 sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
                 vertexBindingDescriptionCount = 1,
-                pVertexBindingDescriptions = &vertexInputBindingDescription,
+                pVertexBindingDescriptions = &vkVertexInputBindingDescription,
             };
 
-            var pipelineInputAssemblyStateCreateInfo = new VkPipelineInputAssemblyStateCreateInfo {
+            var vkPipelineInputAssemblyStateCreateInfo = new VkPipelineInputAssemblyStateCreateInfo {
                 sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
                 topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
             };
 
-            var pipelineViewportStateCreateInfo = new VkPipelineViewportStateCreateInfo {
+            var vkPipelineViewportStateCreateInfo = new VkPipelineViewportStateCreateInfo {
                 sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
                 viewportCount = 1,
                 scissorCount = 1,
             };
 
-            var pipelineRasterizationStateCreateInfo = new VkPipelineRasterizationStateCreateInfo {
+            var vkPipelineRasterizationStateCreateInfo = new VkPipelineRasterizationStateCreateInfo {
                 sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
                 frontFace = VK_FRONT_FACE_CLOCKWISE,
                 cullMode = VK_CULL_MODE_BACK_BIT,
                 lineWidth = 1.0f,
             };
 
-            var pipelineMultisampleStateCreateInfo = new VkPipelineMultisampleStateCreateInfo {
+            var vkPipelineMultisampleStateCreateInfo = new VkPipelineMultisampleStateCreateInfo {
                 sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
                 rasterizationSamples = VK_SAMPLE_COUNT_1_BIT,
             };
 
-            var pipelineDepthStencilStateCreateInfo = new VkPipelineDepthStencilStateCreateInfo {
+            var vkPipelineDepthStencilStateCreateInfo = new VkPipelineDepthStencilStateCreateInfo {
                 sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
                 depthCompareOp = VK_COMPARE_OP_ALWAYS,
                 front = new VkStencilOpState {
@@ -130,83 +108,79 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
                 },
             };
 
-            var pipelineColorBlendAttachmentState = new VkPipelineColorBlendAttachmentState {
+            var vkPipelineColorBlendAttachmentState = new VkPipelineColorBlendAttachmentState {
                 colorWriteMask = VK_COLOR_COMPONENT_A_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_R_BIT,
             };
 
-            var pipelineColorBlendStateCreateInfo = new VkPipelineColorBlendStateCreateInfo {
+            var vkPipelineColorBlendStateCreateInfo = new VkPipelineColorBlendStateCreateInfo {
                 sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
                 attachmentCount = 1,
-                pAttachments = &pipelineColorBlendAttachmentState,
+                pAttachments = &vkPipelineColorBlendAttachmentState,
             };
 
-            var dynamicStates = stackalloc VkDynamicState[2] {
+            var vkDynamicStates = stackalloc VkDynamicState[2] {
                 VK_DYNAMIC_STATE_VIEWPORT,
                 VK_DYNAMIC_STATE_SCISSOR,
             };
 
-            var pipelineDynamicStateCreateInfo = new VkPipelineDynamicStateCreateInfo {
+            var vkPipelineDynamicStateCreateInfo = new VkPipelineDynamicStateCreateInfo {
                 sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
                 dynamicStateCount = 2,
-                pDynamicStates = dynamicStates,
+                pDynamicStates = vkDynamicStates,
             };
 
-            var pipelineCreateInfo = new VkGraphicsPipelineCreateInfo {
+            var vkPipelineCreateInfo = new VkGraphicsPipelineCreateInfo {
                 sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
-                pViewportState = &pipelineViewportStateCreateInfo,
-                pRasterizationState = &pipelineRasterizationStateCreateInfo,
-                pMultisampleState = &pipelineMultisampleStateCreateInfo,
-                pDepthStencilState = &pipelineDepthStencilStateCreateInfo,
-                pColorBlendState = &pipelineColorBlendStateCreateInfo,
-                pDynamicState = &pipelineDynamicStateCreateInfo,
-                layout = Signature.VulkanPipelineLayout,
-                renderPass = device.VulkanRenderPass,
+                pViewportState = &vkPipelineViewportStateCreateInfo,
+                pRasterizationState = &vkPipelineRasterizationStateCreateInfo,
+                pMultisampleState = &vkPipelineMultisampleStateCreateInfo,
+                pDepthStencilState = &vkPipelineDepthStencilStateCreateInfo,
+                pColorBlendState = &vkPipelineColorBlendStateCreateInfo,
+                pDynamicState = &vkPipelineDynamicStateCreateInfo,
+                layout = signature.VkPipelineLayout,
+                renderPass = device.VkRenderPass,
             };
 
-            var vertexShader = VertexShader;
+            var shaderIndex = 0u;
 
-            if (vertexShader != null)
+            if (vertexShader is not null)
             {
-                var shaderIndex = pipelineShaderStageCreateInfosCount++;
-
                 var entryPointName = vertexShader.EntryPointName.GetUtf8Span();
-                var entryPointNameLength = (nuint)entryPointName.Length + 1;
+                var entryPointNameLength = entryPointName.Length + 1;
+                var pName = AllocateArray<sbyte>((uint)entryPointNameLength);
 
-                pipelineShaderStageCreateInfos[shaderIndex] = new VkPipelineShaderStageCreateInfo {
+                vkPipelineShaderStageCreateInfos[shaderIndex] = new VkPipelineShaderStageCreateInfo {
                     sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
                     stage = VK_SHADER_STAGE_VERTEX_BIT,
                     module = vertexShader.VulkanShaderModule,
-                    pName = AllocateArray<sbyte>(entryPointNameLength),
+                    pName = pName,
                 };
 
-                var destination = new Span<sbyte>(pipelineShaderStageCreateInfos[shaderIndex].pName, (int)entryPointNameLength);
+                var destination = new Span<sbyte>(pName, entryPointNameLength);
                 entryPointName.CopyTo(destination);
                 destination[entryPointName.Length] = 0x00;
 
-                var inputs = Signature.Inputs;
-                var inputsLength = inputs.Length;
+                var inputs = signature.Inputs;
 
-                var inputElementsCount = GetInputElementsCount(inputs);
-                var inputElementsIndex = 0;
+                var inputElementsCount = GetInputElementCount(inputs);
+                var inputElementsIndex = 0u;
 
                 if (inputElementsCount != 0)
                 {
-                    vertexInputAttributeDescriptions = new VkVertexInputAttributeDescription[inputElementsCount];
+                    vkVertexInputAttributeDescriptions = new UnmanagedArray<VkVertexInputAttributeDescription>(inputElementsCount);
 
-                    for (var inputIndex = 0; inputIndex < inputsLength; inputIndex++)
+                    for (var inputIndex = 0; inputIndex < inputs.Length; inputIndex++)
                     {
                         var input = inputs[inputIndex];
-
                         var inputElements = input.Elements;
-                        var inputElementsLength = inputElements.Length;
 
-                        uint inputBindingStride = 0;
+                        var inputBindingStride = 0u;
 
-                        for (var inputElementIndex = 0; inputElementIndex < inputElementsLength; inputElementIndex++)
+                        for (var inputElementIndex = 0; inputElementIndex < inputElements.Length; inputElementIndex++)
                         {
                             var inputElement = inputElements[inputElementIndex];
 
-                            vertexInputAttributeDescriptions[inputElementsIndex] = new VkVertexInputAttributeDescription {
+                            vkVertexInputAttributeDescriptions[inputElementsIndex] = new VkVertexInputAttributeDescription {
                                 location = unchecked((uint)inputElementIndex),
                                 binding = unchecked((uint)inputIndex),
                                 format = GetInputElementFormat(inputElement.Type),
@@ -217,98 +191,132 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
                             inputElementsIndex++;
                         }
 
-                        vertexInputBindingDescription.stride = inputBindingStride;
+                        vkVertexInputBindingDescription.stride = inputBindingStride;
                     }
                 }
 
-                pipelineCreateInfo.pVertexInputState = &pipelineVertexInputStateCreateInfo;
-                pipelineCreateInfo.pInputAssemblyState = &pipelineInputAssemblyStateCreateInfo;
+                vkPipelineCreateInfo.pVertexInputState = &vkPipelineVertexInputStateCreateInfo;
+                vkPipelineCreateInfo.pInputAssemblyState = &vkPipelineInputAssemblyStateCreateInfo;
+
+                shaderIndex++;
             }
 
-            var pixelShader = PixelShader;
-
-            if (pixelShader != null)
+            if (pixelShader is not null)
             {
-                var shaderIndex = pipelineShaderStageCreateInfosCount++;
-
                 var entryPointName = pixelShader.EntryPointName.GetUtf8Span();
                 var entryPointNameLength = (nuint)entryPointName.Length + 1;
+                var pName = AllocateArray<sbyte>(entryPointNameLength);
 
-                pipelineShaderStageCreateInfos[shaderIndex] = new VkPipelineShaderStageCreateInfo {
+                vkPipelineShaderStageCreateInfos[shaderIndex] = new VkPipelineShaderStageCreateInfo {
                     sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
                     stage = VK_SHADER_STAGE_FRAGMENT_BIT,
                     module = pixelShader.VulkanShaderModule,
-                    pName = AllocateArray<sbyte>(entryPointNameLength),
+                    pName = pName,
                 };
 
-                var destination = new Span<sbyte>(pipelineShaderStageCreateInfos[shaderIndex].pName, (int)entryPointNameLength);
+                var destination = new Span<sbyte>(pName, (int)entryPointNameLength);
                 entryPointName.CopyTo(destination);
                 destination[entryPointName.Length] = 0x00;
+
+                shaderIndex++;
             }
 
-            if (pipelineShaderStageCreateInfosCount != 0)
+            if (shaderIndex != 0)
             {
-                pipelineCreateInfo.stageCount = pipelineShaderStageCreateInfosCount;
-                pipelineCreateInfo.pStages = pipelineShaderStageCreateInfos;
+                vkPipelineCreateInfo.stageCount = shaderIndex;
+                vkPipelineCreateInfo.pStages = vkPipelineShaderStageCreateInfos.GetPointerUnsafe(0);
             }
 
-            fixed (VkVertexInputAttributeDescription* pVertexInputAttributeDescriptions = vertexInputAttributeDescriptions)
-            {
-                pipelineVertexInputStateCreateInfo.vertexAttributeDescriptionCount = unchecked((uint)vertexInputAttributeDescriptions.Length);
-                pipelineVertexInputStateCreateInfo.pVertexAttributeDescriptions = pVertexInputAttributeDescriptions;
+            vkPipelineVertexInputStateCreateInfo.vertexAttributeDescriptionCount = (uint)vkVertexInputAttributeDescriptions.Length;
+            vkPipelineVertexInputStateCreateInfo.pVertexAttributeDescriptions = vkVertexInputAttributeDescriptions.GetPointerUnsafe(0);
 
-                ThrowExternalExceptionIfNotSuccess(vkCreateGraphicsPipelines(device.VulkanDevice, pipelineCache: VkPipelineCache.NULL, 1, &pipelineCreateInfo, pAllocator: null, &vulkanPipeline));
-            }
-
-            return vulkanPipeline;
-        }
-        finally
-        {
-            for (uint index = 0; index < pipelineShaderStageCreateInfosCount; index++)
-            {
-                var entryPointName = pipelineShaderStageCreateInfos[index].pName;
-                Free(entryPointName);
-            }
+            ThrowExternalExceptionIfNotSuccess(vkCreateGraphicsPipelines(device.VkDevice, pipelineCache: VkPipelineCache.NULL, 1, &vkPipelineCreateInfo, pAllocator: null, &vkPipeline));
+            return vkPipeline;
         }
 
-        static int GetInputElementsCount(ReadOnlySpan<GraphicsPipelineInput> inputs)
+        static nuint GetInputElementCount(ReadOnlySpan<GraphicsPipelineInput> inputs)
         {
-            var inputElementsCount = 0;
+            var inputElementsCount = (nuint)0;
 
             foreach (var input in inputs)
             {
-                inputElementsCount += input.Elements.Length;
+                inputElementsCount += (uint)input.Elements.Length;
             }
 
             return inputElementsCount;
         }
-    }
 
-    private void DisposeVulkanPipeline(VkPipeline vulkanPipeline)
-    {
-        if (vulkanPipeline != VkPipeline.NULL)
+        static VkFormat GetInputElementFormat(Type type)
         {
-            vkDestroyPipeline(Device.VulkanDevice, vulkanPipeline, pAllocator: null);
+            var inputElementFormat = VK_FORMAT_UNDEFINED;
+
+            if (type == typeof(Vector2))
+            {
+                inputElementFormat = VK_FORMAT_R32G32_SFLOAT;
+            }
+            else if (type == typeof(Vector3))
+            {
+                inputElementFormat = VK_FORMAT_R32G32B32_SFLOAT;
+            }
+            else if (type == typeof(Vector4))
+            {
+                inputElementFormat = VK_FORMAT_R32G32B32A32_SFLOAT;
+            }
+
+            return inputElementFormat;
         }
     }
 
-    private static VkFormat GetInputElementFormat(Type type)
+    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPipeline" /> class.</summary>
+    ~VulkanGraphicsPipeline() => Dispose(isDisposing: true);
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
+    public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
+    public new VulkanGraphicsShader? PixelShader => base.PixelShader.As<VulkanGraphicsShader>();
+
+    /// <inheritdoc cref="GraphicsPipeline.Signature" />
+    public new VulkanGraphicsPipelineSignature Signature => base.Signature.As<VulkanGraphicsPipelineSignature>();
+
+    /// <inheritdoc cref="GraphicsPipeline.VertexShader" />
+    public new VulkanGraphicsShader? VertexShader => base.VertexShader.As<VulkanGraphicsShader>();
+
+    /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkPipeline" /> for the pipeline.</summary>
+    public VkPipeline VkPipeline
     {
-        var inputElementFormat = VK_FORMAT_UNDEFINED;
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _vkPipeline;
+        }
+    }
 
-        if (type == typeof(Vector2))
+    /// <inheritdoc />
+    protected override void Dispose(bool isDisposing)
+    {
+        var priorState = _state.BeginDispose();
+
+        if (priorState < Disposing)
         {
-            inputElementFormat = VK_FORMAT_R32G32_SFLOAT;
-        }
-        else if (type == typeof(Vector3))
-        {
-            inputElementFormat = VK_FORMAT_R32G32B32_SFLOAT;
-        }
-        else if (type == typeof(Vector4))
-        {
-            inputElementFormat = VK_FORMAT_R32G32B32A32_SFLOAT;
+            DisposeVkPipeline(Device.VkDevice, _vkPipeline);
+
+            if (isDisposing)
+            {
+                Signature?.Dispose();
+                PixelShader?.Dispose();
+                VertexShader?.Dispose();
+            }
         }
 
-        return inputElementFormat;
+        _state.EndDispose();
+
+        static void DisposeVkPipeline(VkDevice vkDevice, VkPipeline vkPipeline)
+        {
+            if (vkPipeline != VkPipeline.NULL)
+            {
+                vkDestroyPipeline(vkDevice, vkPipeline, pAllocator: null);
+            }
+        }
     }
 }

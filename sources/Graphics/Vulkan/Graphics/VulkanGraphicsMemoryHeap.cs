@@ -8,7 +8,8 @@ using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics;
@@ -16,29 +17,50 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsMemoryHeap
 {
-    private ValueLazy<VkDeviceMemory> _vulkanDeviceMemory;
+    private readonly VkDeviceMemory _vkDeviceMemory;
 
     private VolatileState _state;
 
     internal VulkanGraphicsMemoryHeap(VulkanGraphicsDevice device, VulkanGraphicsMemoryHeapCollection collection, ulong size)
         : base(device, collection, size)
     {
-        _vulkanDeviceMemory = new ValueLazy<VkDeviceMemory>(CreateVulkanDeviceMemory);
+        _vkDeviceMemory = CreateVkDeviceMemory(device, collection, size);
 
         _ = _state.Transition(to: Initialized);
+
+        static VkDeviceMemory CreateVkDeviceMemory(VulkanGraphicsDevice device, VulkanGraphicsMemoryHeapCollection collection, ulong size)
+        {
+            VkDeviceMemory vkDeviceMemory;
+
+            var vkMemoryAllocateInfo = new VkMemoryAllocateInfo {
+                sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+                allocationSize = size,
+                memoryTypeIndex = collection.VkMemoryTypeIndex,
+            };
+            ThrowExternalExceptionIfNotSuccess(vkAllocateMemory(device.VkDevice, &vkMemoryAllocateInfo, pAllocator: null, &vkDeviceMemory));
+
+            return vkDeviceMemory;
+        }
     }
 
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsMemoryHeap" /> class.</summary>
     ~VulkanGraphicsMemoryHeap() => Dispose(isDisposing: true);
 
     /// <inheritdoc cref="GraphicsMemoryHeap.Collection" />
-    public new VulkanGraphicsMemoryHeapCollection Collection => (VulkanGraphicsMemoryHeapCollection)base.Collection;
+    public new VulkanGraphicsMemoryHeapCollection Collection => base.Collection.As<VulkanGraphicsMemoryHeapCollection>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-    public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
+    public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
-    /// <summary>Gets the <see cref="VkDeviceMemory" /> for the memory heap.</summary>
-    public VkDeviceMemory VulkanDeviceMemory => _vulkanDeviceMemory.Value;
+    /// <summary>Gets the <see cref="Interop.Vulkan.VkDeviceMemory" /> for the memory heap.</summary>
+    public VkDeviceMemory VkDeviceMemory
+    {
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _vkDeviceMemory;
+        }
+    }
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
@@ -47,36 +69,17 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsMemoryHeap
 
         if (priorState < Disposing)
         {
-            _vulkanDeviceMemory.Dispose(DisposeVulkanDeviceMemory);
+            DisposeVkDeviceMemory(Device.VkDevice, _vkDeviceMemory);
         }
 
         _state.EndDispose();
-    }
 
-    private VkDeviceMemory CreateVulkanDeviceMemory()
-    {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsMemoryHeap));
-
-        VkDeviceMemory vulkanDeviceMemory;
-
-        var collection = Collection;
-        var vulkanDevice = collection.Allocator.Device.VulkanDevice;
-
-        var memoryAllocateInfo = new VkMemoryAllocateInfo {
-            sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-            allocationSize = Size,
-            memoryTypeIndex = collection.VulkanMemoryTypeIndex,
-        };
-        ThrowExternalExceptionIfNotSuccess(vkAllocateMemory(vulkanDevice, &memoryAllocateInfo, pAllocator: null, &vulkanDeviceMemory));
-
-        return vulkanDeviceMemory;
-    }
-
-    private void DisposeVulkanDeviceMemory(VkDeviceMemory vulkanDeviceMemory)
-    {
-        if (vulkanDeviceMemory != VkDeviceMemory.NULL)
+        static void DisposeVkDeviceMemory(VkDevice vkDevice, VkDeviceMemory vkDeviceMemory)
         {
-            vkFreeMemory(Collection.Allocator.Device.VulkanDevice, vulkanDeviceMemory, pAllocator: null);
+            if (vkDeviceMemory != VkDeviceMemory.NULL)
+            {
+                vkFreeMemory(vkDevice, vkDeviceMemory, pAllocator: null);
+            }
         }
     }
 }

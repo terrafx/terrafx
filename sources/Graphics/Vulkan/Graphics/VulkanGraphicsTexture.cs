@@ -1,6 +1,5 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System;
 using System.Runtime.InteropServices;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
@@ -14,7 +13,8 @@ using static TerraFX.Interop.Vulkan.VkSamplerMipmapMode;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics;
@@ -22,67 +22,122 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsTexture : GraphicsTexture
 {
-    private const int Binding = 2;
-    private const int Bound = 3;
-
-    private readonly VkImage _vulkanImage;
-
-    private ValueLazy<VkImageView> _vulkanImageView;
-    private ValueLazy<VkSampler> _vulkanSampler;
+    private readonly VkImage _vkImage;
+    private readonly VkImageView _vkImageView;
+    private readonly VkSampler _vkSampler;
 
     private VolatileState _state;
 
-    internal VulkanGraphicsTexture(VulkanGraphicsDevice device, GraphicsTextureKind kind, in GraphicsMemoryHeapRegion heapRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth, VkImage vulkanImage)
+    internal VulkanGraphicsTexture(VulkanGraphicsDevice device, GraphicsTextureKind kind, in GraphicsMemoryHeapRegion heapRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth, VkImage vkImage)
         : base(device, kind, in heapRegion, cpuAccess, width, height, depth)
     {
-        _vulkanImage = vulkanImage;
-        ThrowExternalExceptionIfNotSuccess(vkBindImageMemory(Allocator.Device.VulkanDevice, vulkanImage, Heap.VulkanDeviceMemory, heapRegion.Offset));
+        _vkImage = vkImage;
+        ThrowExternalExceptionIfNotSuccess(vkBindImageMemory(Allocator.Device.VkDevice, vkImage, Heap.VkDeviceMemory, heapRegion.Offset));
 
-        _vulkanImageView = new ValueLazy<VkImageView>(CreateVulkanImageView);
-        _vulkanSampler = new ValueLazy<VkSampler>(CreateVulkanSampler);
+        _vkImageView = CreateVkImageView(device, kind, in heapRegion, vkImage);
+        _vkSampler = CreateVkSampler(device, in heapRegion);
 
         _ = _state.Transition(to: Initialized);
+
+        static VkImageView CreateVkImageView(VulkanGraphicsDevice device, GraphicsTextureKind kind, in GraphicsMemoryHeapRegion heapRegion, VkImage vkImage)
+        {
+            VkImageView vkImageView;
+
+            var vkImageViewType = kind switch {
+                GraphicsTextureKind.OneDimensional => VK_IMAGE_VIEW_TYPE_1D,
+                GraphicsTextureKind.TwoDimensional => VK_IMAGE_VIEW_TYPE_2D,
+                GraphicsTextureKind.ThreeDimensional => VK_IMAGE_VIEW_TYPE_3D,
+                _ => default,
+            };
+
+            var vkImageViewCreateInfo = new VkImageViewCreateInfo {
+                sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+                image = vkImage,
+                viewType = vkImageViewType,
+                format = VK_FORMAT_R8G8B8A8_UNORM,
+                components = new VkComponentMapping {
+                    r = VK_COMPONENT_SWIZZLE_R,
+                    g = VK_COMPONENT_SWIZZLE_G,
+                    b = VK_COMPONENT_SWIZZLE_B,
+                    a = VK_COMPONENT_SWIZZLE_A,
+                },
+                subresourceRange = new VkImageSubresourceRange {
+                    aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+                    levelCount = 1,
+                    layerCount = 1,
+                },
+            };
+            ThrowExternalExceptionIfNotSuccess(vkCreateImageView(device.VkDevice, &vkImageViewCreateInfo, pAllocator: null, &vkImageView));
+
+            return vkImageView;
+        }
+
+        static VkSampler CreateVkSampler(VulkanGraphicsDevice device, in GraphicsMemoryHeapRegion heapRegion)
+        {
+            VkSampler vkSampler;
+
+            var vkSamplerCreateInfo = new VkSamplerCreateInfo {
+                sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
+                magFilter = VK_FILTER_LINEAR,
+                minFilter = VK_FILTER_LINEAR,
+                mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR,
+                maxLod = 1.0f,
+                borderColor = VK_BORDER_COLOR_INT_OPAQUE_WHITE
+            };
+            ThrowExternalExceptionIfNotSuccess(vkCreateSampler(device.VkDevice, &vkSamplerCreateInfo, pAllocator: null, &vkSampler));
+
+            return vkSampler;
+        }
     }
 
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsTexture" /> class.</summary>
     ~VulkanGraphicsTexture() => Dispose(isDisposing: true);
 
     /// <inheritdoc cref="GraphicsResource.Allocator" />
-    public new VulkanGraphicsMemoryAllocator Allocator => (VulkanGraphicsMemoryAllocator)base.Allocator;
+    public new VulkanGraphicsMemoryAllocator Allocator => base.Allocator.As<VulkanGraphicsMemoryAllocator>();
 
     /// <inheritdoc />
-    public new VulkanGraphicsMemoryHeap Heap => (VulkanGraphicsMemoryHeap)base.Heap;
+    public new VulkanGraphicsMemoryHeap Heap => base.Heap.As<VulkanGraphicsMemoryHeap>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-    public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
+    public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
-    /// <summary>Gets the underlying <see cref="VkImage" /> for the buffer.</summary>
-    /// <exception cref="ExternalException">The call to <see cref="vkBindImageMemory(VkDevice, VkImage, VkDeviceMemory, ulong)" /> failed.</exception>
-    /// <exception cref="ObjectDisposedException">The texture has been disposed.</exception>
-    public VkImage VulkanImage => _vulkanImage;
+    /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkImage" /> for the buffer.</summary>
+    public VkImage VkImage
+    {
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _vkImage;
+        }
+    }
 
-    /// <summary>Gets the underlying <see cref="VkImageView" /> for the buffer.</summary>
-    /// <exception cref="ExternalException">The call to <see cref="vkCreateImageView(VkDevice, VkImageViewCreateInfo*, VkAllocationCallbacks*, VkImageView*)" /> failed.</exception>
-    /// <exception cref="ObjectDisposedException">The texture has been disposed.</exception>
-    public VkImageView VulkanImageView => _vulkanImageView.Value;
+    /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkImageView" /> for the buffer.</summary>
+    public VkImageView VkImageView
+    {
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _vkImageView;
+        }
+    }
 
-    /// <summary>Gets the underlying <see cref="VkSampler" /> for the buffer.</summary>
-    /// <exception cref="ExternalException">The call to <see cref="vkCreateSampler(VkDevice, VkSamplerCreateInfo*, VkAllocationCallbacks*, VkSampler*)" /> failed.</exception>
-    /// <exception cref="ObjectDisposedException">The texture has been disposed.</exception>
-    public VkSampler VulkanSampler => _vulkanSampler.Value;
+    /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkSampler" /> for the buffer.</summary>
+    public VkSampler VkSampler
+    {
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _vkSampler;
+        }
+    }
 
     /// <inheritdoc />
     /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(VkDevice, VkDeviceMemory, ulong, ulong, uint, void**)" /> failed.</exception>
     public override T* Map<T>()
     {
-        var device = Allocator.Device;
-
-        var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
-
         byte* pDestination;
-        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
-
+        ThrowExternalExceptionIfNotSuccess(vkMapMemory(Device.VkDevice, Heap.VkDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
         return (T*)pDestination;
     }
 
@@ -90,14 +145,8 @@ public sealed unsafe class VulkanGraphicsTexture : GraphicsTexture
     /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(VkDevice, VkDeviceMemory, ulong, ulong, uint, void**)" /> failed.</exception>
     public override T* Map<T>(nuint rangeOffset, nuint rangeLength)
     {
-        var device = Allocator.Device;
-
-        var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
-
         byte* pDestination;
-        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
-
+        ThrowExternalExceptionIfNotSuccess(vkMapMemory(Device.VkDevice, Heap.VkDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
         return (T*)(pDestination + rangeOffset);
     }
 
@@ -105,26 +154,26 @@ public sealed unsafe class VulkanGraphicsTexture : GraphicsTexture
     /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(VkDevice, VkDeviceMemory, ulong, ulong, uint, void**)" /> failed.</exception>
     public override T* MapForRead<T>()
     {
-        var device = Allocator.Device;
+        var device = Device;
 
-        var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
+        var vkDevice = device.VkDevice;
+        var vkDeviceMemory = Heap.VkDeviceMemory;
 
         void* pDestination;
-        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, &pDestination));
+        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vkDevice, vkDeviceMemory, Offset, Size, flags: 0, &pDestination));
 
-        var nonCoherentAtomSize = device.Adapter.VulkanPhysicalDeviceProperties.limits.nonCoherentAtomSize;
+        var nonCoherentAtomSize = device.Adapter.VkPhysicalDeviceProperties.limits.nonCoherentAtomSize;
 
         var offset = Offset;
         var size = (Size + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
 
-        var mappedMemoryRange = new VkMappedMemoryRange {
+        var vkMappedMemoryRange = new VkMappedMemoryRange {
             sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
-            memory = vulkanDeviceMemory,
+            memory = vkDeviceMemory,
             offset = offset,
             size = size,
         };
-        ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
+        ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(vkDevice, 1, &vkMappedMemoryRange));
 
         return (T*)pDestination;
     }
@@ -133,28 +182,28 @@ public sealed unsafe class VulkanGraphicsTexture : GraphicsTexture
     /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(VkDevice, VkDeviceMemory, ulong, ulong, uint, void**)" /> failed.</exception>
     public override T* MapForRead<T>(nuint readRangeOffset, nuint readRangeLength)
     {
-        var device = Allocator.Device;
+        var device = Device;
 
-        var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
+        var vkDevice = device.VkDevice;
+        var vkDeviceMemory = Heap.VkDeviceMemory;
 
         byte* pDestination;
-        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
+        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vkDevice, vkDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
 
         if (readRangeLength != 0)
         {
-            var nonCoherentAtomSize = device.Adapter.VulkanPhysicalDeviceProperties.limits.nonCoherentAtomSize;
+            var nonCoherentAtomSize = device.Adapter.VkPhysicalDeviceProperties.limits.nonCoherentAtomSize;
 
             var offset = Offset + readRangeOffset;
             var size = (readRangeLength + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
 
-            var mappedMemoryRange = new VkMappedMemoryRange {
+            var vkMappedMemoryRange = new VkMappedMemoryRange {
                 sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
-                memory = vulkanDeviceMemory,
+                memory = vkDeviceMemory,
                 offset = offset,
                 size = size,
             };
-            ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
+            ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(vkDevice, 1, &vkMappedMemoryRange));
         }
         return (T*)(pDestination + readRangeOffset);
     }
@@ -163,64 +212,59 @@ public sealed unsafe class VulkanGraphicsTexture : GraphicsTexture
     /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(VkDevice, uint, VkMappedMemoryRange*)" /> failed.</exception>
     public override void Unmap()
     {
-        var device = Allocator.Device;
-
-        var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
-
-        vkUnmapMemory(vulkanDevice, vulkanDeviceMemory);
+        vkUnmapMemory(Device.VkDevice, Heap.VkDeviceMemory);
     }
 
     /// <inheritdoc />
     /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(VkDevice, uint, VkMappedMemoryRange*)" /> failed.</exception>
     public override void UnmapAndWrite()
     {
-        var device = Allocator.Device;
+        var device = Device;
 
-        var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
+        var vkDevice = device.VkDevice;
+        var vkDeviceMemory = Heap.VkDeviceMemory;
 
-        var nonCoherentAtomSize = device.Adapter.VulkanPhysicalDeviceProperties.limits.nonCoherentAtomSize;
+        var nonCoherentAtomSize = device.Adapter.VkPhysicalDeviceProperties.limits.nonCoherentAtomSize;
 
         var offset = Offset;
         var size = (Size + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
 
-        var mappedMemoryRange = new VkMappedMemoryRange {
+        var vkMappedMemoryRange = new VkMappedMemoryRange {
             sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
-            memory = vulkanDeviceMemory,
+            memory = vkDeviceMemory,
             offset = offset,
             size = size,
         };
-        ThrowExternalExceptionIfNotSuccess(vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
+        ThrowExternalExceptionIfNotSuccess(vkFlushMappedMemoryRanges(vkDevice, 1, &vkMappedMemoryRange));
 
-        vkUnmapMemory(vulkanDevice, vulkanDeviceMemory);
+        vkUnmapMemory(vkDevice, vkDeviceMemory);
     }
 
     /// <inheritdoc />
     /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(VkDevice, uint, VkMappedMemoryRange*)" /> failed.</exception>
     public override void UnmapAndWrite(nuint writtenRangeOffset, nuint writtenRangeLength)
     {
-        var device = Allocator.Device;
+        var device = Device;
 
-        var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
+        var vkDevice = device.VkDevice;
+        var vkDeviceMemory = Heap.VkDeviceMemory;
 
         if (writtenRangeLength != 0)
         {
-            var nonCoherentAtomSize = device.Adapter.VulkanPhysicalDeviceProperties.limits.nonCoherentAtomSize;
+            var nonCoherentAtomSize = device.Adapter.VkPhysicalDeviceProperties.limits.nonCoherentAtomSize;
 
             var offset = Offset + writtenRangeOffset;
             var size = (writtenRangeLength + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
 
-            var mappedMemoryRange = new VkMappedMemoryRange {
+            var vkMappedMemoryRange = new VkMappedMemoryRange {
                 sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
-                memory = vulkanDeviceMemory,
+                memory = vkDeviceMemory,
                 offset = offset,
                 size = size,
             };
-            ThrowExternalExceptionIfNotSuccess(vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
+            ThrowExternalExceptionIfNotSuccess(vkFlushMappedMemoryRanges(vkDevice, 1, &vkMappedMemoryRange));
         }
-        vkUnmapMemory(vulkanDevice, vulkanDeviceMemory);
+        vkUnmapMemory(vkDevice, vkDeviceMemory);
     }
 
     /// <inheritdoc />
@@ -230,103 +274,39 @@ public sealed unsafe class VulkanGraphicsTexture : GraphicsTexture
 
         if (priorState < Disposing)
         {
-            _vulkanSampler.Dispose(DisposeVulkanSampler);
-            _vulkanImageView.Dispose(DisposeVulkanImageView);
+            var vkDevice = Device.VkDevice;
 
-            DisposeVulkanImage(_vulkanImage);
+            DisposeVkSampler(vkDevice, _vkSampler);
+            DisposeVkImageView(vkDevice, _vkImageView);
+            DisposeVulkanImage(vkDevice, _vkImage);
+
             HeapRegion.Heap.Free(in HeapRegion);
         }
 
         _state.EndDispose();
-    }
 
-    private VkImageView CreateVulkanImageView()
-    {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsTexture));
-
-        VkImageView vulkanImageView;
-
-        var device = Allocator.Device;
-
-        var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
-
-        var viewType = Kind switch {
-            GraphicsTextureKind.OneDimensional => VK_IMAGE_VIEW_TYPE_1D,
-            GraphicsTextureKind.TwoDimensional => VK_IMAGE_VIEW_TYPE_2D,
-            GraphicsTextureKind.ThreeDimensional => VK_IMAGE_VIEW_TYPE_3D,
-            _ => default,
-        };
-
-        var imageViewCreateInfo = new VkImageViewCreateInfo {
-            sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-            image = VulkanImage,
-            viewType = viewType,
-            format = VK_FORMAT_R8G8B8A8_UNORM,
-            components = new VkComponentMapping {
-                r = VK_COMPONENT_SWIZZLE_R,
-                g = VK_COMPONENT_SWIZZLE_G,
-                b = VK_COMPONENT_SWIZZLE_B,
-                a = VK_COMPONENT_SWIZZLE_A,
-            },
-            subresourceRange = new VkImageSubresourceRange {
-                aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-                levelCount = 1,
-                layerCount = 1,
-            },
-        };
-
-        ThrowExternalExceptionIfNotSuccess(vkCreateImageView(vulkanDevice, &imageViewCreateInfo, pAllocator: null, &vulkanImageView));
-
-        return vulkanImageView;
-    }
-
-    private VkSampler CreateVulkanSampler()
-    {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsTexture));
-
-        VkSampler vulkanSampler;
-
-        var device = Allocator.Device;
-
-        var vulkanDevice = device.VulkanDevice;
-        var vulkanDeviceMemory = Heap.VulkanDeviceMemory;
-
-        var samplerCreateInfo = new VkSamplerCreateInfo {
-            sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
-            magFilter = VK_FILTER_LINEAR,
-            minFilter = VK_FILTER_LINEAR,
-            mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR,
-            maxLod = 1.0f,
-            borderColor = VK_BORDER_COLOR_INT_OPAQUE_WHITE
-        };
-
-        ThrowExternalExceptionIfNotSuccess(vkCreateSampler(vulkanDevice, &samplerCreateInfo, pAllocator: null, &vulkanSampler));
-
-        return vulkanSampler;
-    }
-
-    private void DisposeVulkanImage(VkImage vulkanImage)
-    {
-        if (vulkanImage != VkImage.NULL)
+        static void DisposeVulkanImage(VkDevice vkDevice, VkImage vkImage)
         {
-            vkDestroyImage(Allocator.Device.VulkanDevice, vulkanImage, pAllocator: null);
+            if (vkImage != VkImage.NULL)
+            {
+                vkDestroyImage(vkDevice, vkImage, pAllocator: null);
+            }
         }
-    }
 
-    private void DisposeVulkanImageView(VkImageView vulkanImageView)
-    {
-        if (vulkanImageView != VkImageView.NULL)
+        static void DisposeVkImageView(VkDevice vkDevice, VkImageView vkImageView)
         {
-            vkDestroyImageView(Allocator.Device.VulkanDevice, vulkanImageView, pAllocator: null);
+            if (vkImageView != VkImageView.NULL)
+            {
+                vkDestroyImageView(vkDevice, vkImageView, pAllocator: null);
+            }
         }
-    }
 
-    private void DisposeVulkanSampler(VkSampler vulkanSampler)
-    {
-        if (vulkanSampler != VkSampler.NULL)
+        static void DisposeVkSampler(VkDevice vkDevice, VkSampler vkSampler)
         {
-            vkDestroySampler(Allocator.Device.VulkanDevice, vulkanSampler, pAllocator: null);
+            if (vkSampler != VkSampler.NULL)
+            {
+                vkDestroySampler(vkDevice, vkSampler, pAllocator: null);
+            }
         }
     }
 }

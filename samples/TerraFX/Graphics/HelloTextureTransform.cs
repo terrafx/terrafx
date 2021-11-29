@@ -57,7 +57,6 @@ public sealed class HelloTextureTransform : HelloWindow
         _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer, textureStagingBuffer);
         currentGraphicsContext.EndFrame();
 
-        graphicsDevice.Signal(currentGraphicsContext.Fence);
         graphicsDevice.WaitForIdle();
     }
 

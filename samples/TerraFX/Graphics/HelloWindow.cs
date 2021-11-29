@@ -31,6 +31,7 @@ public class HelloWindow : Sample
 
     public override void Cleanup()
     {
+        _graphicsSwapchain?.Dispose();
         _graphicsDevice?.Dispose();
         _window?.Dispose();
 

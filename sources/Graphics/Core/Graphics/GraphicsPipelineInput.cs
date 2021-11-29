@@ -7,6 +7,7 @@ namespace TerraFX.Graphics;
 /// <summary>A graphics pipeline input which describes an input to a stage of the graphics pipeline.</summary>
 public readonly struct GraphicsPipelineInput
 {
+    // TODO: Make this UnmanagedArray<GraphicsPipelineInputElement>
     private readonly GraphicsPipelineInputElement[] _elements;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsPipelineInput" /> struct.</summary>

@@ -50,7 +50,6 @@ public sealed class HelloTransform : HelloWindow
         _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer);
         currentGraphicsContext.EndFrame();
 
-        graphicsDevice.Signal(currentGraphicsContext.Fence);
         graphicsDevice.WaitForIdle();
     }
 

@@ -5,6 +5,7 @@ using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.MemoryUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
 
@@ -18,12 +19,10 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
     internal D3D12GraphicsShader(D3D12GraphicsDevice device, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
         : base(device, kind, entryPointName)
     {
-        var bytecodeLength = (nuint)bytecode.Length;
+        _d3d12ShaderBytecode.pShaderBytecode = Allocate((uint)bytecode.Length);
+        _d3d12ShaderBytecode.BytecodeLength = (uint)bytecode.Length;
 
-        _d3d12ShaderBytecode.pShaderBytecode = Allocate(bytecodeLength);
-        _d3d12ShaderBytecode.BytecodeLength = bytecodeLength;
-
-        var destination = new Span<byte>(_d3d12ShaderBytecode.pShaderBytecode, (int)bytecodeLength);
+        var destination = new Span<byte>(_d3d12ShaderBytecode.pShaderBytecode, bytecode.Length);
         bytecode.CopyTo(destination);
 
         _ = _state.Transition(to: Initialized);
@@ -33,13 +32,13 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
     ~D3D12GraphicsShader() => Dispose(isDisposing: false);
 
     /// <inheritdoc />
-    public override ReadOnlySpan<byte> Bytecode => new ReadOnlySpan<byte>(_d3d12ShaderBytecode.pShaderBytecode, (int)_d3d12ShaderBytecode.BytecodeLength);
+    public override UnmanagedReadOnlySpan<byte> Bytecode => new UnmanagedReadOnlySpan<byte>((byte*)_d3d12ShaderBytecode.pShaderBytecode, _d3d12ShaderBytecode.BytecodeLength);
 
     /// <summary>Gets the underlying <see cref="D3D12_SHADER_BYTECODE" /> for the shader.</summary>
     public ref readonly D3D12_SHADER_BYTECODE D3D12ShaderBytecode => ref _d3d12ShaderBytecode;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-    public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
+    public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
@@ -48,15 +47,9 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
 
         if (priorState < Disposing)
         {
-            DisposeD3D12ShaderBytecode();
+            Free(_d3d12ShaderBytecode.pShaderBytecode);
         }
 
         _state.EndDispose();
-    }
-
-    private void DisposeD3D12ShaderBytecode()
-    {
-        var shaderBytecode = _d3d12ShaderBytecode.pShaderBytecode;
-        Free(shaderBytecode);
     }
 }

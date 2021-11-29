@@ -1,6 +1,5 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 using TerraFX.Threading;
@@ -15,6 +14,7 @@ using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 using System.Diagnostics;
 
 namespace TerraFX.Graphics;
@@ -30,40 +30,71 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
 
     private const uint DrawingInitialized = 5;
 
+    private readonly ID3D12CommandAllocator* _d3d12CommandAllocator;
+    private readonly ID3D12GraphicsCommandList* _d3d12GraphicsCommandList;
     private readonly D3D12GraphicsFence _fence;
 
     private uint _framebufferIndex;
     private D3D12GraphicsSwapchain? _swapchain;
-
-    private ValueLazy<Pointer<ID3D12CommandAllocator>> _d3d12CommandAllocator;
-    private ValueLazy<Pointer<ID3D12GraphicsCommandList>> _d3d12GraphicsCommandList;
 
     private VolatileState _state;
 
     internal D3D12GraphicsContext(D3D12GraphicsDevice device)
         : base(device)
     {
-        _fence = new D3D12GraphicsFence(device);
+        var d3d12CommandAllocator = CreateD3D12CommandAllocator(device);
+        _d3d12CommandAllocator = d3d12CommandAllocator;
 
-        _d3d12CommandAllocator = new ValueLazy<Pointer<ID3D12CommandAllocator>>(CreateD3D12CommandAllocator);
-        _d3d12GraphicsCommandList = new ValueLazy<Pointer<ID3D12GraphicsCommandList>>(CreateD3D12GraphicsCommandList);
+        _d3d12GraphicsCommandList = CreateD3D12GraphicsCommandList(device, d3d12CommandAllocator);
+        _fence = device.CreateFence(isSignalled: true);
 
         _ = _state.Transition(to: Initialized);
+
+        static ID3D12CommandAllocator* CreateD3D12CommandAllocator(D3D12GraphicsDevice device)
+        {
+            ID3D12CommandAllocator* d3d12CommandAllocator;
+            ThrowExternalExceptionIfFailed(device.D3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof<ID3D12CommandAllocator>(), (void**)&d3d12CommandAllocator));
+            return d3d12CommandAllocator;
+        }
+
+        static ID3D12GraphicsCommandList* CreateD3D12GraphicsCommandList(D3D12GraphicsDevice device, ID3D12CommandAllocator* d3d12CommandAllocator)
+        {
+            ID3D12GraphicsCommandList* d3d12GraphicsCommandList;
+            ThrowExternalExceptionIfFailed(device.D3D12Device->CreateCommandList(nodeMask: 0, D3D12_COMMAND_LIST_TYPE_DIRECT, d3d12CommandAllocator, pInitialState: null, __uuidof<ID3D12GraphicsCommandList>(), (void**)&d3d12GraphicsCommandList));
+
+            // Command lists are created in the recording state, but there is nothing
+            // to record yet. The main loop expects it to be closed, so close it now.
+            ThrowExternalExceptionIfFailed(d3d12GraphicsCommandList->Close());
+
+            return d3d12GraphicsCommandList;
+        }
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsContext" /> class.</summary>
     ~D3D12GraphicsContext() => Dispose(isDisposing: false);
 
     /// <summary>Gets the <see cref="ID3D12CommandAllocator" /> used by the context.</summary>
-    /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-    public ID3D12CommandAllocator* D3D12CommandAllocator => _d3d12CommandAllocator.Value;
+    public ID3D12CommandAllocator* D3D12CommandAllocator
+    {
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _d3d12CommandAllocator;
+        }
+    }
 
     /// <summary>Gets the <see cref="ID3D12GraphicsCommandList" /> used by the context.</summary>
-    /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-    public ID3D12GraphicsCommandList* D3D12GraphicsCommandList => _d3d12GraphicsCommandList.Value;
+    public ID3D12GraphicsCommandList* D3D12GraphicsCommandList
+    {
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _d3d12GraphicsCommandList;
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-    public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
+    public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
 
     /// <inheritdoc />
     public override D3D12GraphicsFence Fence => _fence;
@@ -77,36 +108,36 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
         _state.Transition(from: FrameInitialized, to: DrawingInitializing);
         Debug.Assert(Swapchain is not null);
 
-        var commandList = D3D12GraphicsCommandList;
+        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
         var swapchain = Swapchain;
 
-        var rtvResourceBarrier = D3D12_RESOURCE_BARRIER.InitTransition(swapchain.D3D12RenderTargetResources[framebufferIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-        commandList->ResourceBarrier(1, &rtvResourceBarrier);
+        var d3d12RtvResourceBarrier = D3D12_RESOURCE_BARRIER.InitTransition(swapchain.D3D12RenderTargetResources[framebufferIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+        d3d12GraphicsCommandList->ResourceBarrier(1, &d3d12RtvResourceBarrier);
 
-        var rtvDescriptor = swapchain.D3D12RtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart().Offset((int)framebufferIndex, Device.D3D12RtvDescriptorHandleIncrementSize);
-        commandList->OMSetRenderTargets(1, &rtvDescriptor, RTsSingleHandleToDescriptorRange: TRUE, pDepthStencilDescriptor: null);
+        var d3d12RtvDescriptor = swapchain.D3D12RtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart().Offset((int)framebufferIndex, Device.D3D12RtvDescriptorHandleIncrementSize);
+        d3d12GraphicsCommandList->OMSetRenderTargets(1, &d3d12RtvDescriptor, RTsSingleHandleToDescriptorRange: TRUE, pDepthStencilDescriptor: null);
 
         var surface = swapchain.Surface;
 
         var surfaceWidth = surface.Width;
         var surfaceHeight = surface.Height;
 
-        var viewport = new D3D12_VIEWPORT {
+        var d3d12Viewport = new D3D12_VIEWPORT {
             Width = surfaceWidth,
             Height = surfaceHeight,
             MinDepth = D3D12_MIN_DEPTH,
             MaxDepth = D3D12_MAX_DEPTH,
         };
-        commandList->RSSetViewports(1, &viewport);
+        d3d12GraphicsCommandList->RSSetViewports(1, &d3d12Viewport);
 
-        var scissorRect = new RECT {
+        var d3d12ScissorRect = new RECT {
             right = (int)surfaceWidth,
             bottom = (int)surfaceHeight,
         };
-        commandList->RSSetScissorRects(1, &scissorRect);
+        d3d12GraphicsCommandList->RSSetScissorRects(1, &d3d12ScissorRect);
 
-        commandList->ClearRenderTargetView(rtvDescriptor, (float*)&backgroundColor, NumRects: 0, pRects: null);
-        commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        d3d12GraphicsCommandList->ClearRenderTargetView(d3d12RtvDescriptor, (float*)&backgroundColor, NumRects: 0, pRects: null);
+        d3d12GraphicsCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         _framebufferIndex = framebufferIndex;
         _state.Transition(from: DrawingInitializing, to: DrawingInitialized);
@@ -153,7 +184,7 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
             ThrowInvalidOperationException("GraphicsContext.BeginFrame has not been called");
         }
 
-        var commandList = D3D12GraphicsCommandList;
+        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
 
         var destinationCpuAccess = destination.CpuAccess;
         var sourceCpuAccess = source.CpuAccess;
@@ -166,69 +197,69 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
 
         BeginCopy();
 
-        commandList->CopyResource(d3d12DestinationResource, d3d12SourceResource);
+        d3d12GraphicsCommandList->CopyResource(d3d12DestinationResource, d3d12SourceResource);
 
         EndCopy();
 
         void BeginCopy()
         {
-            var resourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
-            var numResourceBarriers = 0u;
+            var d3d12ResourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
+            var numD3D12ResourceBarriers = 0u;
 
             if (destinationCpuAccess == GraphicsResourceCpuAccess.None)
             {
-                resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
+                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
                     d3d12DestinationResource,
                     stateBefore: d3d12DestinationResourceState,
                     stateAfter: D3D12_RESOURCE_STATE_COPY_DEST
                 );
-                numResourceBarriers++;
+                numD3D12ResourceBarriers++;
             }
 
             if (sourceCpuAccess == GraphicsResourceCpuAccess.None)
             {
-                resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
+                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
                     d3d12SourceResource,
                     stateBefore: d3d12SourceResourceState,
                     stateAfter: D3D12_RESOURCE_STATE_COPY_SOURCE
                 );
-                numResourceBarriers++;
+                numD3D12ResourceBarriers++;
             }
 
-            if (numResourceBarriers != 0)
+            if (numD3D12ResourceBarriers != 0)
             {
-                commandList->ResourceBarrier(numResourceBarriers, resourceBarriers);
+                d3d12GraphicsCommandList->ResourceBarrier(numD3D12ResourceBarriers, d3d12ResourceBarriers);
             }
         }
 
         void EndCopy()
         {
-            var resourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
-            var numResourceBarriers = 0u;
+            var d3d12ResourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
+            var numD3D12ResourceBarriers = 0u;
 
             if (sourceCpuAccess == GraphicsResourceCpuAccess.None)
             {
-                resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
+                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
                     d3d12SourceResource,
                     stateBefore: D3D12_RESOURCE_STATE_COPY_SOURCE,
                     stateAfter: d3d12SourceResourceState
                 );
-                numResourceBarriers++;
+                numD3D12ResourceBarriers++;
             }
 
             if (destinationCpuAccess == GraphicsResourceCpuAccess.None)
             {
-                resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
+                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
                     d3d12DestinationResource,
                     stateBefore: D3D12_RESOURCE_STATE_COPY_DEST,
                     stateAfter: d3d12DestinationResourceState
                 );
-                numResourceBarriers++;
+                numD3D12ResourceBarriers++;
             }
 
-            if (numResourceBarriers != 0)
+            if (numD3D12ResourceBarriers != 0)
             {
-                commandList->ResourceBarrier(numResourceBarriers, resourceBarriers);
+                d3d12GraphicsCommandList->ResourceBarrier(numD3D12ResourceBarriers, d3d12ResourceBarriers);
             }
         }
     }
@@ -244,8 +275,8 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
             ThrowInvalidOperationException("GraphicsContext.BeginFrame has not been called");
         }
 
-        var device = Device.D3D12Device;
-        var commandList = D3D12GraphicsCommandList;
+        var d3d12Device = Device.D3D12Device;
+        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
 
         var destinationCpuAccess = destination.CpuAccess;
         var sourceCpuAccess = source.CpuAccess;
@@ -260,75 +291,75 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
 
         D3D12_PLACED_SUBRESOURCE_FOOTPRINT sourceFootprint;
 
-        var destinationDesc = d3d12DestinationResource->GetDesc();
-        device->GetCopyableFootprints(&destinationDesc, FirstSubresource: 0, NumSubresources: 1, BaseOffset: 0, &sourceFootprint, pNumRows: null, pRowSizeInBytes: null, pTotalBytes: null);
+        var d3d12DestinationResourceDesc = d3d12DestinationResource->GetDesc();
+        d3d12Device->GetCopyableFootprints(&d3d12DestinationResourceDesc, FirstSubresource: 0, NumSubresources: 1, BaseOffset: 0, &sourceFootprint, pNumRows: null, pRowSizeInBytes: null, pTotalBytes: null);
 
         var d3d12DestinationTextureCopyLocation = new D3D12_TEXTURE_COPY_LOCATION(d3d12DestinationResource, Sub: 0);
         var d3d12SourceTextureCopyLocation = new D3D12_TEXTURE_COPY_LOCATION(d3d12SourceResource, in sourceFootprint);
 
-        commandList->CopyTextureRegion(&d3d12DestinationTextureCopyLocation, DstX: 0, DstY: 0, DstZ: 0, &d3d12SourceTextureCopyLocation, pSrcBox: null);
+        d3d12GraphicsCommandList->CopyTextureRegion(&d3d12DestinationTextureCopyLocation, DstX: 0, DstY: 0, DstZ: 0, &d3d12SourceTextureCopyLocation, pSrcBox: null);
 
         EndCopy();
 
         void BeginCopy()
         {
-            var resourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
-            var numResourceBarriers = 0u;
+            var d3d12ResourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
+            var numD3D12ResourceBarriers = 0u;
 
             if (destinationCpuAccess == GraphicsResourceCpuAccess.None)
             {
-                resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
+                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
                     d3d12DestinationResource,
                     stateBefore: d3d12DestinationResourceState,
                     stateAfter: D3D12_RESOURCE_STATE_COPY_DEST
                 );
-                numResourceBarriers++;
+                numD3D12ResourceBarriers++;
             }
 
             if (sourceCpuAccess == GraphicsResourceCpuAccess.None)
             {
-                resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
+                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
                     d3d12SourceResource,
                     stateBefore: d3d12SourceResourceState,
                     stateAfter: D3D12_RESOURCE_STATE_COPY_SOURCE
                 );
-                numResourceBarriers++;
+                numD3D12ResourceBarriers++;
             }
 
-            if (numResourceBarriers != 0)
+            if (numD3D12ResourceBarriers != 0)
             {
-                commandList->ResourceBarrier(numResourceBarriers, resourceBarriers);
+                d3d12GraphicsCommandList->ResourceBarrier(numD3D12ResourceBarriers, d3d12ResourceBarriers);
             }
         }
 
         void EndCopy()
         {
-            var resourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
-            var numResourceBarriers = 0u;
+            var d3d12ResourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
+            var numD3D12ResourceBarriers = 0u;
 
             if (sourceCpuAccess == GraphicsResourceCpuAccess.None)
             {
-                resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
+                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
                     d3d12SourceResource,
                     stateBefore: D3D12_RESOURCE_STATE_COPY_SOURCE,
                     stateAfter: d3d12SourceResourceState
                 );
-                numResourceBarriers++;
+                numD3D12ResourceBarriers++;
             }
 
             if (destinationCpuAccess == GraphicsResourceCpuAccess.None)
             {
-                resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
+                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
                     d3d12DestinationResource,
                     stateBefore: D3D12_RESOURCE_STATE_COPY_DEST,
                     stateAfter: d3d12DestinationResourceState
                 );
-                numResourceBarriers++;
+                numD3D12ResourceBarriers++;
             }
 
-            if (numResourceBarriers != 0)
+            if (numD3D12ResourceBarriers != 0)
             {
-                commandList->ResourceBarrier(numResourceBarriers, resourceBarriers);
+                d3d12GraphicsCommandList->ResourceBarrier(numD3D12ResourceBarriers, d3d12ResourceBarriers);
             }
         }
     }
@@ -347,19 +378,19 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
             ThrowInvalidOperationException("GraphicsContext.BeginDraw has not been called");
         }
 
-        var commandList = D3D12GraphicsCommandList;
+        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
         var pipeline = primitive.Pipeline;
 
-        commandList->SetGraphicsRootSignature(pipeline.Signature.D3D12RootSignature);
-        commandList->SetPipelineState(pipeline.D3D12PipelineState);
+        d3d12GraphicsCommandList->SetGraphicsRootSignature(pipeline.Signature.D3D12RootSignature);
+        d3d12GraphicsCommandList->SetPipelineState(pipeline.D3D12PipelineState);
 
-        var descriptorHeaps = stackalloc ID3D12DescriptorHeap*[1] {
+        var d3d12DescriptorHeaps = stackalloc ID3D12DescriptorHeap*[1] {
             primitive.D3D12CbvSrvUavDescriptorHeap,
         };
-        commandList->SetDescriptorHeaps(1, descriptorHeaps);
+        d3d12GraphicsCommandList->SetDescriptorHeaps(1, d3d12DescriptorHeaps);
 
         ref readonly var vertexBufferView = ref primitive.VertexBufferView;
-        var vertexBuffer = vertexBufferView.Resource as D3D12GraphicsBuffer;
+        var vertexBuffer = vertexBufferView.Resource.As<D3D12GraphicsBuffer>();
         AssertNotNull(vertexBuffer);
 
         var d3d12VertexBufferView = new D3D12_VERTEX_BUFFER_VIEW {
@@ -367,7 +398,7 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
             StrideInBytes = primitive.VertexBufferView.Stride,
             SizeInBytes = vertexBufferView.Size,
         };
-        commandList->IASetVertexBuffers(StartSlot: 0, NumViews: 1, &d3d12VertexBufferView);
+        d3d12GraphicsCommandList->IASetVertexBuffers(StartSlot: 0, NumViews: 1, &d3d12VertexBufferView);
 
         var inputResourceViews = primitive.InputResourceViews;
 
@@ -381,12 +412,12 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
             if (inputResourceView.Resource is D3D12GraphicsBuffer d3d12GraphicsBuffer)
             {
                 var gpuVirtualAddress = d3d12GraphicsBuffer.D3D12Resource->GetGPUVirtualAddress();
-                commandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), gpuVirtualAddress + inputResourceView.Offset);
+                d3d12GraphicsCommandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), gpuVirtualAddress + inputResourceView.Offset);
             }
             else if (inputResourceView.Resource is D3D12GraphicsTexture d3d12GraphicsTexture)
             {
                 var gpuDescriptorHandleForHeapStart = primitive.D3D12CbvSrvUavDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
-                commandList->SetGraphicsRootDescriptorTable(unchecked((uint)index), gpuDescriptorHandleForHeapStart.Offset(rootDescriptorTableIndex, cbvSrvUavDescriptorHandleIncrementSize));
+                d3d12GraphicsCommandList->SetGraphicsRootDescriptorTable(unchecked((uint)index), gpuDescriptorHandleForHeapStart.Offset(rootDescriptorTableIndex, cbvSrvUavDescriptorHandleIncrementSize));
                 rootDescriptorTableIndex++;
             }
         }
@@ -409,13 +440,13 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
                 SizeInBytes = (uint)indexBufferView.Size,
                 Format = indexFormat,
             };
-            commandList->IASetIndexBuffer(&d3d12IndexBufferView);
+            d3d12GraphicsCommandList->IASetIndexBuffer(&d3d12IndexBufferView);
 
-            commandList->DrawIndexedInstanced(IndexCountPerInstance: (uint)(indexBufferView.Size / indexBufferStride), InstanceCount: 1, StartIndexLocation: 0, BaseVertexLocation: 0, StartInstanceLocation: 0);
+            d3d12GraphicsCommandList->DrawIndexedInstanced(IndexCountPerInstance: (uint)(indexBufferView.Size / indexBufferStride), InstanceCount: 1, StartIndexLocation: 0, BaseVertexLocation: 0, StartInstanceLocation: 0);
         }
         else
         {
-            commandList->DrawInstanced(VertexCountPerInstance: (uint)(vertexBufferView.Size /  vertexBufferView.Stride), InstanceCount: 1, StartVertexLocation: 0, StartInstanceLocation: 0);
+            d3d12GraphicsCommandList->DrawInstanced(VertexCountPerInstance: (uint)(vertexBufferView.Size /  vertexBufferView.Stride), InstanceCount: 1, StartVertexLocation: 0, StartInstanceLocation: 0);
         }
     }
 
@@ -425,8 +456,8 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
         _state.Transition(from: DrawingInitialized, to: DrawingInitializing);
 
         Debug.Assert(Swapchain is not null);
-        var renderTargetResourceBarrier = D3D12_RESOURCE_BARRIER.InitTransition(Swapchain.D3D12RenderTargetResources[_framebufferIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-        D3D12GraphicsCommandList->ResourceBarrier(1, &renderTargetResourceBarrier);
+        var d3d12RtvResourceBarrier = D3D12_RESOURCE_BARRIER.InitTransition(Swapchain.D3D12RenderTargetResources[_framebufferIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+        D3D12GraphicsCommandList->ResourceBarrier(1, &d3d12RtvResourceBarrier);
 
         _state.Transition(from: DrawingInitializing, to: FrameInitialized);
     }
@@ -435,14 +466,14 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
     public override void EndFrame()
     {
         _state.Transition(from: FrameInitialized, to: FrameInitializing);
-        var commandList = D3D12GraphicsCommandList;
+        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
 
-        var commandQueue = Device.D3D12CommandQueue;
-        ThrowExternalExceptionIfFailed(commandList->Close());
-        commandQueue->ExecuteCommandLists(1, (ID3D12CommandList**)&commandList);
+        var d3d12CommandQueue = Device.D3D12CommandQueue;
+        ThrowExternalExceptionIfFailed(d3d12GraphicsCommandList->Close());
+        d3d12CommandQueue->ExecuteCommandLists(1, (ID3D12CommandList**)&d3d12GraphicsCommandList);
 
         var fence = Fence;
-        ThrowExternalExceptionIfFailed(commandQueue->Signal(fence.D3D12Fence, fence.D3D12FenceSignalValue));
+        ThrowExternalExceptionIfFailed(d3d12CommandQueue->Signal(fence.D3D12Fence, fence.D3D12FenceSignalValue));
         fence.Wait();
 
         _swapchain = null;
@@ -456,35 +487,15 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
 
         if (priorState < Disposing)
         {
-            _d3d12GraphicsCommandList.Dispose(ReleaseIfNotNull);
-            _d3d12CommandAllocator.Dispose(ReleaseIfNotNull);
-            _fence?.Dispose();
+            ReleaseIfNotNull(_d3d12GraphicsCommandList);
+            ReleaseIfNotNull(_d3d12CommandAllocator);
+
+            if (isDisposing)
+            {
+                _fence?.Dispose();
+            }
         }
 
         _state.EndDispose();
-    }
-
-    private Pointer<ID3D12CommandAllocator> CreateD3D12CommandAllocator()
-    {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsContext));
-
-        ID3D12CommandAllocator* d3d12CommandAllocator;
-        ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof<ID3D12CommandAllocator>(), (void**)&d3d12CommandAllocator));
-
-        return d3d12CommandAllocator;
-    }
-
-    private Pointer<ID3D12GraphicsCommandList> CreateD3D12GraphicsCommandList()
-    {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsContext));
-
-        ID3D12GraphicsCommandList* d3d12GraphicsCommandList;
-        ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateCommandList(nodeMask: 0, D3D12_COMMAND_LIST_TYPE_DIRECT, D3D12CommandAllocator, pInitialState: null, __uuidof<ID3D12GraphicsCommandList>(), (void**)&d3d12GraphicsCommandList));
-
-        // Command lists are created in the recording state, but there is nothing
-        // to record yet. The main loop expects it to be closed, so close it now.
-        ThrowExternalExceptionIfFailed(d3d12GraphicsCommandList->Close());
-
-        return d3d12GraphicsCommandList;
     }
 }

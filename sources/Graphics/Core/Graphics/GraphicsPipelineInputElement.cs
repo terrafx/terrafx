@@ -8,6 +8,7 @@ namespace TerraFX.Graphics;
 /// <summary>A graphics pipeline input element which describes an element graphics pipeline input.</summary>
 public readonly struct GraphicsPipelineInputElement
 {
+    // TODO: Track the type as an unmanaged type
     private readonly Type _type;
     private readonly GraphicsPipelineInputElementKind _kind;
     private readonly uint _size;
