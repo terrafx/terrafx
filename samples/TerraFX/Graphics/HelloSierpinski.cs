@@ -65,7 +65,6 @@ public class HelloSierpinski : HelloWindow
         _pyramid = CreateGraphicsPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
         currentGraphicsContext.EndFrame();
 
-        graphicsDevice.Signal(currentGraphicsContext.Fence);
         graphicsDevice.WaitForIdle();
     }
 

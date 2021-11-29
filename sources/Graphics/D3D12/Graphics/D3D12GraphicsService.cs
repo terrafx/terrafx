@@ -11,6 +11,7 @@ using static TerraFX.Interop.DirectX.DXGI;
 using static TerraFX.Interop.DirectX.DXGI_DEBUG_RLO_FLAGS;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -19,18 +20,115 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsService : GraphicsService
 {
-    private ValueLazy<Pointer<IDXGIFactory2>> _dxgiFactory;
-    private ValueLazy<ImmutableArray<D3D12GraphicsAdapter>> _adapters;
+    private readonly IDXGIFactory2* _dxgiFactory;
+    private readonly ImmutableArray<D3D12GraphicsAdapter> _adapters;
 
     private VolatileState _state;
 
     /// <summary>Initializes a new instance of the <see cref="D3D12GraphicsService" /> class.</summary>
-    public D3D12GraphicsService()
+    public D3D12GraphicsService() : base()
     {
-        _dxgiFactory = new ValueLazy<Pointer<IDXGIFactory2>>(CreateDxgiFactory);
-        _adapters = new ValueLazy<ImmutableArray<D3D12GraphicsAdapter>>(GetAdapters);
+        var dxgiFactory = CreateDxgiFactory(DebugModeEnabled);
+
+        _dxgiFactory = dxgiFactory;
+        _adapters = GetAdapters(this, dxgiFactory);
 
         _ = _state.Transition(to: Initialized);
+
+        static IDXGIFactory2* CreateDxgiFactory(bool enableDebugMode)
+        {
+            IDXGIFactory2* dxgiFactory;
+
+            var createFlags = (enableDebugMode && TryEnableDebugMode()) ? DXGI_CREATE_FACTORY_DEBUG : 0u;
+            ThrowExternalExceptionIfFailed(CreateDXGIFactory2(createFlags, __uuidof<IDXGIFactory2>(), (void**)&dxgiFactory));
+
+            return dxgiFactory;
+        }
+
+        static ImmutableArray<D3D12GraphicsAdapter> GetAdapters(D3D12GraphicsService service, IDXGIFactory2* dxgiFactory)
+        {
+            IDXGIAdapter1* dxgiAdapter = null;
+
+            try
+            {
+                // We split this into two methods so the JIT can still optimize the "core" part
+                return GetAdaptersInternal(service, dxgiFactory, &dxgiAdapter);
+            }
+            finally
+            {
+                // We explicitly set adapter to null in the enumeration above so that we only
+                // release in the case of an exception being thrown.
+                ReleaseIfNotNull(dxgiAdapter);
+            }
+        }
+
+        static ImmutableArray<D3D12GraphicsAdapter> GetAdaptersInternal(D3D12GraphicsService service, IDXGIFactory2* dxgiFactory, IDXGIAdapter1** pDxgiAdapter)
+        {
+            var adaptersBuilder = ImmutableArray.CreateBuilder<D3D12GraphicsAdapter>();
+            uint index = 0;
+
+            do
+            {
+                var result = dxgiFactory->EnumAdapters1(index, pDxgiAdapter);
+
+                if (FAILED(result))
+                {
+                    if (result != DXGI_ERROR_NOT_FOUND)
+                    {
+                        ThrowExternalException(nameof(IDXGIFactory1.EnumAdapters1), result);
+                    }
+                    index = 0;
+                }
+                else
+                {
+                    var adapter = new D3D12GraphicsAdapter(service, pDxgiAdapter[0]);
+                    adaptersBuilder.Add(adapter);
+
+                    pDxgiAdapter[0] = null;
+                    index++;
+                }
+            }
+            while (index != 0);
+
+            return adaptersBuilder.ToImmutable();
+        }
+
+        static bool TryEnableDebugMode()
+        {
+            ID3D12Debug* d3d12Debug = null;
+            ID3D12Debug1* d3d12Debug1 = null;
+
+            try
+            {
+                // We split this into two methods so the JIT can still optimize the "core" part
+                return TryEnableDebugModeInternal(&d3d12Debug, &d3d12Debug1);
+            }
+            finally
+            {
+                ReleaseIfNotNull(d3d12Debug1);
+                ReleaseIfNotNull(d3d12Debug);
+            }
+        }
+
+        static bool TryEnableDebugModeInternal(ID3D12Debug** pD3D12Debug, ID3D12Debug1** pD3D12Debug1)
+        {
+            var debugModeEnabled = false;
+
+            if (SUCCEEDED(D3D12GetDebugInterface(__uuidof<ID3D12Debug>(), (void**)pD3D12Debug)))
+            {
+                // We don't want to throw if the debug interface fails to be created
+                pD3D12Debug[0]->EnableDebugLayer();
+
+                if (SUCCEEDED(pD3D12Debug[0]->QueryInterface(__uuidof<ID3D12Debug1>(), (void**)pD3D12Debug1)))
+                {
+                    pD3D12Debug1[0]->SetEnableGPUBasedValidation(TRUE);
+                    pD3D12Debug1[0]->SetEnableSynchronizedCommandQueueValidation(TRUE);
+                }
+                debugModeEnabled = true;
+            }
+
+            return debugModeEnabled;
+        }
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsService" /> class.</summary>
@@ -38,12 +136,19 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
 
     /// <inheritdoc />
     /// <exception cref="ExternalException">The call to <see cref="IDXGIFactory1.EnumAdapters1(uint, IDXGIAdapter1**)" /> failed.</exception>
-    public override IEnumerable<D3D12GraphicsAdapter> Adapters => _adapters.Value;
+    public override IEnumerable<D3D12GraphicsAdapter> Adapters => _adapters;
 
     /// <summary>Gets the underlying <see cref="IDXGIFactory2" /> for the service.</summary>
     /// <exception cref="ExternalException">The call to <see cref="CreateDXGIFactory2" /> failed.</exception>
     /// <exception cref="ObjectDisposedException">The service has been disposed.</exception>
-    public IDXGIFactory2* DxgiFactory => _dxgiFactory.Value;
+    public IDXGIFactory2* DxgiFactory
+    {
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _dxgiFactory;
+        }
+    }
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
@@ -52,15 +157,15 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
 
         if (priorState < Disposing)
         {
-            if (_adapters.IsValueCreated)
+            if (isDisposing)
             {
-                foreach (var adapter in _adapters.Value)
+                foreach (var adapter in _adapters)
                 {
                     adapter?.Dispose();
                 }
             }
 
-            _dxgiFactory.Dispose(ReleaseIfNotNull);
+            ReleaseIfNotNull(_dxgiFactory);
 
             if (DebugModeEnabled)
             {
@@ -76,105 +181,22 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
 
             try
             {
-                if (SUCCEEDED(DXGIGetDebugInterface(__uuidof<IDXGIDebug>(), (void**)&dxgiDebug)))
-                {
-                    // We don't want to throw if the debug interface fails to be created
-                    _ = dxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL | DXGI_DEBUG_RLO_IGNORE_INTERNAL);
-                }
+                // We split this into two methods so the JIT can still optimize the "core" part
+                TryReportLiveObjectsInternal(&dxgiDebug);
             }
             finally
             {
                 ReleaseIfNotNull(dxgiDebug);
             }
         }
-    }
 
-    private Pointer<IDXGIFactory2> CreateDxgiFactory()
-    {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsService));
-
-        IDXGIFactory2* dxgiFactory;
-
-        var createFlags = (DebugModeEnabled && TryEnableDebugMode()) ? DXGI_CREATE_FACTORY_DEBUG : 0u;
-        ThrowExternalExceptionIfFailed(CreateDXGIFactory2(createFlags, __uuidof<IDXGIFactory2>(), (void**)&dxgiFactory));
-
-        return dxgiFactory;
-
-        static bool TryEnableDebugMode()
+        static void TryReportLiveObjectsInternal(IDXGIDebug** dxgiDebug)
         {
-            var succesfullyEnabled = false;
-
-            ID3D12Debug* dxgiDebug = null;
-            ID3D12Debug1* dxgiDebug1 = null;
-
-            try
+            if (SUCCEEDED(DXGIGetDebugInterface(__uuidof<IDXGIDebug>(), (void**)dxgiDebug)))
             {
-                if (SUCCEEDED(D3D12GetDebugInterface(__uuidof<ID3D12Debug>(), (void**)&dxgiDebug)))
-                {
-                    // We don't want to throw if the debug interface fails to be created
-                    dxgiDebug->EnableDebugLayer();
-
-                    if (SUCCEEDED(dxgiDebug->QueryInterface(__uuidof<ID3D12Debug1>(), (void**)&dxgiDebug1)))
-                    {
-                        dxgiDebug1->SetEnableGPUBasedValidation(TRUE);
-                        dxgiDebug1->SetEnableSynchronizedCommandQueueValidation(TRUE);
-                    }
-                    succesfullyEnabled = true;
-                }
+                // We don't want to throw if the debug interface fails to be created
+                _ = dxgiDebug[0]->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL | DXGI_DEBUG_RLO_IGNORE_INTERNAL);
             }
-            finally
-            {
-                ReleaseIfNotNull(dxgiDebug1);
-                ReleaseIfNotNull(dxgiDebug);
-            }
-
-            return succesfullyEnabled;
         }
-    }
-
-    private ImmutableArray<D3D12GraphicsAdapter> GetAdapters()
-    {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsService));
-
-        var adapters = ImmutableArray.CreateBuilder<D3D12GraphicsAdapter>();
-
-        var dxgiFactory = DxgiFactory;
-        IDXGIAdapter1* dxgiAdapter = null;
-
-        try
-        {
-            uint index = 0;
-
-            do
-            {
-                var result = dxgiFactory->EnumAdapters1(index, &dxgiAdapter);
-
-                if (FAILED(result))
-                {
-                    if (result != DXGI_ERROR_NOT_FOUND)
-                    {
-                        ThrowExternalException(nameof(IDXGIFactory1.EnumAdapters1), result);
-                    }
-                    index = 0;
-                }
-                else
-                {
-                    var adapter = new D3D12GraphicsAdapter(this, dxgiAdapter);
-                    adapters.Add(adapter);
-
-                    dxgiAdapter = null;
-                    index++;
-                }
-            }
-            while (index != 0);
-        }
-        finally
-        {
-            // We explicitly set adapter to null in the enumeration above so that we only
-            // release in the case of an exception being thrown.
-            ReleaseIfNotNull(dxgiAdapter);
-        }
-
-        return adapters.ToImmutable();
     }
 }

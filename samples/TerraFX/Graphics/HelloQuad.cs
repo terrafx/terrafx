@@ -50,7 +50,6 @@ public sealed class HelloQuad : HelloWindow
         _quadPrimitive = CreateQuadPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer);
         currentGraphicsContext.EndFrame();
 
-        graphicsDevice.Signal(currentGraphicsContext.Fence);
         graphicsDevice.WaitForIdle();
     }
 

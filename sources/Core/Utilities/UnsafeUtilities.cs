@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using static TerraFX.Runtime.Configuration;
@@ -11,6 +12,16 @@ namespace TerraFX.Utilities;
 /// <summary>Provides a set of methods to supplement or replace <see cref="Unsafe" /> and <see cref="MemoryMarshal" />.</summary>
 public static unsafe class UnsafeUtilities
 {
+    /// <inheritdoc cref="Unsafe.As{T}(object)" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [return: NotNullIfNotNull("o")]
+    public static T? As<T>(this object? o)
+        where T : class?
+    {
+        Assert(o is null or T);
+        return Unsafe.As<T>(o);
+    }
+
     /// <inheritdoc cref="Unsafe.As{TFrom, TTo}(ref TFrom)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref TTo As<TFrom, TTo>(ref TFrom source)

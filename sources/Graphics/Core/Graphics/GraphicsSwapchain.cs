@@ -9,8 +9,7 @@ namespace TerraFX.Graphics;
 public abstract class GraphicsSwapchain : GraphicsDeviceObject
 {
     private readonly IGraphicsSurface _surface;
-
-    private ValueLazy<GraphicsFence> _fence;
+    private readonly GraphicsFence _fence;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsSwapchain" /> class.</summary>
     /// <param name="device">The device for which the swapchain is being created.</param>
@@ -23,11 +22,11 @@ public abstract class GraphicsSwapchain : GraphicsDeviceObject
         ThrowIfNull(surface);
         _surface = surface;
 
-        _fence = new ValueLazy<GraphicsFence>(Device.CreateFence);
+        _fence = Device.CreateFence(isSignalled: false);
     }
 
     /// <summary>Gets the fence used to synchronize the swapchain.</summary>
-    public GraphicsFence Fence => _fence.Value;
+    public GraphicsFence Fence => _fence;
 
     /// <summary>Gets the index of the current framebuffer.</summary>
     public abstract uint FramebufferIndex { get; }
@@ -36,5 +35,6 @@ public abstract class GraphicsSwapchain : GraphicsDeviceObject
     public IGraphicsSurface Surface => _surface;
 
     /// <summary>Presents the current framebuffer.</summary>
+    /// <exception cref="ObjectDisposedException">The swapchain has been disposed.</exception>
     public abstract void Present();
 }

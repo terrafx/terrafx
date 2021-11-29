@@ -1,16 +1,12 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Runtime;
 using TerraFX.Threading;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.MarshalUtilities;
 
 namespace TerraFX.Utilities;
 

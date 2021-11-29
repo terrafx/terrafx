@@ -27,7 +27,7 @@ public abstract class GraphicsShader : GraphicsDeviceObject
     }
 
     /// <summary>Gets the underlying bytecode for the shader.</summary>
-    public abstract ReadOnlySpan<byte> Bytecode { get; }
+    public abstract UnmanagedReadOnlySpan<byte> Bytecode { get; }
 
     /// <summary>Gets the name of the entry point for the shader.</summary>
     public string EntryPointName => _entryPointName;

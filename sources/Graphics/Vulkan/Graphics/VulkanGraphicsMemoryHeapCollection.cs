@@ -10,12 +10,12 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed class VulkanGraphicsMemoryHeapCollection : GraphicsMemoryHeapCollection
 {
-    private readonly uint _vulkanMemoryTypeIndex;
+    private readonly uint _vkMemoryTypeIndex;
 
-    internal VulkanGraphicsMemoryHeapCollection(VulkanGraphicsDevice device, VulkanGraphicsMemoryAllocator allocator, uint memoryTypeIndex)
+    internal VulkanGraphicsMemoryHeapCollection(VulkanGraphicsDevice device, VulkanGraphicsMemoryAllocator allocator, uint vkMemoryTypeIndex)
         : base(device, allocator)
     {
-        _vulkanMemoryTypeIndex = memoryTypeIndex;
+        _vkMemoryTypeIndex = vkMemoryTypeIndex;
     }
 
     /// <inheritdoc cref="GraphicsMemoryHeapCollection.Allocator" />
@@ -25,7 +25,7 @@ public sealed class VulkanGraphicsMemoryHeapCollection : GraphicsMemoryHeapColle
     public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
     /// <summary>Gets the memory type index used when creating the <see cref="VkDeviceMemory" /> instance for a memory heap.</summary>
-    public uint VulkanMemoryTypeIndex => _vulkanMemoryTypeIndex;
+    public uint VkMemoryTypeIndex => _vkMemoryTypeIndex;
 
     /// <inheritdoc />
     protected override VulkanGraphicsMemoryHeap CreateHeap(ulong size) => new VulkanGraphicsMemoryHeap(Device, this, size);

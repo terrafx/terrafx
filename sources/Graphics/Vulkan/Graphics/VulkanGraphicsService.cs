@@ -29,7 +29,7 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
     /// <summary>The default engine name used if <see cref="EngineNameDataName" /> was not set.</summary>
     public const string DefaultEngineName = "TerraFX";
 
-    /// <summary>The name of a data value that controls the engine name for <see cref="VulkanInstance" />.</summary>
+    /// <summary>The name of a data value that controls the engine name for <see cref="VkInstance" />.</summary>
     /// <remarks>
     ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
     ///     <para>Setting this data value has no affect on services thathave already been created.</para>
@@ -37,7 +37,7 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
     /// </remarks>
     public const string EngineNameDataName = "TerraFX.Graphics.VulkanGraphicsService.EngineName";
 
-    /// <summary>The name of a data value that controls the optional extensions for <see cref="VulkanInstance" />.</summary>
+    /// <summary>The name of a data value that controls the optional extensions for <see cref="VkInstance" />.</summary>
     /// <remarks>
     ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
     ///     <para>Setting this data value has no affect on services thathave already been created.</para>
@@ -45,7 +45,7 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
     /// </remarks>
     public const string OptionalExtensionNamesDataName = "TerraFX.Graphics.VulkanGraphicsService.OptionalExtensionNames";
 
-    /// <summary>The name of a data value that controls the optional layers for <see cref="VulkanInstance" />.</summary>
+    /// <summary>The name of a data value that controls the optional layers for <see cref="VkInstance" />.</summary>
     /// <remarks>
     ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
     ///     <para>Setting this data value has no affect on services thathave already been created.</para>
@@ -53,7 +53,7 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
     /// </remarks>
     public const string OptionalLayerNamesDataName = "TerraFX.Graphics.VulkanGraphicsService.OptionalLayerNames";
 
-    /// <summary>The name of a data value that controls the required extensions for <see cref="VulkanInstance" />.</summary>
+    /// <summary>The name of a data value that controls the required extensions for <see cref="VkInstance" />.</summary>
     /// <remarks>
     ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
     ///     <para>Setting this data value has no affect on services thathave already been created.</para>
@@ -61,7 +61,7 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
     /// </remarks>
     public const string RequiredExtensionNamesDataName = "TerraFX.Graphics.VulkanGraphicsService.RequiredExtensionNames";
 
-    /// <summary>The name of a data value that controls the required layers for <see cref="VulkanInstance" />.</summary>
+    /// <summary>The name of a data value that controls the required layers for <see cref="VkInstance" />.</summary>
     /// <remarks>
     ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
     ///     <para>Setting this data value has no affect on services thathave already been created.</para>
@@ -75,10 +75,9 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
     private readonly string[] _requiredLayerNames;
     private readonly string[] _optionalLayerNames;
 
-    private ValueLazy<VkInstance> _vulkanInstance;
-    private ValueLazy<ImmutableArray<VulkanGraphicsAdapter>> _adapters;
-
-    private VkDebugUtilsMessengerEXT _vulkanDebugUtilsMessenger;
+    private readonly ImmutableArray<VulkanGraphicsAdapter> _adapters;
+    private readonly VkInstance _vkInstance;
+    private readonly VkDebugUtilsMessengerEXT _vkDebugUtilsMessenger;
 
     private VolatileState _state;
 
@@ -96,176 +95,137 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
             AppDomain.CurrentDomain.SetData(OptionalLayerNamesDataName, optionalLayerNamesData);
         }
 
-        _engineName = GetEngineName();
+        var engineName = GetEngineName();
+        _engineName = engineName;
 
-        _requiredExtensionNames = GetNames(RequiredExtensionNamesDataName);
-        _optionalExtensionNames = GetNames(OptionalExtensionNamesDataName);
+        var requiredExtensionNames = GetNames(RequiredExtensionNamesDataName);
+        _requiredExtensionNames = requiredExtensionNames;
 
-        _requiredLayerNames = GetNames(RequiredLayerNamesDataName);
-        _optionalLayerNames = GetNames(OptionalLayerNamesDataName);
+        var optionalExtensionNames = GetNames(OptionalExtensionNamesDataName);
+        _optionalExtensionNames = optionalExtensionNames;
 
-        _vulkanInstance = new ValueLazy<VkInstance>(CreateVulkanInstance);
-        _adapters = new ValueLazy<ImmutableArray<VulkanGraphicsAdapter>>(GetGraphicsAdapters);
+        var requiredLayerNames = GetNames(RequiredLayerNamesDataName);
+        _requiredLayerNames = requiredLayerNames;
+
+        var optionalLayerNames = GetNames(OptionalLayerNamesDataName);
+        _optionalLayerNames = optionalLayerNames;
+
+        var vkInstance = CreateVkInstance(engineName, requiredExtensionNames, optionalExtensionNames, requiredLayerNames, optionalLayerNames, DebugModeEnabled);
+        _vkInstance = vkInstance;
+
+        _vkDebugUtilsMessenger = CreateVkDebugUtilsMessenger(vkInstance, DebugModeEnabled);
+        _adapters = GetGraphicsAdapters(this, vkInstance);
 
         _ = _state.Transition(to: Initialized);
 
-        static string GetEngineName()
+        static VkDebugUtilsMessengerEXT CreateVkDebugUtilsMessenger(VkInstance vkInstance, bool enableDebugMode)
         {
-            var engineNameData = AppContext.GetData(EngineNameDataName) as string;
+            var vkDebugUtilsMessenger = VkDebugUtilsMessengerEXT.NULL;
 
-            if (string.IsNullOrWhiteSpace(engineNameData))
+            if (enableDebugMode)
             {
-                engineNameData = DefaultEngineName;
-                AppDomain.CurrentDomain.SetData(EngineNameDataName, engineNameData);
+                InitializeVkDebugUtilsMessengerCreateInfo(out var vkDebugUtilsMessengerCreateInfo);
+
+                // We don't want to fail if creating the debug utils messenger failed
+                var vkCreateDebugUtilsMessengerEXT = (delegate* unmanaged<IntPtr, VkDebugUtilsMessengerCreateInfoEXT*, VkAllocationCallbacks*, ulong*, VkResult>)vkGetInstanceProcAddr(vkInstance, VKCREATEDEBUGUTILSMESSENGEREXT_FUNCTION_NAME.GetPointer());
+                _ = vkCreateDebugUtilsMessengerEXT(vkInstance, &vkDebugUtilsMessengerCreateInfo, null, (ulong*)&vkDebugUtilsMessenger);
             }
 
-            return engineNameData;
+            return vkDebugUtilsMessenger;
         }
 
-        static string[] GetNames(string dataName)
+        static VkInstance CreateVkInstance(string engineName, string[] requiredExtensionNames, string[] optionalExtensionNames, string[] requiredLayerNames, string[] optionalLayerNames, bool enableDebugMode)
         {
-            var namesData = AppContext.GetData(dataName) as string ?? string.Empty;
-            var names = namesData.Split(';', StringSplitOptions.RemoveEmptyEntries);
-            return names.Distinct().ToArray();
-        }
-    }
+            sbyte* requiredExtensionNamesBuffer = null;
+            sbyte* optionalExtensionNamesBuffer = null;
+            sbyte** enabledExtensionNames = null;
 
-    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsService" /> class.</summary>
-    ~VulkanGraphicsService() => Dispose(isDisposing: false);
+            sbyte* requiredLayerNamesBuffer = null;
+            sbyte* optionalLayerNamesBuffer = null;
+            sbyte** enabledLayerNames = null;
 
-    // vkCreateDebugUtilsMessengerEXT
-    private static ReadOnlySpan<sbyte> VKCREATEDEBUGUTILSMESSENGEREXT_FUNCTION_NAME => new sbyte[] { 0x76, 0x6B, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4D, 0x65, 0x73, 0x73, 0x65, 0x6E, 0x67, 0x65, 0x72, 0x45, 0x58, 0x54, 0x00 };
-
-    // vkDestroyDebugUtilsMessengerEXT
-    private static ReadOnlySpan<sbyte> VKDESTROYDEBUGUTILSMESSENGEREXT_FUNCTION_NAME => new sbyte[] { 0x76, 0x6B, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6F, 0x79, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4D, 0x65, 0x73, 0x73, 0x65, 0x6E, 0x67, 0x65, 0x72, 0x45, 0x58, 0x54, 0x00 };
-
-    /// <inheritdoc />
-    /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(VkInstance, uint*, VkPhysicalDevice*)" /> failed.</exception>
-    public override IEnumerable<VulkanGraphicsAdapter> Adapters => _adapters.Value;
-
-    /// <summary>Gets the underlying <see cref="VkInstance" /> for the service.</summary>
-    /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, VkInstance*)" /> failed.</exception>
-    /// <exception cref="ObjectDisposedException">The service has been disposed.</exception>
-    public VkInstance VulkanInstance => _vulkanInstance.Value;
-
-    [UnmanagedCallersOnly]
-    private static VkBool32 VulkanDebugUtilsMessengerCallback(VkDebugUtilsMessageSeverityFlagsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes, VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
-    {
-        var message = GetUtf8Span(pCallbackData->pMessage).GetString();
-        Debug.WriteLine(message);
-        return VK_FALSE;
-    }
-
-    /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
-    {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
-        {
-            _vulkanInstance.Dispose(DisposeInstance);
-        }
-
-        _state.EndDispose();
-    }
-
-    private VkInstance CreateVulkanInstance()
-    {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsService));
-
-        sbyte* requiredExtensionNamesBuffer = null;
-        sbyte* optionalExtensionNamesBuffer = null;
-        sbyte** enabledExtensionNames = null;
-
-        sbyte* requiredLayerNamesBuffer = null;
-        sbyte* optionalLayerNamesBuffer = null;
-        sbyte** enabledLayerNames = null;
-
-        try
-        {
-            VkInstance vulkanInstance;
-
-            uint enabledExtensionCount;
-            var extensionProperties = GetExtensionProperties();
-
-            fixed (VkExtensionProperties* pExtensionProperties = extensionProperties)
+            try
             {
-                enabledExtensionCount = EnableProperties((sbyte*)pExtensionProperties, extensionProperties.Length, sizeof(VkExtensionProperties), _requiredExtensionNames, _optionalExtensionNames, out requiredExtensionNamesBuffer, out optionalExtensionNamesBuffer, out enabledExtensionNames);
-            }
+                VkInstance vkInstance;
 
-            uint enabledLayerCount;
-            var layerProperties = GetLayerProperties();
+                uint enabledVkExtensionPropertiesCount;
+                var vkExtensionProperties = GetVkExtensionProperties();
 
-            fixed (VkLayerProperties* pLayerProperties = layerProperties)
-            {
-                enabledLayerCount = EnableProperties((sbyte*)pLayerProperties, layerProperties.Length, sizeof(VkLayerProperties), _requiredLayerNames, _optionalLayerNames, out requiredLayerNamesBuffer, out optionalLayerNamesBuffer, out enabledLayerNames);
-            }
-
-            fixed (sbyte* engineName = _engineName.GetUtf8Span())
-            {
-                var applicationInfo = new VkApplicationInfo {
-                    sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
-                    applicationVersion = 1,
-                    pEngineName = engineName,
-                    engineVersion = VK_MAKE_VERSION(0, 1, 0),
-                    apiVersion = VK_API_VERSION_1_2,
-                };
-
-                var instanceCreateInfo = new VkInstanceCreateInfo {
-                    sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-                    pApplicationInfo = &applicationInfo,
-                    enabledLayerCount = enabledLayerCount,
-                    ppEnabledLayerNames = enabledLayerNames,
-                    enabledExtensionCount = enabledExtensionCount,
-                    ppEnabledExtensionNames = enabledExtensionNames,
-                };
-
-                InitializeVulkanDebugUtilsMessengerCreateInfo(out var debugUtilsMessengerCreateInfo);
-
-                if (DebugModeEnabled)
+                fixed (VkExtensionProperties* pVkExtensionProperties = vkExtensionProperties)
                 {
-                    instanceCreateInfo.pNext = &debugUtilsMessengerCreateInfo;
+                    enabledVkExtensionPropertiesCount = EnableVkProperties((sbyte*)pVkExtensionProperties, vkExtensionProperties.Length, SizeOf<VkExtensionProperties>(), requiredExtensionNames, optionalExtensionNames, out requiredExtensionNamesBuffer, out optionalExtensionNamesBuffer, out enabledExtensionNames);
                 }
 
-                ThrowExternalExceptionIfNotSuccess(vkCreateInstance(&instanceCreateInfo, pAllocator: null, &vulkanInstance));
-            }
+                uint enabledVkLayerPropertiesCount;
+                var vkLayerProperties = GetVkLayerProperties();
 
-            if (DebugModeEnabled)
+                fixed (VkLayerProperties* pVkLayerProperties = vkLayerProperties)
+                {
+                    enabledVkLayerPropertiesCount = EnableVkProperties((sbyte*)pVkLayerProperties, vkLayerProperties.Length, SizeOf<VkLayerProperties>(), requiredLayerNames, optionalLayerNames, out requiredLayerNamesBuffer, out optionalLayerNamesBuffer, out enabledLayerNames);
+                }
+
+                fixed (sbyte* pEngineName = engineName.GetUtf8Span())
+                {
+                    var vkApplicationInfo = new VkApplicationInfo {
+                        sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
+                        applicationVersion = 1,
+                        pEngineName = pEngineName,
+                        engineVersion = VK_MAKE_VERSION(0, 1, 0),
+                        apiVersion = VK_API_VERSION_1_2,
+                    };
+
+                    var vkInstanceCreateInfo = new VkInstanceCreateInfo {
+                        sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+                        pApplicationInfo = &vkApplicationInfo,
+                        enabledLayerCount = enabledVkLayerPropertiesCount,
+                        ppEnabledLayerNames = enabledLayerNames,
+                        enabledExtensionCount = enabledVkExtensionPropertiesCount,
+                        ppEnabledExtensionNames = enabledExtensionNames,
+                    };
+
+                    SkipInit<VkDebugUtilsMessengerCreateInfoEXT>(out var vkDebugUtilsMessengerCreateInfo);
+
+                    if (enableDebugMode)
+                    {
+                        InitializeVkDebugUtilsMessengerCreateInfo(out vkDebugUtilsMessengerCreateInfo);
+                        vkInstanceCreateInfo.pNext = &vkDebugUtilsMessengerCreateInfo;
+                    }
+
+                    ThrowExternalExceptionIfNotSuccess(vkCreateInstance(&vkInstanceCreateInfo, pAllocator: null, &vkInstance));
+                }
+
+                return vkInstance;
+            }
+            finally
             {
-                _vulkanDebugUtilsMessenger = TryCreateVulkanDebugUtilsMessengerExt(vulkanInstance);
+                Free(enabledLayerNames);
+                Free(optionalLayerNamesBuffer);
+                Free(requiredLayerNamesBuffer);
+                Free(enabledExtensionNames);
+                Free(optionalExtensionNamesBuffer);
+                Free(requiredExtensionNamesBuffer);
             }
-
-            return vulkanInstance;
-        }
-        finally
-        {
-            Free(enabledLayerNames);
-            Free(optionalLayerNamesBuffer);
-            Free(requiredLayerNamesBuffer);
-            Free(enabledExtensionNames);
-            Free(optionalExtensionNamesBuffer);
-            Free(requiredExtensionNamesBuffer);
         }
 
-        static uint EnableProperties(sbyte* propertyNames, int propertyNamesCount, int propertySize, string[] requiredNames, string[] optionalNames, out sbyte* requiredNamesBuffer, out sbyte* optionalNamesBuffer, out sbyte** enabledNames)
+        static uint EnableVkProperties(sbyte* propertyNames, int propertyNamesCount, uint propertySize, string[] requiredNames, string[] optionalNames, out sbyte* requiredNamesBuffer, out sbyte* optionalNamesBuffer, out sbyte** enabledNames)
         {
             var requiredNamesCount = MarshalNames(requiredNames, out requiredNamesBuffer);
             var optionalNamesCount = MarshalNames(optionalNames, out optionalNamesBuffer);
 
             enabledNames = (sbyte**)AllocateArray<nuint>((nuint)(requiredNamesCount + optionalNamesCount));
 
-            var enabledPropertyCount = EnablePropertiesByName(propertyNames, propertyNamesCount, propertySize, requiredNamesBuffer, requiredNamesCount, enabledNames);
+            var enabledPropertyCount = EnableVkPropertiesByName(propertyNames, propertyNamesCount, propertySize, requiredNamesBuffer, requiredNamesCount, enabledNames);
 
             if (enabledPropertyCount != requiredNamesCount)
             {
                 ThrowForMissingFeature();
             }
-            enabledPropertyCount += EnablePropertiesByName(propertyNames, propertyNamesCount, propertySize, optionalNamesBuffer, optionalNamesCount, enabledNames + enabledPropertyCount);
+            enabledPropertyCount += EnableVkPropertiesByName(propertyNames, propertyNamesCount, propertySize, optionalNamesBuffer, optionalNamesCount, enabledNames + enabledPropertyCount);
 
             return enabledPropertyCount;
         }
 
-        static uint EnablePropertiesByName(sbyte* propertyNames, int propertyNamesCount, int propertySize, sbyte* targetNames, int targetNamesCount, sbyte** enabledNames)
+        static uint EnableVkPropertiesByName(sbyte* propertyNames, int propertyNamesCount, uint propertySize, sbyte* targetNames, int targetNamesCount, sbyte** enabledNames)
         {
             uint enabledPropertyCount = 0;
 
@@ -297,39 +257,78 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
             return enabledPropertyCount;
         }
 
-        static VkExtensionProperties[] GetExtensionProperties()
+        static string GetEngineName()
         {
-            uint extensionPropertiesCount = 0;
-            ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceExtensionProperties(pLayerName: null, &extensionPropertiesCount, pProperties: null));
+            var engineNameData = AppContext.GetData(EngineNameDataName) as string;
 
-            var extensionProperties = new VkExtensionProperties[extensionPropertiesCount];
-
-            fixed (VkExtensionProperties* pExtensionProperties = extensionProperties)
+            if (string.IsNullOrWhiteSpace(engineNameData))
             {
-                ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceExtensionProperties(pLayerName: null, &extensionPropertiesCount, pExtensionProperties));
+                engineNameData = DefaultEngineName;
+                AppDomain.CurrentDomain.SetData(EngineNameDataName, engineNameData);
             }
 
-            return extensionProperties;
+            return engineNameData;
         }
 
-        static VkLayerProperties[] GetLayerProperties()
+        static ImmutableArray<VulkanGraphicsAdapter> GetGraphicsAdapters(VulkanGraphicsService service, VkInstance vkInstance)
         {
-            uint layerPropertiesCount = 0;
-            ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceLayerProperties(&layerPropertiesCount, pProperties: null));
+            uint vkPhysicalDeviceCount;
+            ThrowExternalExceptionIfNotSuccess(vkEnumeratePhysicalDevices(vkInstance, &vkPhysicalDeviceCount, pPhysicalDevices: null));
 
-            var layerProperties = new VkLayerProperties[layerPropertiesCount];
+            var vkPhysicalDevices = stackalloc VkPhysicalDevice[unchecked((int)vkPhysicalDeviceCount)];
+            ThrowExternalExceptionIfNotSuccess(vkEnumeratePhysicalDevices(vkInstance, &vkPhysicalDeviceCount, vkPhysicalDevices));
 
-            fixed (VkLayerProperties* pLayerProperties = layerProperties)
+            var adapters = ImmutableArray.CreateBuilder<VulkanGraphicsAdapter>(unchecked((int)vkPhysicalDeviceCount));
+
+            for (uint index = 0; index < vkPhysicalDeviceCount; index++)
             {
-                ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceLayerProperties(&layerPropertiesCount, pLayerProperties));
+                var adapter = new VulkanGraphicsAdapter(service, vkPhysicalDevices[index]);
+                adapters.Add(adapter);
             }
 
-            return layerProperties;
+            return adapters.ToImmutable();
         }
 
-        static void InitializeVulkanDebugUtilsMessengerCreateInfo(out VkDebugUtilsMessengerCreateInfoEXT vulkanDebugUtilsMessengerCreateInfo)
+        static VkExtensionProperties[] GetVkExtensionProperties()
         {
-            vulkanDebugUtilsMessengerCreateInfo = new VkDebugUtilsMessengerCreateInfoEXT {
+            uint vkExtensionPropertiesCount = 0;
+            ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceExtensionProperties(pLayerName: null, &vkExtensionPropertiesCount, pProperties: null));
+
+            var vkExtensionProperties = new VkExtensionProperties[vkExtensionPropertiesCount];
+
+            fixed (VkExtensionProperties* pExtensionProperties = vkExtensionProperties)
+            {
+                ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceExtensionProperties(pLayerName: null, &vkExtensionPropertiesCount, pExtensionProperties));
+            }
+
+            return vkExtensionProperties;
+        }
+
+        static VkLayerProperties[] GetVkLayerProperties()
+        {
+            uint vkLayerPropertiesCount = 0;
+            ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceLayerProperties(&vkLayerPropertiesCount, pProperties: null));
+
+            var vkLayerProperties = new VkLayerProperties[vkLayerPropertiesCount];
+
+            fixed (VkLayerProperties* pLayerProperties = vkLayerProperties)
+            {
+                ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceLayerProperties(&vkLayerPropertiesCount, pLayerProperties));
+            }
+
+            return vkLayerProperties;
+        }
+
+        static string[] GetNames(string dataName)
+        {
+            var namesData = AppContext.GetData(dataName) as string ?? string.Empty;
+            var names = namesData.Split(';', StringSplitOptions.RemoveEmptyEntries);
+            return names.Distinct().ToArray();
+        }
+
+        static void InitializeVkDebugUtilsMessengerCreateInfo(out VkDebugUtilsMessengerCreateInfoEXT vkDebugUtilsMessengerCreateInfo)
+        {
+            vkDebugUtilsMessengerCreateInfo = new VkDebugUtilsMessengerCreateInfoEXT {
                 sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
                 messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT,
                 messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT,
@@ -357,54 +356,69 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
 
             return names.Length;
         }
+    }
 
-        static VkDebugUtilsMessengerEXT TryCreateVulkanDebugUtilsMessengerExt(VkInstance instance)
+    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsService" /> class.</summary>
+    ~VulkanGraphicsService() => Dispose(isDisposing: false);
+
+    // vkCreateDebugUtilsMessengerEXT
+    private static ReadOnlySpan<sbyte> VKCREATEDEBUGUTILSMESSENGEREXT_FUNCTION_NAME => new sbyte[] { 0x76, 0x6B, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4D, 0x65, 0x73, 0x73, 0x65, 0x6E, 0x67, 0x65, 0x72, 0x45, 0x58, 0x54, 0x00 };
+
+    // vkDestroyDebugUtilsMessengerEXT
+    private static ReadOnlySpan<sbyte> VKDESTROYDEBUGUTILSMESSENGEREXT_FUNCTION_NAME => new sbyte[] { 0x76, 0x6B, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6F, 0x79, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4D, 0x65, 0x73, 0x73, 0x65, 0x6E, 0x67, 0x65, 0x72, 0x45, 0x58, 0x54, 0x00 };
+
+    /// <inheritdoc />
+    /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(VkInstance, uint*, VkPhysicalDevice*)" /> failed.</exception>
+    public override IEnumerable<VulkanGraphicsAdapter> Adapters => _adapters;
+
+    /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkInstance" /> for the service.</summary>
+    public VkInstance VkInstance
+    {
+        get
         {
-            VkDebugUtilsMessengerEXT vulkanDebugUtilsMessenger;
-
-            InitializeVulkanDebugUtilsMessengerCreateInfo(out var debugUtilsMessengerCreateInfo);
-
-            // We don't want to fail if creating the debug utils messenger failed
-            var vkCreateDebugUtilsMessengerEXT = (delegate* unmanaged<IntPtr, VkDebugUtilsMessengerCreateInfoEXT*, VkAllocationCallbacks*, ulong*, VkResult>)vkGetInstanceProcAddr(instance, VKCREATEDEBUGUTILSMESSENGEREXT_FUNCTION_NAME.GetPointer());
-            _ = vkCreateDebugUtilsMessengerEXT(instance, &debugUtilsMessengerCreateInfo, null, (ulong*)&vulkanDebugUtilsMessenger);
-
-            return vulkanDebugUtilsMessenger;
+            AssertNotDisposedOrDisposing(_state);
+            return _vkInstance;
         }
     }
 
-    private void DisposeInstance(VkInstance vulkanInstance)
+    [UnmanagedCallersOnly]
+    private static VkBool32 VulkanDebugUtilsMessengerCallback(VkDebugUtilsMessageSeverityFlagsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes, VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
     {
-        AssertDisposing(_state);
-
-        if (_vulkanDebugUtilsMessenger != VkDebugUtilsMessengerEXT.NULL)
-        {
-            var vkDestroyDebugUtilsMessengerEXT = (delegate* unmanaged<IntPtr, VkDebugUtilsMessengerEXT, VkAllocationCallbacks*, void>)vkGetInstanceProcAddr(vulkanInstance, VKDESTROYDEBUGUTILSMESSENGEREXT_FUNCTION_NAME.GetPointer());
-            vkDestroyDebugUtilsMessengerEXT(vulkanInstance, _vulkanDebugUtilsMessenger, null);
-        }
-
-        vkDestroyInstance(vulkanInstance, pAllocator: null);
+        var message = GetUtf8Span(pCallbackData->pMessage).GetString();
+        Debug.WriteLine(message);
+        return VK_FALSE;
     }
 
-    private ImmutableArray<VulkanGraphicsAdapter> GetGraphicsAdapters()
+    /// <inheritdoc />
+    protected override void Dispose(bool isDisposing)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsService));
+        var priorState = _state.BeginDispose();
 
-        var instance = VulkanInstance;
-
-        uint physicalDeviceCount;
-        ThrowExternalExceptionIfNotSuccess(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, pPhysicalDevices: null));
-
-        var physicalDevices = stackalloc VkPhysicalDevice[unchecked((int)physicalDeviceCount)];
-        ThrowExternalExceptionIfNotSuccess(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, physicalDevices));
-
-        var adapters = ImmutableArray.CreateBuilder<VulkanGraphicsAdapter>(unchecked((int)physicalDeviceCount));
-
-        for (uint index = 0; index < physicalDeviceCount; index++)
+        if (priorState < Disposing)
         {
-            var adapter = new VulkanGraphicsAdapter(this, physicalDevices[index]);
-            adapters.Add(adapter);
+            var vkInstance = _vkInstance;
+
+            DisposeVkDebugUtilsMessenger(vkInstance, _vkDebugUtilsMessenger);
+            DisposeVkInstance(vkInstance);
         }
 
-        return adapters.ToImmutable();
+        _state.EndDispose();
+
+        static void DisposeVkDebugUtilsMessenger(VkInstance vkInstance, VkDebugUtilsMessengerEXT vkDebugUtilsMessenger)
+        {
+            if (vkDebugUtilsMessenger != VkDebugUtilsMessengerEXT.NULL)
+            {
+                var vkDestroyDebugUtilsMessengerEXT = (delegate* unmanaged<IntPtr, VkDebugUtilsMessengerEXT, VkAllocationCallbacks*, void>)vkGetInstanceProcAddr(vkInstance, VKDESTROYDEBUGUTILSMESSENGEREXT_FUNCTION_NAME.GetPointer());
+                vkDestroyDebugUtilsMessengerEXT(vkInstance, vkDebugUtilsMessenger, null);
+            }
+        }
+
+        static void DisposeVkInstance(VkInstance vkInstance)
+        {
+            if (vkInstance != VkInstance.NULL)
+            {
+                vkDestroyInstance(vkInstance, pAllocator: null);
+            }
+        }
     }
 }

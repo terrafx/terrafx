@@ -11,6 +11,8 @@ public abstract class GraphicsPrimitive : GraphicsDeviceObject
     private readonly GraphicsPipeline _pipeline;
     private readonly GraphicsResourceView _vertexBufferView;
     private readonly GraphicsResourceView _indexBufferView;
+
+    // TODO: Make this UnmanagedArray<GraphicsResourceView>
     private readonly GraphicsResourceView[] _inputResourceViews;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsPrimitive" /> class.</summary>

@@ -16,6 +16,7 @@ using static TerraFX.Interop.Vulkan.VkSampleCountFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics;
@@ -29,12 +30,12 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
     internal VulkanGraphicsMemoryAllocator(VulkanGraphicsDevice device, in GraphicsMemoryAllocatorSettings settings)
         : base(device, in settings)
     {
-        var memoryTypeCount = Device.Adapter.VulkanPhysicalDeviceMemoryProperties.memoryTypeCount;
+        var memoryTypeCount = device.Adapter.VkPhysicalDeviceMemoryProperties.memoryTypeCount;
         _heapCollections = new VulkanGraphicsMemoryHeapCollection[memoryTypeCount];
 
         for (uint memoryTypeIndex = 0; memoryTypeIndex < memoryTypeCount; memoryTypeIndex++)
         {
-            _heapCollections[memoryTypeIndex] = new VulkanGraphicsMemoryHeapCollection(Device, this, memoryTypeIndex);
+            _heapCollections[memoryTypeIndex] = new VulkanGraphicsMemoryHeapCollection(device, this, memoryTypeIndex);
         }
 
         // TODO: UpdateBudget
@@ -48,38 +49,40 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
     public override int Count => _heapCollections.Length;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-    public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
+    public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
     /// <inheritdoc />
     public override VulkanGraphicsBuffer CreateBuffer(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, GraphicsMemoryHeapRegionAllocationFlags allocationFlags = GraphicsMemoryHeapRegionAllocationFlags.None)
     {
-        var vulkanDevice = Device.VulkanDevice;
+        var device = Device;
+        var vkDevice = device.VkDevice;
 
-        var bufferCreateInfo = new VkBufferCreateInfo {
+        var vkBufferCreateInfo = new VkBufferCreateInfo {
             sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
             size = size,
-            usage = GetVulkanBufferUsageKind(kind, cpuAccess)
+            usage = GetVkBufferUsageKind(kind, cpuAccess)
         };
 
-        VkBuffer vulkanBuffer;
-        ThrowExternalExceptionIfNotSuccess(vkCreateBuffer(vulkanDevice, &bufferCreateInfo, pAllocator: null, &vulkanBuffer));
+        VkBuffer vkBuffer;
+        ThrowExternalExceptionIfNotSuccess(vkCreateBuffer(vkDevice, &vkBufferCreateInfo, pAllocator: null, &vkBuffer));
 
-        VkMemoryRequirements memoryRequirements;
-        vkGetBufferMemoryRequirements(vulkanDevice, vulkanBuffer, &memoryRequirements);
+        VkMemoryRequirements vkMemoryRequirements;
+        vkGetBufferMemoryRequirements(vkDevice, vkBuffer, &vkMemoryRequirements);
 
-        var index = GetHeapCollectionIndex(cpuAccess, memoryRequirements.memoryTypeBits);
-        ref readonly var heapCollection = ref _heapCollections[index];
+        var heapCollectionIndex = GetHeapCollectionIndex(cpuAccess, vkMemoryRequirements.memoryTypeBits);
+        ref readonly var heapCollection = ref _heapCollections[heapCollectionIndex];
 
-        var heapRegion = heapCollection.Allocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags);
-        return new VulkanGraphicsBuffer(Device, kind, in heapRegion, cpuAccess, vulkanBuffer);
+        var heapRegion = heapCollection.Allocate(vkMemoryRequirements.size, vkMemoryRequirements.alignment, allocationFlags);
+        return new VulkanGraphicsBuffer(device, kind, in heapRegion, cpuAccess, vkBuffer);
     }
 
     /// <inheritdoc />
     public override VulkanGraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, GraphicsMemoryHeapRegionAllocationFlags allocationFlags = GraphicsMemoryHeapRegionAllocationFlags.None, TexelFormat texelFormat = default)
     {
-        var vulkanDevice = Device.VulkanDevice;
+        var device = Device;
+        var vkDevice = device.VkDevice;
 
-        var imageCreateInfo = new VkImageCreateInfo {
+        var vkImageCreateInfo = new VkImageCreateInfo {
             sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
             imageType = kind switch {
                 GraphicsTextureKind.OneDimensional => VK_IMAGE_TYPE_1D,
@@ -99,17 +102,17 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
             usage = GetVulkanImageUsageKind(kind, cpuAccess),
         };
 
-        VkImage vulkanImage;
-        ThrowExternalExceptionIfNotSuccess(vkCreateImage(vulkanDevice, &imageCreateInfo, pAllocator: null, &vulkanImage));
+        VkImage vkImage;
+        ThrowExternalExceptionIfNotSuccess(vkCreateImage(vkDevice, &vkImageCreateInfo, pAllocator: null, &vkImage));
 
-        VkMemoryRequirements memoryRequirements;
-        vkGetImageMemoryRequirements(vulkanDevice, vulkanImage, &memoryRequirements);
+        VkMemoryRequirements vkMemoryRequirements;
+        vkGetImageMemoryRequirements(vkDevice, vkImage, &vkMemoryRequirements);
 
-        var index = GetHeapCollectionIndex(cpuAccess, memoryRequirements.memoryTypeBits);
-        ref readonly var heapCollection = ref _heapCollections[index];
+        var heapCollectionIndex = GetHeapCollectionIndex(cpuAccess, vkMemoryRequirements.memoryTypeBits);
+        ref readonly var heapCollection = ref _heapCollections[heapCollectionIndex];
 
-        var heapRegion = heapCollection.Allocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags);
-        return new VulkanGraphicsTexture(Device, kind, in heapRegion, cpuAccess, width, height, depth, vulkanImage);
+        var heapRegion = heapCollection.Allocate(vkMemoryRequirements.size, vkMemoryRequirements.alignment, allocationFlags);
+        return new VulkanGraphicsTexture(device, kind, in heapRegion, cpuAccess, width, height, depth, vkImage);
     }
 
     /// <inheritdoc />
@@ -133,9 +136,12 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
 
         if (priorState < Disposing)
         {
-            foreach (var heapCollection in _heapCollections)
+            if (isDisposing)
             {
-                heapCollection?.Dispose();
+                foreach (var heapCollection in _heapCollections)
+                {
+                    heapCollection?.Dispose();
+                }
             }
         }
 
@@ -144,33 +150,33 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
 
     private int GetHeapCollectionIndex(GraphicsResourceCpuAccess cpuAccess, uint memoryTypeBits)
     {
-        var isIntegratedGpu = Device.Adapter.VulkanPhysicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU;
+        var isVkPhysicalDeviceTypeIntegratedGpu = Device.Adapter.VkPhysicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU;
         var canBeMultiInstance = false;
 
-        VkMemoryPropertyFlags requiredMemoryPropertyFlags = 0;
-        VkMemoryPropertyFlags preferredMemoryPropertyFlags = 0;
-        VkMemoryPropertyFlags unpreferredMemoryPropertyFlags = 0;
+        VkMemoryPropertyFlags vkRequiredMemoryPropertyFlags = 0;
+        VkMemoryPropertyFlags vkPreferredMemoryPropertyFlags = 0;
+        VkMemoryPropertyFlags vkUnpreferredMemoryPropertyFlags = 0;
 
         switch (cpuAccess)
         {
             case GraphicsResourceCpuAccess.GpuOnly:
             {
-                preferredMemoryPropertyFlags |= isIntegratedGpu ? default : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+                vkPreferredMemoryPropertyFlags |= isVkPhysicalDeviceTypeIntegratedGpu ? default : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
                 canBeMultiInstance = true;
                 break;
             }
 
             case GraphicsResourceCpuAccess.GpuToCpu:
             {
-                requiredMemoryPropertyFlags |= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
-                preferredMemoryPropertyFlags |= VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
+                vkRequiredMemoryPropertyFlags |= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+                vkPreferredMemoryPropertyFlags |= VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
                 break;
             }
 
             case GraphicsResourceCpuAccess.CpuToGpu:
             {
-                requiredMemoryPropertyFlags |= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
-                preferredMemoryPropertyFlags |= isIntegratedGpu ? default : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+                vkRequiredMemoryPropertyFlags |= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+                vkPreferredMemoryPropertyFlags |= isVkPhysicalDeviceTypeIntegratedGpu ? default : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
                 break;
             }
         }
@@ -178,7 +184,7 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
         var index = -1;
         var lowestCost = int.MaxValue;
 
-        ref readonly var memoryProperties = ref Device.Adapter.VulkanPhysicalDeviceMemoryProperties;
+        ref readonly var vkPhysicalDeviceMemoryProperties = ref Device.Adapter.VkPhysicalDeviceMemoryProperties;
 
         for (var i = 0; i < _heapCollections.Length; i++)
         {
@@ -187,12 +193,12 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
                 continue;
             }
 
-            ref var memoryType = ref memoryProperties.memoryTypes[i];
-            ref var memoryHeap = ref memoryProperties.memoryHeaps[(int)memoryType.heapIndex];
+            ref var memoryType = ref vkPhysicalDeviceMemoryProperties.memoryTypes[i];
+            ref var memoryHeap = ref vkPhysicalDeviceMemoryProperties.memoryHeaps[(int)memoryType.heapIndex];
 
-            var memoryPropertyFlags = memoryType.propertyFlags;
+            var memoryTypePropertyFlags = memoryType.propertyFlags;
 
-            if ((requiredMemoryPropertyFlags & ~memoryPropertyFlags) != 0)
+            if ((vkRequiredMemoryPropertyFlags & ~memoryTypePropertyFlags) != 0)
             {
                 continue;
             }
@@ -206,8 +212,8 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
             // added to the the number of unpreferred bits that are present. A value
             // of zero represents an ideal match and allows us to return early.
 
-            var cost = BitOperations.PopCount((uint)(preferredMemoryPropertyFlags & ~memoryPropertyFlags))
-                     + BitOperations.PopCount((uint)(unpreferredMemoryPropertyFlags & memoryPropertyFlags));
+            var cost = BitOperations.PopCount((uint)(vkPreferredMemoryPropertyFlags & ~memoryTypePropertyFlags))
+                     + BitOperations.PopCount((uint)(vkUnpreferredMemoryPropertyFlags & memoryTypePropertyFlags));
 
             if (cost >= lowestCost)
             {
