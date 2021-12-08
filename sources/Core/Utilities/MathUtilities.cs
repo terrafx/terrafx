@@ -1,7 +1,10 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.Arm;
 using System.Runtime.Intrinsics.X86;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -425,15 +428,7 @@ public static class MathUtilities
     /// <returns>The quotient and remainder of <paramref name="dividend" /> / <paramref name="divisor" />.</returns>
     /// <remarks>This method does not account for <paramref name="divisor" /> being <c>zero</c>.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static (int quotient, int remainder) DivRem(int dividend, int divisor)
-
-    {
-        Assert(AssertionsEnabled && (divisor != 0));
-        var quotient = dividend / divisor;
-
-        var remainder = dividend - (quotient * divisor);
-        return (quotient, remainder);
-    }
+    public static (int quotient, int remainder) DivRem(int dividend, int divisor) => Math.DivRem(dividend, divisor);
 
     /// <summary>Computes the quotient and remainder of two 64-bit signed  integers.</summary>
     /// <param name="dividend">The value being divided by <paramref name="divisor" />.</param>
@@ -441,14 +436,7 @@ public static class MathUtilities
     /// <returns>The quotient and remainder of <paramref name="dividend" /> / <paramref name="divisor" />.</returns>
     /// <remarks>This method does not account for <paramref name="divisor" /> being <c>zero</c>.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static (long quotient, long remainder) DivRem(long dividend, long divisor)
-    {
-        Assert(AssertionsEnabled && (divisor != 0));
-        var quotient = dividend / divisor;
-
-        var remainder = dividend - (quotient * divisor);
-        return (quotient, remainder);
-    }
+    public static (long quotient, long remainder) DivRem(long dividend, long divisor) => Math.DivRem(dividend, divisor);
 
     /// <summary>Computes the quotient and remainder of two signed native integers.</summary>
     /// <param name="dividend">The value being divided by <paramref name="divisor" />.</param>
@@ -456,14 +444,7 @@ public static class MathUtilities
     /// <returns>The quotient and remainder of <paramref name="dividend" /> / <paramref name="divisor" />.</returns>
     /// <remarks>This method does not account for <paramref name="divisor" /> being <c>zero</c>.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static (nint quotient, nint remainder) DivRem(nint dividend, nint divisor)
-    {
-        Assert(AssertionsEnabled && (divisor != 0));
-        var quotient = dividend / divisor;
-
-        var remainder = dividend - (quotient * divisor);
-        return (quotient, remainder);
-    }
+    public static (nint quotient, nint remainder) DivRem(nint dividend, nint divisor) => Math.DivRem(dividend, divisor);
 
     /// <summary>Computes the quotient and remainder of two 32-bit unsigned integers.</summary>
     /// <param name="dividend">The value being divided by <paramref name="divisor" />.</param>
@@ -471,14 +452,7 @@ public static class MathUtilities
     /// <returns>The quotient and remainder of <paramref name="dividend" /> / <paramref name="divisor" />.</returns>
     /// <remarks>This method does not account for <paramref name="divisor" /> being <c>zero</c>.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static (uint quotient, uint remainder) DivRem(uint dividend, uint divisor)
-    {
-        Assert(AssertionsEnabled && (divisor != 0));
-        var quotient = dividend / divisor;
-
-        var remainder = dividend - (quotient * divisor);
-        return (quotient, remainder);
-    }
+    public static (uint quotient, uint remainder) DivRem(uint dividend, uint divisor) => Math.DivRem(dividend, divisor);
 
     /// <summary>Computes the quotient and remainder of two 64-bit unsigned  integers.</summary>
     /// <param name="dividend">The value being divided by <paramref name="divisor" />.</param>
@@ -486,14 +460,7 @@ public static class MathUtilities
     /// <returns>The quotient and remainder of <paramref name="dividend" /> / <paramref name="divisor" />.</returns>
     /// <remarks>This method does not account for <paramref name="divisor" /> being <c>zero</c>.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static (ulong quotient, ulong remainder) DivRem(ulong dividend, ulong divisor)
-    {
-        Assert(AssertionsEnabled && (divisor != 0));
-        var quotient = dividend / divisor;
-
-        var remainder = dividend - (quotient * divisor);
-        return (quotient, remainder);
-    }
+    public static (ulong quotient, ulong remainder) DivRem(ulong dividend, ulong divisor) => Math.DivRem(dividend, divisor);
 
     /// <summary>Computes the quotient and remainder of two unsigned native integers.</summary>
     /// <param name="dividend">The value being divided by <paramref name="divisor" />.</param>
@@ -501,30 +468,23 @@ public static class MathUtilities
     /// <returns>The quotient and remainder of <paramref name="dividend" /> / <paramref name="divisor" />.</returns>
     /// <remarks>This method does not account for <paramref name="divisor" /> being <c>zero</c>.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static (nuint quotient, nuint remainder) DivRem(nuint dividend, nuint divisor)
-    {
-        Assert(AssertionsEnabled && (divisor != 0));
-        var quotient = dividend / divisor;
-
-        var remainder = dividend - (quotient * divisor);
-        return (quotient, remainder);
-    }
+    public static (nuint quotient, nuint remainder) DivRem(nuint dividend, nuint divisor) => Math.DivRem(dividend, divisor);
 
     /// <summary>Compares two 64-bit floats to determine approximate equality.</summary>
     /// <param name="left">The float to compare with <paramref name="right" />.</param>
     /// <param name="right">The float to compare with <paramref name="left" />.</param>
-    /// <param name="epsilon">The maximum (exclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
+    /// <param name="epsilon">The maximum (inclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool EqualsEstimate(double left, double right, double epsilon) => Abs(right - left) < epsilon;
+    public static bool Equals(double left, double right, double epsilon) => Abs(left - right) <= epsilon;
 
     /// <summary>Compares two 32-bit floats to determine approximate equality.</summary>
     /// <param name="left">The float to compare with <paramref name="right" />.</param>
     /// <param name="right">The float to compare with <paramref name="left" />.</param>
-    /// <param name="epsilon">The maximum (exclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
+    /// <param name="epsilon">The maximum (inclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool EqualsEstimate(float left, float right, float epsilon) => Abs(right - left) < epsilon;
+    public static bool Equals(float left, float right, float epsilon) => Abs(left - right) <= epsilon;
 
     /// <summary>Computes the maximum of two 32-bit signed integers.</summary>
     /// <param name="left">The integer to compare with <paramref name="right" />.</param>
@@ -537,15 +497,34 @@ public static class MathUtilities
     /// <param name="left">The float to compare with <paramref name="right" />.</param>
     /// <param name="right">The float to compare with <paramref name="left" />.</param>
     /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    /// <remarks>This method does not account for <c>negative zero</c> and returns the other parameter if one is <see cref="double.NaN" />.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double Max(double left, double right)
     {
-        if (double.IsNaN(right))
+        if (Sse41.IsSupported)
         {
-            return left;
+            var vLeft = Vector128.CreateScalarUnsafe(left);
+            var vRight = Vector128.CreateScalarUnsafe(right);
+
+            var tmp = Sse2.Max(vLeft, vRight);
+
+            var msk = Sse2.Or(
+                Sse2.CompareUnordered(vLeft, vLeft),
+                Sse41.CompareEqual(vLeft.AsInt64(), Vector128<long>.Zero).AsDouble()
+            );
+
+            return Sse41.BlendVariable(tmp, vLeft, msk).ToScalar();
         }
-        return (left >= right) ? left : right;
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return AdvSimd.Arm64.MaxScalar(
+                Vector64.CreateScalar(left),
+                Vector64.CreateScalar(right)
+            ).ToScalar();
+        }
+        else
+        {
+            return Math.Max(left, right);
+        }
     }
 
     /// <summary>Computes the maximum of two 16-bit signed integers.</summary>
@@ -587,15 +566,34 @@ public static class MathUtilities
     /// <param name="left">The float to compare with <paramref name="right" />.</param>
     /// <param name="right">The float to compare with <paramref name="left" />.</param>
     /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    /// <remarks>This method does not account for <c>negative zero</c> and returns the other parameter if one is <see cref="double.NaN" />.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Max(float left, float right)
     {
-        if (float.IsNaN(right))
+        if (Sse41.IsSupported)
         {
-            return left;
+            var vLeft = Vector128.CreateScalarUnsafe(left);
+            var vRight = Vector128.CreateScalarUnsafe(right);
+
+            var tmp = Sse.Max(vLeft, vRight);
+
+            var msk = Sse.Or(
+                Sse.CompareUnordered(vLeft, vLeft),
+                Sse2.CompareEqual(vLeft.AsInt32(), Vector128<int>.Zero).AsSingle()
+            );
+
+            return Sse41.BlendVariable(tmp, vLeft, msk).ToScalar();
         }
-        return (left >= right) ? left : right;
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return AdvSimd.Arm64.MaxScalar(
+                Vector64.CreateScalar(left),
+                Vector64.CreateScalar(right)
+            ).ToScalar();
+        }
+        else
+        {
+            return MathF.Max(left, right);
+        }
     }
 
     /// <summary>Computes the maximum of two 16-bit unsigned integers.</summary>
@@ -641,11 +639,31 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double Min(double left, double right)
     {
-        if (double.IsNaN(right))
+        if (Sse41.IsSupported)
         {
-            return left;
+            var vLeft = Vector128.CreateScalarUnsafe(left);
+            var vRight = Vector128.CreateScalarUnsafe(right);
+
+            var tmp = Sse2.Min(vLeft, vRight);
+
+            var msk = Sse2.Or(
+                Sse2.CompareUnordered(vLeft, vLeft),
+                Sse41.CompareEqual(vLeft.AsUInt64(), Vector128.Create(0x80000000_00000000)).AsDouble()
+            );
+
+            return Sse41.BlendVariable(tmp, vLeft, msk).ToScalar();
         }
-        return (left < right) ? left : right;
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return AdvSimd.Arm64.MinScalar(
+                Vector64.CreateScalar(left),
+                Vector64.CreateScalar(right)
+            ).ToScalar();
+        }
+        else
+        {
+            return Math.Min(left, right);
+        }
     }
 
     /// <summary>Computes the minimum of two 16-bit signed integers.</summary>
@@ -691,11 +709,31 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Min(float left, float right)
     {
-        if (float.IsNaN(right))
+        if (Sse41.IsSupported)
         {
-            return left;
+            var vLeft = Vector128.CreateScalarUnsafe(left);
+            var vRight = Vector128.CreateScalarUnsafe(right);
+
+            var tmp = Sse.Min(vLeft, vRight);
+
+            var msk = Sse.Or(
+                Sse.CompareUnordered(vLeft, vLeft),
+                Sse2.CompareEqual(vLeft.AsUInt32(), Vector128.Create(0x80000000)).AsSingle()
+            );
+
+            return Sse41.BlendVariable(tmp, vLeft, msk).ToScalar();
         }
-        return (left < right) ? left : right;
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return AdvSimd.Arm64.MinScalar(
+                Vector64.CreateScalar(left),
+                Vector64.CreateScalar(right)
+            ).ToScalar();
+        }
+        else
+        {
+            return MathF.Min(left, right);
+        }
     }
 
     /// <summary>Computes the minimum of two 16-bit unsigned integers.</summary>
@@ -730,40 +768,20 @@ public static class MathUtilities
     /// <param name="value">The value to check.</param>
     /// <returns><c>true</c> if <paramref name="value" /> is a power of two; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsPow2(uint value)
-    {
-        if (Popcnt.IsSupported)
-        {
-            return Popcnt.PopCount(value) == 1;
-        }
-        else
-        {
-            return unchecked((value & (value - 1)) == 0) && (value != 0);
-        }
-    }
+    public static bool IsPow2(uint value) => BitOperations.IsPow2(value);
 
     /// <summary>Determines whether a given value is a power of two.</summary>
     /// <param name="value">The value to check.</param>
     /// <returns><c>true</c> if <paramref name="value" /> is a power of two; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsPow2(ulong value)
-    {
-        if (Popcnt.X64.IsSupported)
-        {
-            return Popcnt.X64.PopCount(value) == 1;
-        }
-        else
-        {
-            return unchecked((value & (value - 1)) == 0) && (value != 0);
-        }
-    }
+    public static bool IsPow2(ulong value) => BitOperations.IsPow2(value);
 
     /// <summary>Determines whether a given value is a power of two.</summary>
     /// <param name="value">The value to check.</param>
     /// <returns><c>true</c> if <paramref name="value" /> is a power of two; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsPow2(nuint value)
-        => Is64BitProcess ? IsPow2((ulong)value) : IsPow2((uint)value);
+        => Is64BitProcess ? BitOperations.IsPow2(value) : BitOperations.IsPow2((uint)value);
 
     /// <summary>Computes the sine for a given 64-bit float.</summary>
     /// <param name="value">The float, in radians, for which to compute the sine.</param>
