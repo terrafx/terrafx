@@ -79,18 +79,18 @@ public sealed class HelloTriangle : HelloWindow
             var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>(vertexBufferView.Offset, vertexBufferView.Size);
 
             pVertexBuffer[0] = new IdentityVertex {
+                Color = Colors.Red,
                 Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
-                Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f)
             };
 
             pVertexBuffer[1] = new IdentityVertex {
+                Color = Colors.Lime,
                 Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
-                Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f)
             };
 
             pVertexBuffer[2] = new IdentityVertex {
+                Color = Colors.Blue,
                 Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
-                Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f)
             };
 
             vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);

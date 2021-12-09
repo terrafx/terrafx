@@ -131,7 +131,7 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
             {
                 inputElementAlignment = 4;
             }
-            else if (type == typeof(Vector4))
+            else if ((type == typeof(Vector4)) || (type == typeof(ColorRgba)))
             {
                 inputElementAlignment = 16;
             }
@@ -163,7 +163,7 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
             {
                 inputElementFormat = DXGI_FORMAT_R32G32B32_FLOAT;
             }
-            else if (type == typeof(Vector4))
+            else if ((type == typeof(Vector4)) || (type == typeof(ColorRgba)))
             {
                 inputElementFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
             }

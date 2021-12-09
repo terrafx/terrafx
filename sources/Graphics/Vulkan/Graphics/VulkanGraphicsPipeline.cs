@@ -248,7 +248,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
             {
                 inputElementAlignment = 4;
             }
-            else if (type == typeof(Vector4))
+            else if ((type == typeof(Vector4)) || (type == typeof(ColorRgba)))
             {
                 inputElementAlignment = 16;
             }
@@ -280,7 +280,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
             {
                 inputElementFormat = VK_FORMAT_R32G32B32_SFLOAT;
             }
-            else if (type == typeof(Vector4))
+            else if ((type == typeof(Vector4)) || (type == typeof(ColorRgba)))
             {
                 inputElementFormat = VK_FORMAT_R32G32B32A32_SFLOAT;
             }
