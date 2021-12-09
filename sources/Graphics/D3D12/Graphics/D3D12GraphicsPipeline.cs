@@ -11,6 +11,7 @@ using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
+using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
@@ -85,6 +86,7 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
                         for (var inputElementIndex = 0; inputElementIndex < inputElements.Length; inputElementIndex++)
                         {
                             var inputElement = inputElements[inputElementIndex];
+                            inputLayoutStride = AlignUp(inputLayoutStride, GetInputElementAlignment(inputElement.Type));
 
                             d3d12InputElementDescs[inputElementsIndex] = new D3D12_INPUT_ELEMENT_DESC {
                                 SemanticName = GetInputElementSemanticName(inputElement.Kind).GetPointer(),
@@ -115,6 +117,26 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
             ThrowExternalExceptionIfFailed(device.D3D12Device->CreateGraphicsPipelineState(&d3d12GraphicsPipelineStateDesc, __uuidof<ID3D12PipelineState>(), (void**)&d3d12GraphicsPipelineState));
 
             return d3d12GraphicsPipelineState;
+        }
+
+        static uint GetInputElementAlignment(Type type)
+        {
+            var inputElementAlignment = 1u;
+
+            if (type == typeof(Vector2))
+            {
+                inputElementAlignment = 4;
+            }
+            else if (type == typeof(Vector3))
+            {
+                inputElementAlignment = 4;
+            }
+            else if (type == typeof(Vector4))
+            {
+                inputElementAlignment = 16;
+            }
+
+            return inputElementAlignment;
         }
 
         static nuint GetInputElementCount(ReadOnlySpan<GraphicsPipelineInput> inputs)

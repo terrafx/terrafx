@@ -19,6 +19,7 @@ using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
+using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
@@ -179,6 +180,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
                         for (var inputElementIndex = 0; inputElementIndex < inputElements.Length; inputElementIndex++)
                         {
                             var inputElement = inputElements[inputElementIndex];
+                            inputBindingStride = AlignUp(inputBindingStride, GetInputElementAlignment(inputElement.Type));
 
                             vkVertexInputAttributeDescriptions[inputElementsIndex] = new VkVertexInputAttributeDescription {
                                 location = unchecked((uint)inputElementIndex),
@@ -232,6 +234,26 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
 
             ThrowExternalExceptionIfNotSuccess(vkCreateGraphicsPipelines(device.VkDevice, pipelineCache: VkPipelineCache.NULL, 1, &vkPipelineCreateInfo, pAllocator: null, &vkPipeline));
             return vkPipeline;
+        }
+
+        static uint GetInputElementAlignment(Type type)
+        {
+            var inputElementAlignment = 1u;
+
+            if (type == typeof(Vector2))
+            {
+                inputElementAlignment = 4;
+            }
+            else if (type == typeof(Vector3))
+            {
+                inputElementAlignment = 4;
+            }
+            else if (type == typeof(Vector4))
+            {
+                inputElementAlignment = 16;
+            }
+
+            return inputElementAlignment;
         }
 
         static nuint GetInputElementCount(ReadOnlySpan<GraphicsPipelineInput> inputs)

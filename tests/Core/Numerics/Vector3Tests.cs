@@ -103,20 +103,20 @@ public class Vector3Tests
         Assert.That(vector, Is.EqualTo(new Vector3(1, 2, 3)));
     }
 
-    /// <summary>Ensures that <see cref="Vector3.Cross(Vector3,Vector3)" /> returns a vector which is perpendicular to both input vectors.</summary>
+    /// <summary>Ensures that <see cref="Vector3.CrossProduct(Vector3,Vector3)" /> returns a vector which is perpendicular to both input vectors.</summary>
     [Test]
     public static void CrossProductReturnsPerpendicularVector()
     {
-        var vector = Vector3.Cross(new Vector3(1, 0, 0), new Vector3(0, 0, 1));
+        var vector = Vector3.CrossProduct(new Vector3(1, 0, 0), new Vector3(0, 0, 1));
 
         Assert.That(vector, Is.EqualTo(new Vector3(0, -1, 0)));
     }
 
-    /// <summary>Ensures that <see cref="Vector3.Dot(Vector3,Vector3)" /> returns the scalar product of both input vectors.</summary>
+    /// <summary>Ensures that <see cref="Vector3.DotProduct(Vector3,Vector3)" /> returns the scalar product of both input vectors.</summary>
     [Test]
     public static void DotProductReturnsScalarProduct()
     {
-        var product = Vector3.Dot(new Vector3(1, 0.5f, 0), new Vector3(2, 1, 0));
+        var product = Vector3.DotProduct(new Vector3(1, 0.5f, 0), new Vector3(2, 1, 0));
 
         Assert.That(product, Is.EqualTo(2.5f));
     }
@@ -138,49 +138,6 @@ public class Vector3Tests
 
         Assert.That(vector.Length, Is.EqualTo(5));
         Assert.That(vector.LengthSquared, Is.EqualTo(25));
-    }
-
-    /// <summary>Ensures that <see cref="Vector3" /> and <see cref="Matrix3x3" /> multiply properly.</summary>
-    [Test]
-    public static void VectorMatrix3x3Multiplication()
-    {
-        var v = new Vector3(1.0f, 2.0f, 3.0f);
-        var mIdentity = Matrix3x3.Identity;
-        var a = v * mIdentity;
-        var b = v;
-        b *= mIdentity;
-        b *= mIdentity;
-
-        Assert.That(a, Is.EqualTo(v));
-        Assert.That(b, Is.EqualTo(v));
-
-        var x = new Vector3(1.0f, 0.0f, 0.0f);
-        var y = new Vector3(0.0f, 1.0f, 0.0f);
-        var z = new Vector3(0.0f, 0.0f, 1.0f);
-        var mX90 = new Matrix3x3(
-            new Vector3(1.0f, 0.0f, 0.0f),
-            new Vector3(0.0f, 0.0f, 1.0f),
-            new Vector3(0.0f, -1.0f, 0.0f));
-
-        var mY90 = new Matrix3x3(
-            new Vector3(0.0f, 0.0f, 1.0f),
-            new Vector3(0.0f, 1.0f, 0.0f),
-            new Vector3(-1.0f, 0.0f, 0.0f));
-
-        var mZ90 = new Matrix3x3(
-            new Vector3(0.0f, 1.0f, 0.0f),
-            new Vector3(-1.0f, 0.0f, 0.0f),
-            new Vector3(0.0f, 0.0f, 1.0f));
-
-        var i = x * mZ90;
-        Assert.That(i, Is.EqualTo(y));
-
-
-        var j = x * mY90;
-        Assert.That(j, Is.EqualTo(z));
-
-        var k = y * mX90;
-        Assert.That(k, Is.EqualTo(z));
     }
 
     /// <summary>Ensures that <see cref="Vector3" /> and <see cref="Matrix4x4" /> multiply properly.</summary>

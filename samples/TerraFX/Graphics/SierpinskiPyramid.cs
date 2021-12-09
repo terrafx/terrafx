@@ -201,7 +201,7 @@ internal class SierpinskiPyramid
             var a = vertices[i + 0];
             var b = vertices[i + 1];
             var c = vertices[i + 2];
-            n4[i / 3] = Vector3.Normalize(Vector3.Cross(b - a, c - a));
+            n4[i / 3] = Vector3.Normalize(Vector3.CrossProduct(b - a, c - a));
         }
         var normals = new List<Vector3>();
         for (var i = 0; i < vertices.Count; i += 3)

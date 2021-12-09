@@ -6,6 +6,6 @@ namespace TerraFX.Samples.Graphics;
 
 public struct IdentityVertex
 {
-    public Vector3 Position;
     public Vector4 Color;
+    public Vector3 Position;
 }

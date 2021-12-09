@@ -79,9 +79,8 @@ public sealed class HelloTransform : HelloWindow
         var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
 
         // Shaders take transposed matrices, so we want to set X.W
-        pConstantBuffer[0] = Matrix4x4.Identity.WithX(
-            new Vector4(1.0f, 0.0f, 0.0f, trianglePrimitiveTranslationX)
-        );
+        pConstantBuffer[0] = Matrix4x4.Identity;
+        pConstantBuffer[0].X = new Vector4(1.0f, 0.0f, 0.0f, trianglePrimitiveTranslationX);
 
         constantBufferView.UnmapAndWrite();
     }

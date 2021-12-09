@@ -74,6 +74,18 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Abs(float value) => MathF.Abs(value);
 
+    /// <summary>Computes the arc-cosine for a given 64-bit float.</summary>
+    /// <param name="value">The float, in radians, for which to compute the arc-cosine.</param>
+    /// <returns>The arc-cosine of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double Acos(double value) => Math.Acos(value);
+
+    /// <summary>Computes the arc-cosine for a given 32-bit float.</summary>
+    /// <param name="value">The float, in radians, for which to compute the arc-cosine.</param>
+    /// <returns>The arc-cosine of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float Acos(float value) => MathF.Acos(value);
+
     /// <summary>Rounds a given address up to the nearest alignment.</summary>
     /// <param name="address">The address to be aligned.</param>
     /// <param name="alignment">The target alignment, which should be a power of two.</param>
@@ -109,6 +121,30 @@ public static class MathUtilities
         Assert(AssertionsEnabled && IsPow2(alignment));
         return (address + (alignment - 1)) & ~(alignment - 1);
     }
+
+    /// <summary>Computes the arc-sine for a given 64-bit float.</summary>
+    /// <param name="value">The float, in radians, for which to compute the arc-sine.</param>
+    /// <returns>The arc-sine of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double Asin(double value) => Math.Asin(value);
+
+    /// <summary>Computes the arc-sine for a given 32-bit float.</summary>
+    /// <param name="value">The float, in radians, for which to compute the arc-sine.</param>
+    /// <returns>The arc-sine of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float Asin(float value) => MathF.Asin(value);
+
+    /// <summary>Computes the arc-tangent for a given 64-bit float.</summary>
+    /// <param name="value">The float, in radians, for which to compute the arc-tangent.</param>
+    /// <returns>The arc-tangent of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double Atan(double value) => Math.Atan(value);
+
+    /// <summary>Computes the arc-tangent for a given 32-bit float.</summary>
+    /// <param name="value">The float, in radians, for which to compute the arc-tangent.</param>
+    /// <returns>The arc-tangent of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float Atan(float value) => MathF.Atan(value);
 
     /// <summary>Clamps an 8-bit unsigned integer to be between a minimum and maximum value.</summary>
     /// <param name="value">The value to restrict.</param>
@@ -782,6 +818,30 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsPow2(nuint value)
         => Is64BitProcess ? BitOperations.IsPow2(value) : BitOperations.IsPow2((uint)value);
+
+    /// <summary>Computes an estimate of the reciprocal of a given 64-bit float.</summary>
+    /// <param name="value">The float for which to compute the reciprocal.</param>
+    /// <returns>An estimate of the reciprocal of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double ReciprocalEstimate(double value) => Math.ReciprocalEstimate(value);
+
+    /// <summary>Computes an estimate of the reciprocal of a given 32-bit float.</summary>
+    /// <param name="value">The float for which to compute the reciprocal.</param>
+    /// <returns>An estimate of the reciprocal of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float ReciprocalEstimate(float value) => MathF.ReciprocalEstimate(value);
+
+    /// <summary>Computes an estimate of the reciprocal square-root of a given 64-bit float.</summary>
+    /// <param name="value">The float for which to compute the reciprocal square-root.</param>
+    /// <returns>An estimate of the reciprocal square-root of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double ReciprocalSqrtEstimate(double value) => Math.ReciprocalSqrtEstimate(value);
+
+    /// <summary>Computes an estimate of the reciprocal square-root of a given 32-bit float.</summary>
+    /// <param name="value">The float for which to compute the reciprocal square-root.</param>
+    /// <returns>An estimate of the reciprocal square-root of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float ReciprocalSqrtEstimate(float value) => MathF.ReciprocalSqrtEstimate(value);
 
     /// <summary>Computes the sine for a given 64-bit float.</summary>
     /// <param name="value">The float, in radians, for which to compute the sine.</param>

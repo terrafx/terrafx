@@ -105,11 +105,11 @@ public class Vector4Tests
         Assert.That(vector, Is.EqualTo(new Vector4(1, 2, 3, 4)));
     }
 
-    /// <summary>Ensures that <see cref="Vector4.Dot(Vector4,Vector4)" /> returns the scalar product of both input vectors.</summary>
+    /// <summary>Ensures that <see cref="Vector4.DotProduct(Vector4,Vector4)" /> returns the scalar product of both input vectors.</summary>
     [Test]
     public static void DotProductReturnsScalarProduct()
     {
-        var product = Vector4.Dot(new Vector4(1, 0.5f, 0, 0.25f), new Vector4(2, 1, 0, 2.0f));
+        var product = Vector4.DotProduct(new Vector4(1, 0.5f, 0, 0.25f), new Vector4(2, 1, 0, 2.0f));
 
         Assert.That(product, Is.EqualTo(3.0f));
     }

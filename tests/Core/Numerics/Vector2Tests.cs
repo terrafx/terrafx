@@ -101,11 +101,11 @@ public class Vector2Tests
         Assert.That(vector, Is.EqualTo(new Vector2(1, 2)));
     }
 
-    /// <summary>Ensures that <see cref="Vector2.Dot(Vector2,Vector2)" /> returns the scalar product of both input vectors.</summary>
+    /// <summary>Ensures that <see cref="Vector2.DotProduct(Vector2,Vector2)" /> returns the scalar product of both input vectors.</summary>
     [Test]
     public static void DotProductReturnsScalarProduct()
     {
-        var product = Vector2.Dot(new Vector2(1, 0.5f), new Vector2(2, 1));
+        var product = Vector2.DotProduct(new Vector2(1, 0.5f), new Vector2(2, 1));
 
         Assert.That(product, Is.EqualTo(2.5f));
     }
