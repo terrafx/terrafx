@@ -222,6 +222,67 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
         return CreateFromNormalizedAxisAngle(normalizedAxis, angle);
     }
 
+    /// <summary>Creates a quaternion from a matrix.</summary>
+    /// <param name="matrix">The matrix from which to create the quaternion.</param>
+    /// <returns>A quaternion that represents <paramref name="matrix" />.</returns>
+    public static Quaternion CreateFromMatrix(Matrix4x4 matrix)
+    {
+        var r0 = matrix.X.AsVector128();
+        var r1 = matrix.Y.AsVector128();
+        var r2 = matrix.Z.AsVector128();
+
+        var r00 = CreateFromX(r0);
+        var r11 = CreateFromY(r1);
+        var r22 = CreateFromZ(r2);
+
+        // (4*x^2, 4*y^2, 4*z^2, 4*w^2)
+        var x2y2z2w2 = Vector128.Create(1.0f, 1.0f, 1.0f, 1.0f);
+        x2y2z2w2 = MultiplyAdd(x2y2z2w2, Vector128.Create(+1.0f, -1.0f, -1.0f, +1.0f), r00);
+        x2y2z2w2 = MultiplyAdd(x2y2z2w2, Vector128.Create(-1.0f, +1.0f, -1.0f, +1.0f), r11);
+        x2y2z2w2 = MultiplyAdd(x2y2z2w2, Vector128.Create(-1.0f, -1.0f, +1.0f, +1.0f), r22);
+
+        // (4*x*y, 4*x*z, 4*y*z, unused)
+        var xyxzyz = Add(CreateFromYZZY(r0, r1), CreateFromXZWY(CreateFromXXXY(r1, r2)));
+
+        // (4*x*w, 4*y*w, 4*z*w, unused)
+        var xwywzw = Subtract(CreateFromYXXX(r2, r1), CreateFromXZWY(CreateFromZZZY(r1, r0)));
+        xwywzw = Multiply(xwywzw, Vector128.Create(-1.0f, +1.0f, -1.0f, +1.0f));
+
+        // (4*x^2, 4*y^2, 4*x*y, unused)
+        // (4*z^2, 4*w^2, 4*z*w, unused)
+        // (4*x*z, 4*y*z, 4*x*w, 4*y*w)
+
+        var t0 = CreateFromXYXX(x2y2z2w2, xyxzyz);
+        var t1 = CreateFromZWZX(x2y2z2w2, xwywzw);
+        var t2 = CreateFromYZXY(xyxzyz, xwywzw);
+
+        // (4*x*x, 4*x*y, 4*x*z, 4*x*w)
+        // (4*y*x, 4*y*y, 4*y*z, 4*y*w)
+        // (4*z*x, 4*z*y, 4*z*z, 4*z*w)
+        // (4*w*x, 4*w*y, 4*w*z, 4*w*w)
+        var tensor0 = CreateFromXZXZ(t0, t2);
+        var tensor1 = CreateFromZYYW(t0, t2);
+        var tensor2 = CreateFromXYXZ(t2, t1);
+        var tensor3 = CreateFromZWZY(t2, t1);
+
+        // Select the row of the tensor-product matrix that has the largest magnitude.
+
+        // x^2 >= y^2 equivalent to r11 - r00 <= 0
+        var x2gey2 = CompareLessThanOrEqual(Subtract(r11, r00), Vector128<float>.Zero);
+        t0 = ElementwiseSelect(x2gey2, tensor0, tensor1);
+
+        // z^2 >= w^2 equivalent to r11 + r00 <= 0
+        var z2gew2 = CompareLessThanOrEqual(Add(r11, r00), Vector128<float>.Zero);
+        t1 = ElementwiseSelect(z2gew2, tensor2, tensor3);
+
+        // x^2 + y^2 >= z^2 + w^2 equivalent to r22 <= 0
+        var x2py2gez2pw2 = CompareLessThanOrEqual(r22, Vector128<float>.Zero);
+        t2 = ElementwiseSelect(x2py2gez2pw2, t0, t1);
+
+        var result = VectorUtilities.Normalize(t2);
+        return new Quaternion(result);
+    }
+
     /// <summary>Creates a quaternion from an axis and angle.</summary>
     /// <param name="normalizedAxis">The normalized axis of the quaternion.</param>
     /// <param name="angle">The angle, in radians, of the quaternion.</param>

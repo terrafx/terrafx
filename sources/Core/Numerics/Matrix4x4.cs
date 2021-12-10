@@ -127,6 +127,17 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
         }
     }
 
+    /// <summary>Gets the determinant of the matrix.</summary>
+    public float Determinant
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            var result = GetDeterminant(this);
+            return result.ToScalar();
+        }
+    }
+
     /// <summary>Compares two matrices to determine equality.</summary>
     /// <param name="left">The matrix to compare with <paramref name="right" />.</param>
     /// <param name="right">The matrix to compare with <paramref name="left" />.</param>
@@ -194,13 +205,24 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     /// <returns>A matrix that represents <paramref name="affineTransform" />.</returns>
     public static Matrix4x4 CreateFromAffineTransform(AffineTransform affineTransform)
     {
-        var scaleMatrix = CreateFromScale(affineTransform.Scale);
-        var rotationOrigin = new Vector4(affineTransform.RotationOrigin, 0.0f);
+        var result = CreateFromScale(affineTransform.Scale) * CreateFromRotation(affineTransform.Rotation);
+        result.W += new Vector4(affineTransform.Translation, 0.0f);
+        return result;
+    }
 
-        scaleMatrix.W -= rotationOrigin;
+    /// <summary>Creates a matrix from an affine transform.</summary>
+    /// <param name="affineTransform">The affine transform of the matrix.</param>
+    /// <param name="rotationOrigin">The origin rotation specified by <paramref name="affineTransform" />.</param>
+    /// <returns>A matrix that represents <paramref name="affineTransform" />.</returns>
+    public static Matrix4x4 CreateFromAffineTransform(AffineTransform affineTransform, Vector3 rotationOrigin)
+    {
+        var scaleMatrix = CreateFromScale(affineTransform.Scale);
+        var vRotationOrigin = new Vector4(rotationOrigin, 0.0f);
+
+        scaleMatrix.W -= vRotationOrigin;
 
         var result = scaleMatrix * CreateFromRotation(affineTransform.Rotation);
-        result.W += rotationOrigin;
+        result.W += vRotationOrigin;
         result.W += new Vector4(affineTransform.Translation, 0.0f);
         return result;
     }
@@ -333,6 +355,100 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
         );
     }
 
+    /// <summary>Compares two matrices to determine if all elements are equal.</summary>
+    /// <param name="left">The matrix to compare with <paramref name="right" />.</param>
+    /// <param name="right">The matrix to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if all elements of <paramref name="left" /> are equal to the corresponding element of <paramref name="right" />; otherwise, <c>false</c>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool EqualsAll(Matrix4x4 left, in Matrix4x4 right) => left == right;
+
+    /// <summary>Compares two matrices to determine approximate equality.</summary>
+    /// <param name="left">The matrix to compare with <paramref name="right" />.</param>
+    /// <param name="right">The matrix to compare with <paramref name="left" />.</param>
+    /// <param name="epsilon">The maximum (exclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool EqualsAll(Matrix4x4 left, in Matrix4x4 right, in Matrix4x4 epsilon)
+        => Vector4.EqualsAll(left._x, right._x, epsilon._x)
+        && Vector4.EqualsAll(left._y, right._y, epsilon._y)
+        && Vector4.EqualsAll(left._z, right._z, epsilon._z)
+        && Vector4.EqualsAll(left._w, right._w, epsilon._w);
+
+    /// <summary>Computes the inverse of a matrix.</summary>
+    /// <param name="value">The matrix to invert.</param>
+    /// <param name="determinant">On return, contains the dterminant of the matrix.</param>
+    /// <returns>The inverse of <paramref name="value" /> or an <c>infinite</c> matrix if no inverse exists.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Matrix4x4 Inverse(Matrix4x4 value, out float determinant)
+    {
+        var transposedValue = Transpose(value);
+
+        var transposedX = transposedValue.X.AsVector128();
+        var transposedY = transposedValue.Y.AsVector128();
+        var transposedZ = transposedValue.Z.AsVector128();
+        var transposedW = transposedValue.W.AsVector128();
+
+        var d0 = Multiply(CreateFromXXYY(transposedZ), CreateFromZWZW(transposedW));
+        var d1 = Multiply(CreateFromXXYY(transposedX), CreateFromZWZW(transposedY));
+        var d2 = Multiply(CreateFromXZXZ(transposedZ, transposedX), CreateFromYWYW(transposedW, transposedY));
+
+        d0 = MultiplySubtract(d0, CreateFromZWZW(transposedZ), CreateFromXXYY(transposedW));
+        d1 = MultiplySubtract(d1, CreateFromZWZW(transposedX), CreateFromXXYY(transposedY));
+        d2 = MultiplySubtract(d2, CreateFromYWYW(transposedZ, transposedX), CreateFromXZXZ(transposedW, transposedY));
+
+        var tmp1 = CreateFromYWYY(d0, d2);
+        var tmp2 = CreateFromYWWW(d1, d2);
+
+        var c0 = Multiply(CreateFromYZXY(transposedY), CreateFromZXWX(tmp1, d0));
+        var c2 = Multiply(CreateFromZXYX(transposedX), CreateFromYZYZ(tmp1, d0));
+        var c4 = Multiply(CreateFromYZXY(transposedW), CreateFromZXWX(tmp2, d1));
+        var c6 = Multiply(CreateFromZXYX(transposedZ), CreateFromYZYZ(tmp2, d1));
+
+        var tmp3 = CreateFromXYXX(d0, d2);
+        var tmp4 = CreateFromXYZZ(d1, d2);
+
+        c0 = MultiplySubtract(c0, CreateFromZWYZ(transposedY), CreateFromWXYZ(d0, tmp3));
+        c2 = MultiplySubtract(c2, CreateFromWZWY(transposedX), CreateFromZYZX(d0, tmp3));
+        c4 = MultiplySubtract(c4, CreateFromZWYZ(transposedW), CreateFromWXYZ(d1, tmp4));
+        c6 = MultiplySubtract(c6, CreateFromWZWY(transposedZ), CreateFromZYZX(d1, tmp4));
+
+        var v00 = Multiply(CreateFromWXWX(transposedY), CreateFromXWZX(CreateFromZZXY(d0, d2)));
+        var v01 = Multiply(CreateFromYWXZ(transposedX), CreateFromWXYZ(CreateFromXWXY(d0, d2)));
+        var v02 = Multiply(CreateFromWXWX(transposedW), CreateFromXWZX(CreateFromZZZW(d1, d2)));
+        var v03 = Multiply(CreateFromYWXZ(transposedZ), CreateFromWXYZ(CreateFromXWZW(d1, d2)));
+
+        var c1 = Subtract(c0, v00);
+        c0 = Add(c0, v00);
+
+        var c3 = Add(c2, v01);
+        c2 = Subtract(c2, v01);
+
+        var c5 = Subtract(c4, v02);
+        c4 = Add(c4, v02);
+
+        var c7 = Add(c6, v03);
+        c6 = Subtract(c6, v03);
+
+        c0 = CreateFromXZYW(c0, c1);
+        c2 = CreateFromXZYW(c2, c3);
+        c4 = CreateFromXZYW(c4, c5);
+        c6 = CreateFromXZYW(c6, c7);
+        c0 = CreateFromXZYW(c0);
+        c2 = CreateFromXZYW(c2);
+        c4 = CreateFromXZYW(c4);
+        c6 = CreateFromXZYW(c6);
+
+        var vDeterminant = DotProduct(c0, transposedX);
+        determinant = vDeterminant.ToScalar();
+
+        return new Matrix4x4(
+            Divide(c0, vDeterminant),
+            Divide(c2, vDeterminant),
+            Divide(c4, vDeterminant),
+            Divide(c6, vDeterminant)
+        );
+    }
+
     /// <summary>Determines if any elements in a matrix are either <see cref="float.PositiveInfinity" /> or <see cref="float.NegativeInfinity" />.</summary>
     /// <param name="value">The matrix to check.</param>
     /// <returns><c>true</c> if any elements in <paramref name="value" /> are either <see cref="float.PositiveInfinity" /> or <see cref="float.NegativeInfinity" />; otherwise, <c>false</c>.</returns>
@@ -353,24 +469,11 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
         || Vector4.IsAnyNaN(value._z)
         || Vector4.IsAnyNaN(value._w);
 
-    /// <summary>Compares two matrices to determine if all elements are equal.</summary>
-    /// <param name="left">The matrix to compare with <paramref name="right" />.</param>
-    /// <param name="right">The matrix to compare with <paramref name="left" />.</param>
-    /// <returns><c>true</c> if all elements of <paramref name="left" /> are equal to the corresponding element of <paramref name="right" />; otherwise, <c>false</c>.</returns>
+    /// <summary>Determines if a matrix is equal to <see cref="Identity" />.</summary>
+    /// <param name="value">The matrix to compare against <see cref="Identity" />.</param>
+    /// <returns><c>true</c> if <paramref name="value" /> and <see cref="Identity" /> are equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool EqualsAll(Matrix4x4 left, in Matrix4x4 right) => left == right;
-
-    /// <summary>Compares two matrices to determine approximate equality.</summary>
-    /// <param name="left">The matrix to compare with <paramref name="right" />.</param>
-    /// <param name="right">The matrix to compare with <paramref name="left" />.</param>
-    /// <param name="epsilon">The maximum (exclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
-    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool EqualsAll(Matrix4x4 left, in Matrix4x4 right, in Matrix4x4 epsilon)
-        => Vector4.EqualsAll(left._x, right._x, epsilon._x)
-        && Vector4.EqualsAll(left._y, right._y, epsilon._y)
-        && Vector4.EqualsAll(left._z, right._z, epsilon._z)
-        && Vector4.EqualsAll(left._w, right._w, epsilon._w);
+    public static bool IsIdentity(Matrix4x4 value) => value == Identity;
 
     /// <summary>Transposes a matrix.</summary>
     /// <param name="value">The matrix to transpose.</param>
@@ -424,6 +527,42 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
                 new Vector4(value._x.W, value._y.W, value._z.W, value._w.W)
             );
         }
+    }
+
+    private static Vector128<float> GetDeterminant(Matrix4x4 value)
+    {
+        var vZ = value.Z.AsVector128();
+        var vW = value.W.AsVector128();
+
+        var vZ_YXXX = CreateFromYXXX(vZ);
+        var vZ_ZZYY = CreateFromZZYY(vZ);
+        var vZ_WWWZ = CreateFromWWWZ(vZ);
+
+        var vW_YXXX = CreateFromYXXX(vW);
+        var vW_ZZYY = CreateFromZZYY(vW);
+        var vW_WWWZ = CreateFromWWWZ(vW);
+
+        var p0 = Multiply(vZ_YXXX, vW_ZZYY);
+        var p1 = Multiply(vZ_YXXX, vW_WWWZ);
+        var p2 = Multiply(vZ_ZZYY, vW_WWWZ);
+
+        p0 = MultiplySubtract(p0, vZ_ZZYY, vW_YXXX);
+        p1 = MultiplySubtract(p1, vZ_WWWZ, vW_YXXX);
+        p2 = MultiplySubtract(p2, vZ_WWWZ, vW_ZZYY);
+
+        var vY = value.Y.AsVector128();
+
+        var vY_YXXX = CreateFromYXXX(vY);
+        var vY_ZZYY = CreateFromZZYY(vY);
+        var vY_WWWZ = CreateFromWWWZ(vY);
+
+        var s = Multiply(value.X.AsVector128(), Vector128.Create(1.0f, -1.0f, 1.0f, -1.0f));
+        var r = Multiply(vY_WWWZ, p0);
+
+        r = MultiplySubtract(r, vY_ZZYY, p1);
+        r = MultiplyAdd(r, vY_YXXX, p2);
+
+        return DotProduct(s, r);
     }
 
     /// <summary>Reinterprets the current instance as a new <see cref="SysMatrix4x4" />.</summary>

@@ -127,6 +127,38 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Computes the bitwise-and two vectors.</summary>
+    /// <param name="left">The vector to bitwise-and with <paramref name="right" />.</param>
+    /// <param name="right">The vector to bitwise-and with <paramref name="left" />.</param>
+    /// <returns>The bitwise-and of <paramref name="left" /> and <paramref name="right" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> BitwiseAndNot(Vector128<float> left, Vector128<float> right)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.AndNot(right, left);
+        }
+        else if (AdvSimd.IsSupported)
+        {
+            return AdvSimd.BitwiseClear(left, right);
+        }
+        else
+        {
+            var result = SoftwareFallback(left.AsUInt32(), right.AsUInt32());
+            return result.AsSingle();
+        }
+
+        static Vector128<uint> SoftwareFallback(Vector128<uint> left, Vector128<uint> right)
+        {
+            return Vector128.Create(
+                left.GetElement(0) & ~right.GetElement(0),
+                left.GetElement(1) & ~right.GetElement(1),
+                left.GetElement(2) & ~right.GetElement(2),
+                left.GetElement(3) & ~right.GetElement(3)
+            );
+        }
+    }
+
     /// <summary>Computes the bitwise-or two vectors.</summary>
     /// <param name="left">The vector to bitwise-or with <paramref name="right" />.</param>
     /// <param name="right">The vector to bitwise-or with <paramref name="left" />.</param>
@@ -561,6 +593,35 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>X</c>, <c>X</c>, <c>X</c>, and <c>Y</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromXXXY(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b01_00_00_00);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                AdvSimd.DuplicateSelectedScalarToVector64(lower, 0),
+                upper.GetLower()
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(0),
+                lower.GetElement(0),
+                upper.GetElement(0),
+                upper.GetElement(1)
+            );
+        }
+    }
+
     /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>X</c>, <c>X</c>, <c>Y</c>, and <c>W</c> components of the input vector.</summary>
     /// <param name="value">The vector whose components is used to initialize elements.</param>
     /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
@@ -577,8 +638,7 @@ public static class VectorUtilities
         }
         else if (AdvSimd.Arm64.IsSupported)
         {
-            var lower = AdvSimd.DuplicateSelectedScalarToVector64(value, 0);
-            var result = Vector128.Create(lower, value.GetUpper());
+            var result = AdvSimd.Arm64.InsertSelectedScalar(value, 1, value, 0);
             return AdvSimd.Arm64.InsertSelectedScalar(result, 2, value, 1);
         }
         else
@@ -592,6 +652,31 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>X</c>, <c>X</c>, <c>Y</c>, and <c>Y</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromXXYY(Vector128<float> value)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.UnpackLow(value, value);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return AdvSimd.Arm64.ZipLow(value, value);
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(0),
+                value.GetElement(0),
+                value.GetElement(1),
+                value.GetElement(1)
+            );
+        }
+    }
+
     /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>X</c>, <c>X</c>, <c>Z</c>, and <c>Z</c> components of the input vectors.</summary>
     /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
     /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
@@ -601,17 +686,107 @@ public static class VectorUtilities
     {
         if (Sse.IsSupported)
         {
-            return Sse.Shuffle(lower, upper, 0b01_11_10_00);
+            return Sse.Shuffle(lower, upper, 0b10_10_00_00);
         }
         else if (AdvSimd.Arm64.IsSupported)
         {
-            return AdvSimd.Arm64.TransposeEven(lower, upper);
+            return Vector128.Create(
+                AdvSimd.DuplicateSelectedScalarToVector64(lower, 0),
+                AdvSimd.DuplicateSelectedScalarToVector64(upper, 2)
+            );
         }
         else
         {
             return Vector128.Create(
                 lower.GetElement(0),
                 lower.GetElement(0),
+                upper.GetElement(2),
+                upper.GetElement(2)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>X</c>, <c>Y</c>, <c>X</c>, and <c>X</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromXYXX(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b00_00_01_00);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                lower.GetLower(),
+                AdvSimd.DuplicateSelectedScalarToVector64(upper, 0) 
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(0),
+                lower.GetElement(1),
+                upper.GetElement(0),
+                upper.GetElement(0)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>X</c>, <c>Y</c>, <c>X</c>, and <c>Z</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromXYXZ(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b10_00_01_00);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                lower.GetLower(),
+                AdvSimd.Arm64.InsertSelectedScalar(upper.GetLower(), 1, upper, 2)
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(0),
+                lower.GetElement(1),
+                upper.GetElement(0),
+                upper.GetElement(2)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>X</c>, <c>Y</c>, <c>Z</c>, and <c>Z</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromXYZZ(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b10_10_01_00);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                lower.GetLower(),
+                AdvSimd.DuplicateSelectedScalarToVector64(upper, 2)
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(0),
+                lower.GetElement(1),
                 upper.GetElement(2),
                 upper.GetElement(2)
             );
@@ -673,6 +848,93 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>X</c>, <c>Z</c>, <c>X</c>, and <c>Z</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromXZXZ(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b10_00_10_00);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return AdvSimd.Arm64.UnzipEven(lower, upper);
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(0),
+                lower.GetElement(2),
+                upper.GetElement(0),
+                upper.GetElement(2)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>X</c>, <c>Z</c>, <c>Y</c>, and <c>W</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromXZYW(Vector128<float> value)
+    {
+        if (Avx.IsSupported)
+        {
+            return Avx.Permute(value, 0b11_01_10_00);
+        }
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(value, value, 0b11_01_10_00);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                AdvSimd.Arm64.UnzipEven(value, value).GetLower(),
+                AdvSimd.Arm64.UnzipOdd(value, value).GetUpper()
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(0),
+                value.GetElement(2),
+                value.GetElement(1),
+                value.GetElement(3)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>X</c>, <c>Z</c>, <c>Y</c>, and <c>W</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromXZYW(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b11_01_10_00);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                AdvSimd.Arm64.UnzipEven(lower, lower).GetLower(),
+                AdvSimd.Arm64.UnzipOdd(upper, upper).GetUpper()
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(0),
+                lower.GetElement(2),
+                upper.GetElement(1),
+                upper.GetElement(3)
+            );
+        }
+    }
+
     /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>X</c>, <c>Z</c>, <c>W</c>, and <c>Y</c> components of the input vector.</summary>
     /// <param name="value">The vector whose components is used to initialize elements.</param>
     /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
@@ -689,12 +951,13 @@ public static class VectorUtilities
         }
         else if (AdvSimd.Arm64.IsSupported)
         {
-            var lower = AdvSimd.Arm64.UnzipEven(value, value).GetLower();
-
-            var upper = AdvSimd.Arm64.UnzipOdd(value, value).GetUpper();
-            upper = AdvSimd.ReverseElement32(upper.AsInt64()).AsSingle();
-
-            return Vector128.Create(lower, upper);
+            var indices = Vector128.Create(
+                0x0, 0x1, 0x2, 0x3, // X
+                0x8, 0x9, 0xA, 0xB, // Z
+                0xC, 0xD, 0xE, 0xF, // W
+                0x4, 0x5, 0x6, 0x7  // Y
+            );
+            return AdvSimd.Arm64.VectorTableLookup(value.AsSByte(), indices).AsSingle();
         }
         else
         {
@@ -720,10 +983,11 @@ public static class VectorUtilities
         }
         else if (AdvSimd.Arm64.IsSupported)
         {
-            return Vector128.Create(
-                AdvSimd.Arm64.InsertSelectedScalar(lower.GetLower(), 1, lower, 3),
+            var result = Vector128.Create(
+                lower.GetLower(),
                 upper.GetLower()
             );
+            return AdvSimd.Arm64.InsertSelectedScalar(result, 1, lower, 3);
         }
         else
         {
@@ -732,6 +996,71 @@ public static class VectorUtilities
                 lower.GetElement(3),
                 upper.GetElement(0),
                 upper.GetElement(1)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>X</c>, <c>W</c>, <c>Z</c>, and <c>X</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromXWZX(Vector128<float> value)
+    {
+        if (Avx.IsSupported)
+        {
+            return Avx.Permute(value, 0b00_10_11_00);
+        }
+        else if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(value, value, 0b00_10_11_00);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var indices = Vector128.Create(
+                0x0, 0x1, 0x2, 0x3, // X
+                0xC, 0xD, 0xE, 0xF, // W
+                0x8, 0x9, 0xA, 0xB, // Z
+                0x0, 0x1, 0x2, 0x3  // X
+            );
+            return AdvSimd.Arm64.VectorTableLookup(value.AsSByte(), indices).AsSingle();
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(0),
+                value.GetElement(3),
+                value.GetElement(2),
+                value.GetElement(0)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>X</c>, <c>W</c>, <c>Z</c>, and <c>W</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromXWZW(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b11_10_11_00);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var result = Vector128.Create(
+                lower.GetLower(),
+                upper.GetUpper()
+            );
+            return AdvSimd.Arm64.InsertSelectedScalar(result, 1, lower, 3);
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(0),
+                lower.GetElement(3),
+                upper.GetElement(2),
+                upper.GetElement(3)
             );
         }
     }
@@ -758,6 +1087,65 @@ public static class VectorUtilities
         {
             var y = value.GetElement(1);
             return Vector128.Create(y);
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Y</c>, <c>X</c>, <c>X</c>, and <c>X</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromYXXX(Vector128<float> value)
+    {
+        if (Avx.IsSupported)
+        {
+            return Avx.Permute(value, 0b00_00_00_01);
+        }
+        else if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(value, value, 0b00_00_00_01);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var result = AdvSimd.DuplicateSelectedScalarToVector128(value, 0);
+            return AdvSimd.Arm64.InsertSelectedScalar(result, 0, value, 1);
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(1),
+                value.GetElement(0),
+                value.GetElement(0),
+                value.GetElement(0)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Y</c>, <c>X</c>, <c>X</c>, and <c>X</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromYXXX(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b00_00_00_01);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                AdvSimd.ReverseElement32(lower.GetLower().AsInt64()).AsSingle(),
+                AdvSimd.DuplicateSelectedScalarToVector64(upper, 0)
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(1),
+                lower.GetElement(0),
+                upper.GetElement(0),
+                upper.GetElement(0)
+            );
         }
     }
 
@@ -825,6 +1213,68 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Y</c>, <c>Z</c>, <c>X</c>, and <c>Y</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromYZXY(Vector128<float> value)
+    {
+        if (Avx.IsSupported)
+        {
+            return Avx.Permute(value, 0b01_00_10_01);
+        }
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(value, value, 0b01_00_10_01);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var lower = value.GetLower();
+            return Vector128.Create(
+                AdvSimd.ExtractVector64(value.GetUpper(), lower, 1),
+                lower
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(1),
+                value.GetElement(2),
+                value.GetElement(0),
+                value.GetElement(1)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Y</c>, <c>Z</c>, <c>X</c>, and <c>Y</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromYZXY(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b01_00_10_01);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                AdvSimd.ExtractVector64(lower.GetUpper(), lower.GetLower(), 1),
+                upper.GetLower()
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(1),
+                lower.GetElement(2),
+                upper.GetElement(0),
+                upper.GetElement(1)
+            );
+        }
+    }
+
     /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Y</c>, <c>Z</c>, <c>X</c>, and <c>W</c> components of the input vector.</summary>
     /// <param name="value">The vector whose components is used to initialize elements.</param>
     /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
@@ -860,22 +1310,22 @@ public static class VectorUtilities
         }
     }
 
-    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Y</c>, <c>Z</c>, <c>X</c>, and <c>Y</c> components of the input vectors.</summary>
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Y</c>, <c>Z</c>, <c>Y</c>, and <c>Z</c> components of the input vectors.</summary>
     /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
     /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
     /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> CreateFromYZXY(Vector128<float> lower, Vector128<float> upper)
+    public static Vector128<float> CreateFromYZYZ(Vector128<float> lower, Vector128<float> upper)
     {
         if (Sse.IsSupported)
         {
-            return Sse.Shuffle(lower, upper, 0b01_00_10_01);
+            return Sse.Shuffle(lower, upper, 0b10_01_10_01);
         }
         else if (AdvSimd.Arm64.IsSupported)
         {
             return Vector128.Create(
-                AdvSimd.ExtractVector64(lower.GetUpper(), lower.GetLower(), 4),
-                upper.GetLower()
+                AdvSimd.ExtractVector64(lower.GetUpper(), lower.GetLower(), 1),
+                AdvSimd.ExtractVector64(upper.GetUpper(), upper.GetLower(), 1)
             );
         }
         else
@@ -883,8 +1333,125 @@ public static class VectorUtilities
             return Vector128.Create(
                 lower.GetElement(1),
                 lower.GetElement(2),
-                upper.GetElement(0),
+                upper.GetElement(1),
+                upper.GetElement(2)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Y</c>, <c>Z</c>, <c>Z</c>, and <c>Y</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromYZZY(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b01_10_10_01);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                AdvSimd.ExtractVector64(lower.GetUpper(), lower.GetLower(), 1),
+                AdvSimd.ReverseElement32(AdvSimd.ExtractVector64(upper.GetUpper(), upper.GetLower(), 1).AsInt64()).AsSingle()
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(1),
+                lower.GetElement(2),
+                upper.GetElement(2),
                 upper.GetElement(1)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Y</c>, <c>W</c>, <c>X</c>, and <c>Z</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromYWXZ(Vector128<float> value)
+    {
+        if (Avx.IsSupported)
+        {
+            return Avx.Permute(value, 0b10_00_11_01);
+        }
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(value, value, 0b10_00_11_01);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var indices = Vector128.Create(
+                0x4, 0x5, 0x6, 0x7, // Y
+                0xC, 0xD, 0xE, 0xF, // W
+                0x0, 0x1, 0x2, 0x3, // X
+                0x8, 0x9, 0xA, 0xB  // Z
+            );
+            return AdvSimd.Arm64.VectorTableLookup(value.AsSByte(), indices).AsSingle();
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(1),
+                value.GetElement(3),
+                value.GetElement(0),
+                value.GetElement(2)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Y</c>, <c>W</c>, <c>Y</c>, and <c>W</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromYWYY(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b01_01_11_01);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var result = AdvSimd.Arm64.UnzipOdd(lower, upper);
+            return AdvSimd.Arm64.InsertSelectedScalar(result, 3, upper, 1);
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(1),
+                lower.GetElement(3),
+                upper.GetElement(1),
+                upper.GetElement(1)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Y</c>, <c>W</c>, <c>Y</c>, and <c>W</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromYWYW(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b11_01_11_01);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return AdvSimd.Arm64.UnzipOdd(lower, upper);
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(1),
+                lower.GetElement(3),
+                upper.GetElement(1),
+                upper.GetElement(3)
             );
         }
     }
@@ -918,6 +1485,33 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Y</c>, <c>W</c>, <c>W</c>, and <c>W</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromYWWW(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b11_11_11_01);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var result = AdvSimd.Arm64.UnzipOdd(lower, upper);
+            return AdvSimd.Arm64.InsertSelectedScalar(result, 2, upper, 3);
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(1),
+                lower.GetElement(3),
+                upper.GetElement(3),
+                upper.GetElement(3)
+            );
+        }
+    }
+
     /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with all elements initialized to the <c>Z</c> component of the input vector.</summary>
     /// <param name="value">The vector whose component is used to initialize all elements.</param>
     /// <returns>A new <see cref="Vector128{Single}" /> with all elements initialized to the component of <paramref name="value" />.</returns>
@@ -943,6 +1537,104 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>X</c>, <c>Y</c>, and <c>X</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromZXYX(Vector128<float> value)
+    {
+        if (Avx.IsSupported)
+        {
+            return Avx.Permute(value, 0b00_01_00_10);
+        }
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(value, value, 0b00_01_00_10);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var indices = Vector128.Create(
+                0x8, 0x9, 0xA, 0xB, // Z
+                0x0, 0x1, 0x2, 0x3, // X
+                0x4, 0x5, 0x6, 0x7, // Y
+                0x0, 0x1, 0x2, 0x3  // X
+            );
+            return AdvSimd.Arm64.VectorTableLookup(value.AsSByte(), indices).AsSingle();
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(2),
+                value.GetElement(0),
+                value.GetElement(1),
+                value.GetElement(0)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>X</c>, <c>Y</c>, and <c>W</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromZXYW(Vector128<float> value)
+    {
+        if (Avx.IsSupported)
+        {
+            return Avx.Permute(value, 0b11_01_00_10);
+        }
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(value, value, 0b11_01_00_10);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var indices = Vector128.Create(
+                0x8, 0x9, 0xA, 0xB, // Z
+                0x0, 0x1, 0x2, 0x3, // X
+                0x4, 0x5, 0x6, 0x7, // Y
+                0xC, 0xD, 0xE, 0xF  // W
+            );
+            return AdvSimd.Arm64.VectorTableLookup(value.AsSByte(), indices).AsSingle();
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(2),
+                value.GetElement(0),
+                value.GetElement(1),
+                value.GetElement(3)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>X</c>, <c>W</c>, and <c>X</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromZXWX(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b00_11_00_10);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var result = AdvSimd.Arm64.UnzipEven(lower, upper);
+            result = AdvSimd.ReverseElement32(result.AsInt64()).AsSingle();
+            return AdvSimd.Arm64.InsertSelectedScalar(result, 2, upper, 3);
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(2),
+                lower.GetElement(0),
+                upper.GetElement(3),
+                upper.GetElement(0)
+            );
+        }
+    }
+
     /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>X</c>, <c>W</c>, and <c>Y</c> components of the input vector.</summary>
     /// <param name="value">The vector whose components is used to initialize elements.</param>
     /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
@@ -959,11 +1651,13 @@ public static class VectorUtilities
         }
         else if (AdvSimd.Arm64.IsSupported)
         {
-            var result = Vector128.Create(
-                AdvSimd.Arm64.UnzipEven(value, value).GetLower(),
-                AdvSimd.Arm64.UnzipOdd(value, value).GetUpper()
+            var indices = Vector128.Create(
+                0x8, 0x9, 0xA, 0xB, // Z
+                0x0, 0x1, 0x2, 0x3, // X
+                0xC, 0xD, 0xE, 0xF, // W
+                0x4, 0x5, 0x6, 0x7  // Y
             );
-            return AdvSimd.ReverseElement32(result.AsInt64()).AsSingle();
+            return AdvSimd.Arm64.VectorTableLookup(value.AsSByte(), indices).AsSingle();
         }
         else
         {
@@ -972,6 +1666,63 @@ public static class VectorUtilities
                 value.GetElement(0),
                 value.GetElement(3),
                 value.GetElement(1)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>Y</c>, <c>Y</c>, and <c>W</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromZYYW(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b11_01_01_10);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                AdvSimd.Arm64.InsertSelectedScalar(lower.GetUpper(), 1, lower, 1),
+                AdvSimd.Arm64.InsertSelectedScalar(upper.GetUpper(), 0, upper, 1)
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(2),
+                lower.GetElement(1),
+                upper.GetElement(1),
+                upper.GetElement(3)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>Y</c>, <c>Z</c>, and <c>X</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromZYZX(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b00_10_01_10);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var result = AdvSimd.Arm64.UnzipEven(lower, upper);
+            result = AdvSimd.ReverseElement32(result.AsInt64()).AsSingle();
+            return AdvSimd.Arm64.InsertSelectedScalar(result, 1, lower, 1);
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(2),
+                lower.GetElement(1),
+                upper.GetElement(2),
+                upper.GetElement(0)
             );
         }
     }
@@ -1005,6 +1756,67 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>Z</c>, <c>X</c>, and <c>Y</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromZZXY(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b01_00_10_10);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                AdvSimd.DuplicateSelectedScalarToVector64(lower, 2),
+                upper.GetLower()
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(2),
+                lower.GetElement(2),
+                upper.GetElement(0),
+                upper.GetElement(1)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>Z</c>, <c>Y</c>, and <c>Y</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromZZYY(Vector128<float> value)
+    {
+        if (Avx.IsSupported)
+        {
+            return Avx.Permute(value, 0b01_01_10_10);
+        }
+        else if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(value, value, 0b01_01_10_10);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                AdvSimd.DuplicateSelectedScalarToVector64(value, 2),
+                AdvSimd.DuplicateSelectedScalarToVector64(value, 1)
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(2),
+                value.GetElement(2),
+                value.GetElement(1),
+                value.GetElement(1)
+            );
+        }
+    }
+
     /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>Z</c>, <c>Y</c>, and <c>W</c> components of the input vector.</summary>
     /// <param name="value">The vector whose components is used to initialize elements.</param>
     /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
@@ -1021,9 +1833,13 @@ public static class VectorUtilities
         }
         else if (AdvSimd.Arm64.IsSupported)
         {
-            var lower = AdvSimd.DuplicateSelectedScalarToVector64(value, 2);
-            var result = Vector128.Create(lower, value.GetUpper());
-            return AdvSimd.Arm64.InsertSelectedScalar(result, 2, value, 1);
+            var indices = Vector128.Create(
+                0x8, 0x9, 0xA, 0xB, // Z
+                0x8, 0x9, 0xA, 0xB, // Z
+                0x4, 0x5, 0x6, 0x7, // Y
+                0xC, 0xD, 0xE, 0xF  // W
+            );
+            return AdvSimd.Arm64.VectorTableLookup(value.AsSByte(), indices).AsSingle();
         }
         else
         {
@@ -1032,6 +1848,64 @@ public static class VectorUtilities
                 value.GetElement(2),
                 value.GetElement(1),
                 value.GetElement(3)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>Z</c>, <c>Z</c>, and <c>Y</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromZZZY(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b01_10_10_10);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                AdvSimd.DuplicateSelectedScalarToVector64(lower, 2),
+                AdvSimd.ReverseElement32(AdvSimd.ExtractVector64(upper.GetUpper(), upper.GetLower(), 1).AsInt64()).AsSingle()
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(2),
+                lower.GetElement(2),
+                upper.GetElement(2),
+                upper.GetElement(1)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>Z</c>, <c>Z</c>, and <c>W</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromZZZW(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b11_10_10_10);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                AdvSimd.DuplicateSelectedScalarToVector64(lower, 2),
+                upper.GetUpper()
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(2),
+                lower.GetElement(2),
+                upper.GetElement(2),
+                upper.GetElement(3)
             );
         }
     }
@@ -1065,6 +1939,123 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>W</c>, <c>Y</c>, and <c>Z</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromZWYZ(Vector128<float> value)
+    {
+        if (Avx.IsSupported)
+        {
+            return Avx.Permute(value, 0b10_01_11_10);
+        }
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(value, value, 0b10_01_11_10);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var upper = value.GetUpper();
+            return Vector128.Create(
+                upper,
+                AdvSimd.ExtractVector64(upper, value.GetLower(), 1)
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(2),
+                value.GetElement(3),
+                value.GetElement(1),
+                value.GetElement(2)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>W</c>, <c>Z</c>, and <c>X</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromZWZX(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b00_10_11_10);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                lower.GetUpper(),
+                AdvSimd.Arm64.InsertSelectedScalar(upper.GetUpper(), 1, upper, 0)
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(2),
+                lower.GetElement(3),
+                upper.GetElement(2),
+                upper.GetElement(0)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>W</c>, <c>Z</c>, and <c>Y</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromZWZY(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b01_10_11_10);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                lower.GetUpper(),
+                AdvSimd.Arm64.InsertSelectedScalar(upper.GetUpper(), 1, upper, 1)
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(2),
+                lower.GetElement(3),
+                upper.GetElement(2),
+                upper.GetElement(1)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>W</c>, <c>Z</c>, and <c>W</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromZWZW(Vector128<float> value)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.MoveHighToLow(value, value);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var upper = value.GetUpper();
+            return Vector128.Create(upper, upper);
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(2),
+                value.GetElement(3),
+                value.GetElement(2),
+                value.GetElement(3)
+            );
+        }
+    }
+
     /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with all elements initialized to the <c>W</c> component of the input vector.</summary>
     /// <param name="value">The vector whose component is used to initialize all elements.</param>
     /// <returns>A new <see cref="Vector128{Single}" /> with all elements initialized to the component of <paramref name="value" />.</returns>
@@ -1090,6 +2081,99 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>W</c>, <c>X</c>, <c>Y</c>, and <c>Z</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromWXYZ(Vector128<float> value)
+    {
+        if (Avx.IsSupported)
+        {
+            return Avx.Permute(value, 0b10_01_00_11);
+        }
+        else if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(value, value, 0b10_01_00_11);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return AdvSimd.ExtractVector128(value, value, 3);
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(3),
+                value.GetElement(0),
+                value.GetElement(1),
+                value.GetElement(2)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>W</c>, <c>X</c>, <c>Y</c>, and <c>Z</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromWXYZ(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b10_01_00_11);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                AdvSimd.ExtractVector64(lower.GetLower(), lower.GetUpper(), 1),
+                AdvSimd.ExtractVector64(upper.GetUpper(), upper.GetLower(), 1)
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(3),
+                lower.GetElement(0),
+                upper.GetElement(1),
+                upper.GetElement(2)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>W</c>, <c>X</c>, <c>W</c>, and <c>X</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromWXWX(Vector128<float> value)
+    {
+        if (Avx.IsSupported)
+        {
+            return Avx.Permute(value, 0b00_11_00_11);
+        }
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(value, value, 0b00_11_00_11);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var indices = Vector128.Create(
+                0xC, 0xD, 0xE, 0xF, // W
+                0x0, 0x1, 0x2, 0x3, // X
+                0xC, 0xD, 0xE, 0xF, // W
+                0x0, 0x1, 0x2, 0x3  // X
+            );
+            return AdvSimd.Arm64.VectorTableLookup(value.AsSByte(), indices).AsSingle();
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(3),
+                value.GetElement(0),
+                value.GetElement(3),
+                value.GetElement(0)
+            );
+        }
+    }
+
     /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>W</c>, <c>Z</c>, <c>Y</c>, and <c>X</c> components of the input vector.</summary>
     /// <param name="value">The vector whose components is used to initialize elements.</param>
     /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
@@ -1106,10 +2190,8 @@ public static class VectorUtilities
         }
         else if (AdvSimd.IsSupported)
         {
-            var result = value.AsUInt64();
-            result = AdvSimd.ReverseElement32(result);
-            result = Vector128.Create(result.GetUpper(), result.GetLower());
-            return result.AsSingle();
+            var result = AdvSimd.ReverseElement32(value.AsUInt64()).AsSingle();
+            return Vector128.Create(result.GetUpper(), result.GetLower());
         }
         else
         {
@@ -1118,6 +2200,95 @@ public static class VectorUtilities
                 value.GetElement(2),
                 value.GetElement(1),
                 value.GetElement(0)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>W</c>, <c>Z</c>, <c>W</c>, and <c>Y</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromWZWY(Vector128<float> value)
+    {
+        if (Avx.IsSupported)
+        {
+            return Avx.Permute(value, 0b01_11_10_11);
+        }
+        if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(value, value, 0b01_11_10_11);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var indices = Vector128.Create(
+                0xC, 0xD, 0xE, 0xF, // W
+                0x8, 0x9, 0xA, 0xB, // Z
+                0xC, 0xD, 0xE, 0xF, // W
+                0x4, 0x5, 0x6, 0x7  // Y
+            );
+            return AdvSimd.Arm64.VectorTableLookup(value.AsSByte(), indices).AsSingle();
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(3),
+                value.GetElement(2),
+                value.GetElement(3),
+                value.GetElement(1)
+            );
+        }
+    }
+
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>W</c>, <c>W</c>, <c>W</c>, and <c>Z</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromWWWZ(Vector128<float> value)
+    {
+        if (Avx.IsSupported)
+        {
+            return Avx.Permute(value, 0b10_11_11_11);
+        }
+        else if (Sse.IsSupported)
+        {
+            return Sse.Shuffle(value, value, 0b10_11_11_11);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var result = AdvSimd.DuplicateSelectedScalarToVector128(value, 3);
+            return AdvSimd.Arm64.InsertSelectedScalar(result, 3, value, 2);
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(3),
+                value.GetElement(3),
+                value.GetElement(3),
+                value.GetElement(2)
+            );
+        }
+    }
+
+    /// <summary>Computes the cross product of two vectors.</summary>
+    /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
+    /// <param name="right">The vector which is used to multiply <paramref name="left" />.</param>
+    /// <returns>The cross product of <paramref name="left" /> and <paramref name="right" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CrossProduct(Vector128<float> left, Vector128<float> right)
+    {
+        if (Sse.IsSupported || AdvSimd.IsSupported)
+        {
+            var result = Multiply(CreateFromYZXW(left), CreateFromZXYW(right));
+            result = MultiplySubtract(result, CreateFromZXYW(left), CreateFromYZXW(right));
+            return BitwiseAnd(result, Vector128.Create(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000).AsSingle());
+        }
+        else
+        {
+            return Vector128.Create(
+                (left.GetElement(1) * right.GetElement(2)) - (left.GetElement(2) * right.GetElement(1)),
+                (left.GetElement(2) * right.GetElement(0)) - (left.GetElement(0) * right.GetElement(2)),
+                (left.GetElement(0) * right.GetElement(1)) - (left.GetElement(1) * right.GetElement(0)),
+                0
             );
         }
     }
@@ -1188,7 +2359,7 @@ public static class VectorUtilities
 
     /// <summary>Computes the dot product of two vectors.</summary>
     /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
-    /// <param name="right">The quatnerion which is used to multiply <paramref name="left" />.</param>
+    /// <param name="right">The vector which is used to multiply <paramref name="left" />.</param>
     /// <returns>The dot product of <paramref name="left" /> and <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> DotProduct(Vector128<float> left, Vector128<float> right)
@@ -1345,7 +2516,7 @@ public static class VectorUtilities
         }
     }
 
-    /// <summary>Determines if any elements in a quaternion are <see cref="float.NaN" />.</summary>
+    /// <summary>Determines if any elements in a vector are <see cref="float.NaN" />.</summary>
     /// <param name="value">The vector to check.</param>
     /// <returns><c>true</c> if any elements in <paramref name="value" /> are <see cref="float.NaN" />; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1514,25 +2685,25 @@ public static class VectorUtilities
         if (Sse.IsSupported)
         {
             var result = Sse.Multiply(left, right);
-            return Sse.Add(result, addend);
+            return Sse.Add(addend, result);
         }
         else if (AdvSimd.IsSupported)
         {
             var result = AdvSimd.Multiply(left, right);
-            return AdvSimd.Add(result, addend);
+            return AdvSimd.Add(addend, result);
         }
         else
         {
-            return SoftwareFallback(left, right, addend);
+            return SoftwareFallback(addend, left, right);
         }
 
-        static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right, Vector128<float> addend)
+        static Vector128<float> SoftwareFallback(Vector128<float> addend, Vector128<float> left, Vector128<float> right)
         {
             return Vector128.Create(
-                (left.GetElement(0) * right.GetElement(0)) + addend.GetElement(0),
-                (left.GetElement(1) * right.GetElement(1)) + addend.GetElement(1),
-                (left.GetElement(2) * right.GetElement(2)) + addend.GetElement(2),
-                (left.GetElement(3) * right.GetElement(3)) + addend.GetElement(3)
+                addend.GetElement(0) + (left.GetElement(0) * right.GetElement(0)),
+                addend.GetElement(1) + (left.GetElement(1) * right.GetElement(1)),
+                addend.GetElement(2) + (left.GetElement(2) * right.GetElement(2)),
+                addend.GetElement(3) + (left.GetElement(3) * right.GetElement(3))
             );
         }
     }
@@ -1559,16 +2730,16 @@ public static class VectorUtilities
         else
         {
             var scalar = right.GetElement(0);
-            return SoftwareFallback(left, scalar, addend);
+            return SoftwareFallback(addend, left, scalar);
         }
 
-        static Vector128<float> SoftwareFallback(Vector128<float> left, float right, Vector128<float> addend)
+        static Vector128<float> SoftwareFallback(Vector128<float> addend, Vector128<float> left, float right)
         {
             return Vector128.Create(
-                (left.GetElement(0) * right) + addend.GetElement(0),
-                (left.GetElement(1) * right) + addend.GetElement(1),
-                (left.GetElement(2) * right) + addend.GetElement(2),
-                (left.GetElement(3) * right) + addend.GetElement(3)
+                addend.GetElement(0) + (left.GetElement(0) * right),
+                addend.GetElement(1) + (left.GetElement(1) * right),
+                addend.GetElement(2) + (left.GetElement(2) * right),
+                addend.GetElement(3) + (left.GetElement(3) * right)
             );
         }
     }
@@ -1585,26 +2756,26 @@ public static class VectorUtilities
         {
             var scalar = CreateFromY(right);
             var result = Sse.Multiply(left, scalar);
-            return Sse.Add(result, addend);
+            return Sse.Add(addend, result);
         }
         else if (AdvSimd.IsSupported)
         {
             var result = AdvSimd.MultiplyBySelectedScalar(left, right, 1);
-            return AdvSimd.Add(result, addend);
+            return AdvSimd.Add(addend, result);
         }
         else
         {
             var scalar = right.GetElement(1);
-            return SoftwareFallback(left, scalar, addend);
+            return SoftwareFallback(addend, left, scalar);
         }
 
-        static Vector128<float> SoftwareFallback(Vector128<float> left, float right, Vector128<float> addend)
+        static Vector128<float> SoftwareFallback(Vector128<float> addend, Vector128<float> left, float right)
         {
             return Vector128.Create(
-                (left.GetElement(0) * right) + addend.GetElement(0),
-                (left.GetElement(1) * right) + addend.GetElement(1),
-                (left.GetElement(2) * right) + addend.GetElement(2),
-                (left.GetElement(3) * right) + addend.GetElement(3)
+                addend.GetElement(0) + (left.GetElement(0) * right),
+                addend.GetElement(1) + (left.GetElement(1) * right),
+                addend.GetElement(2) + (left.GetElement(2) * right),
+                addend.GetElement(3) + (left.GetElement(3) * right)
             );
         }
     }
@@ -1631,16 +2802,16 @@ public static class VectorUtilities
         else
         {
             var scalar = right.GetElement(2);
-            return SoftwareFallback(left, scalar, addend);
+            return SoftwareFallback(addend, left, scalar);
         }
 
-        static Vector128<float> SoftwareFallback(Vector128<float> left, float right, Vector128<float> addend)
+        static Vector128<float> SoftwareFallback(Vector128<float> addend, Vector128<float> left, float right)
         {
             return Vector128.Create(
-                (left.GetElement(0) * right) + addend.GetElement(0),
-                (left.GetElement(1) * right) + addend.GetElement(1),
-                (left.GetElement(2) * right) + addend.GetElement(2),
-                (left.GetElement(3) * right) + addend.GetElement(3)
+                addend.GetElement(0) + (left.GetElement(0) * right),
+                addend.GetElement(1) + (left.GetElement(1) * right),
+                addend.GetElement(2) + (left.GetElement(2) * right),
+                addend.GetElement(3) + (left.GetElement(3) * right)
             );
         }
     }
@@ -1657,26 +2828,26 @@ public static class VectorUtilities
         {
             var scalar = CreateFromW(right);
             var result = Sse.Multiply(left, scalar);
-            return Sse.Add(result, addend);
+            return Sse.Add(addend, result);
         }
         else if (AdvSimd.IsSupported)
         {
             var result = AdvSimd.MultiplyBySelectedScalar(left, right, 3);
-            return AdvSimd.Add(result, addend);
+            return AdvSimd.Add(addend, result);
         }
         else
         {
             var scalar = right.GetElement(3);
-            return SoftwareFallback(left, scalar, addend);
+            return SoftwareFallback(addend, left, scalar);
         }
 
-        static Vector128<float> SoftwareFallback(Vector128<float> left, float right, Vector128<float> addend)
+        static Vector128<float> SoftwareFallback(Vector128<float> addend, Vector128< float> left, float right)
         {
             return Vector128.Create(
-                (left.GetElement(0) * right) + addend.GetElement(0),
-                (left.GetElement(1) * right) + addend.GetElement(1),
-                (left.GetElement(2) * right) + addend.GetElement(2),
-                (left.GetElement(3) * right) + addend.GetElement(3)
+                addend.GetElement(0) + (left.GetElement(0) * right),
+                addend.GetElement(1) + (left.GetElement(1) * right),
+                addend.GetElement(2) + (left.GetElement(2) * right),
+                addend.GetElement(3) + (left.GetElement(3) * right)
             );
         }
     }
@@ -1809,6 +2980,40 @@ public static class VectorUtilities
                 left.GetElement(1) * right,
                 left.GetElement(2) * right,
                 left.GetElement(3) * right
+            );
+        }
+    }
+
+    /// <summary>Computes the product of two vectors and then subtracts it from a third.</summary>
+    /// <param name="minuend">The vector from which the product of <paramref name="left" /> and <paramref name="right" /> is subtracted.</param>
+    /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
+    /// <param name="right">The vector which is used to multiply <paramref name="left" />.</param>
+    /// <returns>The difference of <paramref name="minuend" /> and the product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> MultiplySubtract(Vector128<float> minuend, Vector128<float> left, Vector128<float> right)
+    {
+        if (Sse.IsSupported)
+        {
+            var result = Sse.Multiply(left, right);
+            return Sse.Subtract(minuend, result);
+        }
+        else if (AdvSimd.IsSupported)
+        {
+            var result = AdvSimd.Multiply(left, right);
+            return AdvSimd.Subtract(minuend, result);
+        }
+        else
+        {
+            return SoftwareFallback(minuend, left, right);
+        }
+
+        static Vector128<float> SoftwareFallback(Vector128<float> minuend, Vector128<float> left, Vector128<float> right)
+        {
+            return Vector128.Create(
+                minuend.GetElement(0) - (left.GetElement(0) * right.GetElement(0)),
+                minuend.GetElement(1) - (left.GetElement(1) * right.GetElement(1)),
+                minuend.GetElement(2) - (left.GetElement(2) * right.GetElement(2)),
+                minuend.GetElement(3) - (left.GetElement(3) * right.GetElement(3))
             );
         }
     }
