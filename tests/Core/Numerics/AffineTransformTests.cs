@@ -21,10 +21,9 @@ public class AffineTransformTests
     [Test, TestCaseSource(nameof(TransformConstructorData))]
     public static void ComponentsReturnCorrectValues(Quaternion rotation, Vector3 rotationOrigin, Vector3 scale, Vector3 translation)
     {
-        var transform = new AffineTransform(rotation, rotationOrigin, scale, translation);
+        var transform = new AffineTransform(rotation, scale, translation);
 
         Assert.That(transform.Rotation, Is.EqualTo(rotation));
-        Assert.That(transform.RotationOrigin, Is.EqualTo(rotationOrigin));
         Assert.That(transform.Scale, Is.EqualTo(scale));
         Assert.That(transform.Translation, Is.EqualTo(translation));
     }
@@ -33,9 +32,9 @@ public class AffineTransformTests
     [Test, TestCaseSource(nameof(TransformConstructorData))]
     public static void TransformsCompareEqual(Quaternion rotation, Vector3 rotationOrigin, Vector3 scale, Vector3 translation)
     {
-        var a = new AffineTransform(rotation, rotationOrigin, scale, translation);
-        var b = new AffineTransform(rotation, rotationOrigin, scale, translation);
-        var c = new AffineTransform(rotation.WithY(1), rotationOrigin, scale, translation);
+        var a = new AffineTransform(rotation, scale, translation);
+        var b = new AffineTransform(rotation, scale, translation);
+        var c = new AffineTransform(rotation.WithY(1), scale, translation);
 
         Assert.That(a, Is.EqualTo(b));
         Assert.That(a, Is.Not.EqualTo(c));
@@ -45,9 +44,9 @@ public class AffineTransformTests
     [Test, TestCaseSource(nameof(TransformConstructorData))]
     public static void TransformsCompareNotEqual(Quaternion rotation, Vector3 rotationOrigin, Vector3 scale, Vector3 translation)
     {
-        var a = new AffineTransform(rotation, rotationOrigin, scale, translation);
-        var b = new AffineTransform(rotation, rotationOrigin, scale, translation);
-        var c = new AffineTransform(rotation.WithY(1), rotationOrigin, scale, translation);
+        var a = new AffineTransform(rotation, scale, translation);
+        var b = new AffineTransform(rotation, scale, translation);
+        var c = new AffineTransform(rotation.WithY(1), scale, translation);
 
         Assert.That(a, Is.Not.EqualTo(c));
         Assert.That(a, Is.EqualTo(b));

@@ -2279,7 +2279,7 @@ public static class VectorUtilities
         if (Sse.IsSupported || AdvSimd.IsSupported)
         {
             var result = Multiply(CreateFromYZXW(left), CreateFromZXYW(right));
-            result = MultiplySubtract(result, CreateFromZXYW(left), CreateFromYZXW(right));
+            result = MultiplyAddNegated(result, CreateFromZXYW(left), CreateFromYZXW(right));
             return BitwiseAnd(result, Vector128.Create(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000).AsSingle());
         }
         else
@@ -2547,11 +2547,9 @@ public static class VectorUtilities
     {
         if (Sse41.IsSupported)
         {
+            // TODO: This isn't correctly taking +0.0 vs -0.0 into account
             var tmp = Sse.Max(left, right);
-            var msk = Sse.Or(
-                Sse.CompareUnordered(left, right),
-                Sse2.CompareEqual(left.AsInt32(), Vector128<int>.Zero).AsSingle()
-            );
+            var msk = Sse.CompareUnordered(left, right);
             return Sse41.BlendVariable(tmp, left, msk);
         }
         else if (AdvSimd.IsSupported)
@@ -2583,11 +2581,9 @@ public static class VectorUtilities
     {
         if (Sse41.IsSupported)
         {
+            // TODO: This isn't correctly taking +0.0 vs -0.0 into account
             var tmp = Sse.Min(left, right);
-            var msk = Sse.Or(
-                Sse.CompareUnordered(left, left),
-                Sse2.CompareEqual(left.AsUInt32(), Vector128.Create(0x80000000)).AsSingle()
-            );
+            var msk = Sse.CompareUnordered(left, left);
             return Sse41.BlendVariable(tmp, left, msk);
         }
         else if (AdvSimd.IsSupported)
@@ -2852,6 +2848,40 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Computes the negated product of two vectors and then adds a third.</summary>
+    /// <param name="addend">The vector which is added to the negated product of <paramref name="left" /> and <paramref name="right" />.</param>
+    /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
+    /// <param name="right">The vector which is used to multiply <paramref name="left" />.</param>
+    /// <returns>The sum of <paramref name="addend" /> and the product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> MultiplyAddNegated(Vector128<float> addend, Vector128<float> left, Vector128<float> right)
+    {
+        if (Sse.IsSupported)
+        {
+            var result = Sse.Multiply(left, right);
+            return Sse.Subtract(addend, result);
+        }
+        else if (AdvSimd.IsSupported)
+        {
+            var result = AdvSimd.Multiply(left, right);
+            return AdvSimd.Subtract(addend, result);
+        }
+        else
+        {
+            return SoftwareFallback(addend, left, right);
+        }
+
+        static Vector128<float> SoftwareFallback(Vector128<float> minuend, Vector128<float> left, Vector128<float> right)
+        {
+            return Vector128.Create(
+                minuend.GetElement(0) - (left.GetElement(0) * right.GetElement(0)),
+                minuend.GetElement(1) - (left.GetElement(1) * right.GetElement(1)),
+                minuend.GetElement(2) - (left.GetElement(2) * right.GetElement(2)),
+                minuend.GetElement(3) - (left.GetElement(3) * right.GetElement(3))
+            );
+        }
+    }
+
     /// <summary>Computes the product of a vector and the x-component of another vector.</summary>
     /// <param name="left">The vector to multiply by the component of <paramref name="right" />.</param>
     /// <param name="right">The vector whose component is used to multiply <paramref name="left" />.</param>
@@ -2980,40 +3010,6 @@ public static class VectorUtilities
                 left.GetElement(1) * right,
                 left.GetElement(2) * right,
                 left.GetElement(3) * right
-            );
-        }
-    }
-
-    /// <summary>Computes the product of two vectors and then subtracts it from a third.</summary>
-    /// <param name="minuend">The vector from which the product of <paramref name="left" /> and <paramref name="right" /> is subtracted.</param>
-    /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
-    /// <param name="right">The vector which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The difference of <paramref name="minuend" /> and the product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> MultiplySubtract(Vector128<float> minuend, Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse.IsSupported)
-        {
-            var result = Sse.Multiply(left, right);
-            return Sse.Subtract(minuend, result);
-        }
-        else if (AdvSimd.IsSupported)
-        {
-            var result = AdvSimd.Multiply(left, right);
-            return AdvSimd.Subtract(minuend, result);
-        }
-        else
-        {
-            return SoftwareFallback(minuend, left, right);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> minuend, Vector128<float> left, Vector128<float> right)
-        {
-            return Vector128.Create(
-                minuend.GetElement(0) - (left.GetElement(0) * right.GetElement(0)),
-                minuend.GetElement(1) - (left.GetElement(1) * right.GetElement(1)),
-                minuend.GetElement(2) - (left.GetElement(2) * right.GetElement(2)),
-                minuend.GetElement(3) - (left.GetElement(3) * right.GetElement(3))
             );
         }
     }

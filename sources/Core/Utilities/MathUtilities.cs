@@ -538,15 +538,13 @@ public static class MathUtilities
     {
         if (Sse41.IsSupported)
         {
+            // TODO: This isn't correctly taking +0.0 vs -0.0 into account
+
             var vLeft = Vector128.CreateScalarUnsafe(left);
             var vRight = Vector128.CreateScalarUnsafe(right);
 
             var tmp = Sse2.Max(vLeft, vRight);
-
-            var msk = Sse2.Or(
-                Sse2.CompareUnordered(vLeft, vLeft),
-                Sse41.CompareEqual(vLeft.AsInt64(), Vector128<long>.Zero).AsDouble()
-            );
+            var msk = Sse2.CompareUnordered(vLeft, vLeft);
 
             return Sse41.BlendVariable(tmp, vLeft, msk).ToScalar();
         }
@@ -607,15 +605,13 @@ public static class MathUtilities
     {
         if (Sse41.IsSupported)
         {
+            // TODO: This isn't correctly taking +0.0 vs -0.0 into account
+
             var vLeft = Vector128.CreateScalarUnsafe(left);
             var vRight = Vector128.CreateScalarUnsafe(right);
 
             var tmp = Sse.Max(vLeft, vRight);
-
-            var msk = Sse.Or(
-                Sse.CompareUnordered(vLeft, vLeft),
-                Sse2.CompareEqual(vLeft.AsInt32(), Vector128<int>.Zero).AsSingle()
-            );
+            var msk = Sse.CompareUnordered(vLeft, vLeft);
 
             return Sse41.BlendVariable(tmp, vLeft, msk).ToScalar();
         }
@@ -677,15 +673,13 @@ public static class MathUtilities
     {
         if (Sse41.IsSupported)
         {
+            // TODO: This isn't correctly taking +0.0 vs -0.0 into account
+
             var vLeft = Vector128.CreateScalarUnsafe(left);
             var vRight = Vector128.CreateScalarUnsafe(right);
 
             var tmp = Sse2.Min(vLeft, vRight);
-
-            var msk = Sse2.Or(
-                Sse2.CompareUnordered(vLeft, vLeft),
-                Sse41.CompareEqual(vLeft.AsUInt64(), Vector128.Create(0x80000000_00000000)).AsDouble()
-            );
+            var msk = Sse2.CompareUnordered(vLeft, vLeft);
 
             return Sse41.BlendVariable(tmp, vLeft, msk).ToScalar();
         }
@@ -747,15 +741,13 @@ public static class MathUtilities
     {
         if (Sse41.IsSupported)
         {
+            // TODO: This isn't correctly taking +0.0 vs -0.0 into account
+
             var vLeft = Vector128.CreateScalarUnsafe(left);
             var vRight = Vector128.CreateScalarUnsafe(right);
 
             var tmp = Sse.Min(vLeft, vRight);
-
-            var msk = Sse.Or(
-                Sse.CompareUnordered(vLeft, vLeft),
-                Sse2.CompareEqual(vLeft.AsUInt32(), Vector128.Create(0x80000000)).AsSingle()
-            );
+            var msk = Sse.CompareUnordered(vLeft, vLeft);
 
             return Sse41.BlendVariable(tmp, vLeft, msk).ToScalar();
         }

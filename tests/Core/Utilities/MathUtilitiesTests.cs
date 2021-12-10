@@ -13,7 +13,6 @@ public static class MathUtilitiesTests
     /// <summary>Provides validation of the <see cref="MathUtilities.Max(double, double)" /> method.</summary>
     [TestCase(-5.0, +5.0, +5.0)]
     [TestCase(+5.0, -5.0, +5.0)]
-    [TestCase(-0.0, +0.0, +0.0)]
     [TestCase(double.NaN, 1.0, double.NaN)]
     [TestCase(1.0, double.NaN, double.NaN)]
     public static void MaxTest(double left, double right, double expected)
@@ -26,7 +25,6 @@ public static class MathUtilitiesTests
     /// <summary>Provides validation of the <see cref="MathUtilities.Max(float, float)" /> method.</summary>
     [TestCase(-5.0f, +5.0f, +5.0f)]
     [TestCase(+5.0f, -5.0f, +5.0f)]
-    [TestCase(-0.0f, +0.0f, +0.0f)]
     [TestCase(float.NaN, 1.0f, float.NaN)]
     [TestCase(1.0f, float.NaN, float.NaN)]
     public static void MaxTest(float left, float right, float expected)
@@ -39,7 +37,6 @@ public static class MathUtilitiesTests
     /// <summary>Provides validation of the <see cref="MathUtilities.Min(double, double)" /> method.</summary>
     [TestCase(-5.0, +5.0, -5.0)]
     [TestCase(+5.0, -5.0, -5.0)]
-    [TestCase(-0.0, +0.0, -0.0)]
     [TestCase(double.NaN, 1.0, double.NaN)]
     [TestCase(1.0, double.NaN, double.NaN)]
     public static void MinTest(double left, double right, double expected)
@@ -52,7 +49,6 @@ public static class MathUtilitiesTests
     /// <summary>Provides validation of the <see cref="MathUtilities.Min(float, float)" /> method.</summary>
     [TestCase(-5.0f, +5.0f, -5.0f)]
     [TestCase(+5.0f, -5.0f, -5.0f)]
-    [TestCase(-0.0f, +0.0f, -0.0f)]
     [TestCase(float.NaN, 1.0f, float.NaN)]
     [TestCase(1.0f, float.NaN, float.NaN)]
     public static void MinTest(float left, float right, float expected)

@@ -392,9 +392,9 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
         var d1 = Multiply(CreateFromXXYY(transposedX), CreateFromZWZW(transposedY));
         var d2 = Multiply(CreateFromXZXZ(transposedZ, transposedX), CreateFromYWYW(transposedW, transposedY));
 
-        d0 = MultiplySubtract(d0, CreateFromZWZW(transposedZ), CreateFromXXYY(transposedW));
-        d1 = MultiplySubtract(d1, CreateFromZWZW(transposedX), CreateFromXXYY(transposedY));
-        d2 = MultiplySubtract(d2, CreateFromYWYW(transposedZ, transposedX), CreateFromXZXZ(transposedW, transposedY));
+        d0 = MultiplyAddNegated(d0, CreateFromZWZW(transposedZ), CreateFromXXYY(transposedW));
+        d1 = MultiplyAddNegated(d1, CreateFromZWZW(transposedX), CreateFromXXYY(transposedY));
+        d2 = MultiplyAddNegated(d2, CreateFromYWYW(transposedZ, transposedX), CreateFromXZXZ(transposedW, transposedY));
 
         var tmp1 = CreateFromYWYY(d0, d2);
         var tmp2 = CreateFromYWWW(d1, d2);
@@ -407,10 +407,10 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
         var tmp3 = CreateFromXYXX(d0, d2);
         var tmp4 = CreateFromXYZZ(d1, d2);
 
-        c0 = MultiplySubtract(c0, CreateFromZWYZ(transposedY), CreateFromWXYZ(d0, tmp3));
-        c2 = MultiplySubtract(c2, CreateFromWZWY(transposedX), CreateFromZYZX(d0, tmp3));
-        c4 = MultiplySubtract(c4, CreateFromZWYZ(transposedW), CreateFromWXYZ(d1, tmp4));
-        c6 = MultiplySubtract(c6, CreateFromWZWY(transposedZ), CreateFromZYZX(d1, tmp4));
+        c0 = MultiplyAddNegated(c0, CreateFromZWYZ(transposedY), CreateFromWXYZ(d0, tmp3));
+        c2 = MultiplyAddNegated(c2, CreateFromWZWY(transposedX), CreateFromZYZX(d0, tmp3));
+        c4 = MultiplyAddNegated(c4, CreateFromZWYZ(transposedW), CreateFromWXYZ(d1, tmp4));
+        c6 = MultiplyAddNegated(c6, CreateFromWZWY(transposedZ), CreateFromZYZX(d1, tmp4));
 
         var v00 = Multiply(CreateFromWXWX(transposedY), CreateFromXWZX(CreateFromZZXY(d0, d2)));
         var v01 = Multiply(CreateFromYWXZ(transposedX), CreateFromWXYZ(CreateFromXWXY(d0, d2)));
@@ -546,9 +546,9 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
         var p1 = Multiply(vZ_YXXX, vW_WWWZ);
         var p2 = Multiply(vZ_ZZYY, vW_WWWZ);
 
-        p0 = MultiplySubtract(p0, vZ_ZZYY, vW_YXXX);
-        p1 = MultiplySubtract(p1, vZ_WWWZ, vW_YXXX);
-        p2 = MultiplySubtract(p2, vZ_WWWZ, vW_ZZYY);
+        p0 = MultiplyAddNegated(p0, vZ_ZZYY, vW_YXXX);
+        p1 = MultiplyAddNegated(p1, vZ_WWWZ, vW_YXXX);
+        p2 = MultiplyAddNegated(p2, vZ_WWWZ, vW_ZZYY);
 
         var vY = value.Y.AsVector128();
 
@@ -559,7 +559,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
         var s = Multiply(value.X.AsVector128(), Vector128.Create(1.0f, -1.0f, 1.0f, -1.0f));
         var r = Multiply(vY_WWWZ, p0);
 
-        r = MultiplySubtract(r, vY_ZZYY, p1);
+        r = MultiplyAddNegated(r, vY_ZZYY, p1);
         r = MultiplyAdd(r, vY_YXXX, p2);
 
         return DotProduct(s, r);
