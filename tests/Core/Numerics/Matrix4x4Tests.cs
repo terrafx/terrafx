@@ -250,6 +250,62 @@ public class Matrix4x4Tests
         );
     }
 
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreateLookAtLH" /> method.</summary>
+    [Test]
+    public static void CreateLookAtLHTest()
+    {
+        Assert.That(() => Matrix4x4.CreateLookAtLH(+Vector3.UnitZ, Vector3.Zero, Vector3.UnitY),
+            Is.EqualTo(new Matrix4x4(
+                -Vector4.UnitX,
+                +Vector4.UnitY,
+                -Vector4.UnitZ,
+                +Vector4.UnitW.WithZ(+1.0f)
+            ))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreateLookAtRH" /> method.</summary>
+    [Test]
+    public static void CreateLookAtRHTest()
+    {
+        Assert.That(() => Matrix4x4.CreateLookAtRH(Vector3.UnitZ, Vector3.Zero, Vector3.UnitY),
+            Is.EqualTo(new Matrix4x4(
+                +Vector4.UnitX,
+                +Vector4.UnitY,
+                +Vector4.UnitZ,
+                +Vector4.UnitW.WithZ(-1.0f)
+            ))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreateLookToLH" /> method.</summary>
+    [Test]
+    public static void CreateLookToLHTest()
+    {
+        Assert.That(() => Matrix4x4.CreateLookToLH(Vector3.UnitZ, -Vector3.UnitZ, Vector3.UnitY),
+            Is.EqualTo(new Matrix4x4(
+                -Vector4.UnitX,
+                +Vector4.UnitY,
+                -Vector4.UnitZ,
+                +Vector4.UnitW.WithZ(+1.0f)
+            ))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreateLookToRH" /> method.</summary>
+    [Test]
+    public static void CreateLookToRHTest()
+    {
+        Assert.That(() => Matrix4x4.CreateLookToRH(Vector3.UnitZ, -Vector3.UnitZ, Vector3.UnitY),
+            Is.EqualTo(new Matrix4x4(
+                +Vector4.UnitX,
+                +Vector4.UnitY,
+                +Vector4.UnitZ,
+                +Vector4.UnitW.WithZ(-1.0f)
+            ))
+        );
+    }
+
     /// <summary>Provides validation of the <see cref="Matrix4x4.Inverse(Matrix4x4, out float)" /> method.</summary>
     [Test]
     public static void InverseTest()

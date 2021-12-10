@@ -10,6 +10,8 @@ using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.Arm;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
+using static TerraFX.Runtime.Configuration;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VectorUtilities;
@@ -460,6 +462,69 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
             Vector4.UnitZ,
             new Vector4(translation, 1.0f)
         );
+    }
+
+    /// <summary>Creates a matrix that represents a camera looking at a focus in a left-handed coordinate system.</summary>
+    /// <param name="position">The location of the camera.</param>
+    /// <param name="focus">The focus of the camera.</param>
+    /// <param name="up">The direction of up.</param>
+    /// <returns>A matrix that represents a camera at <paramref name="position" /> looking at <paramref name="focus" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Matrix4x4 CreateLookAtLH(Vector3 position, Vector3 focus, Vector3 up)
+    {
+        var direction = focus - position;
+        return CreateLookToLH(position, direction, up);
+    }
+
+    /// <summary>Creates a matrix that represents a camera looking at a focus in a right-handed coordinate system.</summary>
+    /// <param name="position">The location of the camera.</param>
+    /// <param name="focus">The focus of the camera.</param>
+    /// <param name="up">The direction of up.</param>
+    /// <returns>A matrix that represents a camera at <paramref name="position" /> looking at <paramref name="focus" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Matrix4x4 CreateLookAtRH(Vector3 position, Vector3 focus, Vector3 up)
+    {
+        var negativeDirection = position - focus;
+        return CreateLookToLH(position, negativeDirection, up);
+    }
+
+    /// <summary>Creates a matrix that represents a camera looking to a direction in a left-handed coordinate system.</summary>
+    /// <param name="position">The location of the camera.</param>
+    /// <param name="direction">The direction of the camera.</param>
+    /// <param name="up">The direction of up.</param>
+    /// <returns>A matrix that represents a camera at <paramref name="position" /> looking to <paramref name="direction" />.</returns>
+    public static Matrix4x4 CreateLookToLH(Vector3 position, Vector3 direction, Vector3 up)
+    {
+        Assert(AssertionsEnabled && (direction != Vector3.Zero));
+        Assert(AssertionsEnabled && !Vector3.IsAnyInfinity(direction));
+        Assert(AssertionsEnabled && (up != Vector3.Zero));
+        Assert(AssertionsEnabled && !Vector3.IsAnyInfinity(up));
+
+        var r2 = Vector3.Normalize(direction);
+        var r0 = Vector3.Normalize(Vector3.CrossProduct(up, r2));
+        var r1 = Vector3.CrossProduct(r2, r0);
+
+        var negativePosition = -position;
+
+        var result = new Matrix4x4(
+            new Vector4(r0, Vector3.DotProduct(r0, negativePosition)),
+            new Vector4(r1, Vector3.DotProduct(r1, negativePosition)),
+            new Vector4(r2, Vector3.DotProduct(r2, negativePosition)),
+            Vector4.UnitW
+        );
+        return Transpose(result);
+    }
+
+    /// <summary>Creates a matrix that represents a camera looking to a direction in a right-handed coordinate system.</summary>
+    /// <param name="position">The location of the camera.</param>
+    /// <param name="direction">The direction of the camera.</param>
+    /// <param name="up">The direction of up.</param>
+    /// <returns>A matrix that represents a camera at <paramref name="position" /> looking to <paramref name="direction" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Matrix4x4 CreateLookToRH(Vector3 position, Vector3 direction, Vector3 up)
+    {
+        var negativeDirection = -direction;
+        return CreateLookToLH(position, negativeDirection, up);
     }
 
     /// <summary>Computes the inverse of a matrix.</summary>
