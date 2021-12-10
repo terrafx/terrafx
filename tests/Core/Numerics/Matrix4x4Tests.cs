@@ -306,6 +306,146 @@ public class Matrix4x4Tests
         );
     }
 
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreateOrthographicLH" /> method.</summary>
+    [Test]
+    public static void CreateOrthographicLHTest()
+    {
+        Assert.That(() => Matrix4x4.CreateOrthographicLH(1920.0f, 1080.0f, 0.001f, 1000.0f),
+            Is.EqualTo(new Matrix4x4(
+                new Vector4(0.0010416667f, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0018518518f, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, 0.001000001f, 0.0f),
+                new Vector4(0.0f, 0.0f, -1.000001E-06f, 1.0f)
+            ))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreateOrthographicRH" /> method.</summary>
+    [Test]
+    public static void CreateOrthographicRHTest()
+    {
+        Assert.That(() => Matrix4x4.CreateOrthographicRH(1920.0f, 1080.0f, 0.001f, 1000.0f),
+            Is.EqualTo(new Matrix4x4(
+                new Vector4(0.0010416667f, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0018518518f, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, -0.001000001f, 0.0f),
+                new Vector4(0.0f, 0.0f, -1.000001E-06f, 1.0f)
+            ))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreateOrthographicOffCenterLH" /> method.</summary>
+    [Test]
+    public static void CreateOrthographicOffCenterLHTest()
+    {
+        Assert.That(() => Matrix4x4.CreateOrthographicOffCenterLH(-960.0f, +960.0f, +540.0f, -540.0f, 0.001f, 1000.0f),
+            Is.EqualTo(new Matrix4x4(
+                new Vector4(0.0010416667f, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, -0.0018518518f, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, 0.001000001f, 0.0f),
+                new Vector4(-0.0f, 0.0f, -1.000001E-06f, 1.0f)
+            ))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreateOrthographicOffCenterRH" /> method.</summary>
+    [Test]
+    public static void CreateOrthographicOffCenterRHTest()
+    {
+        Assert.That(() => Matrix4x4.CreateOrthographicOffCenterRH(-960.0f, +960.0f, +540.0f, -540.0f, 0.001f, 1000.0f),
+            Is.EqualTo(new Matrix4x4(
+                new Vector4(0.0010416667f, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, -0.0018518518f, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, -0.001000001f, 0.0f),
+                new Vector4(-0.0f, 0.0f, -1.000001E-06f, 1.0f)
+            ))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreatePerspectiveLH" /> method.</summary>
+    [Test]
+    public static void CreatePerspectiveLHTest()
+    {
+        Assert.That(() => Matrix4x4.CreatePerspectiveLH(1920.0f, 1080.0f, 0.001f, 1000.0f),
+            Is.EqualTo(new Matrix4x4(
+                new Vector4(1.0416667E-06f, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, 1.851852E-06f, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, 1.000001f, 1.0f),
+                new Vector4(0.0f, 0.0f, -0.001000001f, 0.0f)
+            ))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreatePerspectiveRH" /> method.</summary>
+    [Test]
+    public static void CreatePerspectiveRHTest()
+    {
+        Assert.That(() => Matrix4x4.CreatePerspectiveRH(1920.0f, 1080.0f, 0.001f, 1000.0f),
+            Is.EqualTo(new Matrix4x4(
+                new Vector4(1.0416667E-06f, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, 1.851852E-06f, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, -1.000001f, -1.0f),
+                new Vector4(0.0f, 0.0f, -0.001000001f, 0.0f)
+            ))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreatePerspectiveFieldOfViewLH" /> method.</summary>
+    [Test]
+    public static void CreatePerspectiveFieldOfViewLHTest()
+    {
+        Assert.That(() => Matrix4x4.CreatePerspectiveFieldOfViewLH(1.2217305f, 1.7777778f, 0.001f, 1000.0f),
+            Is.EqualTo(new Matrix4x4(
+                new Vector4(0.8033333f, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, 1.428148f, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, 1.000001f, 1.0f),
+                new Vector4(0.0f, 0.0f, -0.001000001f, 0.0f)
+            ))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreatePerspectiveFieldOfViewRH" /> method.</summary>
+    [Test]
+    public static void CreatePerspectiveFieldOfViewRHTest()
+    {
+        Assert.That(() => Matrix4x4.CreatePerspectiveFieldOfViewRH(1.2217305f, 1.7777778f, 0.001f, 1000.0f),
+            Is.EqualTo(new Matrix4x4(
+                new Vector4(0.8033333f, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, 1.428148f, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, -1.000001f, -1.0f),
+                new Vector4(0.0f, 0.0f, -0.001000001f, 0.0f)
+            ))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreatePerspectiveOffCenterLH" /> method.</summary>
+    [Test]
+    public static void CreatePerspectiveOffCenterLHTest()
+    {
+        Assert.That(() => Matrix4x4.CreatePerspectiveOffCenterLH(-960.0f, +960.0f, +540.0f, -540.0f, 0.001f, 1000.0f),
+            Is.EqualTo(new Matrix4x4(
+                new Vector4(1.0416668E-06f, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, -1.851852E-06f, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, 1.000001f, 1.0f),
+                new Vector4(0.0f, 0.0f, -0.001000001f, 0.0f)
+            ))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreatePerspectiveOffCenterRH" /> method.</summary>
+    [Test]
+    public static void CreatePerspectiveOffCenterRHTest()
+    {
+        Assert.That(() => Matrix4x4.CreatePerspectiveOffCenterRH(-960.0f, +960.0f, +540.0f, -540.0f, 0.001f, 1000.0f),
+            Is.EqualTo(new Matrix4x4(
+                new Vector4(1.0416668E-06f, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, -1.851852E-06f, 0.0f, 0.0f),
+                new Vector4(0.0f, -0.0f, -1.000001f, -1.0f),
+                new Vector4(0.0f, 0.0f, -0.001000001f, 0.0f)
+            ))
+        );
+    }
+
     /// <summary>Provides validation of the <see cref="Matrix4x4.Inverse(Matrix4x4, out float)" /> method.</summary>
     [Test]
     public static void InverseTest()

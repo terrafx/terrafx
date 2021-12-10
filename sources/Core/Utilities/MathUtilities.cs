@@ -410,6 +410,22 @@ public static class MathUtilities
         return result;
     }
 
+    /// <summary>Compares two 64-bit floats to determine approximate equality.</summary>
+    /// <param name="left">The float to compare with <paramref name="right" />.</param>
+    /// <param name="right">The float to compare with <paramref name="left" />.</param>
+    /// <param name="epsilon">The maximum (inclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool CompareEqual(double left, double right, double epsilon) => Abs(left - right) <= epsilon;
+
+    /// <summary>Compares two 32-bit floats to determine approximate equality.</summary>
+    /// <param name="left">The float to compare with <paramref name="right" />.</param>
+    /// <param name="right">The float to compare with <paramref name="left" />.</param>
+    /// <param name="epsilon">The maximum (inclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool CompareEqual(float left, float right, float epsilon) => Abs(left - right) <= epsilon;
+
     /// <summary>Computes the cosine for a given 64-bit float.</summary>
     /// <param name="value">The float, in radians, for which to compute the cosine.</param>
     /// <returns>The cosine of <paramref name="value" />.</returns>
@@ -505,22 +521,6 @@ public static class MathUtilities
     /// <remarks>This method does not account for <paramref name="divisor" /> being <c>zero</c>.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static (nuint quotient, nuint remainder) DivRem(nuint dividend, nuint divisor) => Math.DivRem(dividend, divisor);
-
-    /// <summary>Compares two 64-bit floats to determine approximate equality.</summary>
-    /// <param name="left">The float to compare with <paramref name="right" />.</param>
-    /// <param name="right">The float to compare with <paramref name="left" />.</param>
-    /// <param name="epsilon">The maximum (inclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
-    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Equals(double left, double right, double epsilon) => Abs(left - right) <= epsilon;
-
-    /// <summary>Compares two 32-bit floats to determine approximate equality.</summary>
-    /// <param name="left">The float to compare with <paramref name="right" />.</param>
-    /// <param name="right">The float to compare with <paramref name="left" />.</param>
-    /// <param name="epsilon">The maximum (inclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
-    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Equals(float left, float right, float epsilon) => Abs(left - right) <= epsilon;
 
     /// <summary>Computes the maximum of two 32-bit signed integers.</summary>
     /// <param name="left">The integer to compare with <paramref name="right" />.</param>

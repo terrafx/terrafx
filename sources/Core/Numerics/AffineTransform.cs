@@ -110,8 +110,6 @@ public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
     /// <returns><c>true</c> if <paramref name="matrix" /> was succesfully decomposed; otherwise, <c>false</c>.</returns>
     public static unsafe bool TryCreateFromMatrix(Matrix4x4 matrix, out AffineTransform result)
     {
-        const float DecomposeEpsilon = 0.0001f;
-
         var translation = new Vector3(matrix.W.AsVector128());
 
         var pMatrix = (Vector128<float>*)&matrix;
@@ -136,13 +134,13 @@ public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
 
         var (a, b, c) = RankDecompose(scale[0], scale[1], scale[2]);
 
-        if (scale[a] < DecomposeEpsilon)
+        if (scale[a] < NearZeroEpsilon)
         {
             pMatrix[a] = canonicalBasis[a];
         }
         pMatrix[a] = Normalize(pMatrix[a]);
 
-        if (scale[b] < DecomposeEpsilon)
+        if (scale[b] < NearZeroEpsilon)
         {
             var abs = Abs(pMatrix[a]);
             var (aa, bb, cc) = RankDecompose(abs.GetElement(0), abs.GetElement(1), abs.GetElement(2));
@@ -150,7 +148,7 @@ public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
         }
         pMatrix[b] = Normalize(pMatrix[b]);
 
-        if (scale[c] < DecomposeEpsilon)
+        if (scale[c] < NearZeroEpsilon)
         {
             pMatrix[c] = CrossProduct(pMatrix[a], pMatrix[b]);
         }
@@ -171,7 +169,7 @@ public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
         determinant -= 1.0f;
         determinant *= determinant;
 
-        if (DecomposeEpsilon < determinant)
+        if (NearZeroEpsilon < determinant)
         {
             // Non-SRT matrix encountered
             result = Zero;

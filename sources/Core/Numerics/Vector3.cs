@@ -258,9 +258,9 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
         static Vector3 SoftwareFallback(Vector3 left, Vector3 right, Vector3 epsilon)
         {
             return new Vector3(
-                MathUtilities.Equals(left.X, right.X, epsilon.X) ? AllBitsSet : 0.0f,
-                MathUtilities.Equals(left.Y, right.Y, epsilon.Y) ? AllBitsSet : 0.0f,
-                MathUtilities.Equals(left.Z, right.Z, epsilon.Z) ? AllBitsSet : 0.0f
+                MathUtilities.CompareEqual(left.X, right.X, epsilon.X) ? AllBitsSet : 0.0f,
+                MathUtilities.CompareEqual(left.Y, right.Y, epsilon.Y) ? AllBitsSet : 0.0f,
+                MathUtilities.CompareEqual(left.Z, right.Z, epsilon.Z) ? AllBitsSet : 0.0f
             );
         }
     }
@@ -291,9 +291,9 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
 
         static bool SoftwareFallback(Vector3 left, Vector3 right, Vector3 epsilon)
         {
-            return MathUtilities.Equals(left.X, right.X, epsilon.X)
-                && MathUtilities.Equals(left.Y, right.Y, epsilon.Y)
-                && MathUtilities.Equals(left.Z, right.Z, epsilon.Z);
+            return MathUtilities.CompareEqual(left.X, right.X, epsilon.X)
+                && MathUtilities.CompareEqual(left.Y, right.Y, epsilon.Y)
+                && MathUtilities.CompareEqual(left.Z, right.Z, epsilon.Z);
         }
     }
 

@@ -527,6 +527,380 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
         return CreateLookToLH(position, negativeDirection, up);
     }
 
+    /// <summary>Creates a matrix that represents an orthographic projection in a left-handed coordinate system.</summary>
+    /// <param name="frustumWidth">The width of the frustum.</param>
+    /// <param name="frustumHeight">The height of the frustum.</param>
+    /// <param name="nearClippingDistance">The distance to the near clipping plane.</param>
+    /// <param name="farClippingDistance">The distance to the far clipping plane.</param>
+    /// <returns>A matrix that represents a orthographic projection.</returns>
+    public static Matrix4x4 CreateOrthographicLH(float frustumWidth, float frustumHeight, float nearClippingDistance, float farClippingDistance)
+    {
+        Assert(AssertionsEnabled && !CompareEqual(frustumWidth, 0.0f, NearZeroEpsilon));
+        Assert(AssertionsEnabled && !CompareEqual(frustumHeight, 0.0f, NearZeroEpsilon));
+        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+
+        var range = 1.0f / (farClippingDistance - nearClippingDistance);
+
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
+        {
+            return new Matrix4x4(
+                Vector4.Zero.WithX(2.0f / frustumWidth),
+                Vector4.UnitY * (2.0f / frustumHeight),
+                Vector4.UnitZ * range,
+                Vector4.UnitW.WithZ(-range * nearClippingDistance)
+            );
+        }
+        else
+        {
+            return new Matrix4x4(
+                new Vector4(2.0f / frustumWidth, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, 2.0f / frustumHeight, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, range, 0.0f),
+                new Vector4(0.0f, 0.0f, -range * nearClippingDistance, 1.0f)
+            );
+        }
+    }
+
+    /// <summary>Creates a matrix that represents an orthographic projection in a right-handed coordinate system.</summary>
+    /// <param name="frustumWidth">The width of the frustum.</param>
+    /// <param name="frustumHeight">The height of the frustum.</param>
+    /// <param name="nearClippingDistance">The distance to the near clipping plane.</param>
+    /// <param name="farClippingDistance">The distance to the far clipping plane.</param>
+    /// <returns>A matrix that represents a orthographic projection.</returns>
+    public static Matrix4x4 CreateOrthographicRH(float frustumWidth, float frustumHeight, float nearClippingDistance, float farClippingDistance)
+    {
+        Assert(AssertionsEnabled && !CompareEqual(frustumWidth, 0.0f, NearZeroEpsilon));
+        Assert(AssertionsEnabled && !CompareEqual(frustumHeight, 0.0f, NearZeroEpsilon));
+        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+
+        var range = 1.0f / (nearClippingDistance - farClippingDistance);
+
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
+        {
+            return new Matrix4x4(
+                Vector4.Zero.WithX(2.0f / frustumWidth),
+                Vector4.UnitY * (2.0f / frustumHeight),
+                Vector4.UnitZ * range,
+                Vector4.UnitW.WithZ(range * nearClippingDistance)
+            );
+        }
+        else
+        {
+            return new Matrix4x4(
+                new Vector4(2.0f / frustumWidth, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, 2.0f / frustumHeight, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, range, 0.0f),
+                new Vector4(0.0f, 0.0f, range * nearClippingDistance, 1.0f)
+            );
+        }
+    }
+
+    /// <summary>Creates a matrix that represents an off-center orthographic projection in a left-handed coordinate system.</summary>
+    /// <param name="frustumLeft">The x-coordinate of the left side of the frustum.</param>
+    /// <param name="frustumRight">The x-coordinate of the right side of the frustum.</param>
+    /// <param name="frustumBottom">The y-coordinate of the bottom side of the frustum.</param>
+    /// <param name="frustumTop">The y-coordinate of the top side of the frustum.</param>
+    /// <param name="nearClippingDistance">The distance to the near clipping plane.</param>
+    /// <param name="farClippingDistance">The distance to the far clipping plane.</param>
+    /// <returns>A matrix that represents a orthographic projection.</returns>
+    public static Matrix4x4 CreateOrthographicOffCenterLH(float frustumLeft, float frustumRight, float frustumBottom, float frustumTop, float nearClippingDistance, float farClippingDistance)
+    {
+        Assert(AssertionsEnabled && !CompareEqual(frustumLeft, frustumRight, NearZeroEpsilon * 2));
+        Assert(AssertionsEnabled && !CompareEqual(frustumTop, frustumBottom, NearZeroEpsilon));
+        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+
+        var reciprocalWidth = 1.0f / (frustumRight - frustumLeft);
+        var reciprocalHeight = 1.0f / (frustumTop - frustumBottom);
+        var range = 1.0f / (farClippingDistance - nearClippingDistance);
+
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
+        {
+            return new Matrix4x4(
+                Vector4.Zero.WithX(reciprocalWidth + reciprocalWidth),
+                Vector4.UnitY * (reciprocalHeight + reciprocalHeight),
+                Vector4.UnitZ * range,
+                new Vector4(-(frustumLeft + frustumRight) * reciprocalWidth, -(frustumTop + frustumBottom) * reciprocalHeight, -range * nearClippingDistance, 1.0f)
+            );
+        }
+        else
+        {
+            return new Matrix4x4(
+                new Vector4(reciprocalWidth + reciprocalWidth, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, reciprocalHeight + reciprocalHeight, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, range, 0.0f),
+                new Vector4(-(frustumLeft + frustumRight) * reciprocalWidth, -(frustumTop + frustumBottom) * reciprocalHeight, -range * nearClippingDistance, 1.0f)
+            );
+        }
+    }
+
+    /// <summary>Creates a matrix that represents an off-center orthographic projection in a right-handed coordinate system.</summary>
+    /// <param name="frustumLeft">The x-coordinate of the left side of the frustum.</param>
+    /// <param name="frustumRight">The x-coordinate of the right side of the frustum.</param>
+    /// <param name="frustumBottom">The y-coordinate of the bottom side of the frustum.</param>
+    /// <param name="frustumTop">The y-coordinate of the top side of the frustum.</param>
+    /// <param name="nearClippingDistance">The distance to the near clipping plane.</param>
+    /// <param name="farClippingDistance">The distance to the far clipping plane.</param>
+    /// <returns>A matrix that represents a orthographic projection.</returns>
+    public static Matrix4x4 CreateOrthographicOffCenterRH(float frustumLeft, float frustumRight, float frustumBottom, float frustumTop, float nearClippingDistance, float farClippingDistance)
+    {
+        Assert(AssertionsEnabled && !CompareEqual(frustumLeft, frustumRight, NearZeroEpsilon * 2));
+        Assert(AssertionsEnabled && !CompareEqual(frustumTop, frustumBottom, NearZeroEpsilon));
+        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+
+        var reciprocalWidth = 1.0f / (frustumRight - frustumLeft);
+        var reciprocalHeight = 1.0f / (frustumTop - frustumBottom);
+        var range = 1.0f / (nearClippingDistance - farClippingDistance);
+
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
+        {
+            return new Matrix4x4(
+                Vector4.Zero.WithX(reciprocalWidth + reciprocalWidth),
+                Vector4.UnitY * (reciprocalHeight + reciprocalHeight),
+                Vector4.UnitZ * range,
+                new Vector4(-(frustumLeft + frustumRight) * reciprocalWidth, -(frustumTop + frustumBottom) * reciprocalHeight, range * nearClippingDistance, 1.0f)
+            );
+        }
+        else
+        {
+            return new Matrix4x4(
+                new Vector4(reciprocalWidth + reciprocalWidth, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, reciprocalHeight + reciprocalHeight, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, range, 0.0f),
+                new Vector4(-(frustumLeft + frustumRight) * reciprocalWidth, -(frustumTop + frustumBottom) * reciprocalHeight, range * nearClippingDistance, 1.0f)
+            );
+        }
+    }
+
+    /// <summary>Creates a matrix that represents a perspective projection in a left-handed coordinate system.</summary>
+    /// <param name="frustumWidth">The width of the frustum.</param>
+    /// <param name="frustumHeight">The height of the frustum.</param>
+    /// <param name="nearClippingDistance">The distance to the near clipping plane.</param>
+    /// <param name="farClippingDistance">The distance to the far clipping plane.</param>
+    /// <returns>A matrix that represents a perspective projection.</returns>
+    public static Matrix4x4 CreatePerspectiveLH(float frustumWidth, float frustumHeight, float nearClippingDistance, float farClippingDistance)
+    {
+        Assert(AssertionsEnabled && (nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
+        Assert(AssertionsEnabled && !CompareEqual(frustumWidth, 0.0f, NearZeroEpsilon));
+        Assert(AssertionsEnabled && !CompareEqual(frustumHeight, 0.0f, NearZeroEpsilon));
+        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+
+        var doubleNearClippingDistance = nearClippingDistance + nearClippingDistance;
+        var range = farClippingDistance / (farClippingDistance - nearClippingDistance);
+
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
+        {
+            return new Matrix4x4(
+                Vector4.Zero.WithX(doubleNearClippingDistance / frustumWidth),
+                Vector4.UnitY * (doubleNearClippingDistance / frustumHeight),
+                Vector4.UnitW.WithZ(range),
+                Vector4.UnitZ * (-range * nearClippingDistance)
+            );
+        }
+        else
+        {
+            return new Matrix4x4(
+                new Vector4(doubleNearClippingDistance / frustumWidth, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, doubleNearClippingDistance / frustumHeight, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, range, 1.0f),
+                new Vector4(0.0f, 0.0f, -range * nearClippingDistance, 0.0f)
+            );
+        }
+    }
+
+    /// <summary>Creates a matrix that represents a perspective projection in a right-handed coordinate system.</summary>
+    /// <param name="frustumWidth">The width of the frustum.</param>
+    /// <param name="frustumHeight">The height of the frustum.</param>
+    /// <param name="nearClippingDistance">The distance to the near clipping plane.</param>
+    /// <param name="farClippingDistance">The distance to the far clipping plane.</param>
+    /// <returns>A matrix that represents a perspective projection.</returns>
+    public static Matrix4x4 CreatePerspectiveRH(float frustumWidth, float frustumHeight, float nearClippingDistance, float farClippingDistance)
+    {
+        Assert(AssertionsEnabled && (nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
+        Assert(AssertionsEnabled && !CompareEqual(frustumWidth, 0.0f, NearZeroEpsilon));
+        Assert(AssertionsEnabled && !CompareEqual(frustumHeight, 0.0f, NearZeroEpsilon));
+        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+
+        var doubleNearClippingDistance = nearClippingDistance + nearClippingDistance;
+        var range = farClippingDistance / (nearClippingDistance - farClippingDistance);
+
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
+        {
+            return new Matrix4x4(
+                Vector4.Zero.WithX(doubleNearClippingDistance / frustumWidth),
+                Vector4.UnitY * (doubleNearClippingDistance / frustumHeight),
+                (-Vector4.UnitW).WithZ(range),
+                Vector4.UnitZ * (range * nearClippingDistance)
+            );
+        }
+        else
+        {
+            return new Matrix4x4(
+                new Vector4(doubleNearClippingDistance / frustumWidth, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, doubleNearClippingDistance / frustumHeight, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, range, -1.0f),
+                new Vector4(0.0f, 0.0f, range * nearClippingDistance, 0.0f)
+            );
+        }
+    }
+
+    /// <summary>Creates a matrix that represents a perspective projection based on a field-of-view in a left-handed coordinate system.</summary>
+    /// <param name="fieldOfView">The field-of-view angle, in radians.</param>
+    /// <param name="aspectRatio">The aspect ratio, as X:Y.</param>
+    /// <param name="nearClippingDistance">The distance to the near clipping plane.</param>
+    /// <param name="farClippingDistance">The distance to the far clipping plane.</param>
+    /// <returns>A matrix that represents a perspective projection based on <paramref name="fieldOfView" />.</returns>
+    public static Matrix4x4 CreatePerspectiveFieldOfViewLH(float fieldOfView, float aspectRatio, float nearClippingDistance, float farClippingDistance)
+    {
+        Assert(AssertionsEnabled && (nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
+        Assert(AssertionsEnabled && !CompareEqual(fieldOfView, 0.0f, NearZeroEpsilon * 2));
+        Assert(AssertionsEnabled && !CompareEqual(aspectRatio, 0.0f, NearZeroEpsilon));
+        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+
+        var (sin, cos) = SinCos(0.5f * fieldOfView);
+
+        var height = cos / sin;
+        var width = height / aspectRatio;
+        var range = farClippingDistance / (farClippingDistance - nearClippingDistance);
+
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
+        {
+            return new Matrix4x4(
+                Vector4.Zero.WithX(width),
+                Vector4.UnitY * height,
+                Vector4.UnitW.WithZ(range),
+                Vector4.UnitZ * (-range * nearClippingDistance)
+            );
+        }
+        else
+        {
+            return new Matrix4x4(
+                new Vector4(width, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, height, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, range, 1.0f),
+                new Vector4(0.0f, 0.0f, -range * nearClippingDistance, 0.0f)
+            );
+        }
+    }
+
+    /// <summary>Creates a matrix that represents a perspective projection based on a field-of-view in a right-handed coordinate system.</summary>
+    /// <param name="fieldOfView">The field-of-view angle, in radians.</param>
+    /// <param name="aspectRatio">The aspect ratio, as X:Y.</param>
+    /// <param name="nearClippingDistance">The distance to the near clipping plane.</param>
+    /// <param name="farClippingDistance">The distance to the far clipping plane.</param>
+    /// <returns>A matrix that represents a perspective projection based on <paramref name="fieldOfView" />.</returns>
+    public static Matrix4x4 CreatePerspectiveFieldOfViewRH(float fieldOfView, float aspectRatio, float nearClippingDistance, float farClippingDistance)
+    {
+        Assert(AssertionsEnabled && (nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
+        Assert(AssertionsEnabled && !CompareEqual(fieldOfView, 0.0f, NearZeroEpsilon * 2));
+        Assert(AssertionsEnabled && !CompareEqual(aspectRatio, 0.0f, NearZeroEpsilon));
+        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+
+        var (sin, cos) = SinCos(0.5f * fieldOfView);
+
+        var height = cos / sin;
+        var width = height / aspectRatio;
+        var range = farClippingDistance / (nearClippingDistance - farClippingDistance);
+
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
+        {
+            return new Matrix4x4(
+                Vector4.Zero.WithX(width),
+                Vector4.UnitY * height,
+                (-Vector4.UnitW).WithZ(range),
+                Vector4.UnitZ * (range * nearClippingDistance)
+            );
+        }
+        else
+        {
+            return new Matrix4x4(
+                new Vector4(width, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, height, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, range, -1.0f),
+                new Vector4(0.0f, 0.0f, range * nearClippingDistance, 0.0f)
+            );
+        }
+    }
+
+    /// <summary>Creates a matrix that represents an off-center perspective projection in a left-handed coordinate system.</summary>
+    /// <param name="frustumLeft">The x-coordinate of the left side of the frustum.</param>
+    /// <param name="frustumRight">The x-coordinate of the right side of the frustum.</param>
+    /// <param name="frustumBottom">The y-coordinate of the bottom side of the frustum.</param>
+    /// <param name="frustumTop">The y-coordinate of the top side of the frustum.</param>
+    /// <param name="nearClippingDistance">The distance to the near clipping plane.</param>
+    /// <param name="farClippingDistance">The distance to the far clipping plane.</param>
+    /// <returns>A matrix that represents an off-center perspective projection.</returns>
+    public static Matrix4x4 CreatePerspectiveOffCenterLH(float frustumLeft, float frustumRight, float frustumBottom, float frustumTop, float nearClippingDistance, float farClippingDistance)
+    {
+        Assert(AssertionsEnabled && (nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
+        Assert(AssertionsEnabled && !CompareEqual(frustumLeft, frustumRight, NearZeroEpsilon * 2));
+        Assert(AssertionsEnabled && !CompareEqual(frustumTop, frustumBottom, NearZeroEpsilon));
+        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+
+        var doubleNearClippingDistance = nearClippingDistance + nearClippingDistance;
+        var reciprocalWidth = 1.0f / (frustumRight - frustumLeft);
+        var reciprocalHeight = 1.0f / (frustumTop - frustumBottom);
+        var range = farClippingDistance / (farClippingDistance - nearClippingDistance);
+
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
+        {
+            return new Matrix4x4(
+                Vector4.Zero.WithX(doubleNearClippingDistance * reciprocalWidth),
+                Vector4.UnitY * (doubleNearClippingDistance * reciprocalHeight),
+                new Vector4(-(frustumLeft + frustumRight) * reciprocalWidth, -(frustumTop + frustumBottom) * reciprocalHeight, range, 1.0f),
+                Vector4.UnitZ * (-range * nearClippingDistance)
+            );
+        }
+        else
+        {
+            return new Matrix4x4(
+                new Vector4(doubleNearClippingDistance * reciprocalWidth, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, doubleNearClippingDistance * reciprocalHeight, 0.0f, 0.0f),
+                new Vector4(-(frustumLeft + frustumRight) * reciprocalWidth, -(frustumTop + frustumBottom) * reciprocalHeight, range, 1.0f),
+                new Vector4(0.0f, 0.0f, -range * nearClippingDistance, 0.0f)
+            );
+        }
+    }
+
+    /// <summary>Creates a matrix that represents an off-center perspective projection in a right-handed coordinate system.</summary>
+    /// <param name="frustumLeft">The x-coordinate of the left side of the frustum.</param>
+    /// <param name="frustumRight">The x-coordinate of the right side of the frustum.</param>
+    /// <param name="frustumBottom">The y-coordinate of the bottom side of the frustum.</param>
+    /// <param name="frustumTop">The y-coordinate of the top side of the frustum.</param>
+    /// <param name="nearClippingDistance">The distance to the near clipping plane.</param>
+    /// <param name="farClippingDistance">The distance to the far clipping plane.</param>
+    /// <returns>A matrix that represents an off-center perspective projection.</returns>
+    public static Matrix4x4 CreatePerspectiveOffCenterRH(float frustumLeft, float frustumRight, float frustumBottom, float frustumTop, float nearClippingDistance, float farClippingDistance)
+    {
+        Assert(AssertionsEnabled && (nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
+        Assert(AssertionsEnabled && !CompareEqual(frustumLeft, frustumRight, NearZeroEpsilon * 2));
+        Assert(AssertionsEnabled && !CompareEqual(frustumTop, frustumBottom, NearZeroEpsilon));
+        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+
+        var doubleNearClippingDistance = nearClippingDistance + nearClippingDistance;
+        var reciprocalWidth = 1.0f / (frustumRight - frustumLeft);
+        var reciprocalHeight = 1.0f / (frustumTop - frustumBottom);
+        var range = farClippingDistance / (nearClippingDistance - farClippingDistance);
+
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
+        {
+            return new Matrix4x4(
+                Vector4.Zero.WithX(doubleNearClippingDistance * reciprocalWidth),
+                Vector4.UnitY * (doubleNearClippingDistance * reciprocalHeight),
+                new Vector4((frustumLeft + frustumRight) * reciprocalWidth, (frustumTop + frustumBottom) * reciprocalHeight, range, -1.0f),
+                Vector4.UnitZ * (range * nearClippingDistance)
+            );
+        }
+        else
+        {
+            return new Matrix4x4(
+                new Vector4(doubleNearClippingDistance * reciprocalWidth, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, doubleNearClippingDistance * reciprocalHeight, 0.0f, 0.0f),
+                new Vector4((frustumLeft + frustumRight) * reciprocalWidth, (frustumTop + frustumBottom) * reciprocalHeight, range, -1.0f),
+                new Vector4(0.0f, 0.0f, range * nearClippingDistance, 0.0f)
+            );
+        }
+    }
+
     /// <summary>Computes the inverse of a matrix.</summary>
     /// <param name="value">The matrix to invert.</param>
     /// <param name="determinant">On return, contains the dterminant of the matrix.</param>
