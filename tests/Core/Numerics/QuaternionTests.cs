@@ -212,6 +212,15 @@ public class QuaternionTests
         );
     }
 
+    /// <summary>Provides validation of the <see cref="Quaternion.CreateFromAxisAngle(Vector3, float)" /> method.</summary>
+    [Test]
+    public static void CreateFromPitchYawRollTest()
+    {
+        Assert.That(() => Quaternion.CreateFromPitchYawRoll(new Vector3(0.5f, 0.5f, 0.5f)),
+            Is.EqualTo(new Quaternion(0.29156658f, 0.1729548f, 0.1729548f, 0.9247498f))
+        );
+    }
+
     /// <summary>Provides validation of the <see cref="Quaternion.DotProduct(Quaternion, Quaternion)" /> method.</summary>
     [Test]
     public static void DotProductTest()

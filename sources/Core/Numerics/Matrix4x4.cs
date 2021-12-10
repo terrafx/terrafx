@@ -275,23 +275,23 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
             var r1 = Add(v0, v1);
             var r2 = Subtract(v0, v1);
             
-            v0 = CreateFromYZXY(r1, r2);
+            v0 = CreateFromYZAB(r1, r2);
             v0 = CreateFromXZWY(v0);
-            v1 = CreateFromXXZZ(r1, r2);
+            v1 = CreateFromXXCC(r1, r2);
             v1 = CreateFromXZXZ(v1);
             
-            q1 = CreateFromXWXY(r0, v0);
+            q1 = CreateFromXWAB(r0, v0);
             q1 = CreateFromXZWY(q1);
 
             Unsafe.SkipInit(out Matrix4x4 m);
             {
                 m.X = new Vector4(q1);
 
-                q1 = CreateFromYWZW(r0, v0);
+                q1 = CreateFromYWCD(r0, v0);
                 q1 = CreateFromZXWY(q1);
                 m.Y = new Vector4(q1);
 
-                q1 = CreateFromXYZW(v1, r0);
+                q1 = CreateFromXYCD(v1, r0);
                 m.Z = new Vector4(q1);
 
                 m.W = Vector4.UnitW;
@@ -390,32 +390,32 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
 
         var d0 = Multiply(CreateFromXXYY(transposedZ), CreateFromZWZW(transposedW));
         var d1 = Multiply(CreateFromXXYY(transposedX), CreateFromZWZW(transposedY));
-        var d2 = Multiply(CreateFromXZXZ(transposedZ, transposedX), CreateFromYWYW(transposedW, transposedY));
+        var d2 = Multiply(CreateFromXZAC(transposedZ, transposedX), CreateFromYWBD(transposedW, transposedY));
 
         d0 = MultiplyAddNegated(d0, CreateFromZWZW(transposedZ), CreateFromXXYY(transposedW));
         d1 = MultiplyAddNegated(d1, CreateFromZWZW(transposedX), CreateFromXXYY(transposedY));
-        d2 = MultiplyAddNegated(d2, CreateFromYWYW(transposedZ, transposedX), CreateFromXZXZ(transposedW, transposedY));
+        d2 = MultiplyAddNegated(d2, CreateFromYWBD(transposedZ, transposedX), CreateFromXZAC(transposedW, transposedY));
 
-        var tmp1 = CreateFromYWYY(d0, d2);
-        var tmp2 = CreateFromYWWW(d1, d2);
+        var tmp1 = CreateFromYWBB(d0, d2);
+        var tmp2 = CreateFromYWDD(d1, d2);
 
-        var c0 = Multiply(CreateFromYZXY(transposedY), CreateFromZXWX(tmp1, d0));
-        var c2 = Multiply(CreateFromZXYX(transposedX), CreateFromYZYZ(tmp1, d0));
-        var c4 = Multiply(CreateFromYZXY(transposedW), CreateFromZXWX(tmp2, d1));
-        var c6 = Multiply(CreateFromZXYX(transposedZ), CreateFromYZYZ(tmp2, d1));
+        var c0 = Multiply(CreateFromYZXY(transposedY), CreateFromZXDA(tmp1, d0));
+        var c2 = Multiply(CreateFromZXYX(transposedX), CreateFromYZBC(tmp1, d0));
+        var c4 = Multiply(CreateFromYZXY(transposedW), CreateFromZXDA(tmp2, d1));
+        var c6 = Multiply(CreateFromZXYX(transposedZ), CreateFromYZBC(tmp2, d1));
 
-        var tmp3 = CreateFromXYXX(d0, d2);
-        var tmp4 = CreateFromXYZZ(d1, d2);
+        var tmp3 = CreateFromXYAA(d0, d2);
+        var tmp4 = CreateFromXYCC(d1, d2);
 
-        c0 = MultiplyAddNegated(c0, CreateFromZWYZ(transposedY), CreateFromWXYZ(d0, tmp3));
-        c2 = MultiplyAddNegated(c2, CreateFromWZWY(transposedX), CreateFromZYZX(d0, tmp3));
-        c4 = MultiplyAddNegated(c4, CreateFromZWYZ(transposedW), CreateFromWXYZ(d1, tmp4));
-        c6 = MultiplyAddNegated(c6, CreateFromWZWY(transposedZ), CreateFromZYZX(d1, tmp4));
+        c0 = MultiplyAddNegated(c0, CreateFromZWYZ(transposedY), CreateFromWXBC(d0, tmp3));
+        c2 = MultiplyAddNegated(c2, CreateFromWZWY(transposedX), CreateFromZYCA(d0, tmp3));
+        c4 = MultiplyAddNegated(c4, CreateFromZWYZ(transposedW), CreateFromWXBC(d1, tmp4));
+        c6 = MultiplyAddNegated(c6, CreateFromWZWY(transposedZ), CreateFromZYCA(d1, tmp4));
 
-        var v00 = Multiply(CreateFromWXWX(transposedY), CreateFromXWZX(CreateFromZZXY(d0, d2)));
-        var v01 = Multiply(CreateFromYWXZ(transposedX), CreateFromWXYZ(CreateFromXWXY(d0, d2)));
-        var v02 = Multiply(CreateFromWXWX(transposedW), CreateFromXWZX(CreateFromZZZW(d1, d2)));
-        var v03 = Multiply(CreateFromYWXZ(transposedZ), CreateFromWXYZ(CreateFromXWZW(d1, d2)));
+        var v00 = Multiply(CreateFromWXWX(transposedY), CreateFromXWZX(CreateFromZZAB(d0, d2)));
+        var v01 = Multiply(CreateFromYWXZ(transposedX), CreateFromWXYZ(CreateFromXWAB(d0, d2)));
+        var v02 = Multiply(CreateFromWXWX(transposedW), CreateFromXWZX(CreateFromZZCD(d1, d2)));
+        var v03 = Multiply(CreateFromYWXZ(transposedZ), CreateFromWXYZ(CreateFromXWCD(d1, d2)));
 
         var c1 = Subtract(c0, v00);
         c0 = Add(c0, v00);
@@ -429,10 +429,10 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
         var c7 = Add(c6, v03);
         c6 = Subtract(c6, v03);
 
-        c0 = CreateFromXZYW(c0, c1);
-        c2 = CreateFromXZYW(c2, c3);
-        c4 = CreateFromXZYW(c4, c5);
-        c6 = CreateFromXZYW(c6, c7);
+        c0 = CreateFromXZBD(c0, c1);
+        c2 = CreateFromXZBD(c2, c3);
+        c4 = CreateFromXZBD(c4, c5);
+        c6 = CreateFromXZBD(c6, c7);
         c0 = CreateFromXZYW(c0);
         c2 = CreateFromXZYW(c2);
         c4 = CreateFromXZYW(c4);

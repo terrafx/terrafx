@@ -257,28 +257,28 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
         x2y2z2w2 = MultiplyAdd(x2y2z2w2, Vector128.Create(-1.0f, -1.0f, +1.0f, +1.0f), r22);
 
         // (4*x*y, 4*x*z, 4*y*z, unused)
-        var xyxzyz = Add(CreateFromYZZY(r0, r1), CreateFromXZWY(CreateFromXXXY(r1, r2)));
+        var xyxzyz = Add(CreateFromYZCB(r0, r1), CreateFromXZWY(CreateFromXXAB(r1, r2)));
 
         // (4*x*w, 4*y*w, 4*z*w, unused)
-        var xwywzw = Subtract(CreateFromYXXX(r2, r1), CreateFromXZWY(CreateFromZZZY(r1, r0)));
+        var xwywzw = Subtract(CreateFromYXAA(r2, r1), CreateFromXZWY(CreateFromZZCB(r1, r0)));
         xwywzw = Multiply(xwywzw, Vector128.Create(-1.0f, +1.0f, -1.0f, +1.0f));
 
         // (4*x^2, 4*y^2, 4*x*y, unused)
         // (4*z^2, 4*w^2, 4*z*w, unused)
         // (4*x*z, 4*y*z, 4*x*w, 4*y*w)
 
-        var t0 = CreateFromXYXX(x2y2z2w2, xyxzyz);
-        var t1 = CreateFromZWZX(x2y2z2w2, xwywzw);
-        var t2 = CreateFromYZXY(xyxzyz, xwywzw);
+        var t0 = CreateFromXYAA(x2y2z2w2, xyxzyz);
+        var t1 = CreateFromZWCA(x2y2z2w2, xwywzw);
+        var t2 = CreateFromYZAB(xyxzyz, xwywzw);
 
         // (4*x*x, 4*x*y, 4*x*z, 4*x*w)
         // (4*y*x, 4*y*y, 4*y*z, 4*y*w)
         // (4*z*x, 4*z*y, 4*z*z, 4*z*w)
         // (4*w*x, 4*w*y, 4*w*z, 4*w*w)
-        var tensor0 = CreateFromXZXZ(t0, t2);
-        var tensor1 = CreateFromZYYW(t0, t2);
-        var tensor2 = CreateFromXYXZ(t2, t1);
-        var tensor3 = CreateFromZWZY(t2, t1);
+        var tensor0 = CreateFromXZAC(t0, t2);
+        var tensor1 = CreateFromZYBD(t0, t2);
+        var tensor2 = CreateFromXYAC(t2, t1);
+        var tensor3 = CreateFromZWCB(t2, t1);
 
         // Select the row of the tensor-product matrix that has the largest magnitude.
 
@@ -321,6 +321,31 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
                 cos
             );
         }
+    }
+
+    /// <summary>Creates a quaternion from a specified pitch, yaw, and roll.</summary>
+    /// <param name="pitchYawRoll">The pitch, yaw, and roll that should be used to create the quaternion.</param>
+    /// <returns>A quaternion that represents <paramref name="pitchYawRoll" />.</returns>
+    public static Quaternion CreateFromPitchYawRoll(Vector3 pitchYawRoll)
+    {
+        var (sin, cos) = SinCos(Multiply(pitchYawRoll.AsVector128(), 0.5f));
+
+        var p0 = CreateFromXAAA(sin, cos);
+        var y0 = CreateFromBYBB(sin, cos);
+        var r0 = CreateFromCCZC(sin, cos);
+
+        var p1 = CreateFromXAAA(cos, sin);
+        var y1 = CreateFromBYBB(cos, sin);
+        var r1 = CreateFromCCZC(cos, sin);
+
+        var q0 = Multiply(p0, y0);
+        var q1 = Multiply(p1, Vector128.Create(1.0f, -1.0f, -1.0f, 1.0f));
+
+        q0 = Multiply(q0, r0);
+        q1 = Multiply(q1, y1);
+
+        var result = MultiplyAdd(q0, q1, r1);
+        return new Quaternion(result);
     }
 
     /// <summary>Computes the dot product of two quaternions.</summary>
