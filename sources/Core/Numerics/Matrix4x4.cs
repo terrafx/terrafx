@@ -200,6 +200,25 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
         }
     }
 
+    /// <summary>Compares two matrices to determine if all elements are equal.</summary>
+    /// <param name="left">The matrix to compare with <paramref name="right" />.</param>
+    /// <param name="right">The matrix to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if all elements of <paramref name="left" /> are equal to the corresponding element of <paramref name="right" />; otherwise, <c>false</c>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool CompareEqualAll(Matrix4x4 left, in Matrix4x4 right) => left == right;
+
+    /// <summary>Compares two matrices to determine approximate equality.</summary>
+    /// <param name="left">The matrix to compare with <paramref name="right" />.</param>
+    /// <param name="right">The matrix to compare with <paramref name="left" />.</param>
+    /// <param name="epsilon">The maximum (exclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool CompareEqualAll(Matrix4x4 left, in Matrix4x4 right, in Matrix4x4 epsilon)
+        => Vector4.CompareEqualAll(left._x, right._x, epsilon._x)
+        && Vector4.CompareEqualAll(left._y, right._y, epsilon._y)
+        && Vector4.CompareEqualAll(left._z, right._z, epsilon._z)
+        && Vector4.CompareEqualAll(left._w, right._w, epsilon._w);
+
     /// <summary>Creates a matrix from an affine transform.</summary>
     /// <param name="affineTransform">The affine transform of the matrix.</param>
     /// <returns>A matrix that represents <paramref name="affineTransform" />.</returns>
@@ -354,25 +373,6 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
             new Vector4(translation, 1.0f)
         );
     }
-
-    /// <summary>Compares two matrices to determine if all elements are equal.</summary>
-    /// <param name="left">The matrix to compare with <paramref name="right" />.</param>
-    /// <param name="right">The matrix to compare with <paramref name="left" />.</param>
-    /// <returns><c>true</c> if all elements of <paramref name="left" /> are equal to the corresponding element of <paramref name="right" />; otherwise, <c>false</c>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool EqualsAll(Matrix4x4 left, in Matrix4x4 right) => left == right;
-
-    /// <summary>Compares two matrices to determine approximate equality.</summary>
-    /// <param name="left">The matrix to compare with <paramref name="right" />.</param>
-    /// <param name="right">The matrix to compare with <paramref name="left" />.</param>
-    /// <param name="epsilon">The maximum (exclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
-    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool EqualsAll(Matrix4x4 left, in Matrix4x4 right, in Matrix4x4 epsilon)
-        => Vector4.EqualsAll(left._x, right._x, epsilon._x)
-        && Vector4.EqualsAll(left._y, right._y, epsilon._y)
-        && Vector4.EqualsAll(left._z, right._z, epsilon._z)
-        && Vector4.EqualsAll(left._w, right._w, epsilon._w);
 
     /// <summary>Computes the inverse of a matrix.</summary>
     /// <param name="value">The matrix to invert.</param>

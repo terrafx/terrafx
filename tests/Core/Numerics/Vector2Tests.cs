@@ -1,130 +1,307 @@
+using System.Runtime.Intrinsics;
 using NUnit.Framework;
 using TerraFX.Numerics;
+using SysVector2 = System.Numerics.Vector2;
 
 namespace TerraFX.UnitTests.Numerics;
 
-/// <summary>Unit tests for <see cref="Vector2" />.</summary>
+/// <summary>Provides a set of tests covering the <see cref="Vector2" /> struct.</summary>
+[TestFixture(TestOf = typeof(Vector2))]
 public class Vector2Tests
 {
-    /// <summary>Ensures that a vector's components are equal to the parameters used to construct one.</summary>
+    /// <summary>Provides validation of the <see cref="Vector2.Zero" /> property.</summary>
     [Test]
-    public static void ComponentsReturnCorrectValues(
-        [Values(1, 2, 3)] float x,
-        [Values(1, 2, 3)] float y)
+    public static void ZeroTest()
     {
-        var vector = new Vector2(x, y);
-
-        Assert.That(vector.X, Is.EqualTo(x));
-        Assert.That(vector.Y, Is.EqualTo(y));
+        Assert.That(() => Vector2.Zero,
+            Is.EqualTo(new Vector2(0.0f, 0.0f))
+        );
     }
 
-    /// <summary>Ensures that two vectors that are expected to compare equal do, in fact compare equal.</summary>
+    /// <summary>Provides validation of the <see cref="Vector2.UnitX" /> property.</summary>
     [Test]
-    public static void VectorsCompareEqual()
+    public static void UnitXTest()
     {
-        Assert.That(new Vector2(0, 0) == new Vector2(0, 0), Is.True);
-        Assert.That(new Vector2(0, 0) == new Vector2(1, 1), Is.False);
+        Assert.That(() => Vector2.UnitX,
+            Is.EqualTo(new Vector2(1.0f, 0.0f))
+        );
     }
 
-    /// <summary>Ensures that two vectors that are expected to compare not equal do, in fact compare not equal.</summary>
+    /// <summary>Provides validation of the <see cref="Vector2.UnitY" /> property.</summary>
     [Test]
-    public static void VectorsCompareNotEqual()
+    public static void UnitYTest()
     {
-        Assert.That(new Vector2(0, 0) != new Vector2(0, 0), Is.False);
-        Assert.That(new Vector2(0, 0) != new Vector2(1, 1), Is.True);
+        Assert.That(() => Vector2.UnitY,
+            Is.EqualTo(new Vector2(0.0f, 1.0f))
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector2.operator+(Vector2)" /> returns its input unchanced.</summary>
+    /// <summary>Provides validation of the <see cref="Vector2.One" /> property.</summary>
     [Test]
-    public static void UnaryPlusReturnsUnchanged() => Assert.That(+Vector2.Zero == Vector2.Zero, Is.True);
-
-    /// <summary>Ensures that <see cref="Vector2.operator-(Vector2)" /> returns the negation of its input.</summary>
-    [Test]
-    public static void UnaryNegationReturnsNegative()
+    public static void OneTest()
     {
-        var vector = -new Vector2(1, 1);
-
-        Assert.That(vector, Is.EqualTo(new Vector2(-1, -1)));
+        Assert.That(() => Vector2.One,
+            Is.EqualTo(new Vector2(1.0f, 1.0f))
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector2.operator+(Vector2,Vector2)" /> returns the vector sum of its components.</summary>
+    /// <summary>Provides validation of the <see cref="Vector2()" /> constructors.</summary>
     [Test]
-    public static void AdditionReturnsSumOfValues()
+    public static void CtorTest()
     {
-        var vector = new Vector2(1, 2) + new Vector2(1, 2);
+        var value = new Vector2();
 
-        Assert.That(vector, Is.EqualTo(new Vector2(2, 4)));
+        Assert.That(() => value.X, Is.EqualTo(0.0f));
+        Assert.That(() => value.Y, Is.EqualTo(0.0f));
+
+        value = new Vector2(0.0f, 1.0f);
+
+        Assert.That(() => value.X, Is.EqualTo(0.0f));
+        Assert.That(() => value.Y, Is.EqualTo(1.0f));
+
+        value = new Vector2(2.0f);
+
+        Assert.That(() => value.X, Is.EqualTo(2.0f));
+        Assert.That(() => value.Y, Is.EqualTo(2.0f));
+
+        value = new Vector2(new SysVector2(3.0f, 4.0f));
+
+        Assert.That(() => value.X, Is.EqualTo(3.0f));
+        Assert.That(() => value.Y, Is.EqualTo(4.0f));
+
+        value = new Vector2(Vector128.Create(5.0f, 6.0f, 7.0f, 8.0f));
+
+        Assert.That(() => value.X, Is.EqualTo(5.0f));
+        Assert.That(() => value.Y, Is.EqualTo(6.0f));
     }
 
-    /// <summary>Ensures that <see cref="Vector2.operator-(Vector2,Vector2)" /> returns the vector difference of its components.</summary>
+    /// <summary>Provides validation of the <see cref="Vector2.Length" /> property.</summary>
     [Test]
-    public static void SubtractionReturnsDifferenceOfValues()
+    public static void LengthTest()
     {
-        var vector = new Vector2(3, 2) - new Vector2(1, 2);
-
-        Assert.That(vector, Is.EqualTo(new Vector2(2, 0)));
+        Assert.That(() => new Vector2(0.0f, 1.0f).Length,
+            Is.EqualTo(1.0f)
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector2.operator*(Vector2,Vector2)" /> returns the vector product of its components.</summary>
+    /// <summary>Provides validation of the <see cref="Vector2.LengthSquared" /> property.</summary>
     [Test]
-    public static void VectorMultiplicationReturnsProductOfValues()
+    public static void LengthSquaredTest()
     {
-        var vector = new Vector2(1, 2) * new Vector2(3, 2);
-
-        Assert.That(vector, Is.EqualTo(new Vector2(3, 4)));
+        Assert.That(() => new Vector2(0.0f, 1.0f).LengthSquared,
+            Is.EqualTo(1.0f)
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector2.operator/(Vector2,Vector2)" /> returns the vector division of its components.</summary>
+    /// <summary>Provides validation of the <see cref="Vector2.op_Equality" /> method.</summary>
     [Test]
-    public static void VectorDivisionReturnsDivisionOfValues()
+    public static void OpEqualityTest()
     {
-        var vector = new Vector2(6, 12) / new Vector2(3, 6);
+        Assert.That(() => new Vector2(0.0f, 1.0f) == new Vector2(0.0f, 1.0f),
+            Is.True
+        );
 
-        Assert.That(vector, Is.EqualTo(new Vector2(2, 2)));
+        Assert.That(() => new Vector2(0.0f, 1.0f) == new Vector2(2.0f, 3.0f),
+            Is.False
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector2.operator*(Vector2,float)" /> returns a vector with each component multiplied by the given float.</summary>
+    /// <summary>Provides validation of the <see cref="Vector2.op_Inequality" /> method.</summary>
     [Test]
-    public static void ScalarMultiplicationReturnValuesScaled()
+    public static void OpInequalityTest()
     {
-        var vector = new Vector2(1, 2) * 5;
+        Assert.That(() => new Vector2(0.0f, 1.0f) != new Vector2(0.0f, 1.0f),
+            Is.False
+        );
 
-        Assert.That(vector, Is.EqualTo(new Vector2(5, 10)));
+        Assert.That(() => new Vector2(0.0f, 1.0f) != new Vector2(2.0f, 3.0f),
+            Is.True
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector2.operator/(Vector2,float)" /> returns a vector with each component divided by the given float.</summary>
+    /// <summary>Provides validation of the <see cref="Vector2.op_UnaryPlus" /> method.</summary>
     [Test]
-    public static void ScalarDivisionReturnsValuesScaled()
+    public static void OpUnaryPlusTest()
     {
-        var vector = new Vector2(5, 10) / 5;
-
-        Assert.That(vector, Is.EqualTo(new Vector2(1, 2)));
+        Assert.That(() => +new Vector2(0.0f, 1.0f),
+            Is.EqualTo(new Vector2(0.0f, 1.0f))
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector2.DotProduct(Vector2,Vector2)" /> returns the scalar product of both input vectors.</summary>
+    /// <summary>Provides validation of the <see cref="Vector2.op_UnaryNegation" /> method.</summary>
     [Test]
-    public static void DotProductReturnsScalarProduct()
+    public static void OpUnaryNegationTest()
     {
-        var product = Vector2.DotProduct(new Vector2(1, 0.5f), new Vector2(2, 1));
-
-        Assert.That(product, Is.EqualTo(2.5f));
+        Assert.That(() => -new Vector2(1.0f, 2.0f),
+            Is.EqualTo(new Vector2(-1.0f, -2.0f))
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector2.Normalize(Vector2)" /> returns a unit vector.</summary>
+    /// <summary>Provides validation of the <see cref="Vector2.op_Addition" /> method.</summary>
     [Test]
-    public static void NormalizeReturnsUnitVector()
+    public static void OpAdditionTest()
     {
-        Assert.That(Vector2.Normalize(new Vector2(1, 0)), Is.EqualTo(new Vector2(1, 0)));
-        Assert.That(Vector2.Normalize(new Vector2(0, 2)), Is.EqualTo(new Vector2(0, 1)));
+        Assert.That(() => new Vector2(0.0f, 1.0f) + new Vector2(2.0f, 3.0f),
+            Is.EqualTo(new Vector2(2.0f, 4.0f))
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector2.Length" /> and <see cref="Vector2.LengthSquared" /> return the magnitude and squared magnitude of the input vector.</summary>
+    /// <summary>Provides validation of the <see cref="Vector2.op_Subtraction" /> method.</summary>
     [Test]
-    public static void LengthReturnsMagnitudeOfVector()
+    public static void OpSubtractionTest()
     {
-        var vector = new Vector2(0, 5);
+        Assert.That(() => new Vector2(0.0f, 1.0f) - new Vector2(2.0f, 3.0f),
+            Is.EqualTo(new Vector2(-2.0f, -2.0f))
+        );
+    }
 
-        Assert.That(vector.Length, Is.EqualTo(5));
-        Assert.That(vector.LengthSquared, Is.EqualTo(25));
+    /// <summary>Provides validation of the <see cref="Vector2.op_Multiply(Vector2, Vector2)" /> method.</summary>
+    [Test]
+    public static void OpMultiplyTest()
+    {
+        Assert.That(() => new Vector2(0.0f, 1.0f) * new Vector2(2.0f, 3.0f),
+            Is.EqualTo(new Vector2(0.0f, 3.0f))
+        );
+
+        Assert.That(() => new Vector2(0.0f, 1.0f) * 2.0f,
+            Is.EqualTo(new Vector2(0.0f, 2.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector2.op_Division(Vector2, Vector2)" /> method.</summary>
+    [Test]
+    public static void OpDivisionTest()
+    {
+        Assert.That(() => new Vector2(0.0f, 1.0f) / new Vector2(2.0f, 3.0f),
+            Is.EqualTo(new Vector2(0.0f, 0.33333334f))
+        );
+
+        Assert.That(() => new Vector2(0.0f, 1.0f) / 2.0f,
+            Is.EqualTo(new Vector2(0.0f, 0.5f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector2.CompareEqualAll(Vector2, Vector2)" /> method.</summary>
+    [Test]
+    public static void CompareEqualAllTest()
+    {
+        Assert.That(() => Vector2.CompareEqualAll(new Vector2(0.0f, 1.0f), new Vector2(0.0f, 1.0f)),
+            Is.True
+        );
+
+        Assert.That(() => Vector2.CompareEqualAll(new Vector2(0.0f, 1.0f), new Vector2(2.0f, 3.0f)),
+            Is.False
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector2.DotProduct(Vector2, Vector2)" /> method.</summary>
+    [Test]
+    public static void DotProductTest()
+    {
+        Assert.That(() => Vector2.DotProduct(new Vector2(0.0f, 1.0f), new Vector2(2.0f, 3.0f)),
+            Is.EqualTo(3.0f)
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector2.IsAnyInfinity(Vector2)" /> method.</summary>
+    [Test]
+    public static void IsAnyInfinityTest()
+    {
+        Assert.That(() => Vector2.IsAnyInfinity(new Vector2(0.0f, float.PositiveInfinity)),
+            Is.True
+        );
+
+        Assert.That(() => Vector2.IsAnyInfinity(new Vector2(0.0f, float.NegativeInfinity)),
+            Is.True
+        );
+
+        Assert.That(() => Vector2.IsAnyInfinity(new Vector2(0.0f, 1.0f)),
+            Is.False
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector2.IsAnyNaN(Vector2)" /> method.</summary>
+    [Test]
+    public static void IsAnyNaNTest()
+    {
+        Assert.That(() => Vector2.IsAnyNaN(new Vector2(0.0f, float.NaN)),
+            Is.True
+        );
+
+        Assert.That(() => Vector2.IsAnyNaN(new Vector2(0.0f, 1.0f)),
+            Is.False
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector2.Max" /> method.</summary>
+    [Test]
+    public static void MaxTest()
+    {
+        Assert.That(() => Vector2.Max(new Vector2(0.0f, 1.0f), new Vector2(1.0f, 0.0f)),
+            Is.EqualTo(new Vector2(1.0f, 1.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector2.Min" /> method.</summary>
+    [Test]
+    public static void MinTest()
+    {
+        Assert.That(() => Vector2.Min(new Vector2(-0.0f, -1.0f), new Vector2(-1.0f, -0.0f)),
+            Is.EqualTo(new Vector2(-1.0f, -1.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector2.Normalize" /> method.</summary>
+    [Test]
+    public static void NormalizeTest()
+    {
+        Assert.That(() => Vector2.Normalize(new Vector2(0.0f, 1.0f)),
+            Is.EqualTo(new Vector2(0.0f, 1.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector2.Sqrt" /> method.</summary>
+    [Test]
+    public static void SqrtTest()
+    {
+        Assert.That(() => Vector2.Sqrt(new Vector2(0.0f, 1.0f)),
+            Is.EqualTo(new Vector2(0.0f, 1.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector2.AsVector2" /> method.</summary>
+    [Test]
+    public static void AsVector2Test()
+    {
+        Assert.That(() => new Vector2(0.0f, 1.0f).AsVector2(),
+            Is.EqualTo(new SysVector2(0.0f, 1.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector2.AsVector128" /> method.</summary>
+    [Test]
+    public static void AsVector128Test()
+    {
+        Assert.That(() => new Vector2(0.0f, 1.0f).AsVector128(),
+            Is.EqualTo(Vector128.Create(0.0f, 1.0f, 0.0f, 0.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector2.WithX" /> method.</summary>
+    [Test]
+    public static void WithXTest()
+    {
+        Assert.That(() => new Vector2(0.0f, 1.0f).WithX(5.0f),
+            Is.EqualTo(new Vector2(5.0f, 1.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector2.WithY" /> method.</summary>
+    [Test]
+    public static void WithYTest()
+    {
+        Assert.That(() => new Vector2(0.0f, 1.0f).WithY(5.0f),
+            Is.EqualTo(new Vector2(0.0f, 5.0f))
+        );
     }
 }

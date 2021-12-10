@@ -181,23 +181,16 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 operator /(Vector2 left, Vector2 right) => new Vector2(left._value / right._value);
 
-    /// <summary>Computes the dot product of two vectors.</summary>
-    /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
-    /// <param name="right">The quatnerion which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The dot product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float DotProduct(Vector2 left, Vector2 right) => SysVector2.Dot(left._value, right._value);
-
     /// <summary>Compares two vectors to determine element-wise equality.</summary>
     /// <param name="left">The vector to compare with <paramref name="right" />.</param>
     /// <param name="right">The vector to compare with <paramref name="left" />.</param>
     /// <returns>A vector that contains the element-wise comparison of <paramref name="left" /> and <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector2 Equals(Vector2 left, Vector2 right)
+    public static Vector2 CompareEqual(Vector2 left, Vector2 right)
     {
         if (Sse.IsSupported || AdvSimd.IsSupported)
         {
-            var result = CompareEqual(left._value.AsVector128(), right._value.AsVector128());
+            var result = VectorUtilities.CompareEqual(left._value.AsVector128(), right._value.AsVector128());
             return new Vector2(result);
         }
         else
@@ -220,11 +213,11 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     /// <param name="epsilon">The maximum (exclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector2 Equals(Vector2 left, Vector2 right, Vector2 epsilon)
+    public static Vector2 CompareEqual(Vector2 left, Vector2 right, Vector2 epsilon)
     {
         if (Sse.IsSupported || AdvSimd.IsSupported)
         {
-            var result = CompareEqual(left._value.AsVector128(), right._value.AsVector128(), epsilon._value.AsVector128());
+            var result = VectorUtilities.CompareEqual(left._value.AsVector128(), right._value.AsVector128(), epsilon._value.AsVector128());
             return new Vector2(result);
         }
         else
@@ -246,7 +239,7 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     /// <param name="right">The vector to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if all elements of <paramref name="left" /> are equal to the corresponding element of <paramref name="right" />; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool EqualsAll(Vector2 left, Vector2 right) => left == right;
+    public static bool CompareEqualAll(Vector2 left, Vector2 right) => left == right;
 
     /// <summary>Compares two vectors to determine if all elements are approximately equal.</summary>
     /// <param name="left">The vector to compare with <paramref name="right" />.</param>
@@ -254,11 +247,11 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     /// <param name="epsilon">he maximum (inclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool EqualsAll(Vector2 left, Vector2 right, Vector2 epsilon)
+    public static bool CompareEqualAll(Vector2 left, Vector2 right, Vector2 epsilon)
     {
         if (Sse.IsSupported || AdvSimd.Arm64.IsSupported)
         {
-            return CompareEqualAll(left._value.AsVector128(), right._value.AsVector128(), epsilon._value.AsVector128());
+            return VectorUtilities.CompareEqualAll(left._value.AsVector128(), right._value.AsVector128(), epsilon._value.AsVector128());
         }
         else
         {
@@ -271,6 +264,13 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
                 && MathUtilities.Equals(left.Y, right.Y, epsilon.Y);
         }
     }
+
+    /// <summary>Computes the dot product of two vectors.</summary>
+    /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
+    /// <param name="right">The quatnerion which is used to multiply <paramref name="left" />.</param>
+    /// <returns>The dot product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float DotProduct(Vector2 left, Vector2 right) => SysVector2.Dot(left._value, right._value);
 
     /// <summary>Determines if any elements in a vector are either <see cref="float.PositiveInfinity" /> or <see cref="float.NegativeInfinity" />.</summary>
     /// <param name="value">The vector to check.</param>
@@ -374,6 +374,31 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     {
         var result = VectorUtilities.ReciprocalSqrtEstimate(value._value.AsVector128());
         return new Vector2(result);
+    }
+
+    /// <summary>Computes the square-root of a vector.</summary>
+    /// <param name="value">The vector for which to compute the square-root.</param>
+    /// <returns>The element-wise square-root of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector2 Sqrt(Vector2 value)
+    {
+        if (Sse41.IsSupported || AdvSimd.IsSupported)
+        {
+            var result = VectorUtilities.Sqrt(value._value.AsVector128());
+            return new Vector2(result);
+        }
+        else
+        {
+            return SoftwareFallback(value);
+        }
+
+        static Vector2 SoftwareFallback(Vector2 value)
+        {
+            return new Vector2(
+                MathUtilities.Sqrt(value.X),
+                MathUtilities.Sqrt(value.Y)
+            );
+        }
     }
 
     /// <summary>Reinterprets the current instance as a new <see cref="SysVector2" />.</summary>

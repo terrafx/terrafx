@@ -165,7 +165,7 @@ public readonly struct Vector4 : IEquatable<Vector4>, IFormattable
     /// <param name="right">The vector to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator ==(Vector4 left, Vector4 right) => CompareEqualAll(left._value, right._value);
+    public static bool operator ==(Vector4 left, Vector4 right) => VectorUtilities.CompareEqualAll(left._value, right._value);
 
     /// <summary>Compares two vectors to determine inequality.</summary>
     /// <param name="left">The vector to compare with <paramref name="right" />.</param>
@@ -263,6 +263,44 @@ public readonly struct Vector4 : IEquatable<Vector4>, IFormattable
         return new Vector4(result);
     }
 
+    /// <summary>Compares two vectors to determine element-wise equality.</summary>
+    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
+    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
+    /// <returns>A vector that contains the element-wise comparison of <paramref name="left" /> and <paramref name="right" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector4 CompareEqual(Vector4 left, Vector4 right)
+    {
+        var result = VectorUtilities.CompareEqual(left._value, right._value);
+        return new Vector4(result);
+    }
+
+    /// <summary>Compares two vectors to determine approximate equality.</summary>
+    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
+    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
+    /// <param name="epsilon">The maximum (inclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
+    /// <returns>A vector that contains the element-wise approximate comparison of <paramref name="left" /> and <paramref name="right" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector4 CompareEqual(Vector4 left, Vector4 right, Vector4 epsilon)
+    {
+        var result = VectorUtilities.CompareEqual(left._value, right._value, epsilon._value);
+        return new Vector4(result);
+    }
+
+    /// <summary>Compares two vectors to determine if all elements are equal.</summary>
+    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
+    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if all elements of <paramref name="left" /> are equal to the corresponding element of <paramref name="right" />; otherwise, <c>false</c>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool CompareEqualAll(Vector4 left, Vector4 right) => left == right;
+
+    /// <summary>Compares two vectors to determine if all elements are approximately equal.</summary>
+    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
+    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
+    /// <param name="epsilon">The maximum (inclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool CompareEqualAll(Vector4 left, Vector4 right, Vector4 epsilon) => VectorUtilities.CompareEqualAll(left._value, right._value, epsilon._value);
+
     /// <summary>Computes the dot product of two vectors.</summary>
     /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
     /// <param name="right">The quatnerion which is used to multiply <paramref name="left" />.</param>
@@ -273,44 +311,6 @@ public readonly struct Vector4 : IEquatable<Vector4>, IFormattable
         var result = VectorUtilities.DotProduct(left._value, right._value);
         return result.ToScalar();
     }
-
-    /// <summary>Compares two vectors to determine element-wise equality.</summary>
-    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
-    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
-    /// <returns>A vector that contains the element-wise comparison of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4 Equals(Vector4 left, Vector4 right)
-    {
-        var result = CompareEqual(left._value, right._value);
-        return new Vector4(result);
-    }
-
-    /// <summary>Compares two vectors to determine approximate equality.</summary>
-    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
-    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
-    /// <param name="epsilon">The maximum (inclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
-    /// <returns>A vector that contains the element-wise approximate comparison of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4 Equals(Vector4 left, Vector4 right, Vector4 epsilon)
-    {
-        var result = CompareEqual(left._value, right._value, epsilon._value);
-        return new Vector4(result);
-    }
-
-    /// <summary>Compares two vectors to determine if all elements are equal.</summary>
-    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
-    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
-    /// <returns><c>true</c> if all elements of <paramref name="left" /> are equal to the corresponding element of <paramref name="right" />; otherwise, <c>false</c>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool EqualsAll(Vector4 left, Vector4 right) => left == right;
-
-    /// <summary>Compares two vectors to determine if all elements are approximately equal.</summary>
-    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
-    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
-    /// <param name="epsilon">The maximum (inclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
-    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool EqualsAll(Vector4 left, Vector4 right, Vector4 epsilon) => CompareEqualAll(left._value, right._value, epsilon._value);
 
     /// <summary>Determines if any elements in a vector are either <see cref="float.PositiveInfinity" /> or <see cref="float.NegativeInfinity" />.</summary>
     /// <param name="value">The vector to check.</param>

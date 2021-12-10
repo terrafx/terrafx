@@ -152,7 +152,7 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
     /// <param name="right">The quaternion to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator ==(Quaternion left, Quaternion right) => CompareEqualAll(left._value, right._value);
+    public static bool operator ==(Quaternion left, Quaternion right) => VectorUtilities.CompareEqualAll(left._value, right._value);
 
     /// <summary>Compares two quaternions to determine inequality.</summary>
     /// <param name="left">The quaternion to compare with <paramref name="right" />.</param>
@@ -191,6 +191,21 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
             );
         }
     }
+
+    /// <summary>Compares two quaternions to determine if all elements are equal.</summary>
+    /// <param name="left">The quaternion to compare with <paramref name="right" />.</param>
+    /// <param name="right">The quaternion to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if all elements of <paramref name="left" /> are equal to the corresponding element of <paramref name="right" />; otherwise, <c>false</c>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool CompareEqualAll(Quaternion left, Quaternion right) => left == right;
+
+    /// <summary>Compares two quaternions to determine if all elements are approximately equal.</summary>
+    /// <param name="left">The quaternion to compare with <paramref name="right" />.</param>
+    /// <param name="right">The quaternion to compare with <paramref name="left" />.</param>
+    /// <param name="epsilon">The maximum (inclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool CompareEqualAll(Quaternion left, Quaternion right, Quaternion epsilon) => VectorUtilities.CompareEqualAll(left._value, right._value, epsilon._value);
 
     /// <summary>Computes the concatenation of <paramref name="left" /> and <paramref name="right" />.</summary>
     /// <param name="left">The quaternion onto which <paramref name="right" /> is concatenated.</param>
@@ -318,21 +333,6 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
         var result = VectorUtilities.DotProduct(left._value, right._value);
         return result.ToScalar();
     }
-
-    /// <summary>Compares two quaternions to determine if all elements are equal.</summary>
-    /// <param name="left">The quaternion to compare with <paramref name="right" />.</param>
-    /// <param name="right">The quaternion to compare with <paramref name="left" />.</param>
-    /// <returns><c>true</c> if all elements of <paramref name="left" /> are equal to the corresponding element of <paramref name="right" />; otherwise, <c>false</c>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool EqualsAll(Quaternion left, Quaternion right) => left == right;
-
-    /// <summary>Compares two quaternions to determine if all elements are approximately equal.</summary>
-    /// <param name="left">The quaternion to compare with <paramref name="right" />.</param>
-    /// <param name="right">The quaternion to compare with <paramref name="left" />.</param>
-    /// <param name="epsilon">The maximum (inclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
-    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool EqualsAll(Quaternion left, Quaternion right, Quaternion epsilon) => CompareEqualAll(left._value, right._value, epsilon._value);
 
     /// <summary>Computes the inverse of a quaternion.</summary>
     /// <param name="value">The quaternion to invert.</param>
