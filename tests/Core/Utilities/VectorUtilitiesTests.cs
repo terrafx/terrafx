@@ -261,6 +261,14 @@ public static class VectorUtilitiesTests
         );
     }
 
+    /// <summary>Provides validation of the <see cref="VectorUtilities.CreateFromYXZW(Vector128{float})" /> method.</summary>
+    public static void CreateFromYXZWTest()
+    {
+        Assert.That(() => VectorUtilities.CreateFromYXZW(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f)),
+            Is.EqualTo(Vector128.Create(1.0f, 0.0f, 2.0f, 3.0f))
+        );
+    }
+
     /// <summary>Provides validation of the <see cref="VectorUtilities.CreateFromYXWZ(Vector128{float})" /> method.</summary>
     public static void CreateFromYXWZTest()
     {
@@ -314,6 +322,14 @@ public static class VectorUtilitiesTests
     {
         Assert.That(() => VectorUtilities.CreateFromZXWY(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f)),
             Is.EqualTo(Vector128.Create(2.0f, 0.0f, 3.0f, 1.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="VectorUtilities.CreateFromZYXW(Vector128{float})" /> method.</summary>
+    public static void CreateFromZYXWTest()
+    {
+        Assert.That(() => VectorUtilities.CreateFromYXZW(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f)),
+            Is.EqualTo(Vector128.Create(2.0f, 1.0f, 0.0f, 3.0f))
         );
     }
 
@@ -501,6 +517,14 @@ public static class VectorUtilitiesTests
         );
     }
 
+    /// <summary>Provides validation of the <see cref="VectorUtilities.CreateFromXWAD(Vector128{float}, Vector128{float})" /> method.</summary>
+    public static void CreateFromXWADTest()
+    {
+        Assert.That(() => VectorUtilities.CreateFromXWAD(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f), Vector128.Create(4.0f, 5.0f, 6.0f, 7.0f)),
+            Is.EqualTo(Vector128.Create(0.0f, 3.0f, 4.0f, 7.0f))
+        );
+    }
+
     /// <summary>Provides validation of the <see cref="VectorUtilities.CreateFromXWCD(Vector128{float}, Vector128{float})" /> method.</summary>
     public static void CreateFromXWCDTest()
     {
@@ -634,6 +658,14 @@ public static class VectorUtilitiesTests
     {
         Assert.That(() => VectorUtilities.CreateFromZWCB(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f), Vector128.Create(4.0f, 5.0f, 6.0f, 7.0f)),
             Is.EqualTo(Vector128.Create(2.0f, 3.0f, 6.0f, 5.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="VectorUtilities.CreateFromWXAD(Vector128{float}, Vector128{float})" /> method.</summary>
+    public static void CreateFromWXADTest()
+    {
+        Assert.That(() => VectorUtilities.CreateFromWXAD(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f), Vector128.Create(4.0f, 5.0f, 6.0f, 7.0f)),
+            Is.EqualTo(Vector128.Create(3.0f, 0.0f, 4.0f, 7.0f))
         );
     }
 

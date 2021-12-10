@@ -168,7 +168,7 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Quaternion operator *(Quaternion left, Quaternion right)
     {
-        if (Sse.IsSupported || AdvSimd.IsSupported)
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
         {
             var result = MultiplyByW(right._value, left._value);
             result = MultiplyAdd(result, MultiplyByX(CreateFromWZYX(right._value), left._value), Vector128.Create(+1.0f, -1.0f, +1.0f, -1.0f));
@@ -306,7 +306,7 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
     {
         (var sin, var cos) = MathUtilities.SinCos(angle * 0.5f);
 
-        if (Sse41.IsSupported || AdvSimd.IsSupported)
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
         {
             var result = Multiply(normalizedAxis.AsVector128(), Vector128.Create(sin));
             result = result.WithElement(3, cos);
@@ -365,7 +365,7 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Quaternion Inverse(Quaternion value)
     {
-        if (Sse41.IsSupported || AdvSimd.IsSupported)
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
         {
             var lengthSq = LengthSquared(value._value);
             var conjugate = QuaternionConjugate(value._value);

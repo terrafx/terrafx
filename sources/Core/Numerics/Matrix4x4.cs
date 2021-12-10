@@ -10,6 +10,7 @@ using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.Arm;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
+using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VectorUtilities;
 using SysMatrix4x4 = System.Numerics.Matrix4x4;
@@ -176,7 +177,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static Vector4 ComputeRow(in Matrix4x4 left, Vector4 right)
         {
-            if (Sse.IsSupported || AdvSimd.IsSupported)
+            if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
             {
                 var vRight = right.AsVector128();
 
@@ -251,7 +252,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     /// <returns>A matrix that represents <paramref name="rotation" />.</returns>
     public static Matrix4x4 CreateFromRotation(Quaternion rotation)
     {
-        if (Sse.IsSupported || AdvSimd.Arm64.IsSupported)
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
         {
             var quaternion = rotation.AsVector128();
 
@@ -327,13 +328,100 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
         }
     }
 
+    /// <summary>Creates a matrix from a the specified rotation around the x-axis.</summary>
+    /// <param name="rotationX">A float representing the rotation around the x-axis for the matrix.</param>
+    /// <returns>A matrix that represents <paramref name="rotationX" />.</returns>
+    public static Matrix4x4 CreateFromRotationX(float rotationX)
+    {
+        var (sin, cos) = SinCos(rotationX);
+
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
+        {
+            var tmp = CreateFromWXAD(Vector128.CreateScalar(cos), Vector128.CreateScalar(sin));
+
+            return new Matrix4x4(
+                Vector4.UnitX.AsVector128(),
+                tmp,
+                Multiply(CreateFromXZYW(tmp), Vector128.Create(1.0f, -1.0f, 1.0f, 1.0f)),
+                Vector4.UnitW.AsVector128()
+            );
+        }
+        else
+        {
+            return new Matrix4x4(
+                Vector4.UnitX,
+                new Vector4(0.0f, +cos, sin, 0.0f),
+                new Vector4(0.0f, -sin, cos, 0.0f),
+                Vector4.UnitW
+            );
+        }
+    }
+
+    /// <summary>Creates a matrix from a the specified rotation around the y-axis.</summary>
+    /// <param name="rotationY">A float representing the rotation around the y-axis for the matrix.</param>
+    /// <returns>A matrix that represents <paramref name="rotationY" />.</returns>
+    public static Matrix4x4 CreateFromRotationY(float rotationY)
+    {
+        var (sin, cos) = SinCos(rotationY);
+
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
+        {
+            var tmp = CreateFromXWAD(Vector128.CreateScalar(sin), Vector128.CreateScalar(cos));
+
+            return new Matrix4x4(
+                Multiply(CreateFromZYXW(tmp), Vector128.Create(1.0f, 1.0f, -1.0f, 1.0f)),
+                Vector4.UnitY.AsVector128(),
+                tmp,
+                Vector4.UnitW.AsVector128()
+            );
+        }
+        else
+        {
+            return new Matrix4x4(
+                new Vector4(cos, 0.0f, -sin, 0.0f),
+                Vector4.UnitY,
+                new Vector4(sin, 0.0f, +cos, 0.0f),
+                Vector4.UnitW
+            );
+        }
+    }
+
+    /// <summary>Creates a matrix from a the specified rotation around the z-axis.</summary>
+    /// <param name="rotationZ">A float representing the rotation around the z-axis for the matrix.</param>
+    /// <returns>A matrix that represents <paramref name="rotationZ" />.</returns>
+    public static Matrix4x4 CreateFromRotationZ(float rotationZ)
+    {
+        var (sin, cos) = SinCos(rotationZ);
+
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
+        {
+            var tmp = InterleaveLower(Vector128.CreateScalar(cos), Vector128.CreateScalar(sin));
+
+            return new Matrix4x4(
+                tmp,
+                Multiply(CreateFromYXZW(tmp), Vector128.Create(-1.0f, 1.0f, 1.0f, 1.0f)),
+                Vector4.UnitZ.AsVector128(),
+                Vector4.UnitW.AsVector128()
+            );
+        }
+        else
+        {
+            return new Matrix4x4(
+                new Vector4(+cos, sin, 0.0f, 0.0f),
+                new Vector4(-sin, cos, 0.0f, 0.0f),
+                Vector4.UnitZ,
+                Vector4.UnitW
+            );
+        }
+    }
+
     /// <summary>Creates a matrix from a scaling vector.</summary>
     /// <param name="scale">A vector representing the scale of the matrix.</param>
     /// <returns>A matrix that represents <paramref name="scale" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Matrix4x4 CreateFromScale(Vector3 scale)
     {
-        if (Sse.IsSupported || AdvSimd.IsSupported)
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
         {
             var vScale = scale.AsVector128();
 
@@ -481,7 +569,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Matrix4x4 Transpose(Matrix4x4 value)
     {
-        if (Sse.IsSupported || AdvSimd.Arm64.IsSupported)
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
         {
             // X.X, Z.X, X.Y, Z.Y
             // X.Z, Z.Z, X.W, Z.W

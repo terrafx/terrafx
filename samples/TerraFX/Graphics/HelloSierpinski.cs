@@ -88,9 +88,9 @@ public class HelloSierpinski : HelloWindow
         // Shaders take transposed matrices, so we want to mirror along the diagonal
         pConstantBuffer[0] = new Matrix4x4(
             new Vector4(+cos, 0.0f, -sin, 0.0f),
-            new Vector4(0.0f, 1.0f, 0.0f, 0.0f),
+            Vector4.UnitY,
             new Vector4(+sin, 0.0f, +cos, 0.0f),
-            new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
+            Vector4.UnitW
         );
 
         constantBufferView.UnmapAndWrite();

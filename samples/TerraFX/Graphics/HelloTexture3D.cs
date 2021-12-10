@@ -96,7 +96,7 @@ public class HelloTexture3D : HelloWindow
             new Vector4(scaleX, 0.0f, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
             new Vector4(0.0f, scaleY, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
             new Vector4(0.0f, 0.0f, 1.0f, z),
-            new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
+            Vector4.UnitW
         );
 
         constantBufferView.UnmapAndWrite();

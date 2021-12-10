@@ -40,11 +40,11 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> Abs(Vector128<float> value)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.And(value, Vector128.Create(0x7FFFFFFF).AsSingle());
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.Abs(value);
         }
@@ -71,11 +71,11 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> Add(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Add(left, right);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.Add(left, right);
         }
@@ -102,11 +102,11 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> BitwiseAnd(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.And(left, right);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.And(left, right);
         }
@@ -134,11 +134,11 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> BitwiseAndNot(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.AndNot(right, left);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.BitwiseClear(left, right);
         }
@@ -166,11 +166,11 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> BitwiseOr(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Or(left, right);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.Or(left, right);
         }
@@ -198,11 +198,11 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> BitwiseXor(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Xor(left, right);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.Xor(left, right);
         }
@@ -230,11 +230,11 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CompareEqual(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.CompareEqual(left, right);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.CompareEqual(left, right);
         }
@@ -262,13 +262,13 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CompareEqual(Vector128<float> left, Vector128<float> right, Vector128<float> epsilon)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             var result = Sse.Subtract(left, right);
             result = Sse.And(result, Vector128.Create(0x7FFFFFFF).AsSingle());
             return Sse.CompareLessThanOrEqual(result, epsilon);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             var result = AdvSimd.Subtract(left, right);
             result = AdvSimd.Abs(result);
@@ -297,7 +297,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CompareEqualAll(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             var result = Sse.CompareNotEqual(left, right);
             return Sse.MoveMask(result) == 0x00;
@@ -329,7 +329,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CompareEqualAll(Vector128<float> left, Vector128<float> right, Vector128<float> epsilon)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             var result = Sse.Subtract(left, right);
             result = Sse.And(result, Vector128.Create(0x7FFFFFFF).AsSingle());
@@ -364,11 +364,11 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CompareGreaterThan(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.CompareGreaterThan(left, right);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.CompareGreaterThan(left, right);
         }
@@ -395,11 +395,11 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CompareGreaterThanOrEqual(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.CompareGreaterThanOrEqual(left, right);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.CompareGreaterThanOrEqual(left, right);
         }
@@ -426,11 +426,11 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CompareLessThan(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.CompareLessThan(left, right);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.CompareLessThan(left, right);
         }
@@ -457,11 +457,11 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CompareLessThanOrEqual(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.CompareLessThanOrEqual(left, right);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.CompareLessThanOrEqual(left, right);
         }
@@ -488,7 +488,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CompareNotEqualAny(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             var result = Sse.CompareNotEqual(left, right);
             return Sse.MoveMask(result) != 0x00;
@@ -546,7 +546,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CompareTrueAny(Vector128<float> value)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.MoveMask(value) != 0x00;
         }
@@ -578,11 +578,11 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b00_00_00_00);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b00_00_00_00);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.DuplicateSelectedScalarToVector128(value, 0);
         }
@@ -603,11 +603,11 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b01_01_01_01);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b01_01_01_01);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.DuplicateSelectedScalarToVector128(value, 1);
         }
@@ -628,11 +628,11 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b10_10_10_10);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b10_10_10_10);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.DuplicateSelectedScalarToVector128(value, 2);
         }
@@ -653,11 +653,11 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b11_11_11_11);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b11_11_11_11);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.DuplicateSelectedScalarToVector128(value, 3);
         }
@@ -678,7 +678,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b11_01_00_00);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b11_01_00_00);
         }
@@ -704,7 +704,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromXXYY(Vector128<float> value)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.UnpackLow(value, value);
         }
@@ -733,7 +733,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b10_00_10_00);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b10_00_10_00);
         }
@@ -762,7 +762,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b11_01_10_00);
         }
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b11_01_10_00);
         }
@@ -794,7 +794,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b01_11_10_00);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b01_11_10_00);
         }
@@ -829,7 +829,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b00_10_11_00);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b00_10_11_00);
         }
@@ -864,7 +864,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b00_00_00_01);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b00_00_00_01);
         }
@@ -894,7 +894,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b11_00_00_01);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b11_00_00_01);
         }
@@ -917,6 +917,38 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Y</c>, <c>X</c>, <c>Z</c>, and <c>W</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromYXZW(Vector128<float> value)
+    {
+        if (Avx.IsSupported)
+        {
+            return Avx.Permute(value, 0b11_10_00_01);
+        }
+        else if (Sse41.IsSupported)
+        {
+            return Sse.Shuffle(value, value, 0b11_10_00_01);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                AdvSimd.ReverseElement32(value.GetLower().AsInt64()).AsSingle(),
+                value.GetUpper()
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(1),
+                value.GetElement(0),
+                value.GetElement(2),
+                value.GetElement(3)
+            );
+        }
+    }
+
     /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Y</c>, <c>X</c>, <c>W</c>, and <c>Z</c> components of the input vector.</summary>
     /// <param name="value">The vector whose components is used to initialize elements.</param>
     /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
@@ -927,11 +959,11 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b10_11_00_01);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b10_11_00_01);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             var result = value.AsUInt64();
             result = AdvSimd.ReverseElement32(result);
@@ -958,7 +990,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b01_00_10_01);
         }
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b01_00_10_01);
         }
@@ -991,7 +1023,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b11_00_10_01);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b11_00_10_01);
         }
@@ -1026,7 +1058,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b10_00_11_01);
         }
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b10_00_11_01);
         }
@@ -1061,7 +1093,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b00_01_00_10);
         }
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b00_01_00_10);
         }
@@ -1096,7 +1128,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b11_01_00_10);
         }
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b11_01_00_10);
         }
@@ -1131,7 +1163,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b01_11_00_10);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b01_11_00_10);
         }
@@ -1156,6 +1188,41 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>Y</c>, <c>X</c>, and <c>W</c> components of the input vector.</summary>
+    /// <param name="value">The vector whose components is used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromZYXW(Vector128<float> value)
+    {
+        if (Avx.IsSupported)
+        {
+            return Avx.Permute(value, 0b11_00_01_10);
+        }
+        else if (Sse41.IsSupported)
+        {
+            return Sse.Shuffle(value, value, 0b11_00_01_10);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            var indices = Vector128.Create(
+                0x8, 0x9, 0xA, 0xB, // Z
+                0x4, 0x5, 0x6, 0x7, // Y
+                0x0, 0x1, 0x2, 0x3, // X
+                0xC, 0xD, 0xE, 0xF  // W
+            );
+            return AdvSimd.Arm64.VectorTableLookup(value.AsSByte(), indices).AsSingle();
+        }
+        else
+        {
+            return Vector128.Create(
+                value.GetElement(2),
+                value.GetElement(1),
+                value.GetElement(0),
+                value.GetElement(3)
+            );
+        }
+    }
+
     /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>Z</c>, <c>Y</c>, <c>Z</c>, and <c>W</c> components of the input vector.</summary>
     /// <param name="value">The vector whose components is used to initialize elements.</param>
     /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="value" />.</returns>
@@ -1166,7 +1233,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b11_10_01_10);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b11_10_01_10);
         }
@@ -1195,7 +1262,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b01_01_10_10);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b01_01_10_10);
         }
@@ -1227,7 +1294,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b11_01_10_10);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b11_01_10_10);
         }
@@ -1262,11 +1329,11 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b01_00_11_10);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b01_00_11_10);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return Vector128.Create(value.GetUpper(), value.GetLower());
         }
@@ -1291,7 +1358,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b10_01_11_10);
         }
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b10_01_11_10);
         }
@@ -1320,7 +1387,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromZWZW(Vector128<float> value)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.MoveHighToLow(value, value);
         }
@@ -1350,7 +1417,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b10_01_00_11);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b10_01_00_11);
         }
@@ -1379,7 +1446,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b00_11_00_11);
         }
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b00_11_00_11);
         }
@@ -1414,11 +1481,11 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b00_01_10_11);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b00_01_10_11);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             var result = AdvSimd.ReverseElement32(value.AsUInt64()).AsSingle();
             return Vector128.Create(result.GetUpper(), result.GetLower());
@@ -1444,7 +1511,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b01_11_10_11);
         }
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b01_11_10_11);
         }
@@ -1479,7 +1546,7 @@ public static class VectorUtilities
         {
             return Avx.Permute(value, 0b10_11_11_11);
         }
-        else if (Sse.IsSupported)
+        else if (Sse41.IsSupported)
         {
             return Sse.Shuffle(value, value, 0b10_11_11_11);
         }
@@ -1599,7 +1666,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromXXAB(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b01_00_00_00);
         }
@@ -1628,7 +1695,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromXXCC(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b10_10_00_00);
         }
@@ -1657,7 +1724,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromXYAA(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b00_00_01_00);
         }
@@ -1686,7 +1753,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromXYAC(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b10_00_01_00);
         }
@@ -1715,7 +1782,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromXYCC(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b10_10_01_00);
         }
@@ -1744,7 +1811,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromXYCD(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b11_10_01_00);
         }
@@ -1770,7 +1837,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromXZAC(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b10_00_10_00);
         }
@@ -1796,7 +1863,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromXZBD(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b11_01_10_00);
         }
@@ -1825,7 +1892,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromXWAB(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b01_00_11_00);
         }
@@ -1848,6 +1915,35 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>X</c>, <c>W</c>, <c>A</c>, and <c>D</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromXWAD(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse41.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b11_00_11_00);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                AdvSimd.Arm64.InsertSelectedScalar(lower.GetLower(), 1, lower, 3),
+                AdvSimd.Arm64.InsertSelectedScalar(upper.GetLower(), 1, upper, 3)
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(0),
+                lower.GetElement(3),
+                upper.GetElement(0),
+                upper.GetElement(3)
+            );
+        }
+    }
+
     /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>X</c>, <c>W</c>, <c>C</c>, and <c>D</c> components of the input vectors.</summary>
     /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
     /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
@@ -1855,7 +1951,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromXWCD(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b11_10_11_00);
         }
@@ -1885,7 +1981,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromYXAA(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b00_00_00_01);
         }
@@ -1914,7 +2010,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromYZAB(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b01_00_10_01);
         }
@@ -1943,7 +2039,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromYZBC(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b10_01_10_01);
         }
@@ -1972,7 +2068,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromYZCB(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b01_10_10_01);
         }
@@ -2001,7 +2097,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromYWBB(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b01_01_11_01);
         }
@@ -2028,7 +2124,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromYWBD(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b11_01_11_01);
         }
@@ -2054,7 +2150,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromYWCD(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b11_10_11_01);
         }
@@ -2083,7 +2179,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromYWDD(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b11_11_11_01);
         }
@@ -2110,7 +2206,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromZXDA(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b00_11_00_10);
         }
@@ -2138,7 +2234,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromZYBD(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b11_01_01_10);
         }
@@ -2167,7 +2263,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromZYCA(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b00_10_01_10);
         }
@@ -2195,7 +2291,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromZZAB(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b01_00_10_10);
         }
@@ -2224,7 +2320,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromZZCB(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b01_10_10_10);
         }
@@ -2253,7 +2349,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromZZCD(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b11_10_10_10);
         }
@@ -2282,7 +2378,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromZWCA(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b00_10_11_10);
         }
@@ -2311,7 +2407,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromZWCB(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b01_10_11_10);
         }
@@ -2333,6 +2429,35 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>W</c>, <c>X</c>, <c>A</c>, and <c>D</c> components of the input vectors.</summary>
+    /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
+    /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
+    /// <returns>A new <see cref="Vector128{Single}" /> with elements initialized to the components of <paramref name="lower" /> and <paramref name="upper" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> CreateFromWXAD(Vector128<float> lower, Vector128<float> upper)
+    {
+        if (Sse41.IsSupported)
+        {
+            return Sse.Shuffle(lower, upper, 0b11_00_00_11);
+        }
+        else if (AdvSimd.Arm64.IsSupported)
+        {
+            return Vector128.Create(
+                AdvSimd.ExtractVector64(lower.GetLower(), lower.GetUpper(), 1),
+                AdvSimd.Arm64.InsertSelectedScalar(upper.GetLower(), 1, upper, 3)
+            );
+        }
+        else
+        {
+            return Vector128.Create(
+                lower.GetElement(3),
+                lower.GetElement(0),
+                upper.GetElement(0),
+                upper.GetElement(3)
+            );
+        }
+    }
+
     /// <summary>Creates a new <see cref="Vector128{Single}" /> instance with elements initialized, in order, to the respective <c>W</c>, <c>X</c>, <c>B</c>, and <c>C</c> components of the input vectors.</summary>
     /// <param name="lower">The vector whose components represent the lower indices used to initialize elements.</param>
     /// <param name="upper">The vector whose components represent the upper indices used to initialize elements.</param>
@@ -2340,7 +2465,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CreateFromWXBC(Vector128<float> lower, Vector128<float> upper)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Shuffle(lower, upper, 0b10_01_00_11);
         }
@@ -2369,7 +2494,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> CrossProduct(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported || AdvSimd.IsSupported)
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
         {
             var result = Multiply(CreateFromYZXW(left), CreateFromZXYW(right));
             result = MultiplyAddNegated(result, CreateFromZXYW(left), CreateFromYZXW(right));
@@ -2393,7 +2518,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> Divide(Vector128<float> left, float right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             var scalar = Vector128.Create(right);
             return Sse.Divide(left, scalar);
@@ -2426,7 +2551,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> Divide(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Divide(left, right);
         }
@@ -2494,7 +2619,7 @@ public static class VectorUtilities
         {
             return Sse41.BlendVariable(right, left, condition);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.BitwiseSelect(condition, left, right);
         }
@@ -2522,7 +2647,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> InterleaveLower(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.UnpackLow(left, right);
         }
@@ -2553,7 +2678,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> InterleaveUpper(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.UnpackHigh(left, right);
         }
@@ -2645,7 +2770,7 @@ public static class VectorUtilities
             var msk = Sse.CompareUnordered(left, right);
             return Sse41.BlendVariable(tmp, left, msk);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.Max(left, right);
         }
@@ -2679,7 +2804,7 @@ public static class VectorUtilities
             var msk = Sse.CompareUnordered(left, left);
             return Sse41.BlendVariable(tmp, left, msk);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.Min(left, right);
         }
@@ -2706,12 +2831,12 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> Multiply(Vector128<float> left, float right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             var scalar = Vector128.Create(right);
             return Sse.Multiply(left, scalar);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             var scalar = Vector64.CreateScalar(right);
             return AdvSimd.MultiplyBySelectedScalar(left, scalar, 0);
@@ -2739,11 +2864,11 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> Multiply(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Multiply(left, right);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.Multiply(left, right);
         }
@@ -2771,12 +2896,12 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> MultiplyAdd(Vector128<float> addend, Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             var result = Sse.Multiply(left, right);
             return Sse.Add(addend, result);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             var result = AdvSimd.Multiply(left, right);
             return AdvSimd.Add(addend, result);
@@ -2805,13 +2930,13 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> MultiplyAddByX(Vector128<float> addend, Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             var scalar = CreateFromX(right);
             var result = Sse.Multiply(left, scalar);
             return Sse.Add(result, addend);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             var result = AdvSimd.MultiplyBySelectedScalar(left, right, 0);
             return AdvSimd.Add(result, addend);
@@ -2841,13 +2966,13 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> MultiplyAddByY(Vector128<float> addend, Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             var scalar = CreateFromY(right);
             var result = Sse.Multiply(left, scalar);
             return Sse.Add(addend, result);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             var result = AdvSimd.MultiplyBySelectedScalar(left, right, 1);
             return AdvSimd.Add(addend, result);
@@ -2877,13 +3002,13 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> MultiplyAddByZ(Vector128<float> addend, Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             var scalar = CreateFromZ(right);
             var result = Sse.Multiply(left, scalar);
             return Sse.Add(result, addend);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             var result = AdvSimd.MultiplyBySelectedScalar(left, right, 2);
             return AdvSimd.Add(result, addend);
@@ -2913,13 +3038,13 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> MultiplyAddByW(Vector128<float> addend, Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             var scalar = CreateFromW(right);
             var result = Sse.Multiply(left, scalar);
             return Sse.Add(addend, result);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             var result = AdvSimd.MultiplyBySelectedScalar(left, right, 3);
             return AdvSimd.Add(addend, result);
@@ -2949,12 +3074,12 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> MultiplyAddNegated(Vector128<float> addend, Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             var result = Sse.Multiply(left, right);
             return Sse.Subtract(addend, result);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             var result = AdvSimd.Multiply(left, right);
             return AdvSimd.Subtract(addend, result);
@@ -2982,12 +3107,12 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> MultiplyByX(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             var scalar = CreateFromX(right);
             return Sse.Multiply(left, scalar);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.MultiplyBySelectedScalar(left, right, 0);
         }
@@ -3015,12 +3140,12 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> MultiplyByY(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             var scalar = CreateFromY(right);
             return Sse.Multiply(left, scalar);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.MultiplyBySelectedScalar(left, right, 1);
         }
@@ -3048,12 +3173,12 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> MultiplyByZ(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             var scalar = CreateFromZ(right);
             return Sse.Multiply(left, scalar);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.MultiplyBySelectedScalar(left, right, 2);
         }
@@ -3081,12 +3206,12 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> MultiplyByW(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             var scalar = CreateFromW(right);
             return Sse.Multiply(left, scalar);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.MultiplyBySelectedScalar(left, right, 3);
         }
@@ -3113,11 +3238,11 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> Negate(Vector128<float> value)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Subtract(Vector128<float>.Zero, value);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.Negate(value);
         }
@@ -3166,7 +3291,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> QuaternionConjugate(Vector128<float> value)
     {
-        if (Sse.IsSupported || AdvSimd.IsSupported)
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
         {
             var multiplier = Vector128.Create(-1.0f, -1.0f, -1.0f, 1.0f);
             return Multiply(value, multiplier);
@@ -3188,11 +3313,11 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> ReciprocalEstimate(Vector128<float> value)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Reciprocal(value);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.ReciprocalEstimate(value);
         }
@@ -3218,7 +3343,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> ReciprocalSqrtEstimate(Vector128<float> value)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.ReciprocalSqrt(value);
         }
@@ -3276,7 +3401,7 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> Sqrt(Vector128<float> value)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Sqrt(value);
         }
@@ -3307,11 +3432,11 @@ public static class VectorUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> Subtract(Vector128<float> left, Vector128<float> right)
     {
-        if (Sse.IsSupported)
+        if (Sse41.IsSupported)
         {
             return Sse.Subtract(left, right);
         }
-        else if (AdvSimd.IsSupported)
+        else if (AdvSimd.Arm64.IsSupported)
         {
             return AdvSimd.Subtract(left, right);
         }

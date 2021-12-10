@@ -50,7 +50,7 @@ public class Vector4Tests
     public static void UnitWTest()
     {
         Assert.That(() => Vector4.UnitW,
-            Is.EqualTo(new Vector4(0.0f, 0.0f, 0.0f, 1.0f))
+            Is.EqualTo(Vector4.UnitW)
         );
     }
 

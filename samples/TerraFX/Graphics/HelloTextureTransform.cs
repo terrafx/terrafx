@@ -82,7 +82,7 @@ public sealed class HelloTextureTransform : HelloWindow
             new Vector4(1.0f, 0.0f, 0.0f, x),
             new Vector4(0.0f, 1.0f, 0.0f, y),
             new Vector4(0.0f, 0.0f, 1.0f, 0),
-            new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
+            Vector4.UnitW
         );
 
         constantBufferView.UnmapAndWrite();

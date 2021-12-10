@@ -68,7 +68,7 @@ public class Matrix4x4Tests
     public static void DeterminantTest()
     {
         Assert.That(() => new Matrix4x4(
-            new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
+            Vector4.UnitX,
             new Vector4(0.0f, 2.0f, 0.0f, 0.0f),
             new Vector4(0.0f, 0.0f, 3.0f, 0.0f),
             new Vector4(1.0f, 2.0f, 3.0f, 1.0f)
@@ -140,7 +140,7 @@ public class Matrix4x4Tests
     {
         Assert.That(() => Matrix4x4.CreateFromAffineTransform(new AffineTransform(Quaternion.CreateFromAxisAngle(Vector3.UnitX, 0.5f), Vector3.One, Vector3.Zero)),
             Is.EqualTo(new Matrix4x4(
-                new Vector4(1.0f, +0.00000000f, 0.00000000f, 0.0f),
+                Vector4.UnitX,
                 new Vector4(0.0f, +0.87758255f, 0.47942555f, 0.0f),
                 new Vector4(0.0f, -0.47942555f, 0.87758255f, 0.0f),
                 Vector4.UnitW
@@ -149,7 +149,7 @@ public class Matrix4x4Tests
 
         Assert.That(() => Matrix4x4.CreateFromAffineTransform(new AffineTransform(Quaternion.Identity, new Vector3(1.0f, 2.0f, 3.0f), Vector3.Zero)),
             Is.EqualTo(new Matrix4x4(
-                new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
+                Vector4.UnitX,
                 new Vector4(0.0f, 2.0f, 0.0f, 0.0f),
                 new Vector4(0.0f, 0.0f, 3.0f, 0.0f),
                 Vector4.UnitW
@@ -158,14 +158,13 @@ public class Matrix4x4Tests
 
         Assert.That(() => Matrix4x4.CreateFromAffineTransform(new AffineTransform(Quaternion.Identity, Vector3.One, new Vector3(1.0f, 2.0f, 3.0f))),
             Is.EqualTo(new Matrix4x4(
-                new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
-                new Vector4(0.0f, 1.0f, 0.0f, 0.0f),
-                new Vector4(0.0f, 0.0f, 1.0f, 0.0f),
+                Vector4.UnitX,
+                Vector4.UnitY,
+                Vector4.UnitZ,
                 new Vector4(1.0f, 2.0f, 3.0f, 1.0f)
             ))
         );
     }
-
 
     /// <summary>Provides validation of the <see cref="Matrix4x4.CreateFromRotation" /> method.</summary>
     [Test]
@@ -173,9 +172,51 @@ public class Matrix4x4Tests
     {
         Assert.That(() => Matrix4x4.CreateFromRotation(Quaternion.CreateFromAxisAngle(Vector3.UnitX, 0.5f)),
             Is.EqualTo(new Matrix4x4(
-                new Vector4(1.0f, +0.00000000f, 0.00000000f, 0.0f),
+                Vector4.UnitX,
                 new Vector4(0.0f, +0.87758255f, 0.47942555f, 0.0f),
                 new Vector4(0.0f, -0.47942555f, 0.87758255f, 0.0f),
+                Vector4.UnitW
+            ))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreateFromRotationX" /> method.</summary>
+    [Test]
+    public static void CreateFromRotationXTest()
+    {
+        Assert.That(() => Matrix4x4.CreateFromRotationX(0.5f),
+            Is.EqualTo(new Matrix4x4(
+                Vector4.UnitX,
+                new Vector4(0.0f, +0.87758255f, 0.47942555f, 0.0f),
+                new Vector4(0.0f, -0.47942555f, 0.87758255f, 0.0f),
+                Vector4.UnitW
+            ))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreateFromRotationY" /> method.</summary>
+    [Test]
+    public static void CreateFromRotationYTest()
+    {
+        Assert.That(() => Matrix4x4.CreateFromRotationY(0.5f),
+            Is.EqualTo(new Matrix4x4(
+                new Vector4(0.87758255f, 0.0f, -0.47942555f, 0.0f),
+                Vector4.UnitY,
+                new Vector4(0.47942555f, 0.0f, +0.87758255f, 0.0f),
+                Vector4.UnitW
+            ))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Matrix4x4.CreateFromRotationZ" /> method.</summary>
+    [Test]
+    public static void CreateFromRotationZTest()
+    {
+        Assert.That(() => Matrix4x4.CreateFromRotationZ(0.5f),
+            Is.EqualTo(new Matrix4x4(
+                new Vector4(+0.87758255f, 0.47942555f, 0.0f, 0.0f),                
+                new Vector4(-0.47942555f, 0.87758255f, 0.0f, 0.0f),
+                Vector4.UnitZ,
                 Vector4.UnitW
             ))
         );
@@ -187,7 +228,7 @@ public class Matrix4x4Tests
     {
         Assert.That(() => Matrix4x4.CreateFromScale(new Vector3(1.0f, 2.0f, 3.0f)),
             Is.EqualTo(new Matrix4x4(
-                new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
+                Vector4.UnitX,
                 new Vector4(0.0f, 2.0f, 0.0f, 0.0f),
                 new Vector4(0.0f, 0.0f, 3.0f, 0.0f),
                 Vector4.UnitW
@@ -201,9 +242,9 @@ public class Matrix4x4Tests
     {
         Assert.That(() => Matrix4x4.CreateFromTranslation(new Vector3(1.0f, 2.0f, 3.0f)),
             Is.EqualTo(new Matrix4x4(
-                new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
-                new Vector4(0.0f, 1.0f, 0.0f, 0.0f),
-                new Vector4(0.0f, 0.0f, 1.0f, 0.0f),
+                Vector4.UnitX,
+                Vector4.UnitY,
+                Vector4.UnitZ,
                 new Vector4(1.0f, 2.0f, 3.0f, 1.0f)
             ))
         );
@@ -215,7 +256,7 @@ public class Matrix4x4Tests
     {
         Assert.That(() => {
             var matrix = new Matrix4x4(
-                new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
+                Vector4.UnitX,
                 new Vector4(0.0f, 2.0f, 0.0f, 0.0f),
                 new Vector4(0.0f, 0.0f, 3.0f, 0.0f),
                 new Vector4(1.0f, 2.0f, 3.0f, 1.0f)

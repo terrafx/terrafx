@@ -188,7 +188,7 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 CompareEqual(Vector2 left, Vector2 right)
     {
-        if (Sse.IsSupported || AdvSimd.IsSupported)
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
         {
             var result = VectorUtilities.CompareEqual(left._value.AsVector128(), right._value.AsVector128());
             return new Vector2(result);
@@ -215,7 +215,7 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 CompareEqual(Vector2 left, Vector2 right, Vector2 epsilon)
     {
-        if (Sse.IsSupported || AdvSimd.IsSupported)
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
         {
             var result = VectorUtilities.CompareEqual(left._value.AsVector128(), right._value.AsVector128(), epsilon._value.AsVector128());
             return new Vector2(result);
@@ -249,7 +249,7 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CompareEqualAll(Vector2 left, Vector2 right, Vector2 epsilon)
     {
-        if (Sse.IsSupported || AdvSimd.Arm64.IsSupported)
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
         {
             return VectorUtilities.CompareEqualAll(left._value.AsVector128(), right._value.AsVector128(), epsilon._value.AsVector128());
         }
@@ -291,7 +291,7 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 Max(Vector2 left, Vector2 right)
     {
-        if (Sse41.IsSupported || AdvSimd.IsSupported)
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
         {
             var result = VectorUtilities.Max(left._value.AsVector128(), right._value.AsVector128());
             return new Vector2(result);
@@ -317,7 +317,7 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 Min(Vector2 left, Vector2 right)
     {
-        if (Sse41.IsSupported || AdvSimd.IsSupported)
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
         {
             var result = VectorUtilities.Min(left._value.AsVector128(), right._value.AsVector128());
             return new Vector2(result);
@@ -382,7 +382,7 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 Sqrt(Vector2 value)
     {
-        if (Sse41.IsSupported || AdvSimd.IsSupported)
+        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
         {
             var result = VectorUtilities.Sqrt(value._value.AsVector128());
             return new Vector2(result);
