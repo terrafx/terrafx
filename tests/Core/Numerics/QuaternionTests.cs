@@ -1,6 +1,7 @@
 using System.Runtime.Intrinsics;
 using NUnit.Framework;
 using TerraFX.Numerics;
+using TerraFX.Utilities;
 using SysQuaternion = System.Numerics.Quaternion;
 
 namespace TerraFX.UnitTests.Numerics;
@@ -65,7 +66,7 @@ public class QuaternionTests
     public static void AngleTest()
     {
         Assert.That(() => new Quaternion(0.0f, 1.0f, 2.0f, 0.5f).Angle,
-            Is.EqualTo(2.0943952f)
+            Is.EqualTo(2.0943952f).Within(VectorUtilities.NearZeroEpsilon)
         );
     }
 

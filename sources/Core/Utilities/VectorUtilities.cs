@@ -30,7 +30,7 @@ public static class VectorUtilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
         {
-            return 1.192092896e-7f;
+            return 4.7683716E-07f; // 2^-21: 0x35000000
         }
     }
 
