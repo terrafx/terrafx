@@ -1,136 +1,380 @@
+using System.Runtime.Intrinsics;
 using NUnit.Framework;
 using TerraFX.Numerics;
+using SysVector4 = System.Numerics.Vector4;
 
 namespace TerraFX.UnitTests.Numerics;
 
-/// <summary>Unit tests for <see cref="Vector4" />.</summary>
+/// <summary>Provides a set of tests covering the <see cref="Vector4" /> struct.</summary>
+[TestFixture(TestOf = typeof(Vector4))]
 public class Vector4Tests
 {
-    /// <summary>Ensures that a vector's components are equal to the parameters used to construct one.</summary>
+    /// <summary>Provides validation of the <see cref="Vector4.Zero" /> property.</summary>
     [Test]
-    public static void ComponentsReturnCorrectValues(
-        [Values(1, 2, 3)] float x,
-        [Values(1, 2, 3)] float y,
-        [Values(1, 2, 3)] float z,
-        [Values(1, 2, 3)] float w)
+    public static void ZeroTest()
     {
-        var vector = new Vector4(x, y, z, w);
-
-        Assert.That(vector.X, Is.EqualTo(x));
-        Assert.That(vector.Y, Is.EqualTo(y));
-        Assert.That(vector.Z, Is.EqualTo(z));
-        Assert.That(vector.W, Is.EqualTo(w));
+        Assert.That(() => Vector4.Zero,
+            Is.EqualTo(new Vector4(0.0f, 0.0f, 0.0f, 0.0f))
+        );
     }
 
-    /// <summary>Ensures that two vectors that are expected to compare equal do, in fact compare equal.</summary>
+    /// <summary>Provides validation of the <see cref="Vector4.UnitX" /> property.</summary>
     [Test]
-    public static void VectorsCompareEqual()
+    public static void UnitXTest()
     {
-        Assert.That(new Vector4(0, 0, 0, 0) == new Vector4(0, 0, 0, 0), Is.True);
-        Assert.That(new Vector4(0, 0, 0, 0) == new Vector4(1, 1, 1, 1), Is.False);
+        Assert.That(() => Vector4.UnitX,
+            Is.EqualTo(new Vector4(1.0f, 0.0f, 0.0f, 0.0f))
+        );
     }
 
-    /// <summary>Ensures that two vectors that are expected to compare not equal do, in fact compare not equal.</summary>
+    /// <summary>Provides validation of the <see cref="Vector4.UnitY" /> property.</summary>
     [Test]
-    public static void VectorsCompareNotEqual()
+    public static void UnitYTest()
     {
-        Assert.That(new Vector4(0, 0, 0, 0) != new Vector4(0, 0, 0, 0), Is.False);
-        Assert.That(new Vector4(0, 0, 0, 0) != new Vector4(1, 1, 1, 1), Is.True);
+        Assert.That(() => Vector4.UnitY,
+            Is.EqualTo(new Vector4(0.0f, 1.0f, 0.0f, 0.0f))
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector4.operator+(Vector4)" /> returns its input unchanced.</summary>
+    /// <summary>Provides validation of the <see cref="Vector4.UnitZ" /> property.</summary>
     [Test]
-    public static void UnaryPlusReturnsUnchanged() => Assert.That(+Vector4.Zero == Vector4.Zero, Is.True);
-
-    /// <summary>Ensures that <see cref="Vector4.operator-(Vector4)" /> returns the negation of its input.</summary>
-    [Test]
-    public static void UnaryNegationReturnsNegative()
+    public static void UnitZTest()
     {
-        var vector = -new Vector4(1, 1, 1, 1);
-
-        Assert.That(vector, Is.EqualTo(new Vector4(-1, -1, -1, -1)));
+        Assert.That(() => Vector4.UnitZ,
+            Is.EqualTo(new Vector4(0.0f, 0.0f, 1.0f, 0.0f))
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector4.operator+(Vector4,Vector4)" /> returns the vector sum of its components.</summary>
+    /// <summary>Provides validation of the <see cref="Vector4.UnitW" /> property.</summary>
     [Test]
-    public static void AdditionReturnsSumOfValues()
+    public static void UnitWTest()
     {
-        var vector = new Vector4(1, 2, 3, 4) + new Vector4(1, 2, 3, 4);
-
-        Assert.That(vector, Is.EqualTo(new Vector4(2, 4, 6, 8)));
+        Assert.That(() => Vector4.UnitW,
+            Is.EqualTo(Vector4.UnitW)
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector4.operator-(Vector4,Vector4)" /> returns the vector difference of its components.</summary>
+    /// <summary>Provides validation of the <see cref="Vector4.One" /> property.</summary>
     [Test]
-    public static void SubtractionReturnsDifferenceOfValues()
+    public static void OneTest()
     {
-        var vector = new Vector4(4, 3, 2, 1) - new Vector4(1, 2, 3, 4);
-
-        Assert.That(vector, Is.EqualTo(new Vector4(3, 1, -1, -3)));
+        Assert.That(() => Vector4.One,
+            Is.EqualTo(new Vector4(1.0f, 1.0f, 1.0f, 1.0f))
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector4.operator*(Vector4,Vector4)" /> returns the vector product of its components.</summary>
+    /// <summary>Provides validation of the <see cref="Vector4()" /> constructors.</summary>
     [Test]
-    public static void VectorMultiplicationReturnsProductOfValues()
+    public static void CtorTest()
     {
-        var vector = new Vector4(1, 2, 3, 4) * new Vector4(4, 3, 2, 1);
+        var value = new Vector4();
 
-        Assert.That(vector, Is.EqualTo(new Vector4(4, 6, 6, 4)));
+        Assert.That(() => value.X, Is.EqualTo(0.0f));
+        Assert.That(() => value.Y, Is.EqualTo(0.0f));
+        Assert.That(() => value.Z, Is.EqualTo(0.0f));
+        Assert.That(() => value.W, Is.EqualTo(0.0f));
+
+        value = new Vector4(0.0f, 1.0f, 2.0f, 3.0f);
+
+        Assert.That(() => value.X, Is.EqualTo(0.0f));
+        Assert.That(() => value.Y, Is.EqualTo(1.0f));
+        Assert.That(() => value.Z, Is.EqualTo(2.0f));
+        Assert.That(() => value.W, Is.EqualTo(3.0f));
+
+        value = new Vector4(5.0f);
+
+        Assert.That(() => value.X, Is.EqualTo(5.0f));
+        Assert.That(() => value.Y, Is.EqualTo(5.0f));
+        Assert.That(() => value.Z, Is.EqualTo(5.0f));
+        Assert.That(() => value.W, Is.EqualTo(5.0f));
+
+        value = new Vector4(new Vector2(6.0f, 7.0f), 8.0f, 9.0f);
+
+        Assert.That(() => value.X, Is.EqualTo(6.0f));
+        Assert.That(() => value.Y, Is.EqualTo(7.0f));
+        Assert.That(() => value.Z, Is.EqualTo(8.0f));
+        Assert.That(() => value.W, Is.EqualTo(9.0f));
+
+        value = new Vector4(new Vector3(10.0f, 11.0f, 12.0f), 13.0f);
+
+        Assert.That(() => value.X, Is.EqualTo(10.0f));
+        Assert.That(() => value.Y, Is.EqualTo(11.0f));
+        Assert.That(() => value.Z, Is.EqualTo(12.0f));
+        Assert.That(() => value.W, Is.EqualTo(13.0f));
+
+        value = new Vector4(new SysVector4(14.0f, 15.0f, 16.0f, 17.0f));
+
+        Assert.That(() => value.X, Is.EqualTo(14.0f));
+        Assert.That(() => value.Y, Is.EqualTo(15.0f));
+        Assert.That(() => value.Z, Is.EqualTo(16.0f));
+        Assert.That(() => value.W, Is.EqualTo(17.0f));
+
+        value = new Vector4(Vector128.Create(18.0f, 19.0f, 20.0f, 21.0f));
+
+        Assert.That(() => value.X, Is.EqualTo(18.0f));
+        Assert.That(() => value.Y, Is.EqualTo(19.0f));
+        Assert.That(() => value.Z, Is.EqualTo(20.0f));
+        Assert.That(() => value.W, Is.EqualTo(21.0f));
     }
 
-    /// <summary>Ensures that <see cref="Vector4.operator/(Vector4,Vector4)" /> returns the vector division of its components.</summary>
+    /// <summary>Provides validation of the <see cref="Vector4.Length" /> property.</summary>
     [Test]
-    public static void VectorDivisionReturnsDivisionOfValues()
+    public static void LengthTest()
     {
-        var vector = new Vector4(6, 12, 18, 24) / new Vector4(3, 6, 9, 12);
-
-        Assert.That(vector, Is.EqualTo(new Vector4(2, 2, 2, 2)));
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f).Length,
+            Is.EqualTo(3.7416575f)
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector4.operator*(Vector4,float)" /> returns a vector with each component multiplied by the given float.</summary>
+    /// <summary>Provides validation of the <see cref="Vector4.LengthSquared" /> property.</summary>
     [Test]
-    public static void ScalarMultiplicationReturnValuesScaled()
+    public static void LengthSquaredTest()
     {
-        var vector = new Vector4(1, 2, 3, 4) * 5;
-
-        Assert.That(vector, Is.EqualTo(new Vector4(5, 10, 15, 20)));
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f).LengthSquared,
+            Is.EqualTo(14.0f)
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector4.operator/(Vector4,float)" /> returns a vector with each component divided by the given float.</summary>
+    /// <summary>Provides validation of the <see cref="Vector4.op_Equality" /> method.</summary>
     [Test]
-    public static void ScalarDivisionReturnsValuesScaled()
+    public static void OpEqualityTest()
     {
-        var vector = new Vector4(5, 10, 15, 20) / 5;
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) == new Vector4(0.0f, 1.0f, 2.0f, 3.0f),
+            Is.True
+        );
 
-        Assert.That(vector, Is.EqualTo(new Vector4(1, 2, 3, 4)));
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) == new Vector4(4.0f, 5.0f, 6.0f, 7.0f),
+            Is.False
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector4.Dot(Vector4,Vector4)" /> returns the scalar product of both input vectors.</summary>
+    /// <summary>Provides validation of the <see cref="Vector4.op_Inequality" /> method.</summary>
     [Test]
-    public static void DotProductReturnsScalarProduct()
+    public static void OpInequalityTest()
     {
-        var product = Vector4.Dot(new Vector4(1, 0.5f, 0, 0.25f), new Vector4(2, 1, 0, 2.0f));
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) != new Vector4(0.0f, 1.0f, 2.0f, 3.0f),
+            Is.False
+        );
 
-        Assert.That(product, Is.EqualTo(3.0f));
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) != new Vector4(4.0f, 5.0f, 6.0f, 7.0f),
+            Is.True
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector4.Normalize(Vector4)" /> returns a unit vector.</summary>
+    /// <summary>Provides validation of the <see cref="Vector4.op_UnaryPlus" /> method.</summary>
     [Test]
-    public static void NormalizeReturnsUnitVector()
+    public static void OpUnaryPlusTest()
     {
-        Assert.That(Vector4.Normalize(new Vector4(1, 0, 0, 0)), Is.EqualTo(new Vector4(1, 0, 0, 0)));
-        Assert.That(Vector4.Normalize(new Vector4(0, 2, 0, 0)), Is.EqualTo(new Vector4(0, 1, 0, 0)));
-        Assert.That(Vector4.Normalize(new Vector4(0, 0, 3, 0)), Is.EqualTo(new Vector4(0, 0, 1, 0)));
-        Assert.That(Vector4.Normalize(new Vector4(0, 0, 0, 5)), Is.EqualTo(new Vector4(0, 0, 0, 1)));
+        Assert.That(() => +new Vector4(0.0f, 1.0f, 2.0f, 3.0f),
+            Is.EqualTo(new Vector4(0.0f, 1.0f, 2.0f, 3.0f))
+        );
     }
 
-    /// <summary>Ensures that <see cref="Vector4.Length" /> and <see cref="Vector4.LengthSquared" /> return the magnitude and squared magnitude of the input vector.</summary>
+    /// <summary>Provides validation of the <see cref="Vector4.op_UnaryNegation" /> method.</summary>
     [Test]
-    public static void LengthReturnsMagnitudeOfVector()
+    public static void OpUnaryNegationTest()
     {
-        var vector = new Vector4(0, 5, 0, 0);
+        Assert.That(() => -new Vector4(1.0f, 2.0f, 3.0f, 4.0f),
+            Is.EqualTo(new Vector4(-1.0f, -2.0f, -3.0f, -4.0f))
+        );
+    }
 
-        Assert.That(vector.Length, Is.EqualTo(5));
-        Assert.That(vector.LengthSquared, Is.EqualTo(25));
+    /// <summary>Provides validation of the <see cref="Vector4.op_Addition" /> method.</summary>
+    [Test]
+    public static void OpAdditionTest()
+    {
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) + new Vector4(4.0f, 5.0f, 6.0f, 7.0f),
+            Is.EqualTo(new Vector4(4.0f, 6.0f, 8.0f, 10.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.op_Subtraction" /> method.</summary>
+    [Test]
+    public static void OpSubtractionTest()
+    {
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) - new Vector4(4.0f, 5.0f, 6.0f, 7.0f),
+            Is.EqualTo(new Vector4(-4.0f, -4.0f, -4.0f, -4.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.op_Multiply(Vector4, Vector4)" /> method.</summary>
+    [Test]
+    public static void OpMultiplyTest()
+    {
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) * new Vector4(4.0f, 5.0f, 6.0f, 7.0f),
+            Is.EqualTo(new Vector4(0.0f, 5.0f, 12.0f, 21.0f))
+        );
+
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) * 4.0f,
+            Is.EqualTo(new Vector4(0.0f, 4.0f, 8.0f, 12.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.op_Division(Vector4, Vector4)" /> method.</summary>
+    [Test]
+    public static void OpDivisionTest()
+    {
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) / new Vector4(4.0f, 5.0f, 6.0f, 7.0f),
+            Is.EqualTo(new Vector4(0.0f, 0.2f, 0.33333334f, 0.42857143f))
+        );
+
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) / 4.0f,
+            Is.EqualTo(new Vector4(0.0f, 0.25f, 0.5f, 0.75f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.CompareEqualAll(Vector4, Vector4)" /> method.</summary>
+    [Test]
+    public static void CompareEqualAllTest()
+    {
+        Assert.That(() => Vector4.CompareEqualAll(new Vector4(0.0f, 1.0f, 2.0f, 3.0f), new Vector4(0.0f, 1.0f, 2.0f, 3.0f)),
+            Is.True
+        );
+
+        Assert.That(() => Vector4.CompareEqualAll(new Vector4(0.0f, 1.0f, 2.0f, 3.0f), new Vector4(4.0f, 5.0f, 6.0f, 7.0f)),
+            Is.False
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.DotProduct(Vector4, Vector4)" /> method.</summary>
+    [Test]
+    public static void DotProductTest()
+    {
+        Assert.That(() => Vector4.DotProduct(new Vector4(0.0f, 1.0f, 2.0f, 3.0f), new Vector4(4.0f, 5.0f, 6.0f, 7.0f)),
+            Is.EqualTo(38.0f)
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.IsAnyInfinity(Vector4)" /> method.</summary>
+    [Test]
+    public static void IsAnyInfinityTest()
+    {
+        Assert.That(() => Vector4.IsAnyInfinity(new Vector4(0.0f, 1.0f, 2.0f, float.PositiveInfinity)),
+            Is.True
+        );
+
+        Assert.That(() => Vector4.IsAnyInfinity(new Vector4(0.0f, 1.0f, 2.0f, float.NegativeInfinity)),
+            Is.True
+        );
+
+        Assert.That(() => Vector4.IsAnyInfinity(new Vector4(0.0f, 1.0f, 2.0f, 3.0f)),
+            Is.False
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.IsAnyNaN(Vector4)" /> method.</summary>
+    [Test]
+    public static void IsAnyNaNTest()
+    {
+        Assert.That(() => Vector4.IsAnyNaN(new Vector4(0.0f, 1.0f, 2.0f, float.NaN)),
+            Is.True
+        );
+
+        Assert.That(() => Vector4.IsAnyNaN(new Vector4(0.0f, 1.0f, 2.0f, 3.0f)),
+            Is.False
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.Max" /> method.</summary>
+    [Test]
+    public static void MaxTest()
+    {
+        Assert.That(() => Vector4.Max(new Vector4(0.0f, 1.0f, 2.0f, 3.0f), new Vector4(3.0f, 2.0f, 1.0f, 0.0f)),
+            Is.EqualTo(new Vector4(3.0f, 2.0f, 2.0f, 3.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.Min" /> method.</summary>
+    [Test]
+    public static void MinTest()
+    {
+        Assert.That(() => Vector4.Min(new Vector4(-0.0f, -1.0f, -2.0f, -3.0f), new Vector4(-3.0f, -2.0f, -1.0f, -0.0f)),
+            Is.EqualTo(new Vector4(-3.0f, -2.0f, -2.0f, -3.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.Normalize" /> method.</summary>
+    [Test]
+    public static void NormalizeTest()
+    {
+        Assert.That(() => Vector4.Normalize(new Vector4(0.0f, 1.0f, 2.0f, 3.0f)),
+            Is.EqualTo(new Vector4(0.0f, 0.26726124f, 0.5345225f, 0.8017837f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.Sqrt" /> method.</summary>
+    [Test]
+    public static void SqrtTest()
+    {
+        Assert.That(() => Vector4.Sqrt(new Vector4(0.0f, 1.0f, 2.0f, 3.0f)),
+            Is.EqualTo(new Vector4(0.0f, 1.0f, 1.4142135f, 1.7320508f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.Transform(Vector4, Matrix4x4)" /> method.</summary>
+    [Test]
+    public static void TransformTest()
+    {
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) * Matrix4x4.Identity,
+            Is.EqualTo(new Vector4(0.0f, 1.0f, 2.0f, 3.0f))
+        );
+
+        Assert.That(() => Vector4.Transform(new Vector4(0.0f, 1.0f, 2.0f, 3.0f), Matrix4x4.Identity),
+            Is.EqualTo(new Vector4(0.0f, 1.0f, 2.0f, 3.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.AsVector4" /> method.</summary>
+    [Test]
+    public static void AsVector4Test()
+    {
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f).AsVector4(),
+            Is.EqualTo(new SysVector4(0.0f, 1.0f, 2.0f, 3.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.AsVector128" /> method.</summary>
+    [Test]
+    public static void AsVector128Test()
+    {
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f).AsVector128(),
+            Is.EqualTo(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.WithX" /> method.</summary>
+    [Test]
+    public static void WithXTest()
+    {
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f).WithX(5.0f),
+            Is.EqualTo(new Vector4(5.0f, 1.0f, 2.0f, 3.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.WithY" /> method.</summary>
+    [Test]
+    public static void WithYTest()
+    {
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f).WithY(5.0f),
+            Is.EqualTo(new Vector4(0.0f, 5.0f, 2.0f, 3.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.WithZ" /> method.</summary>
+    [Test]
+    public static void WithZTest()
+    {
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f).WithZ(5.0f),
+            Is.EqualTo(new Vector4(0.0f, 1.0f, 5.0f, 3.0f))
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.WithW" /> method.</summary>
+    [Test]
+    public static void WithWTest()
+    {
+        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f).WithW(5.0f),
+            Is.EqualTo(new Vector4(0.0f, 1.0f, 2.0f, 5.0f))
+        );
     }
 }

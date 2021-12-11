@@ -27,6 +27,28 @@ jobs:
           ./artifacts/pkg/**/*
           ./artifacts/tst/**/*
         if-no-files-found: error
+  windows-x64-fallback:
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      matrix:
+        architecture: [ x64 ]
+        configuration: [ debug, release ]
+        os: [ windows ]
+    steps:
+    - uses: actions/checkout@v2
+    - run: ./scripts/cibuild.cmd -configuration ${{ matrix.configuration }} -architecture ${{ matrix.architecture }}
+      shell: cmd
+      env:
+        COMPlus_EnableSSE41: 0
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.os }}_${{ matrix.configuration }}_${{ matrix.architecture }}
+        path: |
+          ./artifacts/bin/**/*
+          ./artifacts/log/**/*
+          ./artifacts/pkg/**/*
+          ./artifacts/tst/**/*
+        if-no-files-found: error
   windows-x86:
     runs-on: ${{ matrix.os }}-latest
     strategy:

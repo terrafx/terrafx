@@ -124,9 +124,7 @@ public class HelloWindow : Sample
         var framebufferIndex = graphicsSwapchain.FramebufferIndex;
         var graphicsContext = GraphicsDevice.Contexts[(int)framebufferIndex];
 
-        var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
-
-        graphicsContext.BeginDrawing(framebufferIndex, backgroundColor);
+        graphicsContext.BeginDrawing(framebufferIndex, Colors.CornflowerBlue);
         Draw(graphicsContext);
         graphicsContext.EndDrawing();
     }

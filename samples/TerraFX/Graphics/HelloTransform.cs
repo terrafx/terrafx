@@ -79,9 +79,8 @@ public sealed class HelloTransform : HelloWindow
         var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
 
         // Shaders take transposed matrices, so we want to set X.W
-        pConstantBuffer[0] = Matrix4x4.Identity.WithX(
-            new Vector4(1.0f, 0.0f, 0.0f, trianglePrimitiveTranslationX)
-        );
+        pConstantBuffer[0] = Matrix4x4.Identity;
+        pConstantBuffer[0].X = new Vector4(1.0f, 0.0f, 0.0f, trianglePrimitiveTranslationX);
 
         constantBufferView.UnmapAndWrite();
     }
@@ -132,18 +131,18 @@ public sealed class HelloTransform : HelloWindow
             var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>(vertexBufferView.Offset, vertexBufferView.Size);
 
             pVertexBuffer[0] = new IdentityVertex {
+                Color = Colors.Red,
                 Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
-                Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f)
             };
 
             pVertexBuffer[1] = new IdentityVertex {
+                Color = Colors.Lime,
                 Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
-                Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f)
             };
 
             pVertexBuffer[2] = new IdentityVertex {
+                Color = Colors.Blue,
                 Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
-                Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f)
             };
 
             vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);
@@ -164,8 +163,8 @@ public sealed class HelloTransform : HelloWindow
             var inputs = new GraphicsPipelineInput[1] {
                 new GraphicsPipelineInput(
                     new GraphicsPipelineInputElement[2] {
-                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
                         new GraphicsPipelineInputElement(typeof(Vector4), GraphicsPipelineInputElementKind.Color, size: 16),
+                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
                     }
                 ),
             };

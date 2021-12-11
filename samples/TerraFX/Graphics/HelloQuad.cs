@@ -112,23 +112,23 @@ public sealed class HelloQuad : HelloWindow
             var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>(vertexBufferView.Offset, vertexBufferView.Size);
 
             pVertexBuffer[0] = new IdentityVertex {                         //
-                Position = new Vector3(-0.25f, 0.25f * aspectRatio, 0.0f),  //   y          in this setup
-                Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f),                //   ^     z    the origin o
+                Color = Colors.Red,                                         //   y          in this setup
+                Position = new Vector3(-0.25f, 0.25f * aspectRatio, 0.0f),  //   ^     z    the origin o
             };                                                              //   |   /      is in the middle
                                                                             //   | /        of the rendered scene
             pVertexBuffer[1] = new IdentityVertex {                         //   o------>x
-                Position = new Vector3(0.25f, 0.25f * aspectRatio, 0.0f),   //
-                Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f),                //   0 ----- 1
+                Color = Colors.Lime,                                        //
+                Position = new Vector3(0.25f, 0.25f * aspectRatio, 0.0f),   //   0 ----- 1
             };                                                              //   | \     |
                                                                             //   |   \   |
             pVertexBuffer[2] = new IdentityVertex {                         //   |     \ |
-                Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),  //   3-------2
-                Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f),                //
+                Color = Colors.Blue,                                        //   3-------2
+                Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),  //
             };
 
             pVertexBuffer[3] = new IdentityVertex {
+                Color = Colors.Lime,
                 Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
-                Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f),
             };
 
             vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);
@@ -149,8 +149,8 @@ public sealed class HelloQuad : HelloWindow
             var inputs = new GraphicsPipelineInput[1] {
                 new GraphicsPipelineInput(
                     new GraphicsPipelineInputElement[2] {
-                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
                         new GraphicsPipelineInputElement(typeof(Vector4), GraphicsPipelineInputElementKind.Color, size: 16),
+                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
                     }
                 ),
             };
