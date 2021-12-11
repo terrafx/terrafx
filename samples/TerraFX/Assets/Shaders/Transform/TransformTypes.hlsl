@@ -2,12 +2,12 @@
 
 struct VSInput
 {
-    float3 position : POSITION;
     float4 color : COLOR;
+    float3 position : POSITION;
 };
 
 struct PSInput
 {
-    float4 position : SV_Position;
     float4 color : COLOR;
+    float4 position : SV_Position;
 };

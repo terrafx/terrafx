@@ -69,8 +69,6 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
                 var inputElementsCount = GetInputElementCount(inputs);
                 var inputElementsIndex = (nuint)0;
 
-                var inputSlotIndex = 0;
-
                 if (inputElementsCount != 0)
                 {
                     d3d12InputElementDescs = new UnmanagedArray<D3D12_INPUT_ELEMENT_DESC>(inputElementsCount);
@@ -78,27 +76,32 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
                     for (var inputIndex = 0; inputIndex < inputs.Length; inputIndex++)
                     {
                         var input = inputs[inputIndex];
-
                         var inputElements = input.Elements;
 
-                        uint inputLayoutStride = 0;
+                        var inputLayoutStride = 0u;
+                        var maxAlignment = 0u;
 
                         for (var inputElementIndex = 0; inputElementIndex < inputElements.Length; inputElementIndex++)
                         {
                             var inputElement = inputElements[inputElementIndex];
-                            inputLayoutStride = AlignUp(inputLayoutStride, GetInputElementAlignment(inputElement.Type));
+
+                            var inputElementAlignment = GetInputElementAlignment(inputElement.Type);
+                            inputLayoutStride = AlignUp(inputLayoutStride, inputElementAlignment);
+
+                            maxAlignment = Max(maxAlignment, inputElementAlignment);
 
                             d3d12InputElementDescs[inputElementsIndex] = new D3D12_INPUT_ELEMENT_DESC {
                                 SemanticName = GetInputElementSemanticName(inputElement.Kind).GetPointer(),
                                 Format = GetInputElementFormat(inputElement.Type),
-                                InputSlot = unchecked((uint)inputSlotIndex),
+                                InputSlot = unchecked((uint)inputIndex),
                                 AlignedByteOffset = inputLayoutStride,
                             };
 
                             inputLayoutStride += inputElement.Size;
                             inputElementsIndex++;
                         }
-                        inputSlotIndex++;
+
+                        inputLayoutStride = AlignUp(inputLayoutStride, maxAlignment);
                     }
                 }
 
