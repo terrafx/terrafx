@@ -2722,10 +2722,10 @@ public static class VectorUtilities
         }
         else
         {
-            return SoftwareFallback(value.AsUInt32());
+            return SoftwareFallback(value);
         }
 
-        static bool SoftwareFallback(Vector128<uint> value)
+        static bool SoftwareFallback(Vector128<float> value)
         {
             return float.IsInfinity(value.GetElement(0))
                 || float.IsInfinity(value.GetElement(1))

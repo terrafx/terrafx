@@ -143,7 +143,7 @@ public static class VectorUtilitiesTests
             Is.True
         );
 
-        Assert.That(() => VectorUtilities.CompareTrueAll(Vector128.Create(0x0FFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF).AsSingle()),
+        Assert.That(() => VectorUtilities.CompareTrueAll(Vector128.Create(0x00000000, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF).AsSingle()),
             Is.False
         );
     }
@@ -156,7 +156,7 @@ public static class VectorUtilitiesTests
             Is.True
         );
 
-        Assert.That(() => VectorUtilities.CompareTrueAny(Vector128.Create(0x0FFFFFFF, 0x00000000, 0x00000000, 0x00000000).AsSingle()),
+        Assert.That(() => VectorUtilities.CompareTrueAny(Vector128.Create(0x00000000, 0x00000000, 0x00000000, 0x00000000).AsSingle()),
             Is.False
         );
     }

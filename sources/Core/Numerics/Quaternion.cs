@@ -385,10 +385,10 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
             }
 
             return new Quaternion(
-                value.X / lengthSq,
-                value.Y / lengthSq,
-                value.Z / lengthSq,
-                value.W / lengthSq
+                -value.X / lengthSq,
+                -value.Y / lengthSq,
+                -value.Z / lengthSq,
+                +value.W / lengthSq
             );
         }
     }
