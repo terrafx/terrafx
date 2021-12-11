@@ -192,10 +192,6 @@ public class Vector3Tests
     [Test]
     public static void OpDivisionTest()
     {
-        Assert.That(() => new Vector3(0.0f, 1.0f, 2.0f) / new Vector3(3.0f, 4.0f, 5.0f),
-            Is.EqualTo(new Vector3(0.0f, 0.25f, 0.4f))
-        );
-
         Assert.That(() => new Vector3(0.0f, 1.0f, 2.0f) / 3.0f,
             Is.EqualTo(new Vector3(0.0f, 0.33333334f, 0.6666667f))
         );
