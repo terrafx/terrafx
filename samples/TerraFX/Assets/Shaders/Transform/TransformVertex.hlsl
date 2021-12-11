@@ -16,12 +16,11 @@ PSInput main(VSInput input)
 {
     PSInput output;
 
-    output.position = float4(input.position, 1.0f);
+    output.color = input.color;
 
+    output.position = float4(input.position, 1.0f);
     output.position = mul(output.position, primitiveTransform);
     output.position = mul(output.position, frameTransform);
-
-    output.color = input.color;
 
     return output;
 }

@@ -176,11 +176,16 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
                         var inputElements = input.Elements;
 
                         var inputBindingStride = 0u;
+                        var maxAlignment = 0u;
 
                         for (var inputElementIndex = 0; inputElementIndex < inputElements.Length; inputElementIndex++)
                         {
                             var inputElement = inputElements[inputElementIndex];
-                            inputBindingStride = AlignUp(inputBindingStride, GetInputElementAlignment(inputElement.Type));
+
+                            var inputElementAlignment = GetInputElementAlignment(inputElement.Type);
+                            inputBindingStride = AlignUp(inputBindingStride, inputElementAlignment);
+
+                            maxAlignment = Max(maxAlignment, inputElementAlignment);
 
                             vkVertexInputAttributeDescriptions[inputElementsIndex] = new VkVertexInputAttributeDescription {
                                 location = unchecked((uint)inputElementIndex),
@@ -193,6 +198,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
                             inputElementsIndex++;
                         }
 
+                        inputBindingStride = AlignUp(inputBindingStride, maxAlignment);
                         vkVertexInputBindingDescription.stride = inputBindingStride;
                     }
                 }
