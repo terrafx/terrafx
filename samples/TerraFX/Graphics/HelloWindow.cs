@@ -76,7 +76,7 @@ public class HelloWindow : Sample
         base.Initialize(application, timeout);
     }
 
-    protected virtual void Draw(GraphicsContext graphicsContext) { }
+    protected virtual void Draw(GraphicsRenderContext graphicsRenderContext) { }
 
     protected virtual void Update(TimeSpan delta) { }
 
@@ -103,15 +103,8 @@ public class HelloWindow : Sample
                 _secondsOfLastFpsUpdate = seconds;
             }
 
-            // update the rendering
-            var graphicsSwapchain = GraphicsSwapchain;
-            var currentGraphicsContext = GraphicsDevice.Contexts[(int)graphicsSwapchain.FramebufferIndex];
-            currentGraphicsContext.BeginFrame(graphicsSwapchain);
-
             Update(eventArgs.Delta);
             Render();
-
-            currentGraphicsContext.EndFrame();
             Present();
         }
     }
@@ -120,12 +113,16 @@ public class HelloWindow : Sample
 
     protected void Render()
     {
-        var graphicsSwapchain = GraphicsSwapchain;
-        var framebufferIndex = graphicsSwapchain.FramebufferIndex;
-        var graphicsContext = GraphicsDevice.Contexts[(int)framebufferIndex];
+        var graphicsRenderContext = GraphicsDevice.RentRenderContext();
+        graphicsRenderContext.Reset();
+        {
+            graphicsRenderContext.SetSwapchain(GraphicsSwapchain);
 
-        graphicsContext.BeginDrawing(framebufferIndex, Colors.CornflowerBlue);
-        Draw(graphicsContext);
-        graphicsContext.EndDrawing();
+            graphicsRenderContext.BeginDrawing(GraphicsSwapchain.FramebufferIndex, Colors.CornflowerBlue);
+            Draw(graphicsRenderContext);
+            graphicsRenderContext.EndDrawing();
+        }
+        graphicsRenderContext.Flush();
+        GraphicsDevice.ReturnRenderContext(graphicsRenderContext);
     }
 }

@@ -4,7 +4,7 @@ using System;
 
 namespace TerraFX.Graphics;
 
-/// <summary>Represents a graphics context, which can be used for rendering images.</summary>
+/// <summary>Represents a graphics context, which can be used for executing commands.</summary>
 public abstract class GraphicsContext : GraphicsDeviceObject
 {
     /// <summary>Initializes a new instance of the <see cref="GraphicsContext" /> class.</summary>
@@ -18,22 +18,6 @@ public abstract class GraphicsContext : GraphicsDeviceObject
     /// <summary>Gets the fence used by the context for synchronization.</summary>
     /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
     public abstract GraphicsFence Fence { get; }
-
-    /// <summary>Gets the swapchain which provides framebuffers for the context or <c>null</c> if one has not been set.</summary>
-    public abstract GraphicsSwapchain? Swapchain { get; }
-
-    /// <summary>Begins the drawing stage.</summary>
-    /// <param name="framebufferIndex">The framebuffer index of <see cref="Swapchain" /> on which the context should draw.</param>
-    /// <param name="backgroundColor">A color to which the background should be cleared.</param>
-    /// <exception cref="ArgumentNullException"><see cref="Swapchain" /> is <c>null</c>.</exception>
-    /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-    public abstract void BeginDrawing(uint framebufferIndex, ColorRgba backgroundColor);
-
-    /// <summary>Begins a new frame.</summary>
-    /// <param name="swapchain">The swapchain which provides framebuffers for the context.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="swapchain" /> is <c>null</c>.</exception>
-    /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-    public abstract void BeginFrame(GraphicsSwapchain swapchain);
 
     /// <summary>Copies the contents of a buffer to a separate buffer.</summary>
     /// <param name="destination">The destination buffer.</param>
@@ -51,17 +35,9 @@ public abstract class GraphicsContext : GraphicsDeviceObject
     /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
     public abstract void Copy(GraphicsTexture destination, GraphicsBuffer source);
 
-    /// <summary>Draws a primitive to the render surface.</summary>
-    /// <param name="primitive">The primitive to draw.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="primitive" /> is <c>null</c>.</exception>
-    /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-    public abstract void Draw(GraphicsPrimitive primitive);
+    /// <summary>Flushes the graphics context.</summary>
+    public abstract void Flush();
 
-    /// <summary>Ends the drawing stage.</summary>
-    /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-    public abstract void EndDrawing();
-
-    /// <summary>Ends the frame.</summary>
-    /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-    public abstract void EndFrame();
+    /// <summary>Resets the graphics context.</summary>
+    public abstract void Reset();
 }

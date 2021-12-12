@@ -20,15 +20,11 @@ using System.Diagnostics;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public sealed unsafe class D3D12GraphicsContext : GraphicsContext
+public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
 {
-    private const uint FrameInitializing = 2;
+    private const uint DrawingInitializing = 2;
 
-    private const uint FrameInitialized = 3;
-
-    private const uint DrawingInitializing = 4;
-
-    private const uint DrawingInitialized = 5;
+    private const uint DrawingInitialized = 3;
 
     private readonly ID3D12CommandAllocator* _d3d12CommandAllocator;
     private readonly ID3D12GraphicsCommandList* _d3d12GraphicsCommandList;
@@ -39,7 +35,7 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
 
     private VolatileState _state;
 
-    internal D3D12GraphicsContext(D3D12GraphicsDevice device)
+    internal D3D12GraphicsRenderContext(D3D12GraphicsDevice device)
         : base(device)
     {
         var d3d12CommandAllocator = CreateD3D12CommandAllocator(device);
@@ -70,8 +66,8 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
         }
     }
 
-    /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsContext" /> class.</summary>
-    ~D3D12GraphicsContext() => Dispose(isDisposing: false);
+    /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsRenderContext" /> class.</summary>
+    ~D3D12GraphicsRenderContext() => Dispose(isDisposing: false);
 
     /// <summary>Gets the <see cref="ID3D12CommandAllocator" /> used by the context.</summary>
     public ID3D12CommandAllocator* D3D12CommandAllocator
@@ -105,7 +101,7 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
     /// <inheritdoc />
     public override void BeginDrawing(uint framebufferIndex, ColorRgba backgroundColor)
     {
-        _state.Transition(from: FrameInitialized, to: DrawingInitializing);
+        _state.Transition(from: Initialized, to: DrawingInitializing);
         Debug.Assert(Swapchain is not null);
 
         var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
@@ -144,28 +140,6 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
     }
 
     /// <inheritdoc />
-    public override void BeginFrame(GraphicsSwapchain swapchain)
-        => BeginFrame((D3D12GraphicsSwapchain)swapchain);
-
-    /// <inheritdoc cref="BeginFrame(GraphicsSwapchain)" />
-    public void BeginFrame(D3D12GraphicsSwapchain swapchain)
-    {
-        ThrowIfNull(swapchain);
-
-        _state.Transition(from: Initialized, to: FrameInitializing);
-        _swapchain = swapchain;
-
-        Fence.Reset();
-
-        var d3d12CommandAllocator = D3D12CommandAllocator;
-
-        ThrowExternalExceptionIfFailed(d3d12CommandAllocator->Reset());
-        ThrowExternalExceptionIfFailed(D3D12GraphicsCommandList->Reset(d3d12CommandAllocator, pInitialState: null));
-
-        _state.Transition(from: FrameInitializing, to: FrameInitialized);
-    }
-
-    /// <inheritdoc />
     public override void Copy(GraphicsBuffer destination, GraphicsBuffer source)
         => Copy((D3D12GraphicsBuffer)destination, (D3D12GraphicsBuffer)source);
 
@@ -178,11 +152,6 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
     {
         ThrowIfNull(destination);
         ThrowIfNull(source);
-
-        if (_state < FrameInitialized)
-        {
-            ThrowInvalidOperationException("GraphicsContext.BeginFrame has not been called");
-        }
 
         var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
 
@@ -269,11 +238,6 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
     {
         ThrowIfNull(destination);
         ThrowIfNull(source);
-
-        if (_state < FrameInitialized)
-        {
-            ThrowInvalidOperationException("GraphicsContext.BeginFrame has not been called");
-        }
 
         var d3d12Device = Device.D3D12Device;
         var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
@@ -459,13 +423,12 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
         var d3d12RtvResourceBarrier = D3D12_RESOURCE_BARRIER.InitTransition(Swapchain.D3D12RenderTargetResources[_framebufferIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
         D3D12GraphicsCommandList->ResourceBarrier(1, &d3d12RtvResourceBarrier);
 
-        _state.Transition(from: DrawingInitializing, to: FrameInitialized);
+        _state.Transition(from: DrawingInitializing, to: Initialized);
     }
 
     /// <inheritdoc />
-    public override void EndFrame()
+    public override void Flush()
     {
-        _state.Transition(from: FrameInitialized, to: FrameInitializing);
         var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
 
         var d3d12CommandQueue = Device.D3D12CommandQueue;
@@ -475,9 +438,36 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
         var fence = Fence;
         ThrowExternalExceptionIfFailed(d3d12CommandQueue->Signal(fence.D3D12Fence, fence.D3D12FenceSignalValue));
         fence.Wait();
+    }
 
+    /// <inheritdoc />
+    public override void Reset()
+    {
         _swapchain = null;
-        _state.Transition(from: FrameInitializing, to: Initialized);
+
+        Fence.Reset();
+
+        var d3d12CommandAllocator = D3D12CommandAllocator;
+
+        ThrowExternalExceptionIfFailed(d3d12CommandAllocator->Reset());
+        ThrowExternalExceptionIfFailed(D3D12GraphicsCommandList->Reset(d3d12CommandAllocator, pInitialState: null));
+    }
+
+    /// <inheritdoc />
+    public override void SetSwapchain(GraphicsSwapchain swapchain)
+        => SetSwapchain((D3D12GraphicsSwapchain)swapchain);
+
+    /// <inheritdoc cref="SetSwapchain(GraphicsSwapchain)" />
+    public void SetSwapchain(D3D12GraphicsSwapchain swapchain)
+    {
+        ThrowIfNull(swapchain);
+
+        if (swapchain.Device != Device)
+        {
+            ThrowForInvalidParent(swapchain.Device);
+        }
+
+        _swapchain = swapchain;
     }
 
     /// <inheritdoc />

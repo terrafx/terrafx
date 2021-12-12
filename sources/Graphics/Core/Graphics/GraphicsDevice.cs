@@ -6,7 +6,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics;
 
 /// <summary>A graphics device which provides state management and isolation for a graphics adapter.</summary>
-public abstract class GraphicsDevice : IDisposable
+public abstract partial class GraphicsDevice : IDisposable
 {
     private readonly GraphicsAdapter _adapter;
 
@@ -21,9 +21,6 @@ public abstract class GraphicsDevice : IDisposable
 
     /// <summary>Gets the underlying adapter for the device.</summary>
     public GraphicsAdapter Adapter => _adapter;
-
-    /// <summary>Gets the contexts for the device.</summary>
-    public abstract ReadOnlySpan<GraphicsContext> Contexts { get; }
 
     /// <summary>Gets the memory allocator for the device.</summary>
     public abstract GraphicsMemoryAllocator MemoryAllocator { get; }
@@ -84,6 +81,18 @@ public abstract class GraphicsDevice : IDisposable
     /// <exception cref="ArgumentNullException"><paramref name="surface" /> is <c>null</c>.</exception>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public abstract GraphicsSwapchain CreateSwapchain(IGraphicsSurface surface);
+
+    /// <summary>Rents a graphics render context from the device.</summary>
+    /// <returns>A graphics render context for the device.</returns>
+    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+    public abstract GraphicsRenderContext RentRenderContext();
+
+    /// <summary>Returns a graphics render context to the device for further use.</summary>
+    /// <param name="renderContext">The graphics render context that should be returned.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="renderContext" /> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="renderContext" /> is not owned by the device.</exception>
+    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+    public abstract void ReturnRenderContext(GraphicsRenderContext renderContext);
 
     /// <inheritdoc />
     public void Dispose()

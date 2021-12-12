@@ -27,10 +27,10 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     private readonly uint _d3d12CbvSrvUavDescriptorHandleIncrementSize;
     private readonly uint _d3d12RtvDescriptorHandleIncrementSize;
 
-    private readonly D3D12GraphicsContext[] _contexts;
     private readonly D3D12GraphicsMemoryAllocator _memoryAllocator;
     private readonly D3D12GraphicsFence _waitForIdleFence;
 
+    private ContextPool<D3D12GraphicsDevice, D3D12GraphicsRenderContext> _renderContextPool;
     private VolatileState _state;
 
     internal D3D12GraphicsDevice(D3D12GraphicsAdapter adapter)
@@ -45,23 +45,11 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
         _d3d12CbvSrvUavDescriptorHandleIncrementSize = d3d12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
         _d3d12RtvDescriptorHandleIncrementSize = d3d12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
-        _contexts = CreateContexts(this, contextCount: 2);
         _memoryAllocator = CreateMemoryAllocator(this);
         _waitForIdleFence = CreateFence(isSignalled: false);
 
+        _renderContextPool = new ContextPool<D3D12GraphicsDevice, D3D12GraphicsRenderContext>();
         _ = _state.Transition(to: Initialized);
-
-        static D3D12GraphicsContext[] CreateContexts(D3D12GraphicsDevice device, uint contextCount)
-        {
-            var contexts = new D3D12GraphicsContext[contextCount];
-
-            for (var index = 0; index < contexts.Length; index++)
-            {
-                contexts[index] = new D3D12GraphicsContext(device);
-            }
-
-            return contexts;
-        }
 
         static ID3D12CommandQueue* CreateD3D12CommandQueue(ID3D12Device* d3d12Device)
         {
@@ -98,9 +86,6 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
 
     /// <inheritdoc cref="GraphicsDevice.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
-
-    /// <inheritdoc />
-    public override ReadOnlySpan<GraphicsContext> Contexts => _contexts;
 
     /// <summary>Gets the <see cref="ID3D12CommandQueue" /> used by the device.</summary>
     public ID3D12CommandQueue* D3D12CommandQueue
@@ -190,6 +175,36 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
+    public override D3D12GraphicsRenderContext RentRenderContext()
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        return _renderContextPool.Rent(this, &CreateRenderContext);
+
+        static D3D12GraphicsRenderContext CreateRenderContext(D3D12GraphicsDevice device)
+        {
+            AssertNotNull(device);
+            return new D3D12GraphicsRenderContext(device);
+        }
+    }
+
+    /// <inheritdoc />
+    public override void ReturnRenderContext(GraphicsRenderContext renderContext)
+        => ReturnRenderContext((D3D12GraphicsRenderContext)renderContext);
+
+    /// <inheritdoc cref="ReturnRenderContext(GraphicsRenderContext)" />
+    public void ReturnRenderContext(D3D12GraphicsRenderContext renderContext)
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        ThrowIfNull(renderContext);
+
+        if (renderContext.Device != this)
+        {
+            ThrowForInvalidParent(renderContext.Device);
+        }
+        _renderContextPool.Return(renderContext);
+    }
+
+    /// <inheritdoc />
     public override void Signal(GraphicsFence fence)
         => Signal((D3D12GraphicsFence)fence);
 
@@ -219,11 +234,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
 
             if (isDisposing)
             {
-                foreach (var context in _contexts)
-                {
-                    context?.Dispose();
-                }
-
+                _renderContextPool.Dispose();
                 _memoryAllocator?.Dispose();
                 _waitForIdleFence?.Dispose();
             }
