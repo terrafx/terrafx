@@ -60,7 +60,7 @@ public sealed unsafe class XlibDispatchService : DispatchService
     public static XlibDispatchService Instance => s_instance;
 
     /// <inheritdoc />
-    /// <exception cref="ExternalException">The call to <see cref="clock_gettime(int, timespec*)" /> failed.</exception>
+    /// <exception cref="ExternalException">The call to <see cref="clock_gettime(clockid_t, timespec*)" /> failed.</exception>
     public override Timestamp CurrentTimestamp
     {
         get

@@ -25,7 +25,7 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
     private readonly GraphicsMemoryAllocator _allocator;
 
     private readonly List<GraphicsMemoryHeap> _heaps;
-    private readonly ReaderWriterLockSlim _mutex;
+    private readonly ValueReaderWriterLock _rwLock;
 
     private GraphicsMemoryHeap? _emptyHeap;
 
@@ -53,7 +53,7 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
         _allocator = allocator;
 
         _heaps = new List<GraphicsMemoryHeap>();
-        _mutex = new ReaderWriterLockSlim();
+        _rwLock = new ValueReaderWriterLock();
 
         ref readonly var allocatorSettings = ref _allocator.Settings;
 
@@ -80,7 +80,7 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
     {
         get
         {
-            using var mutex = new DisposableReaderLockSlim(_mutex, _allocator.IsExternallySynchronized);
+            using var rwlock = new DisposableReaderLock(_rwLock, _allocator.IsExternallySynchronized);
             return _heaps.Count == 0;
         }
     }
@@ -129,10 +129,92 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
     /// <exception cref="KeyNotFoundException"><paramref name="heapRegion" /> was not found in the collection.</exception>
     public void Free(in GraphicsMemoryHeapRegion heapRegion)
     {
+        using var writeLock = new DisposableWriterLock(_rwLock, _allocator.IsExternallySynchronized);
+        FreeInternal(in heapRegion);
+    }
+
+    /// <summary>Gets an enumerator that can be used to iterate through the heaps of the collection.</summary>
+    /// <returns>An enumerator that can be used to iterate through the heaps of the collection.</returns>
+    public IEnumerator<GraphicsMemoryHeap> GetEnumerator() => _heaps.GetEnumerator();
+
+    /// <summary>Tries to allocation a region of memory in the collection.</summary>
+    /// <param name="size">The size of the region to allocate, in bytes.</param>
+    /// <param name="alignment">The alignment of the region to allocate, in bytes.</param>
+    /// <param name="flags">The flags that modify how the region is allocated.</param>
+    /// <param name="heapRegion">On return, contains the allocated region or <c>default</c> if the allocation failed.</param>
+    /// <returns><c>true</c> if a region was sucesfully allocated; otherwise, <c>false</c>.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="flags" /> has an invalid combination.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
+    public bool TryAllocate(ulong size, [Optional] ulong alignment, [Optional] GraphicsMemoryHeapRegionAllocationFlags flags, out GraphicsMemoryHeapRegion heapRegion)
+    {
+        using var writeLock = new DisposableWriterLock(_rwLock, _allocator.IsExternallySynchronized);
+        return TryAllocateInternal(size, alignment, flags, out heapRegion);
+    }
+
+    /// <summary>Tries to allocate a set of memory regions in the collection.</summary>
+    /// <param name="size">The size of the regions to allocate, in bytes.</param>
+    /// <param name="alignment">The alignment of the regions to allocate, in bytes.</param>
+    /// <param name="flags">The flags that modify how the regions are allocated.</param>
+    /// <param name="heapRegions">On return, will be filled with the allocated regions.</param>
+    /// <returns><c>true</c> if the regions were sucesfully allocated; otherwise, <c>false</c>.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="flags" /> has an invalid combination.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
+    public bool TryAllocate(ulong size, [Optional] ulong alignment, [Optional] GraphicsMemoryHeapRegionAllocationFlags flags, Span<GraphicsMemoryHeapRegion> heapRegions)
+    {
+        using var writeLock = new DisposableWriterLock(_rwLock, _allocator.IsExternallySynchronized);
+        return TryAllocateInternal(size, alignment, flags, heapRegions);
+    }
+
+    /// <summary>Tries to set the minimum size of the collection, in bytes.</summary>
+    /// <param name="minimumSize">The minimum size of the collection, in bytes.</param>
+    /// <returns><c>true</c> if the minimum size was succesfully set; otherwise, <c>false</c>.</returns>
+    public bool TrySetMinimumSize(ulong minimumSize)
+    {
+        using var writeLock = new DisposableWriterLock(_rwLock, _allocator.IsExternallySynchronized);
+        return TrySetMinimumSizeInternal(minimumSize);
+    }
+
+    /// <summary>Adds a new heap to the collection.</summary>
+    /// <param name="size">The size of the heap, in bytes.</param>
+    /// <returns>The created graphics memory heap.</returns>
+    protected abstract GraphicsMemoryHeap CreateHeap(ulong size);
+
+    /// <inheritdoc />
+    protected override void Dispose(bool isDisposing)
+    {
+        var priorState = _state.BeginDispose();
+
+        if (priorState < Disposing)
+        {
+            foreach (var heap in _heaps)
+            {
+                heap?.Dispose();
+            }
+
+            _rwLock.Dispose();
+        }
+
+        _state.EndDispose();
+    }
+
+    private GraphicsMemoryHeap AddHeap(ulong size)
+    {
+        var heap = CreateHeap(size);
+
+        _heaps.Add(heap);
+        _size += size;
+
+        return heap;
+    }
+
+    private void FreeInternal(in GraphicsMemoryHeapRegion heapRegion)
+    {
+        // This method should only be called under a write-lock
+
         var heap = heapRegion.Heap;
         ThrowIfNull(heap);
-
-        using var mutex = new DisposableWriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
 
         var heaps = _heaps;
         var heapIndex = heaps.IndexOf(heap);
@@ -209,194 +291,6 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
         }
 
         IncrementallySortHeaps();
-    }
-
-    /// <summary>Gets an enumerator that can be used to iterate through the heaps of the collection.</summary>
-    /// <returns>An enumerator that can be used to iterate through the heaps of the collection.</returns>
-    public IEnumerator<GraphicsMemoryHeap> GetEnumerator() => _heaps.GetEnumerator();
-
-    /// <summary>Tries to allocation a region of memory in the collection.</summary>
-    /// <param name="size">The size of the region to allocate, in bytes.</param>
-    /// <param name="alignment">The alignment of the region to allocate, in bytes.</param>
-    /// <param name="flags">The flags that modify how the region is allocated.</param>
-    /// <param name="heapRegion">On return, contains the allocated region or <c>default</c> if the allocation failed.</param>
-    /// <returns><c>true</c> if a region was sucesfully allocated; otherwise, <c>false</c>.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="flags" /> has an invalid combination.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
-    public bool TryAllocate(ulong size, [Optional] ulong alignment, [Optional] GraphicsMemoryHeapRegionAllocationFlags flags, out GraphicsMemoryHeapRegion heapRegion)
-    {
-        using var mutex = new DisposableWriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
-        return TryAllocateHeapRegion(size, alignment, flags, out heapRegion);
-    }
-
-    /// <summary>Tries to allocate a set of memory regions in the collection.</summary>
-    /// <param name="size">The size of the regions to allocate, in bytes.</param>
-    /// <param name="alignment">The alignment of the regions to allocate, in bytes.</param>
-    /// <param name="flags">The flags that modify how the regions are allocated.</param>
-    /// <param name="heapRegions">On return, will be filled with the allocated regions.</param>
-    /// <returns><c>true</c> if the regions were sucesfully allocated; otherwise, <c>false</c>.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="flags" /> has an invalid combination.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
-    public bool TryAllocate(ulong size, [Optional] ulong alignment, [Optional] GraphicsMemoryHeapRegionAllocationFlags flags, Span<GraphicsMemoryHeapRegion> heapRegions)
-    {
-        var succeeded = true;
-        int index;
-
-        using (var mutex = new DisposableWriterLockSlim(_mutex, _allocator.IsExternallySynchronized))
-        {
-            for (index = 0; index < heapRegions.Length; ++index)
-            {
-                succeeded = TryAllocateHeapRegion(size, alignment, flags, out heapRegions[index]);
-
-                if (!succeeded)
-                {
-                    break;
-                }
-            }
-        }
-
-        if (!succeeded)
-        {
-            // Something failed so free all already allocated regions
-
-            while (index-- != 0)
-            {
-                Free(in heapRegions[index]);
-                heapRegions[index] = default;
-            }
-        }
-
-        return succeeded;
-    }
-
-    /// <summary>Tries to set the minimum size of the collection, in bytes.</summary>
-    /// <param name="minimumSize">The minimum size of the collection, in bytes.</param>
-    /// <returns><c>true</c> if the minimum size was succesfully set; otherwise, <c>false</c>.</returns>
-    public bool TrySetMinimumSize(ulong minimumSize)
-    {
-        using var mutex = new DisposableWriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
-
-        var currentMinimumSize = _minimumSize;
-
-        if (minimumSize == currentMinimumSize)
-        {
-            return true;
-        }
-
-        var size = _size;
-        var heapCount = _heaps.Count;
-
-        if (minimumSize < currentMinimumSize)
-        {
-            // The new minimum size is less than the previous, so we will iterate the
-            // heaps from last to first (largest to smallest) to try and free space
-            // that may now be available.
-
-            var emptyHeap = default(GraphicsMemoryHeap);
-            var minimumHeapCount = MinimumHeapCount;
-
-            for (var heapIndex = heapCount; heapIndex-- != 0;)
-            {
-                var heap = _heaps[heapIndex];
-
-                var heapSize = heap.Size;
-                var heapIsEmpty = heap.IsEmpty;
-
-                if (heapIsEmpty)
-                {
-                    if (((size - heapSize) >= minimumSize) && ((heapCount - 1) >= minimumHeapCount))
-                    {
-                        RemoveHeapAt(heapIndex);
-                        size -= heapSize;
-                        --heapCount;
-                    }
-                    else
-                    {
-                        emptyHeap ??= heap;
-                    }
-                }
-            }
-
-            _emptyHeap = emptyHeap;
-        }
-        else
-        {
-            // The new minimum size is greater than the previous, so we will allocate
-            // new heaps until we exceed the minimum size, but ensuring we don't exceed
-            // preferredHeapSize while doing so.
-
-            var emptyHeap = default(GraphicsMemoryHeap);
-            var maximumHeapCount = MaximumHeapCount;
-            var maximumSharedHeapSize = MaximumSharedHeapSize;
-            var minimumHeapSize = MinimumHeapSize;
-
-            while (size < minimumSize)
-            {
-                if (heapCount < maximumHeapCount)
-                {
-                    var heapSize = GetAdjustedHeapSize(maximumSharedHeapSize);
-
-                    if (((size + heapSize) > minimumSize) && (heapSize != minimumHeapSize))
-                    {
-                        // The current size plus the new heap will exceed the minimum
-                        // size requested, so adjust it to be just large enough.
-                        heapSize = minimumSize - size;
-                    }
-
-                    emptyHeap ??= AddHeap(heapSize);
-                    size += heapSize;
-
-                    ++heapCount;
-                }
-                else
-                {
-                    _emptyHeap ??= emptyHeap;
-                    return false;
-                }
-            }
-
-            _emptyHeap ??= emptyHeap;
-        }
-
-        _minimumSize = minimumSize;
-        Assert(AssertionsEnabled && (_size == size));
-
-        return true;
-    }
-
-    /// <summary>Adds a new heap to the collection.</summary>
-    /// <param name="size">The size of the heap, in bytes.</param>
-    /// <returns>The created graphics memory heap.</returns>
-    protected abstract GraphicsMemoryHeap CreateHeap(ulong size);
-
-    /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
-    {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
-        {
-            foreach (var heap in _heaps)
-            {
-                heap?.Dispose();
-            }
-
-            _mutex?.Dispose();
-        }
-
-        _state.EndDispose();
-    }
-
-    private GraphicsMemoryHeap AddHeap(ulong size)
-    {
-        var heap = CreateHeap(size);
-
-        _heaps.Add(heap);
-        _size += size;
-
-        return heap;
     }
 
     private ulong GetAdjustedHeapSize(ulong size)
@@ -505,8 +399,10 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
         _size -= heap.Size;
     }
 
-    private bool TryAllocateHeapRegion(ulong size, ulong alignment, GraphicsMemoryHeapRegionAllocationFlags flags, out GraphicsMemoryHeapRegion heapRegion)
+    private bool TryAllocateInternal(ulong size, ulong alignment, GraphicsMemoryHeapRegionAllocationFlags flags, out GraphicsMemoryHeapRegion heapRegion)
     {
+        // This method should only be called under a write-lock
+
         var useDedicatedHeap = flags.HasFlag(GraphicsMemoryHeapRegionAllocationFlags.DedicatedCollection);
         var useExistingHeap = flags.HasFlag(GraphicsMemoryHeapRegionAllocationFlags.ExistingCollection);
 
@@ -563,6 +459,125 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
 
         var heap = AddHeap(heapSize);
         return heap.TryAllocate(size, alignment, out heapRegion);
+    }
+
+    private bool TryAllocateInternal(ulong size, ulong alignment, GraphicsMemoryHeapRegionAllocationFlags flags, Span<GraphicsMemoryHeapRegion> heapRegions)
+    {
+        // This method should only be called under a write-lock
+
+        var succeeded = false;
+
+        for (var index = 0; index < heapRegions.Length; ++index)
+        {
+            succeeded = TryAllocateInternal(size, alignment, flags, out heapRegions[index]);
+
+            if (!succeeded)
+            {
+                // Something failed so free all already allocated regions
+
+                while (index-- != 0)
+                {
+                    FreeInternal(in heapRegions[index]);
+                    heapRegions[index] = default;
+                }
+
+                break;
+            }
+        }
+
+        return succeeded;
+    }
+
+    private bool TrySetMinimumSizeInternal(ulong minimumSize)
+    {
+        // This method should only be called under a write-lock
+
+        var currentMinimumSize = _minimumSize;
+
+        if (minimumSize == currentMinimumSize)
+        {
+            return true;
+        }
+
+        var size = _size;
+        var heapCount = _heaps.Count;
+
+        if (minimumSize < currentMinimumSize)
+        {
+            // The new minimum size is less than the previous, so we will iterate the
+            // heaps from last to first (largest to smallest) to try and free space
+            // that may now be available.
+
+            var emptyHeap = default(GraphicsMemoryHeap);
+            var minimumHeapCount = MinimumHeapCount;
+
+            for (var heapIndex = heapCount; heapIndex-- != 0;)
+            {
+                var heap = _heaps[heapIndex];
+
+                var heapSize = heap.Size;
+                var heapIsEmpty = heap.IsEmpty;
+
+                if (heapIsEmpty)
+                {
+                    if (((size - heapSize) >= minimumSize) && ((heapCount - 1) >= minimumHeapCount))
+                    {
+                        RemoveHeapAt(heapIndex);
+                        size -= heapSize;
+                        --heapCount;
+                    }
+                    else
+                    {
+                        emptyHeap ??= heap;
+                    }
+                }
+            }
+
+            _emptyHeap = emptyHeap;
+        }
+        else
+        {
+            // The new minimum size is greater than the previous, so we will allocate
+            // new heaps until we exceed the minimum size, but ensuring we don't exceed
+            // preferredHeapSize while doing so.
+
+            var emptyHeap = default(GraphicsMemoryHeap);
+            var maximumHeapCount = MaximumHeapCount;
+            var maximumSharedHeapSize = MaximumSharedHeapSize;
+            var minimumHeapSize = MinimumHeapSize;
+
+            while (size < minimumSize)
+            {
+                if (heapCount < maximumHeapCount)
+                {
+                    var heapSize = GetAdjustedHeapSize(maximumSharedHeapSize);
+
+                    if (((size + heapSize) > minimumSize) && (heapSize != minimumHeapSize))
+                    {
+                        // The current size plus the new heap will exceed the minimum
+                        // size requested, so adjust it to be just large enough.
+                        heapSize = minimumSize - size;
+                    }
+
+                    emptyHeap ??= AddHeap(heapSize);
+                    size += heapSize;
+
+                    ++heapCount;
+                }
+                else
+                {
+                    _emptyHeap ??= emptyHeap;
+                    return false;
+                }
+            }
+
+            _emptyHeap ??= emptyHeap;
+        }
+
+        _minimumSize = minimumSize;
+        Assert(AssertionsEnabled && (_size == size));
+
+        return true;
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
