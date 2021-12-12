@@ -31,10 +31,10 @@ internal class SierpinskiPyramid
         var r3 = scale / MathF.Sqrt(3);
         var r6 = scale / MathF.Sqrt(6);
 
-        var a = new Vector3(-r1, -r6 - 0.4f, r3);
-        var b = new Vector3(+r1, -r6 - 0.4f, r3);
-        var c = new Vector3(0, -r6 - 0.4f, -2 * r3);
-        var d = new Vector3(0, (3 * r6) - 0.4f, 0);
+        var a = Vector3.Create(-r1, -r6 - 0.4f, r3);
+        var b = Vector3.Create(+r1, -r6 - 0.4f, r3);
+        var c = Vector3.Create(0, -r6 - 0.4f, -2 * r3);
+        var d = Vector3.Create(0, (3 * r6) - 0.4f, 0);
 
         TetrahedronRecursion(recursionDepth, a, b, c, d, vertices, indices);
 
@@ -120,10 +120,10 @@ internal class SierpinskiPyramid
         //  d-------c    o------>x  (z is into the page, so xyz is left-handed)
         //
 
-        var a = new Vector3(-r, +r, 0f);
-        var b = new Vector3(+r, +r, 0f);
-        var c = new Vector3(+r, -r, 0f);
-        var d = new Vector3(-r, -r, 0f);
+        var a = Vector3.Create(-r, +r, 0f);
+        var b = Vector3.Create(+r, +r, 0f);
+        var c = Vector3.Create(+r, -r, 0f);
+        var d = Vector3.Create(-r, -r, 0f);
 
         QuadRecursion(recursionDepth, a, b, c, d, vertices, indices);
 
@@ -203,6 +203,7 @@ internal class SierpinskiPyramid
             var c = vertices[i + 2];
             n4[i / 3] = Vector3.Normalize(Vector3.CrossProduct(b - a, c - a));
         }
+
         var normals = new List<Vector3>();
         for (var i = 0; i < vertices.Count; i += 3)
         {

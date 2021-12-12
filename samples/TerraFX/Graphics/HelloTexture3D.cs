@@ -92,10 +92,10 @@ public class HelloTexture3D : HelloWindow
         var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
 
         // Shaders take transposed matrices, so we want to set X.W
-        pConstantBuffer[0] = new Matrix4x4(
-            new Vector4(scaleX, 0.0f, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
-            new Vector4(0.0f, scaleY, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
-            new Vector4(0.0f, 0.0f, 1.0f, z),
+        pConstantBuffer[0] = Matrix4x4.Create(
+            Vector4.Create(scaleX, 0.0f, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
+            Vector4.Create(0.0f, scaleY, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
+            Vector4.Create(0.0f, 0.0f, 1.0f, z),
             Vector4.UnitW
         );
 
@@ -218,23 +218,23 @@ public class HelloTexture3D : HelloWindow
             var pVertexBuffer = vertexStagingBuffer.Map<Texture3DVertex>(vertexBufferView.Offset, vertexBufferView.Size);
 
             pVertexBuffer[0] = new Texture3DVertex {             //
-                Position = new Vector3(-0.5f, 0.5f, 0.0f),       //   y          in this setup
-                UVW = new Vector3(0, 1, 0.5f),                   //   ^     z    the origin o
+                Position = Vector3.Create(-0.5f, 0.5f, 0.0f),       //   y          in this setup
+                UVW = Vector3.Create(0, 1, 0.5f),                   //   ^     z    the origin o
             };                                                   //   |   /      is in the middle
                                                                  //   | /        of the rendered scene
             pVertexBuffer[1] = new Texture3DVertex {             //   o------>x
-                Position = new Vector3(0.5f, 0.5f, 0.0f),        //
-                UVW = new Vector3(1, 1, 0.5f),                   //   0 ----- 1
+                Position = Vector3.Create(0.5f, 0.5f, 0.0f),        //
+                UVW = Vector3.Create(1, 1, 0.5f),                   //   0 ----- 1
             };                                                   //   | \     |
                                                                  //   |   \   |
             pVertexBuffer[2] = new Texture3DVertex {             //   |     \ |
-                Position = new Vector3(0.5f, -0.5f, 0.0f),       //   3-------2
-                UVW = new Vector3(1, 0, 0.5f),                   //
+                Position = Vector3.Create(0.5f, -0.5f, 0.0f),       //   3-------2
+                UVW = Vector3.Create(1, 0, 0.5f),                   //
             };
 
             pVertexBuffer[3] = new Texture3DVertex {
-                Position = new Vector3(-0.5f, -0.5f, 0.0f),
-                UVW = new Vector3(0, 0, 0.5f),
+                Position = Vector3.Create(-0.5f, -0.5f, 0.0f),
+                UVW = Vector3.Create(0, 0, 0.5f),
             };
 
             vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);

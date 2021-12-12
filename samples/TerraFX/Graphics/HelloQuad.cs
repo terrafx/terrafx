@@ -113,22 +113,22 @@ public sealed class HelloQuad : HelloWindow
 
             pVertexBuffer[0] = new IdentityVertex {                         //
                 Color = Colors.Red,                                         //   y          in this setup
-                Position = new Vector3(-0.25f, 0.25f * aspectRatio, 0.0f),  //   ^     z    the origin o
+                Position = Vector3.Create(-0.25f, 0.25f * aspectRatio, 0.0f),  //   ^     z    the origin o
             };                                                              //   |   /      is in the middle
                                                                             //   | /        of the rendered scene
             pVertexBuffer[1] = new IdentityVertex {                         //   o------>x
                 Color = Colors.Lime,                                        //
-                Position = new Vector3(0.25f, 0.25f * aspectRatio, 0.0f),   //   0 ----- 1
+                Position = Vector3.Create(0.25f, 0.25f * aspectRatio, 0.0f),   //   0 ----- 1
             };                                                              //   | \     |
                                                                             //   |   \   |
             pVertexBuffer[2] = new IdentityVertex {                         //   |     \ |
                 Color = Colors.Blue,                                        //   3-------2
-                Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),  //
+                Position = Vector3.Create(0.25f, -0.25f * aspectRatio, 0.0f),  //
             };
 
             pVertexBuffer[3] = new IdentityVertex {
                 Color = Colors.Lime,
-                Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
+                Position = Vector3.Create(-0.25f, -0.25f * aspectRatio, 0.0f),
             };
 
             vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);

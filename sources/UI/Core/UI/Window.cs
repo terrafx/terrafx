@@ -4,7 +4,6 @@ using System;
 using System.Threading;
 using TerraFX.Collections;
 using TerraFX.Graphics;
-using TerraFX.Graphics.Geometry2D;
 using TerraFX.Numerics;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -55,11 +54,11 @@ public abstract class Window : IGraphicsSurface
         }
     }
 
-    /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the window.</summary>
-    public abstract Rectangle Bounds { get; }
+    /// <summary>Gets a <see cref="BoundingRectangle" /> that represents the bounds of the window.</summary>
+    public abstract BoundingRectangle Bounds { get; }
 
-    /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the client area for the window.</summary>
-    public abstract Rectangle ClientBounds { get; }
+    /// <summary>Gets a <see cref="BoundingRectangle" /> that represents the bounds of the client area for the window.</summary>
+    public abstract BoundingRectangle ClientBounds { get; }
 
     /// <summary>Gets a <see cref="Vector2" /> that represents the location of the client area for the window.</summary>
     public Vector2 ClientLocation => ClientBounds.Location;

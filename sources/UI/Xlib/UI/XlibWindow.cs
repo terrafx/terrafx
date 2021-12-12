@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Collections;
 using TerraFX.Graphics;
-using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop.Xlib;
 using TerraFX.Numerics;
 using TerraFX.Threading;
@@ -33,9 +32,9 @@ public sealed unsafe class XlibWindow : Window
 #pragma warning disable CS0649
 
     private string _title;
-    private Rectangle _bounds;
-    private Rectangle _clientBounds;
-    private Rectangle _frameExtents;
+    private BoundingRectangle _bounds;
+    private BoundingRectangle _clientBounds;
+    private BoundingRectangle _frameExtents;
     private WindowState _windowState;
     private bool _isActive;
     private bool _isEnabled;
@@ -53,9 +52,9 @@ public sealed unsafe class XlibWindow : Window
         _properties = new ValueLazy<PropertySet>(CreateProperties);
 
         _title = typeof(XlibWindow).FullName!;
-        _bounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
-        _clientBounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
-        _frameExtents = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
+        _bounds = BoundingRectangle.Zero;
+        _clientBounds = BoundingRectangle.Zero;
+        _frameExtents = BoundingRectangle.Zero;
         _isEnabled = true;
 
         _ = _state.Transition(to: Initialized);
@@ -78,11 +77,11 @@ public sealed unsafe class XlibWindow : Window
     public override event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
 
     /// <inheritdoc />
-    public override Rectangle Bounds
+    public override BoundingRectangle Bounds
         => _bounds;
 
     /// <inheritdoc />
-    public override Rectangle ClientBounds
+    public override BoundingRectangle ClientBounds
         => _clientBounds;
 
     /// <inheritdoc />
@@ -390,8 +389,8 @@ public sealed unsafe class XlibWindow : Window
                     NorthWestGravity | (0b1100 << 8) | (SourceApplication << 12),
                     None,
                     None,
-                    (nint)(size.X - _frameExtents.Width),
-                    (nint)(size.Y - _frameExtents.Height)
+                    (nint)(size.X - _frameExtents.Size.X),
+                    (nint)(size.Y - _frameExtents.Size.Y)
                 );
             }
             else
@@ -771,13 +770,13 @@ public sealed unsafe class XlibWindow : Window
             ));
         }
 
-        var currentClientLocation = new Vector2(xconfigure->x, xconfigure->y);
-        var currentClientSize = new Vector2(xconfigure->width, xconfigure->height);
+        var currentClientLocation = Vector2.Create(xconfigure->x, xconfigure->y);
+        var currentClientSize = Vector2.Create(xconfigure->width, xconfigure->height);
 
         var previousClientLocation = _clientBounds.Location;
         var previousClientSize = _clientBounds.Size;
 
-        _clientBounds = new Rectangle(currentClientLocation, currentClientSize);
+        _clientBounds = BoundingRectangle.CreateFromSize(currentClientLocation, currentClientSize);
 
         OnClientLocationChanged(previousClientLocation, currentClientLocation);
         OnClientSizeChanged(previousClientSize, currentClientSize);
@@ -788,7 +787,7 @@ public sealed unsafe class XlibWindow : Window
         var currentLocation = currentClientLocation + _frameExtents.Location;
         var currentSize = currentClientSize + _frameExtents.Size;
 
-        _bounds = new Rectangle(currentLocation, currentSize);
+        _bounds = BoundingRectangle.CreateFromSize(currentLocation, currentSize);
 
         OnLocationChanged(previousLocation, currentLocation);
         OnSizeChanged(previousSize, currentSize);
@@ -953,11 +952,9 @@ public sealed unsafe class XlibWindow : Window
                 // made to a given client rectangle to compute the non-client size and
                 // location.
 
-                _frameExtents = new Rectangle(
-                    -cardinals[0],
-                    -cardinals[2],
-                    cardinals[1] + cardinals[0],
-                    cardinals[3] + cardinals[2]
+                _frameExtents = BoundingRectangle.CreateFromSize(
+                    -Vector2.Create(cardinals[0], cardinals[2]),
+                    Vector2.Create(cardinals[1], cardinals[3]) + Vector2.Create(cardinals[0], cardinals[2])
                 );
             }
             else

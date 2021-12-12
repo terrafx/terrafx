@@ -86,10 +86,10 @@ public class HelloSierpinski : HelloWindow
         var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
 
         // Shaders take transposed matrices, so we want to mirror along the diagonal
-        pConstantBuffer[0] = new Matrix4x4(
-            new Vector4(+cos, 0.0f, -sin, 0.0f),
+        pConstantBuffer[0] = Matrix4x4.Create(
+            Vector4.Create(+cos, 0.0f, -sin, 0.0f),
             Vector4.UnitY,
-            new Vector4(+sin, 0.0f, +cos, 0.0f),
+            Vector4.Create(+sin, 0.0f, +cos, 0.0f),
             Vector4.UnitW
         );
 
@@ -208,8 +208,8 @@ public class HelloSierpinski : HelloWindow
 
             // assumes the vertices are in a box from (-1,-1,-1) to (1,1,1)
 
-            var offset3D = new Vector3(1, 1, 1); // to move lower left corner to (0,0,0)
-            var scale3D = new Vector3(0.5f, 0.5f, 0.5f); // to scale to side length 1
+            var offset3D = Vector3.Create(1, 1, 1); // to move lower left corner to (0,0,0)
+            var scale3D = Vector3.Create(0.5f, 0.5f, 0.5f); // to scale to side length 1
 
             for (var i = 0; i < vertices.Count; i++)
             {

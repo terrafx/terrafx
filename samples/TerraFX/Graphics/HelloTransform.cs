@@ -80,7 +80,7 @@ public sealed class HelloTransform : HelloWindow
 
         // Shaders take transposed matrices, so we want to set X.W
         pConstantBuffer[0] = Matrix4x4.Identity;
-        pConstantBuffer[0].X = new Vector4(1.0f, 0.0f, 0.0f, trianglePrimitiveTranslationX);
+        pConstantBuffer[0].X = Vector4.Create(1.0f, 0.0f, 0.0f, trianglePrimitiveTranslationX);
 
         constantBufferView.UnmapAndWrite();
     }
@@ -132,17 +132,17 @@ public sealed class HelloTransform : HelloWindow
 
             pVertexBuffer[0] = new IdentityVertex {
                 Color = Colors.Red,
-                Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
+                Position = Vector3.Create(0.0f, 0.25f * aspectRatio, 0.0f),
             };
 
             pVertexBuffer[1] = new IdentityVertex {
                 Color = Colors.Lime,
-                Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
+                Position = Vector3.Create(0.25f, -0.25f * aspectRatio, 0.0f),
             };
 
             pVertexBuffer[2] = new IdentityVertex {
                 Color = Colors.Blue,
-                Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
+                Position = Vector3.Create(-0.25f, -0.25f * aspectRatio, 0.0f),
             };
 
             vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);

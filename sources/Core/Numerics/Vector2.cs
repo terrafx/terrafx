@@ -4,82 +4,63 @@
 // The original code is Copyright © Microsoft. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
-using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
-using System.Runtime.Intrinsics.Arm;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.VectorUtilities;
 using SysVector2 = System.Numerics.Vector2;
 
 namespace TerraFX.Numerics;
 
-/// <summary>Defines a two-dimensional Euclidean vector.</summary>
+/// <summary>Defines a two-dimension Euclidean vector.</summary>
 public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
 {
     /// <summary>Defines a <see cref="Vector2" /> where all components are zero.</summary>
-    public static Vector2 Zero => new Vector2(SysVector2.Zero);
+    public static Vector2 Zero => Create(0.0f, 0.0f);
 
     /// <summary>Defines a <see cref="Vector2" /> whose x-component is one and whose remaining components are zero.</summary>
-    public static Vector2 UnitX => new Vector2(SysVector2.UnitX);
+    public static Vector2 UnitX => Create(1.0f, 0.0f);
 
     /// <summary>Defines a <see cref="Vector2" /> whose y-component is one and whose remaining components are zero.</summary>
-    public static Vector2 UnitY => new Vector2(SysVector2.UnitY);
+    public static Vector2 UnitY => Create(0.0f, 1.0f);
 
     /// <summary>Defines a <see cref="Vector2" /> where all components are one.</summary>
-    public static Vector2 One => new Vector2(SysVector2.One);
+    public static Vector2 One => Create(1.0f, 1.0f);
 
     private readonly SysVector2 _value;
 
-    /// <summary>Initializes a new instance of the <see cref="Vector2" /> struct.</summary>
-    /// <param name="x">The value of the x-dimension.</param>
-    /// <param name="y">The value of the y-dimension.</param>
-    public Vector2(float x, float y)
-    {
-        _value = new SysVector2(x, y);
-    }
-
-    /// <summary>Initializes a new instance of the <see cref="Vector2" /> struct with each component set to <paramref name="value" />.</summary>
+    /// <summary>Creates a vector where each component is set a specified value.</summary>
     /// <param name="value">The value to set each component to.</param>
-    public Vector2(float value)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector2 Create(float value)
     {
-        _value = new SysVector2(value);
+        var vValue = new SysVector2(value);
+        return new Vector2(vValue);
     }
 
-    /// <summary>Initializes a new instance of the <see cref="Vector2" /> struct.</summary>
+    /// <summary>Creates a vector from a system vector.</summary>
     /// <param name="value">The value of the vector.</param>
-    public Vector2(SysVector2 value)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector2 Create(SysVector2 value) => new Vector2(value);
+
+    /// <summary>Creates a vector from a hardware vector.</summary>
+    /// <param name="value">The value of the vector.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector2 Create(Vector128<float> value) => new Vector2(value.AsVector2());
+
+    /// <summary>Creates a vector from an X and Y component.</summary>
+    /// <param name="x">The value of the x-component.</param>
+    /// <param name="y">The value of the y-component.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector2 Create(float x, float y)
+    {
+        var value = new SysVector2(x, y);
+        return new Vector2(value);
+    }
+
+    private Vector2(SysVector2 value)
     {
         _value = value;
-    }
-
-    /// <summary>Initializes a new instance of the <see cref="Vector2" /> struct.</summary>
-    /// <param name="value">The value of the vector.</param>
-    public Vector2(Vector128<float> value)
-    {
-        _value = value.AsVector2();
-    }
-
-    /// <summary>Gets the value of the x-dimension.</summary>
-    public float X
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _value.X;
-        }
-    }
-
-    /// <summary>Gets the value of the y-dimension.</summary>
-    public float Y
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _value.Y;
-        }
     }
 
     /// <summary>Gets the length of the vector.</summary>
@@ -110,6 +91,26 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
         {
             var result = ReciprocalLengthEstimate(_value.AsVector128());
             return result.ToScalar();
+        }
+    }
+
+    /// <summary>Gets the value of the x-component.</summary>
+    public float X
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return _value.X;
+        }
+    }
+
+    /// <summary>Gets the value of the y-component.</summary>
+    public float Y
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return _value.Y;
         }
     }
 
@@ -188,23 +189,8 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 CompareEqual(Vector2 left, Vector2 right)
     {
-        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
-        {
-            var result = VectorUtilities.CompareEqual(left._value.AsVector128(), right._value.AsVector128());
-            return new Vector2(result);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector2 SoftwareFallback(Vector2 left, Vector2 right)
-        {
-            return new Vector2(
-                (left.X == right.X) ? AllBitsSet : 0.0f,
-                (left.Y == right.Y) ? AllBitsSet : 0.0f
-            );
-        }
+        var result = VectorUtilities.CompareEqual(left._value.AsVector128(), right._value.AsVector128());
+        return new Vector2(result.AsVector2());
     }
 
     /// <summary>Compares two vectors to determine approximate equality.</summary>
@@ -215,23 +201,8 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 CompareEqual(Vector2 left, Vector2 right, Vector2 epsilon)
     {
-        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
-        {
-            var result = VectorUtilities.CompareEqual(left._value.AsVector128(), right._value.AsVector128(), epsilon._value.AsVector128());
-            return new Vector2(result);
-        }
-        else
-        {
-            return SoftwareFallback(left, right, epsilon);
-        }
-
-        static Vector2 SoftwareFallback(Vector2 left, Vector2 right, Vector2 epsilon)
-        {
-            return new Vector2(
-                MathUtilities.CompareEqual(left.X, right.X, epsilon.X) ? AllBitsSet : 0.0f,
-                MathUtilities.CompareEqual(left.Y, right.Y, epsilon.Y) ? AllBitsSet : 0.0f
-            );
-        }
+        var result = VectorUtilities.CompareEqual(left._value.AsVector128(), right._value.AsVector128(), epsilon._value.AsVector128());
+        return new Vector2(result.AsVector2());
     }
 
     /// <summary>Compares two vectors to determine if all elements are equal.</summary>
@@ -248,22 +219,7 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CompareEqualAll(Vector2 left, Vector2 right, Vector2 epsilon)
-    {
-        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
-        {
-            return VectorUtilities.CompareEqualAll(left._value.AsVector128(), right._value.AsVector128(), epsilon._value.AsVector128());
-        }
-        else
-        {
-            return SoftwareFallback(left, right, epsilon);
-        }
-
-        static bool SoftwareFallback(Vector2 left, Vector2 right, Vector2 epsilon)
-        {
-            return MathUtilities.CompareEqual(left.X, right.X, epsilon.X)
-                && MathUtilities.CompareEqual(left.Y, right.Y, epsilon.Y);
-        }
-    }
+        => VectorUtilities.CompareEqualAll(left._value.AsVector128(), right._value.AsVector128(), epsilon._value.AsVector128());
 
     /// <summary>Computes the dot product of two vectors.</summary>
     /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
@@ -291,23 +247,8 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 Max(Vector2 left, Vector2 right)
     {
-        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
-        {
-            var result = VectorUtilities.Max(left._value.AsVector128(), right._value.AsVector128());
-            return new Vector2(result);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector2 SoftwareFallback(Vector2 left, Vector2 right)
-        {
-            return new Vector2(
-                MathUtilities.Max(left.X, right.X),
-                MathUtilities.Max(left.Y, right.Y)
-            );
-        }
+        var result = VectorUtilities.Max(left._value.AsVector128(), right._value.AsVector128());
+        return new Vector2(result.AsVector2());
     }
 
     /// <summary>Compares two vectors to determine the combined minimum.</summary>
@@ -317,23 +258,8 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 Min(Vector2 left, Vector2 right)
     {
-        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
-        {
-            var result = VectorUtilities.Min(left._value.AsVector128(), right._value.AsVector128());
-            return new Vector2(result);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector2 SoftwareFallback(Vector2 left, Vector2 right)
-        {
-            return new Vector2(
-                MathUtilities.Min(left.X, right.X),
-                MathUtilities.Min(left.Y, right.Y)
-            );
-        }
+        var result = VectorUtilities.Min(left._value.AsVector128(), right._value.AsVector128());
+        return new Vector2(result.AsVector2());
     }
 
     /// <summary>Computes the normalized form of a vector.</summary>
@@ -353,7 +279,7 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     public static Vector2 NormalizeEstimate(Vector2 value)
     {
         var result = VectorUtilities.NormalizeEstimate(value._value.AsVector128());
-        return new Vector2(result);
+        return new Vector2(result.AsVector2());
     }
 
     /// <summary>Computes an estimate of the reciprocal of a vector.</summary>
@@ -363,7 +289,7 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     public static Vector2 ReciprocalEstimate(Vector2 value)
     {
         var result = VectorUtilities.ReciprocalEstimate(value._value.AsVector128());
-        return new Vector2(result);
+        return new Vector2(result.AsVector2());
     }
 
     /// <summary>Computes an estimate of the reciprocal square-root of a vector.</summary>
@@ -373,7 +299,7 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     public static Vector2 ReciprocalSqrtEstimate(Vector2 value)
     {
         var result = VectorUtilities.ReciprocalSqrtEstimate(value._value.AsVector128());
-        return new Vector2(result);
+        return new Vector2(result.AsVector2());
     }
 
     /// <summary>Computes the square-root of a vector.</summary>
@@ -382,29 +308,14 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 Sqrt(Vector2 value)
     {
-        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
-        {
-            var result = VectorUtilities.Sqrt(value._value.AsVector128());
-            return new Vector2(result);
-        }
-        else
-        {
-            return SoftwareFallback(value);
-        }
-
-        static Vector2 SoftwareFallback(Vector2 value)
-        {
-            return new Vector2(
-                MathUtilities.Sqrt(value.X),
-                MathUtilities.Sqrt(value.Y)
-            );
-        }
+        var result = VectorUtilities.Sqrt(value._value.AsVector128());
+        return new Vector2(result.AsVector2());
     }
 
     /// <summary>Reinterprets the current instance as a new <see cref="SysVector2" />.</summary>
     /// <returns>The current instance reintepreted as a new <see cref="SysVector2" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public SysVector2 AsVector2() => _value;
+    public SysVector2 AsSystemVector2() => _value;
 
     /// <summary>Reinterprets the current instance as a new <see cref="Vector128{Single}" />.</summary>
     /// <returns>The current instance reintepreted as a new <see cref="Vector128{Single}" />.</returns>
@@ -429,22 +340,11 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
 
     /// <inheritdoc />
     public string ToString(string? format, IFormatProvider? formatProvider)
-    {
-        var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
+        => $"{nameof(Vector2)} {{ {nameof(X)} = {X.ToString(format, formatProvider)}, {nameof(Y)} = {Y.ToString(format, formatProvider)} }}";
 
-        return new StringBuilder(5 + separator.Length)
-            .Append('<')
-            .Append(X.ToString(format, formatProvider))
-            .Append(separator)
-            .Append(' ')
-            .Append(Y.ToString(format, formatProvider))
-            .Append('>')
-            .ToString();
-    }
-
-    /// <summary>Creates a new <see cref="Vector2" /> instance with <see cref="X" /> set to the specified value.</summary>
-    /// <param name="x">The new value of the x-dimension.</param>
-    /// <returns>A new <see cref="Vector2" /> instance with <see cref="X" /> set to <paramref name="x" />.</returns>
+    /// <summary>Creates a new vector with <see cref="X" /> set to the specified value.</summary>
+    /// <param name="x">The new x-component of the vector.</param>
+    /// <returns>A new vector with <see cref="X" /> set to <paramref name="x" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector2 WithX(float x)
     {
@@ -453,9 +353,9 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
         return new Vector2(result);
     }
 
-    /// <summary>Creates a new <see cref="Vector2" /> instance with <see cref="Y" /> set to the specified value.</summary>
-    /// <param name="y">The new value of the y-dimension.</param>
-    /// <returns>A new <see cref="Vector2" /> instance with <see cref="Y" /> set to <paramref name="y" />.</returns>
+    /// <summary>Creates a new vector with <see cref="Y" /> set to the specified value.</summary>
+    /// <param name="y">The new y-component of the vector.</param>
+    /// <returns>A new vector with <see cref="Y" /> set to <paramref name="y" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector2 WithY(float y)
     {

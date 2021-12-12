@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Collections;
 using TerraFX.Graphics;
-using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop.Windows;
 using TerraFX.Numerics;
 using TerraFX.Threading;
@@ -34,8 +33,8 @@ public sealed unsafe class Win32Window : Window
     private ValueLazy<PropertySet> _properties;
 
     private string _title;
-    private Rectangle _bounds;
-    private Rectangle _clientBounds;
+    private BoundingRectangle _bounds;
+    private BoundingRectangle _clientBounds;
     private uint _extendedStyle;
     private uint _style;
     private WindowState _windowState;
@@ -53,8 +52,8 @@ public sealed unsafe class Win32Window : Window
         _properties = new ValueLazy<PropertySet>(CreateProperties);
 
         _title = typeof(Win32Window).FullName!;
-        _bounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
-        _clientBounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
+        _bounds = BoundingRectangle.Zero;
+        _clientBounds = BoundingRectangle.Zero;
         _extendedStyle = WS_EX_OVERLAPPEDWINDOW;
         _style = WS_OVERLAPPEDWINDOW;
 
@@ -78,11 +77,11 @@ public sealed unsafe class Win32Window : Window
     public override event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
 
     /// <inheritdoc />
-    public override Rectangle Bounds
+    public override BoundingRectangle Bounds
         => _bounds;
 
     /// <inheritdoc />
-    public override Rectangle ClientBounds
+    public override BoundingRectangle ClientBounds
         => _clientBounds;
 
     /// <inheritdoc />
@@ -222,8 +221,8 @@ public sealed unsafe class Win32Window : Window
                 Handle,
                 (int)location.X,
                 (int)location.Y,
-                (int)_bounds.Width,
-                (int)_bounds.Height,
+                (int)_bounds.Size.X,
+                (int)_bounds.Size.Y,
                 bRepaint: TRUE
             ), nameof(MoveWindow));
         }
@@ -257,8 +256,8 @@ public sealed unsafe class Win32Window : Window
         {
             ThrowExternalExceptionIfFalse(MoveWindow(
                 Handle,
-                (int)_bounds.X,
-                (int)_bounds.Y,
+                (int)_bounds.Location.X,
+                (int)_bounds.Location.Y,
                 (int)size.X,
                 (int)size.Y,
                 bRepaint: TRUE
@@ -425,22 +424,18 @@ public sealed unsafe class Win32Window : Window
         ThrowExternalExceptionIfFalse(GetClientRect(hWnd, &clientRect), nameof(GetClientRect));
         ThrowExternalExceptionIfFalse(MapWindowPoints(hWnd, HWND_DESKTOP, (POINT*)&clientRect, 2), nameof(MapWindowPoints));
 
-        _clientBounds = new Rectangle(
-            clientRect.left,
-            clientRect.top,
-            clientRect.right - clientRect.left,
-            clientRect.bottom - clientRect.top
+        _clientBounds = BoundingRectangle.CreateFromSize(
+            Vector2.Create(clientRect.left, clientRect.top),
+            Vector2.Create(clientRect.right, clientRect.bottom) - Vector2.Create(clientRect.left, clientRect.top)
         );
 
         RECT rect;
 
         ThrowExternalExceptionIfFalse(GetWindowRect(hWnd, &rect), nameof(GetWindowRect));
 
-        _bounds = new Rectangle(
-            rect.left,
-            rect.top,
-            rect.right - clientRect.left,
-            rect.bottom - clientRect.top
+        _bounds = BoundingRectangle.CreateFromSize(
+            Vector2.Create(rect.left, rect.top),
+            Vector2.Create(rect.right, rect.bottom) - Vector2.Create(clientRect.left, clientRect.top)
         );
 
         return hWnd;
@@ -536,9 +531,9 @@ public sealed unsafe class Win32Window : Window
     private nint HandleWmMove(nint lParam)
     {
         var previousClientLocation = _clientBounds.Location;
-        var currentClientLocation = new Vector2(x: LOWORD((uint)lParam), y: HIWORD((uint)lParam));
+        var currentClientLocation = Vector2.Create(LOWORD((uint)lParam), HIWORD((uint)lParam));
 
-        _clientBounds = _clientBounds.WithLocation(currentClientLocation);
+        _clientBounds.Location = currentClientLocation;
         OnClientLocationChanged(previousClientLocation, currentClientLocation);
 
         return 0;
@@ -576,9 +571,9 @@ public sealed unsafe class Win32Window : Window
         Assert(AssertionsEnabled && Enum.IsDefined(_windowState));
 
         var previousClientSize = _clientBounds.Size;
-        var currentClientSize = new Vector2(x: LOWORD((uint)lParam), y: HIWORD((uint)lParam));
+        var currentClientSize = Vector2.Create(LOWORD((uint)lParam), HIWORD((uint)lParam));
 
-        _clientBounds = _clientBounds.WithSize(currentClientSize);
+        _clientBounds.Size = currentClientSize;
         OnClientSizeChanged(previousClientSize, currentClientSize);
 
         return 0;
@@ -609,10 +604,10 @@ public sealed unsafe class Win32Window : Window
         var previousLocation = _bounds.Location;
         var previousSize = _bounds.Size;
 
-        var currentLocation = new Vector2(windowPos->x, windowPos->y);
-        var currentSize = new Vector2(windowPos->cx, windowPos->cy);
+        var currentLocation = Vector2.Create(windowPos->x, windowPos->y);
+        var currentSize = Vector2.Create(windowPos->cx, windowPos->cy);
 
-        _bounds = new Rectangle(currentLocation, currentSize);
+        _bounds = BoundingRectangle.CreateFromSize(currentLocation, currentSize);
 
         OnLocationChanged(previousLocation, currentLocation);
         OnSizeChanged(previousSize, currentSize);

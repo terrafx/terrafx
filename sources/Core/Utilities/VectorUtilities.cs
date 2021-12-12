@@ -34,6 +34,46 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Gets a vector where the x-component is one and all other components are zero.</summary>
+    public static Vector128<float> UnitX
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return Vector128.Create(1.0f, 0.0f, 0.0f, 0.0f);
+        }
+    }
+
+    /// <summary>Gets a vector where the y-component is one and all other components are zero.</summary>
+    public static Vector128<float> UnitY
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return Vector128.Create(0.0f, 1.0f, 0.0f, 0.0f);
+        }
+    }
+
+    /// <summary>Gets a vector where the z-component is one and all other components are zero.</summary>
+    public static Vector128<float> UnitZ
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return Vector128.Create(0.0f, 0.0f, 1.0f, 0.0f);
+        }
+    }
+
+    /// <summary>Gets a vector where the w-component is one and all other components are zero.</summary>
+    public static Vector128<float> UnitW
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return Vector128.Create(0.0f, 0.0f, 0.0f, 1.0f);
+        }
+    }
+
     /// <summary>Computes the absolute value of a vector.</summary>
     /// <param name="value">The vector for which to get its absolute value.</param>
     /// <returns>The absolute value of <paramref name="value" />.</returns>
@@ -56,10 +96,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> value)
         {
             return Vector128.Create(
-                MathF.Abs(value.GetElement(0)),
-                MathF.Abs(value.GetElement(1)),
-                MathF.Abs(value.GetElement(2)),
-                MathF.Abs(value.GetElement(3))
+                MathF.Abs(value.GetX()),
+                MathF.Abs(value.GetY()),
+                MathF.Abs(value.GetZ()),
+                MathF.Abs(value.GetW())
             );
         }
     }
@@ -87,10 +127,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
         {
             return Vector128.Create(
-                left.GetElement(0) + right.GetElement(0),
-                left.GetElement(1) + right.GetElement(1),
-                left.GetElement(2) + right.GetElement(2),
-                left.GetElement(3) + right.GetElement(3)
+                left.GetX() + right.GetX(),
+                left.GetY() + right.GetY(),
+                left.GetZ() + right.GetZ(),
+                left.GetW() + right.GetW()
             );
         }
     }
@@ -246,10 +286,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
         {
             return Vector128.Create(
-                (left.GetElement(0) == right.GetElement(0)) ? AllBitsSet : 0.0f,
-                (left.GetElement(1) == right.GetElement(1)) ? AllBitsSet : 0.0f,
-                (left.GetElement(2) == right.GetElement(2)) ? AllBitsSet : 0.0f,
-                (left.GetElement(3) == right.GetElement(3)) ? AllBitsSet : 0.0f
+                (left.GetX() == right.GetX()) ? AllBitsSet : 0.0f,
+                (left.GetY() == right.GetY()) ? AllBitsSet : 0.0f,
+                (left.GetZ() == right.GetZ()) ? AllBitsSet : 0.0f,
+                (left.GetW() == right.GetW()) ? AllBitsSet : 0.0f
             );
         }
     }
@@ -282,10 +322,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right, Vector128<float> epsilon)
         {
             return Vector128.Create(
-                (MathUtilities.Abs(left.GetElement(0) - right.GetElement(0)) <= epsilon.GetElement(0)) ? AllBitsSet : 0.0f,
-                (MathUtilities.Abs(left.GetElement(1) - right.GetElement(1)) <= epsilon.GetElement(1)) ? AllBitsSet : 0.0f,
-                (MathUtilities.Abs(left.GetElement(2) - right.GetElement(2)) <= epsilon.GetElement(2)) ? AllBitsSet : 0.0f,
-                (MathUtilities.Abs(left.GetElement(3) - right.GetElement(3)) <= epsilon.GetElement(3)) ? AllBitsSet : 0.0f
+                (MathUtilities.Abs(left.GetX() - right.GetX()) <= epsilon.GetX()) ? AllBitsSet : 0.0f,
+                (MathUtilities.Abs(left.GetY() - right.GetY()) <= epsilon.GetY()) ? AllBitsSet : 0.0f,
+                (MathUtilities.Abs(left.GetZ() - right.GetZ()) <= epsilon.GetZ()) ? AllBitsSet : 0.0f,
+                (MathUtilities.Abs(left.GetW() - right.GetW()) <= epsilon.GetW()) ? AllBitsSet : 0.0f
             );
         }
     }
@@ -314,10 +354,10 @@ public static class VectorUtilities
 
         static bool SoftwareFallback(Vector128<float> left, Vector128<float> right)
         {
-            return (left.GetElement(0) == right.GetElement(0))
-                && (left.GetElement(1) == right.GetElement(1))
-                && (left.GetElement(2) == right.GetElement(2))
-                && (left.GetElement(3) == right.GetElement(3));
+            return (left.GetX() == right.GetX())
+                && (left.GetY() == right.GetY())
+                && (left.GetZ() == right.GetZ())
+                && (left.GetW() == right.GetW());
         }
     }
 
@@ -350,10 +390,10 @@ public static class VectorUtilities
 
         static bool SoftwareFallback(Vector128<float> left, Vector128<float> right, Vector128<float> epsilon)
         {
-            return (MathUtilities.Abs(left.GetElement(0) - right.GetElement(0)) <= epsilon.GetElement(0))
-                && (MathUtilities.Abs(left.GetElement(1) - right.GetElement(1)) <= epsilon.GetElement(1))
-                && (MathUtilities.Abs(left.GetElement(2) - right.GetElement(2)) <= epsilon.GetElement(2))
-                && (MathUtilities.Abs(left.GetElement(3) - right.GetElement(3)) <= epsilon.GetElement(3));
+            return (MathUtilities.Abs(left.GetX() - right.GetX()) <= epsilon.GetX())
+                && (MathUtilities.Abs(left.GetY() - right.GetY()) <= epsilon.GetY())
+                && (MathUtilities.Abs(left.GetZ() - right.GetZ()) <= epsilon.GetZ())
+                && (MathUtilities.Abs(left.GetW() - right.GetW()) <= epsilon.GetW());
         }
     }
 
@@ -380,10 +420,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
         {
             return Vector128.Create(
-                (left.GetElement(0) > right.GetElement(0)) ? AllBitsSet : 0.0f,
-                (left.GetElement(1) > right.GetElement(1)) ? AllBitsSet : 0.0f,
-                (left.GetElement(2) > right.GetElement(2)) ? AllBitsSet : 0.0f,
-                (left.GetElement(3) > right.GetElement(3)) ? AllBitsSet : 0.0f
+                (left.GetX() > right.GetX()) ? AllBitsSet : 0.0f,
+                (left.GetY() > right.GetY()) ? AllBitsSet : 0.0f,
+                (left.GetZ() > right.GetZ()) ? AllBitsSet : 0.0f,
+                (left.GetW() > right.GetW()) ? AllBitsSet : 0.0f
             );
         }
     }
@@ -411,10 +451,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
         {
             return Vector128.Create(
-                (left.GetElement(0) >= right.GetElement(0)) ? AllBitsSet : 0.0f,
-                (left.GetElement(1) >= right.GetElement(1)) ? AllBitsSet : 0.0f,
-                (left.GetElement(2) >= right.GetElement(2)) ? AllBitsSet : 0.0f,
-                (left.GetElement(3) >= right.GetElement(3)) ? AllBitsSet : 0.0f
+                (left.GetX() >= right.GetX()) ? AllBitsSet : 0.0f,
+                (left.GetY() >= right.GetY()) ? AllBitsSet : 0.0f,
+                (left.GetZ() >= right.GetZ()) ? AllBitsSet : 0.0f,
+                (left.GetW() >= right.GetW()) ? AllBitsSet : 0.0f
             );
         }
     }
@@ -442,10 +482,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
         {
             return Vector128.Create(
-                (left.GetElement(0) < right.GetElement(0)) ? AllBitsSet : 0.0f,
-                (left.GetElement(1) < right.GetElement(1)) ? AllBitsSet : 0.0f,
-                (left.GetElement(2) < right.GetElement(2)) ? AllBitsSet : 0.0f,
-                (left.GetElement(3) < right.GetElement(3)) ? AllBitsSet : 0.0f
+                (left.GetX() < right.GetX()) ? AllBitsSet : 0.0f,
+                (left.GetY() < right.GetY()) ? AllBitsSet : 0.0f,
+                (left.GetZ() < right.GetZ()) ? AllBitsSet : 0.0f,
+                (left.GetW() < right.GetW()) ? AllBitsSet : 0.0f
             );
         }
     }
@@ -473,10 +513,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
         {
             return Vector128.Create(
-                (left.GetElement(0) <= right.GetElement(0)) ? AllBitsSet : 0.0f,
-                (left.GetElement(1) <= right.GetElement(1)) ? AllBitsSet : 0.0f,
-                (left.GetElement(2) <= right.GetElement(2)) ? AllBitsSet : 0.0f,
-                (left.GetElement(3) <= right.GetElement(3)) ? AllBitsSet : 0.0f
+                (left.GetX() <= right.GetX()) ? AllBitsSet : 0.0f,
+                (left.GetY() <= right.GetY()) ? AllBitsSet : 0.0f,
+                (left.GetZ() <= right.GetZ()) ? AllBitsSet : 0.0f,
+                (left.GetW() <= right.GetW()) ? AllBitsSet : 0.0f
             );
         }
     }
@@ -505,10 +545,10 @@ public static class VectorUtilities
 
         static bool SoftwareFallback(Vector128<float> left, Vector128<float> right)
         {
-            return (left.GetElement(0) != right.GetElement(0))
-                || (left.GetElement(1) != right.GetElement(1))
-                || (left.GetElement(2) != right.GetElement(2))
-                || (left.GetElement(3) != right.GetElement(3));
+            return (left.GetX() != right.GetX())
+                || (left.GetY() != right.GetY())
+                || (left.GetZ() != right.GetZ())
+                || (left.GetW() != right.GetW());
         }
     }
 
@@ -588,7 +628,7 @@ public static class VectorUtilities
         }
         else
         {
-            var x = value.GetElement(0);
+            var x = value.GetX();
             return Vector128.Create(x);
         }
     }
@@ -613,7 +653,7 @@ public static class VectorUtilities
         }
         else
         {
-            var y = value.GetElement(1);
+            var y = value.GetY();
             return Vector128.Create(y);
         }
     }
@@ -638,7 +678,7 @@ public static class VectorUtilities
         }
         else
         {
-            var z = value.GetElement(2);
+            var z = value.GetZ();
             return Vector128.Create(z);
         }
     }
@@ -663,7 +703,7 @@ public static class VectorUtilities
         }
         else
         {
-            var w = value.GetElement(3);
+            var w = value.GetW();
             return Vector128.Create(w);
         }
     }
@@ -690,10 +730,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(0),
-                value.GetElement(0),
-                value.GetElement(1),
-                value.GetElement(3)
+                value.GetX(),
+                value.GetX(),
+                value.GetY(),
+                value.GetW()
             );
         }
     }
@@ -715,10 +755,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(0),
-                value.GetElement(0),
-                value.GetElement(1),
-                value.GetElement(1)
+                value.GetX(),
+                value.GetX(),
+                value.GetY(),
+                value.GetY()
             );
         }
     }
@@ -744,10 +784,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(0),
-                value.GetElement(2),
-                value.GetElement(0),
-                value.GetElement(2)
+                value.GetX(),
+                value.GetZ(),
+                value.GetX(),
+                value.GetZ()
             );
         }
     }
@@ -776,10 +816,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(0),
-                value.GetElement(2),
-                value.GetElement(1),
-                value.GetElement(3)
+                value.GetX(),
+                value.GetZ(),
+                value.GetY(),
+                value.GetW()
             );
         }
     }
@@ -811,10 +851,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(0),
-                value.GetElement(2),
-                value.GetElement(3),
-                value.GetElement(1)
+                value.GetX(),
+                value.GetZ(),
+                value.GetW(),
+                value.GetY()
             );
         }
     }
@@ -846,10 +886,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(0),
-                value.GetElement(3),
-                value.GetElement(2),
-                value.GetElement(0)
+                value.GetX(),
+                value.GetW(),
+                value.GetZ(),
+                value.GetX()
             );
         }
     }
@@ -876,10 +916,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(1),
-                value.GetElement(0),
-                value.GetElement(0),
-                value.GetElement(0)
+                value.GetY(),
+                value.GetX(),
+                value.GetX(),
+                value.GetX()
             );
         }
     }
@@ -909,10 +949,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(1),
-                value.GetElement(0),
-                value.GetElement(0),
-                value.GetElement(3)
+                value.GetY(),
+                value.GetX(),
+                value.GetX(),
+                value.GetW()
             );
         }
     }
@@ -941,10 +981,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(1),
-                value.GetElement(0),
-                value.GetElement(2),
-                value.GetElement(3)
+                value.GetY(),
+                value.GetX(),
+                value.GetZ(),
+                value.GetW()
             );
         }
     }
@@ -972,10 +1012,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(1),
-                value.GetElement(0),
-                value.GetElement(3),
-                value.GetElement(2)
+                value.GetY(),
+                value.GetX(),
+                value.GetW(),
+                value.GetZ()
             );
         }
     }
@@ -1005,10 +1045,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(1),
-                value.GetElement(2),
-                value.GetElement(0),
-                value.GetElement(1)
+                value.GetY(),
+                value.GetZ(),
+                value.GetX(),
+                value.GetY()
             );
         }
     }
@@ -1040,10 +1080,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(1),
-                value.GetElement(2),
-                value.GetElement(0),
-                value.GetElement(3)
+                value.GetY(),
+                value.GetZ(),
+                value.GetX(),
+                value.GetW()
             );
         }
     }
@@ -1075,10 +1115,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(1),
-                value.GetElement(3),
-                value.GetElement(0),
-                value.GetElement(2)
+                value.GetY(),
+                value.GetW(),
+                value.GetX(),
+                value.GetZ()
             );
         }
     }
@@ -1110,10 +1150,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(2),
-                value.GetElement(0),
-                value.GetElement(1),
-                value.GetElement(0)
+                value.GetZ(),
+                value.GetX(),
+                value.GetY(),
+                value.GetX()
             );
         }
     }
@@ -1145,10 +1185,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(2),
-                value.GetElement(0),
-                value.GetElement(1),
-                value.GetElement(3)
+                value.GetZ(),
+                value.GetX(),
+                value.GetY(),
+                value.GetW()
             );
         }
     }
@@ -1180,10 +1220,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(2),
-                value.GetElement(0),
-                value.GetElement(3),
-                value.GetElement(1)
+                value.GetZ(),
+                value.GetX(),
+                value.GetW(),
+                value.GetY()
             );
         }
     }
@@ -1215,10 +1255,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(2),
-                value.GetElement(1),
-                value.GetElement(0),
-                value.GetElement(3)
+                value.GetZ(),
+                value.GetY(),
+                value.GetX(),
+                value.GetW()
             );
         }
     }
@@ -1244,10 +1284,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(2),
-                value.GetElement(1),
-                value.GetElement(2),
-                value.GetElement(3)
+                value.GetZ(),
+                value.GetY(),
+                value.GetZ(),
+                value.GetW()
             );
         }
     }
@@ -1276,10 +1316,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(2),
-                value.GetElement(2),
-                value.GetElement(1),
-                value.GetElement(1)
+                value.GetZ(),
+                value.GetZ(),
+                value.GetY(),
+                value.GetY()
             );
         }
     }
@@ -1311,10 +1351,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(2),
-                value.GetElement(2),
-                value.GetElement(1),
-                value.GetElement(3)
+                value.GetZ(),
+                value.GetZ(),
+                value.GetY(),
+                value.GetW()
             );
         }
     }
@@ -1340,10 +1380,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(2),
-                value.GetElement(3),
-                value.GetElement(0),
-                value.GetElement(1)
+                value.GetZ(),
+                value.GetW(),
+                value.GetX(),
+                value.GetY()
             );
         }
     }
@@ -1373,10 +1413,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(2),
-                value.GetElement(3),
-                value.GetElement(1),
-                value.GetElement(2)
+                value.GetZ(),
+                value.GetW(),
+                value.GetY(),
+                value.GetZ()
             );
         }
     }
@@ -1399,10 +1439,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(2),
-                value.GetElement(3),
-                value.GetElement(2),
-                value.GetElement(3)
+                value.GetZ(),
+                value.GetW(),
+                value.GetZ(),
+                value.GetW()
             );
         }
     }
@@ -1428,10 +1468,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(3),
-                value.GetElement(0),
-                value.GetElement(1),
-                value.GetElement(2)
+                value.GetW(),
+                value.GetX(),
+                value.GetY(),
+                value.GetZ()
             );
         }
     }
@@ -1463,10 +1503,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(3),
-                value.GetElement(0),
-                value.GetElement(3),
-                value.GetElement(0)
+                value.GetW(),
+                value.GetX(),
+                value.GetW(),
+                value.GetX()
             );
         }
     }
@@ -1493,10 +1533,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(3),
-                value.GetElement(2),
-                value.GetElement(1),
-                value.GetElement(0)
+                value.GetW(),
+                value.GetZ(),
+                value.GetY(),
+                value.GetX()
             );
         }
     }
@@ -1528,10 +1568,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(3),
-                value.GetElement(2),
-                value.GetElement(3),
-                value.GetElement(1)
+                value.GetW(),
+                value.GetZ(),
+                value.GetW(),
+                value.GetY()
             );
         }
     }
@@ -1558,10 +1598,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                value.GetElement(3),
-                value.GetElement(3),
-                value.GetElement(3),
-                value.GetElement(2)
+                value.GetW(),
+                value.GetW(),
+                value.GetW(),
+                value.GetZ()
             );
         }
     }
@@ -1589,10 +1629,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                upper.GetElement(1),
-                lower.GetElement(1),
-                upper.GetElement(1),
-                upper.GetElement(1)
+                upper.GetY(),
+                lower.GetY(),
+                upper.GetY(),
+                upper.GetY()
             );
         }
     }
@@ -1620,10 +1660,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                upper.GetElement(2),
-                upper.GetElement(2),
-                lower.GetElement(2),
-                upper.GetElement(2)
+                upper.GetZ(),
+                upper.GetZ(),
+                lower.GetZ(),
+                upper.GetZ()
             );
         }
     }
@@ -1651,10 +1691,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(0),
-                upper.GetElement(0),
-                upper.GetElement(0),
-                upper.GetElement(0)
+                lower.GetX(),
+                upper.GetX(),
+                upper.GetX(),
+                upper.GetX()
             );
         }
     }
@@ -1680,10 +1720,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(0),
-                lower.GetElement(0),
-                upper.GetElement(0),
-                upper.GetElement(1)
+                lower.GetX(),
+                lower.GetX(),
+                upper.GetX(),
+                upper.GetY()
             );
         }
     }
@@ -1709,10 +1749,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(0),
-                lower.GetElement(0),
-                upper.GetElement(2),
-                upper.GetElement(2)
+                lower.GetX(),
+                lower.GetX(),
+                upper.GetZ(),
+                upper.GetZ()
             );
         }
     }
@@ -1738,10 +1778,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(0),
-                lower.GetElement(1),
-                upper.GetElement(0),
-                upper.GetElement(0)
+                lower.GetX(),
+                lower.GetY(),
+                upper.GetX(),
+                upper.GetX()
             );
         }
     }
@@ -1767,10 +1807,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(0),
-                lower.GetElement(1),
-                upper.GetElement(0),
-                upper.GetElement(2)
+                lower.GetX(),
+                lower.GetY(),
+                upper.GetX(),
+                upper.GetZ()
             );
         }
     }
@@ -1796,10 +1836,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(0),
-                lower.GetElement(1),
-                upper.GetElement(2),
-                upper.GetElement(2)
+                lower.GetX(),
+                lower.GetY(),
+                upper.GetZ(),
+                upper.GetZ()
             );
         }
     }
@@ -1822,10 +1862,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(0),
-                lower.GetElement(1),
-                upper.GetElement(2),
-                upper.GetElement(3)
+                lower.GetX(),
+                lower.GetY(),
+                upper.GetZ(),
+                upper.GetW()
             );
         }
     }
@@ -1848,10 +1888,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(0),
-                lower.GetElement(2),
-                upper.GetElement(0),
-                upper.GetElement(2)
+                lower.GetX(),
+                lower.GetZ(),
+                upper.GetX(),
+                upper.GetZ()
             );
         }
     }
@@ -1877,10 +1917,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(0),
-                lower.GetElement(2),
-                upper.GetElement(1),
-                upper.GetElement(3)
+                lower.GetX(),
+                lower.GetZ(),
+                upper.GetY(),
+                upper.GetW()
             );
         }
     }
@@ -1907,10 +1947,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(0),
-                lower.GetElement(3),
-                upper.GetElement(0),
-                upper.GetElement(1)
+                lower.GetX(),
+                lower.GetW(),
+                upper.GetX(),
+                upper.GetY()
             );
         }
     }
@@ -1936,10 +1976,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(0),
-                lower.GetElement(3),
-                upper.GetElement(0),
-                upper.GetElement(3)
+                lower.GetX(),
+                lower.GetW(),
+                upper.GetX(),
+                upper.GetW()
             );
         }
     }
@@ -1966,10 +2006,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(0),
-                lower.GetElement(3),
-                upper.GetElement(2),
-                upper.GetElement(3)
+                lower.GetX(),
+                lower.GetW(),
+                upper.GetZ(),
+                upper.GetW()
             );
         }
     }
@@ -1995,10 +2035,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(1),
-                lower.GetElement(0),
-                upper.GetElement(0),
-                upper.GetElement(0)
+                lower.GetY(),
+                lower.GetX(),
+                upper.GetX(),
+                upper.GetX()
             );
         }
     }
@@ -2024,10 +2064,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(1),
-                lower.GetElement(2),
-                upper.GetElement(0),
-                upper.GetElement(1)
+                lower.GetY(),
+                lower.GetZ(),
+                upper.GetX(),
+                upper.GetY()
             );
         }
     }
@@ -2053,10 +2093,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(1),
-                lower.GetElement(2),
-                upper.GetElement(1),
-                upper.GetElement(2)
+                lower.GetY(),
+                lower.GetZ(),
+                upper.GetY(),
+                upper.GetZ()
             );
         }
     }
@@ -2082,10 +2122,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(1),
-                lower.GetElement(2),
-                upper.GetElement(2),
-                upper.GetElement(1)
+                lower.GetY(),
+                lower.GetZ(),
+                upper.GetZ(),
+                upper.GetY()
             );
         }
     }
@@ -2109,10 +2149,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(1),
-                lower.GetElement(3),
-                upper.GetElement(1),
-                upper.GetElement(1)
+                lower.GetY(),
+                lower.GetW(),
+                upper.GetY(),
+                upper.GetY()
             );
         }
     }
@@ -2135,10 +2175,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(1),
-                lower.GetElement(3),
-                upper.GetElement(1),
-                upper.GetElement(3)
+                lower.GetY(),
+                lower.GetW(),
+                upper.GetY(),
+                upper.GetW()
             );
         }
     }
@@ -2164,10 +2204,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(1),
-                lower.GetElement(3),
-                upper.GetElement(2),
-                upper.GetElement(3)
+                lower.GetY(),
+                lower.GetW(),
+                upper.GetZ(),
+                upper.GetW()
             );
         }
     }
@@ -2191,10 +2231,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(1),
-                lower.GetElement(3),
-                upper.GetElement(3),
-                upper.GetElement(3)
+                lower.GetY(),
+                lower.GetW(),
+                upper.GetW(),
+                upper.GetW()
             );
         }
     }
@@ -2219,10 +2259,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(2),
-                lower.GetElement(0),
-                upper.GetElement(3),
-                upper.GetElement(0)
+                lower.GetZ(),
+                lower.GetX(),
+                upper.GetW(),
+                upper.GetX()
             );
         }
     }
@@ -2248,10 +2288,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(2),
-                lower.GetElement(1),
-                upper.GetElement(1),
-                upper.GetElement(3)
+                lower.GetZ(),
+                lower.GetY(),
+                upper.GetY(),
+                upper.GetW()
             );
         }
     }
@@ -2276,10 +2316,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(2),
-                lower.GetElement(1),
-                upper.GetElement(2),
-                upper.GetElement(0)
+                lower.GetZ(),
+                lower.GetY(),
+                upper.GetZ(),
+                upper.GetX()
             );
         }
     }
@@ -2305,10 +2345,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(2),
-                lower.GetElement(2),
-                upper.GetElement(0),
-                upper.GetElement(1)
+                lower.GetZ(),
+                lower.GetZ(),
+                upper.GetX(),
+                upper.GetY()
             );
         }
     }
@@ -2334,10 +2374,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(2),
-                lower.GetElement(2),
-                upper.GetElement(2),
-                upper.GetElement(1)
+                lower.GetZ(),
+                lower.GetZ(),
+                upper.GetZ(),
+                upper.GetY()
             );
         }
     }
@@ -2363,10 +2403,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(2),
-                lower.GetElement(2),
-                upper.GetElement(2),
-                upper.GetElement(3)
+                lower.GetZ(),
+                lower.GetZ(),
+                upper.GetZ(),
+                upper.GetW()
             );
         }
     }
@@ -2392,10 +2432,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(2),
-                lower.GetElement(3),
-                upper.GetElement(2),
-                upper.GetElement(0)
+                lower.GetZ(),
+                lower.GetW(),
+                upper.GetZ(),
+                upper.GetX()
             );
         }
     }
@@ -2421,10 +2461,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(2),
-                lower.GetElement(3),
-                upper.GetElement(2),
-                upper.GetElement(1)
+                lower.GetZ(),
+                lower.GetW(),
+                upper.GetZ(),
+                upper.GetY()
             );
         }
     }
@@ -2450,10 +2490,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(3),
-                lower.GetElement(0),
-                upper.GetElement(0),
-                upper.GetElement(3)
+                lower.GetW(),
+                lower.GetX(),
+                upper.GetX(),
+                upper.GetW()
             );
         }
     }
@@ -2479,10 +2519,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                lower.GetElement(3),
-                lower.GetElement(0),
-                upper.GetElement(1),
-                upper.GetElement(2)
+                lower.GetW(),
+                lower.GetX(),
+                upper.GetY(),
+                upper.GetZ()
             );
         }
     }
@@ -2503,9 +2543,9 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                (left.GetElement(1) * right.GetElement(2)) - (left.GetElement(2) * right.GetElement(1)),
-                (left.GetElement(2) * right.GetElement(0)) - (left.GetElement(0) * right.GetElement(2)),
-                (left.GetElement(0) * right.GetElement(1)) - (left.GetElement(1) * right.GetElement(0)),
+                (left.GetY() * right.GetZ()) - (left.GetZ() * right.GetY()),
+                (left.GetZ() * right.GetX()) - (left.GetX() * right.GetZ()),
+                (left.GetX() * right.GetY()) - (left.GetY() * right.GetX()),
                 0
             );
         }
@@ -2536,10 +2576,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> left, float right)
         {
             return Vector128.Create(
-                left.GetElement(0) / right,
-                left.GetElement(1) / right,
-                left.GetElement(2) / right,
-                left.GetElement(3) / right
+                left.GetX() / right,
+                left.GetY() / right,
+                left.GetZ() / right,
+                left.GetW() / right
             );
         }
     }
@@ -2567,10 +2607,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
         {
             return Vector128.Create(
-                left.GetElement(0) / right.GetElement(0),
-                left.GetElement(1) / right.GetElement(1),
-                left.GetElement(2) / right.GetElement(2),
-                left.GetElement(3) / right.GetElement(3)
+                left.GetX() / right.GetX(),
+                left.GetY() / right.GetY(),
+                left.GetZ() / right.GetZ(),
+                left.GetW() / right.GetW()
             );
         }
     }
@@ -2599,10 +2639,10 @@ public static class VectorUtilities
 
         static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
         {
-            var result = (left.GetElement(0) * right.GetElement(0))
-                       + (left.GetElement(1) * right.GetElement(1))
-                       + (left.GetElement(2) * right.GetElement(2))
-                       + (left.GetElement(3) * right.GetElement(3));
+            var result = (left.GetX() * right.GetX())
+                       + (left.GetY() * right.GetY())
+                       + (left.GetZ() * right.GetZ())
+                       + (left.GetW() * right.GetW());
             return Vector128.Create(result);
         }
     }
@@ -2640,6 +2680,30 @@ public static class VectorUtilities
         }
     }
 
+    /// <summary>Gets the x-component of the vector.</summary>
+    /// <param name="self">The vector.</param>
+    /// <returns>The x-component of <paramref name="self" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float GetX(this Vector128<float> self) => self.ToScalar();
+
+    /// <summary>Gets the y-component of the vector.</summary>
+    /// <param name="self">The vector.</param>
+    /// <returns>The y-component of <paramref name="self" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float GetY(this Vector128<float> self) => self.GetElement(1);
+
+    /// <summary>Gets the z-component of the vector.</summary>
+    /// <param name="self">The vector.</param>
+    /// <returns>The z-component of <paramref name="self" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float GetZ(this Vector128<float> self) => self.GetElement(2);
+
+    /// <summary>Gets the w-component of the vector.</summary>
+    /// <param name="self">The vector.</param>
+    /// <returns>The w-component of <paramref name="self" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float GetW(this Vector128<float> self) => self.GetElement(3);
+
     /// <summary>Interleaves the lower elements of two vectors.</summary>
     /// <param name="left">The vector to interleave with <paramref name="right" />.</param>
     /// <param name="right">The vector to interleave with <paramref name="left" />.</param>
@@ -2663,10 +2727,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
         {
             return Vector128.Create(
-                left.GetElement(0),
-                right.GetElement(0),
-                left.GetElement(1),
-                right.GetElement(1)
+                left.GetX(),
+                right.GetX(),
+                left.GetY(),
+                right.GetY()
             );
         }
     }
@@ -2694,10 +2758,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
         {
             return Vector128.Create(
-                left.GetElement(2),
-                right.GetElement(2),
-                left.GetElement(3),
-                right.GetElement(3)
+                left.GetZ(),
+                right.GetZ(),
+                left.GetW(),
+                right.GetW()
             );
         }
     }
@@ -2727,10 +2791,10 @@ public static class VectorUtilities
 
         static bool SoftwareFallback(Vector128<float> value)
         {
-            return float.IsInfinity(value.GetElement(0))
-                || float.IsInfinity(value.GetElement(1))
-                || float.IsInfinity(value.GetElement(2))
-                || float.IsInfinity(value.GetElement(3));
+            return float.IsInfinity(value.GetX())
+                || float.IsInfinity(value.GetY())
+                || float.IsInfinity(value.GetZ())
+                || float.IsInfinity(value.GetW());
         }
     }
 
@@ -2782,10 +2846,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
         {
             return Vector128.Create(
-                MathUtilities.Max(left.GetElement(0), right.GetElement(0)),
-                MathUtilities.Max(left.GetElement(1), right.GetElement(1)),
-                MathUtilities.Max(left.GetElement(2), right.GetElement(2)),
-                MathUtilities.Max(left.GetElement(3), right.GetElement(3))
+                MathUtilities.Max(left.GetX(), right.GetX()),
+                MathUtilities.Max(left.GetY(), right.GetY()),
+                MathUtilities.Max(left.GetZ(), right.GetZ()),
+                MathUtilities.Max(left.GetW(), right.GetW())
             );
         }
     }
@@ -2816,10 +2880,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
         {
             return Vector128.Create(
-                MathUtilities.Min(left.GetElement(0), right.GetElement(0)),
-                MathUtilities.Min(left.GetElement(1), right.GetElement(1)),
-                MathUtilities.Min(left.GetElement(2), right.GetElement(2)),
-                MathUtilities.Min(left.GetElement(3), right.GetElement(3))
+                MathUtilities.Min(left.GetX(), right.GetX()),
+                MathUtilities.Min(left.GetY(), right.GetY()),
+                MathUtilities.Min(left.GetZ(), right.GetZ()),
+                MathUtilities.Min(left.GetW(), right.GetW())
             );
         }
     }
@@ -2849,10 +2913,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> left, float right)
         {
             return Vector128.Create(
-                left.GetElement(0) * right,
-                left.GetElement(1) * right,
-                left.GetElement(2) * right,
-                left.GetElement(3) * right
+                left.GetX() * right,
+                left.GetY() * right,
+                left.GetZ() * right,
+                left.GetW() * right
             );
         }
     }
@@ -2880,10 +2944,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
         {
             return Vector128.Create(
-                left.GetElement(0) * right.GetElement(0),
-                left.GetElement(1) * right.GetElement(1),
-                left.GetElement(2) * right.GetElement(2),
-                left.GetElement(3) * right.GetElement(3)
+                left.GetX() * right.GetX(),
+                left.GetY() * right.GetY(),
+                left.GetZ() * right.GetZ(),
+                left.GetW() * right.GetW()
             );
         }
     }
@@ -2914,10 +2978,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> addend, Vector128<float> left, Vector128<float> right)
         {
             return Vector128.Create(
-                addend.GetElement(0) + (left.GetElement(0) * right.GetElement(0)),
-                addend.GetElement(1) + (left.GetElement(1) * right.GetElement(1)),
-                addend.GetElement(2) + (left.GetElement(2) * right.GetElement(2)),
-                addend.GetElement(3) + (left.GetElement(3) * right.GetElement(3))
+                addend.GetX() + (left.GetX() * right.GetX()),
+                addend.GetY() + (left.GetY() * right.GetY()),
+                addend.GetZ() + (left.GetZ() * right.GetZ()),
+                addend.GetW() + (left.GetW() * right.GetW())
             );
         }
     }
@@ -2943,17 +3007,17 @@ public static class VectorUtilities
         }
         else
         {
-            var scalar = right.GetElement(0);
+            var scalar = right.GetX();
             return SoftwareFallback(addend, left, scalar);
         }
 
         static Vector128<float> SoftwareFallback(Vector128<float> addend, Vector128<float> left, float right)
         {
             return Vector128.Create(
-                addend.GetElement(0) + (left.GetElement(0) * right),
-                addend.GetElement(1) + (left.GetElement(1) * right),
-                addend.GetElement(2) + (left.GetElement(2) * right),
-                addend.GetElement(3) + (left.GetElement(3) * right)
+                addend.GetX() + (left.GetX() * right),
+                addend.GetY() + (left.GetY() * right),
+                addend.GetZ() + (left.GetZ() * right),
+                addend.GetW() + (left.GetW() * right)
             );
         }
     }
@@ -2979,17 +3043,17 @@ public static class VectorUtilities
         }
         else
         {
-            var scalar = right.GetElement(1);
+            var scalar = right.GetY();
             return SoftwareFallback(addend, left, scalar);
         }
 
         static Vector128<float> SoftwareFallback(Vector128<float> addend, Vector128<float> left, float right)
         {
             return Vector128.Create(
-                addend.GetElement(0) + (left.GetElement(0) * right),
-                addend.GetElement(1) + (left.GetElement(1) * right),
-                addend.GetElement(2) + (left.GetElement(2) * right),
-                addend.GetElement(3) + (left.GetElement(3) * right)
+                addend.GetX() + (left.GetX() * right),
+                addend.GetY() + (left.GetY() * right),
+                addend.GetZ() + (left.GetZ() * right),
+                addend.GetW() + (left.GetW() * right)
             );
         }
     }
@@ -3015,17 +3079,17 @@ public static class VectorUtilities
         }
         else
         {
-            var scalar = right.GetElement(2);
+            var scalar = right.GetZ();
             return SoftwareFallback(addend, left, scalar);
         }
 
         static Vector128<float> SoftwareFallback(Vector128<float> addend, Vector128<float> left, float right)
         {
             return Vector128.Create(
-                addend.GetElement(0) + (left.GetElement(0) * right),
-                addend.GetElement(1) + (left.GetElement(1) * right),
-                addend.GetElement(2) + (left.GetElement(2) * right),
-                addend.GetElement(3) + (left.GetElement(3) * right)
+                addend.GetX() + (left.GetX() * right),
+                addend.GetY() + (left.GetY() * right),
+                addend.GetZ() + (left.GetZ() * right),
+                addend.GetW() + (left.GetW() * right)
             );
         }
     }
@@ -3051,17 +3115,17 @@ public static class VectorUtilities
         }
         else
         {
-            var scalar = right.GetElement(3);
+            var scalar = right.GetW();
             return SoftwareFallback(addend, left, scalar);
         }
 
         static Vector128<float> SoftwareFallback(Vector128<float> addend, Vector128< float> left, float right)
         {
             return Vector128.Create(
-                addend.GetElement(0) + (left.GetElement(0) * right),
-                addend.GetElement(1) + (left.GetElement(1) * right),
-                addend.GetElement(2) + (left.GetElement(2) * right),
-                addend.GetElement(3) + (left.GetElement(3) * right)
+                addend.GetX() + (left.GetX() * right),
+                addend.GetY() + (left.GetY() * right),
+                addend.GetZ() + (left.GetZ() * right),
+                addend.GetW() + (left.GetW() * right)
             );
         }
     }
@@ -3092,10 +3156,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> minuend, Vector128<float> left, Vector128<float> right)
         {
             return Vector128.Create(
-                minuend.GetElement(0) - (left.GetElement(0) * right.GetElement(0)),
-                minuend.GetElement(1) - (left.GetElement(1) * right.GetElement(1)),
-                minuend.GetElement(2) - (left.GetElement(2) * right.GetElement(2)),
-                minuend.GetElement(3) - (left.GetElement(3) * right.GetElement(3))
+                minuend.GetX() - (left.GetX() * right.GetX()),
+                minuend.GetY() - (left.GetY() * right.GetY()),
+                minuend.GetZ() - (left.GetZ() * right.GetZ()),
+                minuend.GetW() - (left.GetW() * right.GetW())
             );
         }
     }
@@ -3118,17 +3182,17 @@ public static class VectorUtilities
         }
         else
         {
-            var scalar = right.GetElement(0);
+            var scalar = right.GetX();
             return SoftwareFallback(left, scalar);
         }
 
         static Vector128<float> SoftwareFallback(Vector128<float> left, float right)
         {
             return Vector128.Create(
-                left.GetElement(0) * right,
-                left.GetElement(1) * right,
-                left.GetElement(2) * right,
-                left.GetElement(3) * right
+                left.GetX() * right,
+                left.GetY() * right,
+                left.GetZ() * right,
+                left.GetW() * right
             );
         }
     }
@@ -3151,17 +3215,17 @@ public static class VectorUtilities
         }
         else
         {
-            var scalar = right.GetElement(1);
+            var scalar = right.GetY();
             return SoftwareFallback(left, scalar);
         }
 
         static Vector128<float> SoftwareFallback(Vector128<float> left, float right)
         {
             return Vector128.Create(
-                left.GetElement(0) * right,
-                left.GetElement(1) * right,
-                left.GetElement(2) * right,
-                left.GetElement(3) * right
+                left.GetX() * right,
+                left.GetY() * right,
+                left.GetZ() * right,
+                left.GetW() * right
             );
         }
     }
@@ -3184,17 +3248,17 @@ public static class VectorUtilities
         }
         else
         {
-            var scalar = right.GetElement(2);
+            var scalar = right.GetZ();
             return SoftwareFallback(left, scalar);
         }
 
         static Vector128<float> SoftwareFallback(Vector128<float> left, float right)
         {
             return Vector128.Create(
-                left.GetElement(0) * right,
-                left.GetElement(1) * right,
-                left.GetElement(2) * right,
-                left.GetElement(3) * right
+                left.GetX() * right,
+                left.GetY() * right,
+                left.GetZ() * right,
+                left.GetW() * right
             );
         }
     }
@@ -3217,17 +3281,17 @@ public static class VectorUtilities
         }
         else
         {
-            var scalar = right.GetElement(3);
+            var scalar = right.GetW();
             return SoftwareFallback(left, scalar);
         }
 
         static Vector128<float> SoftwareFallback(Vector128<float> left, float right)
         {
             return Vector128.Create(
-                left.GetElement(0) * right,
-                left.GetElement(1) * right,
-                left.GetElement(2) * right,
-                left.GetElement(3) * right
+                left.GetX() * right,
+                left.GetY() * right,
+                left.GetZ() * right,
+                left.GetW() * right
             );
         }
     }
@@ -3254,10 +3318,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> value)
         {
             return Vector128.Create(
-                -value.GetElement(0),
-                -value.GetElement(1),
-                -value.GetElement(2),
-                -value.GetElement(3)
+                -value.GetX(),
+                -value.GetY(),
+                -value.GetZ(),
+                -value.GetW()
             );
         }
     }
@@ -3299,10 +3363,10 @@ public static class VectorUtilities
         else
         {
             return Vector128.Create(
-                -value.GetElement(0),
-                -value.GetElement(1),
-                -value.GetElement(2),
-                +value.GetElement(3)
+                -value.GetX(),
+                -value.GetY(),
+                -value.GetZ(),
+                +value.GetW()
             );
         }
     }
@@ -3329,10 +3393,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> value)
         {
             return Vector128.Create(
-                MathUtilities.ReciprocalEstimate(value.GetElement(0)),
-                MathUtilities.ReciprocalEstimate(value.GetElement(1)),
-                MathUtilities.ReciprocalEstimate(value.GetElement(2)),
-                MathUtilities.ReciprocalEstimate(value.GetElement(3))
+                MathUtilities.ReciprocalEstimate(value.GetX()),
+                MathUtilities.ReciprocalEstimate(value.GetY()),
+                MathUtilities.ReciprocalEstimate(value.GetZ()),
+                MathUtilities.ReciprocalEstimate(value.GetW())
             );
         }
     }
@@ -3359,10 +3423,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> value)
         {
             return Vector128.Create(
-                MathUtilities.ReciprocalSqrtEstimate(value.GetElement(0)),
-                MathUtilities.ReciprocalSqrtEstimate(value.GetElement(1)),
-                MathUtilities.ReciprocalSqrtEstimate(value.GetElement(2)),
-                MathUtilities.ReciprocalSqrtEstimate(value.GetElement(3))
+                MathUtilities.ReciprocalSqrtEstimate(value.GetX()),
+                MathUtilities.ReciprocalSqrtEstimate(value.GetY()),
+                MathUtilities.ReciprocalSqrtEstimate(value.GetZ()),
+                MathUtilities.ReciprocalSqrtEstimate(value.GetW())
             );
         }
     }
@@ -3387,10 +3451,10 @@ public static class VectorUtilities
 
         static (Vector128<float>, Vector128<float>) SoftwareFallback(Vector128<float> value)
         {
-            var (sinX, cosX) = MathUtilities.SinCos(value.GetElement(0));
-            var (sinY, cosY) = MathUtilities.SinCos(value.GetElement(0));
-            var (sinZ, cosZ) = MathUtilities.SinCos(value.GetElement(0));
-            var (sinW, cosW) = MathUtilities.SinCos(value.GetElement(0));
+            var (sinX, cosX) = MathUtilities.SinCos(value.GetX());
+            var (sinY, cosY) = MathUtilities.SinCos(value.GetX());
+            var (sinZ, cosZ) = MathUtilities.SinCos(value.GetX());
+            var (sinW, cosW) = MathUtilities.SinCos(value.GetX());
             return (Vector128.Create(sinX, sinY, sinZ, sinW), Vector128.Create(cosX, cosY, cosZ, cosW));
         }
     }
@@ -3417,10 +3481,10 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> value)
         {
             return Vector128.Create(
-                MathUtilities.Sqrt(value.GetElement(0)),
-                MathUtilities.Sqrt(value.GetElement(1)),
-                MathUtilities.Sqrt(value.GetElement(2)),
-                MathUtilities.Sqrt(value.GetElement(3))
+                MathUtilities.Sqrt(value.GetX()),
+                MathUtilities.Sqrt(value.GetY()),
+                MathUtilities.Sqrt(value.GetZ()),
+                MathUtilities.Sqrt(value.GetW())
             );
         }
     }
@@ -3448,11 +3512,43 @@ public static class VectorUtilities
         static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
         {
             return Vector128.Create(
-                left.GetElement(0) - right.GetElement(0),
-                left.GetElement(1) - right.GetElement(1),
-                left.GetElement(2) - right.GetElement(2),
-                left.GetElement(3) - right.GetElement(3)
+                left.GetX() - right.GetX(),
+                left.GetY() - right.GetY(),
+                left.GetZ() - right.GetZ(),
+                left.GetW() - right.GetW()
             );
         }
     }
+
+    /// <inheritdoc cref="IFormattable.ToString(string?, IFormatProvider?)" />
+    public static string ToString(this Vector128<float> self, string? format, IFormatProvider? formatProvider)
+        => $"{nameof(Vector128<float>)} {{ X = {self.GetX().ToString(format, formatProvider)}, Y = {self.GetY().ToString(format, formatProvider)}, Z = {self.GetZ().ToString(format, formatProvider)}, W = {self.GetW().ToString(format, formatProvider)} }}";
+
+    /// <summary>Sets the x-component of the vector.</summary>
+    /// <param name="self">The vector.</param>
+    /// <param name="x">The new x-component for the vector.</param>
+    /// <returns>A vector with the x-component set to <paramref name="x" /> and the remaining components set to the same value as in <paramref name="self" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> WithX(this Vector128<float> self, float x) => self.WithElement(0, x);
+
+    /// <summary>Sets the y-component of the vector.</summary>
+    /// <param name="self">The vector.</param>
+    /// <param name="x">The new y-component for the vector.</param>
+    /// <returns>A vector with the y-component set to <paramref name="x" /> and the remaining components set to the same value as in <paramref name="self" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> WithY(this Vector128<float> self, float x) => self.WithElement(1, x);
+
+    /// <summary>Sets the z-component of the vector.</summary>
+    /// <param name="self">The vector.</param>
+    /// <param name="x">The new z-component for the vector.</param>
+    /// <returns>A vector with the z-component set to <paramref name="x" /> and the remaining components set to the same value as in <paramref name="self" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> WithZ(this Vector128<float> self, float x) => self.WithElement(2, x);
+
+    /// <summary>Sets the w-component of the vector.</summary>
+    /// <param name="self">The vector.</param>
+    /// <param name="x">The new w-component for the vector.</param>
+    /// <returns>A vector with the w-component set to <paramref name="x" /> and the remaining components set to the same value as in <paramref name="self" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> WithW(this Vector128<float> self, float x) => self.WithElement(3, x);
 }

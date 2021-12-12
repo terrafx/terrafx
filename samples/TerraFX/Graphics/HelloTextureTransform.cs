@@ -78,10 +78,10 @@ public sealed class HelloTextureTransform : HelloWindow
         var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
 
         // Shaders take transposed matrices, so we want to set X.W
-        pConstantBuffer[0] = new Matrix4x4(
-            new Vector4(1.0f, 0.0f, 0.0f, x),
-            new Vector4(0.0f, 1.0f, 0.0f, y),
-            new Vector4(0.0f, 0.0f, 1.0f, 0),
+        pConstantBuffer[0] = Matrix4x4.Create(
+            Vector4.Create(1.0f, 0.0f, 0.0f, x),
+            Vector4.Create(0.0f, 1.0f, 0.0f, y),
+            Vector4.Create(0.0f, 0.0f, 1.0f, 0),
             Vector4.UnitW
         );
 
@@ -173,18 +173,18 @@ public sealed class HelloTextureTransform : HelloWindow
             var pVertexBuffer = vertexStagingBuffer.Map<TextureVertex>(vertexBufferView.Offset, vertexBufferView.Size);
 
             pVertexBuffer[0] = new TextureVertex {
-                Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
-                UV = new Vector2(0.5f, 0.0f)
+                Position = Vector3.Create(0.0f, 0.25f * aspectRatio, 0.0f),
+                UV = Vector2.Create(0.5f, 0.0f)
             };
 
             pVertexBuffer[1] = new TextureVertex {
-                Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
-                UV = new Vector2(1.0f, 1.0f)
+                Position = Vector3.Create(0.25f, -0.25f * aspectRatio, 0.0f),
+                UV = Vector2.Create(1.0f, 1.0f)
             };
 
             pVertexBuffer[2] = new TextureVertex {
-                Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
-                UV = new Vector2(0.0f, 1.0f)
+                Position = Vector3.Create(-0.25f, -0.25f * aspectRatio, 0.0f),
+                UV = Vector2.Create(0.0f, 1.0f)
             };
 
             vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);
