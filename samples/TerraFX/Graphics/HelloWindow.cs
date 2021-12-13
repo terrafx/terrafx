@@ -114,15 +114,24 @@ public class HelloWindow : Sample
     protected void Render()
     {
         var graphicsRenderContext = GraphicsDevice.RentRenderContext();
-        graphicsRenderContext.Reset();
         {
+            graphicsRenderContext.Reset();
             graphicsRenderContext.SetSwapchain(GraphicsSwapchain);
-
             graphicsRenderContext.BeginDrawing(GraphicsSwapchain.FramebufferIndex, Colors.CornflowerBlue);
-            Draw(graphicsRenderContext);
+            {
+                var surfaceSize = GraphicsSwapchain.Surface.Size;
+
+                var viewport = BoundingBox.CreateFromSize(Vector3.Zero, Vector3.Create(surfaceSize, 1.0f));
+                graphicsRenderContext.SetViewport(viewport);
+
+                var scissor = BoundingRectangle.CreateFromSize(Vector2.Zero, surfaceSize);
+                graphicsRenderContext.SetScissor(scissor);
+
+                Draw(graphicsRenderContext);
+            }
             graphicsRenderContext.EndDrawing();
+            graphicsRenderContext.Flush();
         }
-        graphicsRenderContext.Flush();
         GraphicsDevice.ReturnRenderContext(graphicsRenderContext);
     }
 }

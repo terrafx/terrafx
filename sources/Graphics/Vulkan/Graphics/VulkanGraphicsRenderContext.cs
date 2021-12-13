@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using TerraFX.Interop.Vulkan;
+using TerraFX.Numerics;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkAccessFlags;
 using static TerraFX.Interop.Vulkan.VkCommandPoolCreateFlags;
@@ -19,6 +20,7 @@ using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
@@ -147,24 +149,6 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
 
         var vkCommandBuffer = VkCommandBuffer;
         vkCmdBeginRenderPass(vkCommandBuffer, &vkRenderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-        var vkViewport = new VkViewport {
-            x = 0,
-            y = surface.Height,
-            width = surface.Width,
-            height = -surface.Height,
-            minDepth = 0.0f,
-            maxDepth = 1.0f,
-        };
-        vkCmdSetViewport(vkCommandBuffer, firstViewport: 0, viewportCount: 1, &vkViewport);
-
-        var vkScissorRect = new VkRect2D {
-            extent = new VkExtent2D {
-                width = (uint)surface.Width,
-                height = (uint)surface.Height,
-            },
-        };
-        vkCmdSetScissor(vkCommandBuffer, firstScissor: 0, scissorCount: 1, &vkScissorRect);
 
         _framebufferIndex = framebufferIndex;
         _state.Transition(from: DrawingInitializing, to: DrawingInitialized);
@@ -400,6 +384,52 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
+    public override void SetScissor(BoundingRectangle scissor)
+    {
+        var location = scissor.Location;
+        var size = scissor.Size;
+
+        var vkRect2D = new VkRect2D {
+            offset = new VkOffset2D {
+                x = (int)location.X,
+                y = (int)location.Y,
+            },
+            extent = new VkExtent2D {
+                width = (uint)size.X,
+                height = (uint)size.Y
+            },
+        };
+        vkCmdSetScissor(VkCommandBuffer, firstScissor: 0, scissorCount: 1, &vkRect2D);
+    }
+
+    /// <inheritdoc />
+    public override void SetScissors(ReadOnlySpan<BoundingRectangle> scissors)
+    {
+        var count = (uint)scissors.Length;
+        var vkRect2Ds = AllocateArray<VkRect2D>(count);
+
+        for (var i = 0u; i < count; i++)
+        {
+            ref readonly var scissor = ref scissors[(int)i];
+
+            var location = scissor.Location;
+            var size = scissor.Size;
+
+            vkRect2Ds[i] = new VkRect2D {
+                offset = new VkOffset2D {
+                    x = (int)location.X,
+                    y = (int)location.Y,
+                },
+                extent = new VkExtent2D {
+                    width = (uint)size.X,
+                    height = (uint)size.Y
+                },
+            };
+        }
+        vkCmdSetScissor(VkCommandBuffer, firstScissor: 0, count, vkRect2Ds);
+    }
+
+    /// <inheritdoc />
     public override void SetSwapchain(GraphicsSwapchain swapchain)
         => SetSwapchain((VulkanGraphicsSwapchain)swapchain);
 
@@ -414,6 +444,48 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
         }
 
         _swapchain = swapchain;
+    }
+
+    /// <inheritdoc />
+    public override void SetViewport(BoundingBox viewport)
+    {
+        var location = viewport.Location;
+        var size = viewport.Size;
+
+        var vkViewport = new VkViewport {
+            x = location.X,
+            y = location.Y + size.Y,
+            width = size.X,
+            height = -size.Y,
+            minDepth = location.Z,
+            maxDepth = size.Z,
+        };
+        vkCmdSetViewport(VkCommandBuffer, firstViewport: 0, viewportCount: 1, &vkViewport);
+    }
+
+    /// <inheritdoc />
+    public override void SetViewports(ReadOnlySpan<BoundingBox> viewports)
+    {
+        var count = (uint)viewports.Length;
+        var vkViewports = AllocateArray<VkViewport>(count);
+
+        for (var i = 0u; i < count; i++)
+        {
+            ref readonly var viewport = ref viewports[(int)i];
+
+            var location = viewport.Location;
+            var size = viewport.Size;
+
+            vkViewports[i] = new VkViewport {
+                x = location.X,
+                y = location.Y + size.Y,
+                width = size.X,
+                height = -size.Y,
+                minDepth = location.Z,
+                maxDepth = size.Z,
+            };
+        }
+        vkCmdSetViewport(VkCommandBuffer, firstViewport: 0, count, vkViewports);
     }
 
     /// <inheritdoc />

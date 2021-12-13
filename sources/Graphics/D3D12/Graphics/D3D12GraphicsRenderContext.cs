@@ -1,12 +1,14 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using System;
+using System.Diagnostics;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
+using TerraFX.Numerics;
 using TerraFX.Threading;
-using static TerraFX.Interop.DirectX.D3D12;
+using static TerraFX.Interop.DirectX.D3D_PRIMITIVE_TOPOLOGY;
 using static TerraFX.Interop.DirectX.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_RESOURCE_STATES;
-using static TerraFX.Interop.DirectX.D3D_PRIMITIVE_TOPOLOGY;
 using static TerraFX.Interop.DirectX.DXGI_FORMAT;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Runtime.Configuration;
@@ -14,8 +16,8 @@ using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
-using System.Diagnostics;
 
 namespace TerraFX.Graphics;
 
@@ -112,25 +114,6 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
 
         var d3d12RtvDescriptor = swapchain.D3D12RtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart().Offset((int)framebufferIndex, Device.D3D12RtvDescriptorHandleIncrementSize);
         d3d12GraphicsCommandList->OMSetRenderTargets(1, &d3d12RtvDescriptor, RTsSingleHandleToDescriptorRange: TRUE, pDepthStencilDescriptor: null);
-
-        var surface = swapchain.Surface;
-
-        var surfaceWidth = surface.Width;
-        var surfaceHeight = surface.Height;
-
-        var d3d12Viewport = new D3D12_VIEWPORT {
-            Width = surfaceWidth,
-            Height = surfaceHeight,
-            MinDepth = D3D12_MIN_DEPTH,
-            MaxDepth = D3D12_MAX_DEPTH,
-        };
-        d3d12GraphicsCommandList->RSSetViewports(1, &d3d12Viewport);
-
-        var d3d12ScissorRect = new RECT {
-            right = (int)surfaceWidth,
-            bottom = (int)surfaceHeight,
-        };
-        d3d12GraphicsCommandList->RSSetScissorRects(1, &d3d12ScissorRect);
 
         d3d12GraphicsCommandList->ClearRenderTargetView(d3d12RtvDescriptor, (float*)&backgroundColor, NumRects: 0, pRects: null);
         d3d12GraphicsCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -454,6 +437,44 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
+    public override void SetScissor(BoundingRectangle scissor)
+    {
+        var topLeft = scissor.Location;
+        var bottomRight = topLeft + scissor.Size;
+
+        var d3d12Rect = new RECT {
+            left = (int)topLeft.X,
+            top = (int)topLeft.Y,
+            right = (int)bottomRight.X,
+            bottom = (int)bottomRight.Y,
+        };
+        D3D12GraphicsCommandList->RSSetScissorRects(NumRects: 1, &d3d12Rect);
+    }
+
+    /// <inheritdoc />
+    public override void SetScissors(ReadOnlySpan<BoundingRectangle> scissors)
+    {
+        var count = (uint)scissors.Length;
+        var d3d12Rects = AllocateArray<RECT>(count);
+
+        for (var i = 0u; i < count; i++)
+        {
+            ref readonly var scissor = ref scissors[(int)i];
+
+            var upperLeft = scissor.Location;
+            var bottomRight = upperLeft + scissor.Size;
+
+            d3d12Rects[i] = new RECT {
+                left = (int)upperLeft.X,
+                top = (int)upperLeft.Y,
+                right = (int)bottomRight.X,
+                bottom = (int)bottomRight.Y,
+            };
+        }
+        D3D12GraphicsCommandList->RSSetScissorRects(count, d3d12Rects);
+    }
+
+    /// <inheritdoc />
     public override void SetSwapchain(GraphicsSwapchain swapchain)
         => SetSwapchain((D3D12GraphicsSwapchain)swapchain);
 
@@ -468,6 +489,48 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
         }
 
         _swapchain = swapchain;
+    }
+
+    /// <inheritdoc />
+    public override void SetViewport(BoundingBox viewport)
+    {
+        var location = viewport.Location;
+        var size = viewport.Size;
+
+        var d3d12Viewport = new D3D12_VIEWPORT {
+            TopLeftX = location.X,
+            TopLeftY = location.Y,
+            Width = size.X,
+            Height = size.Y,
+            MinDepth = location.Z,
+            MaxDepth = size.Z,
+        };
+        D3D12GraphicsCommandList->RSSetViewports(NumViewports: 1, &d3d12Viewport);
+    }
+
+    /// <inheritdoc />
+    public override void SetViewports(ReadOnlySpan<BoundingBox> viewports)
+    {
+        var count = (uint)viewports.Length;
+        var d3d12Viewports = AllocateArray<D3D12_VIEWPORT>(count);
+
+        for (var i = 0u; i < count; i++)
+        {
+            ref readonly var viewport = ref viewports[(int)i];
+
+            var location = viewport.Location;
+            var size = viewport.Size;
+
+            d3d12Viewports[i] = new D3D12_VIEWPORT {
+                TopLeftX = location.X,
+                TopLeftY = location.Y,
+                Width = size.X,
+                Height = size.Y,
+                MinDepth = location.Z,
+                MaxDepth = size.Z,
+            };
+        }
+        D3D12GraphicsCommandList->RSSetViewports(count, d3d12Viewports);
     }
 
     /// <inheritdoc />

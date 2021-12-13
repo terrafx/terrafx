@@ -234,13 +234,14 @@ public sealed unsafe class Win32Window : Window
     {
         if (_clientBounds.Location != location)
         {
-            var clientSize = ClientSize;
+            var topLeft = location;
+            var bottomRight = topLeft + ClientSize;
 
             var rect = new RECT {
-                left = (int)location.X,
-                top = (int)location.Y,
-                right = (int)(location.X + clientSize.X),
-                bottom = (int)(location.Y + clientSize.Y),
+                left = (int)topLeft.X,
+                top = (int)topLeft.Y,
+                right = (int)bottomRight.X,
+                bottom = (int)bottomRight.Y,
             };
 
             ThrowExternalExceptionIfFalse(AdjustWindowRectEx(&rect, _style, bMenu: FALSE, _extendedStyle), nameof(AdjustWindowRectEx));
@@ -271,13 +272,14 @@ public sealed unsafe class Win32Window : Window
     {
         if (_clientBounds.Size != size)
         {
-            var clientLocation = ClientLocation;
+            var topLeft = ClientLocation;
+            var bottomRight = topLeft + size;
 
             var rect = new RECT {
-                left = (int)clientLocation.X,
-                top = (int)clientLocation.Y,
-                right = (int)(clientLocation.X + size.X),
-                bottom = (int)(clientLocation.Y + size.Y),
+                left = (int)topLeft.X,
+                top = (int)topLeft.Y,
+                right = (int)bottomRight.X,
+                bottom = (int)bottomRight.Y,
             };
 
             ThrowExternalExceptionIfFalse(AdjustWindowRectEx(&rect, _style, bMenu: FALSE, _extendedStyle), nameof(AdjustWindowRectEx));
