@@ -84,9 +84,9 @@ public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocato
     }
 
     /// <inheritdoc />
-    public override D3D12GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, GraphicsMemoryHeapRegionAllocationFlags allocationFlags = GraphicsMemoryHeapRegionAllocationFlags.None, TexelFormat texelFormat = default)
+    public override D3D12GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, GraphicsMemoryHeapRegionAllocationFlags allocationFlags = GraphicsMemoryHeapRegionAllocationFlags.None, GraphicsFormat format = GraphicsFormat.Unknown)
     {
-        var dxgiFormat = Map(texelFormat);
+        var dxgiFormat = format.AsDxgiFormat();
         var heapCollectionIndex = GetHeapCollectionIndex(cpuAccess, 1);
 
         D3D12_RESOURCE_DESC d3d12ResourceDesc;

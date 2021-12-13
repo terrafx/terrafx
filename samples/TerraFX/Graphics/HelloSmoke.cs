@@ -167,7 +167,7 @@ public sealed class HelloSmoke : HelloWindow
             var textureDz = textureWidth * textureHeight;
             var texturePixels = textureDz * textureDepth;
 
-            var texture = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, textureWidth, textureHeight, textureDepth, texelFormat: TexelFormat.R8G8B8A8_UNORM);
+            var texture = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, textureWidth, textureHeight, textureDepth, format: GraphicsFormat.R8G8B8A8_UNORM);
             var textureView = new GraphicsResourceView {
                 Offset = 0,
                 Resource = texture,
