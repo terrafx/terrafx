@@ -111,8 +111,8 @@ public sealed class HelloTriangle : HelloWindow
             var inputs = new GraphicsPipelineInput[1] {
                 new GraphicsPipelineInput(
                     new GraphicsPipelineInputElement[2] {
-                        new GraphicsPipelineInputElement(typeof(ColorRgba), GraphicsPipelineInputElementKind.Color, size: 16),
-                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
+                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Color, GraphicsFormat.R32G32B32A32_SFLOAT, size: 16, alignment: 16),
+                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Position, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
                     }
                 ),
             };

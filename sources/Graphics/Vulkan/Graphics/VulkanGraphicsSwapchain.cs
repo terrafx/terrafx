@@ -25,7 +25,7 @@ namespace TerraFX.Graphics;
 public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
 {
     private readonly uint _framebufferCount;
-    private readonly VkFormat _framebufferFormat;
+    private readonly GraphicsFormat _framebufferFormat;
 
     private readonly VkSurfaceKHR _vkSurface;
 
@@ -44,7 +44,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         var framebufferCount = 2u;
         _framebufferCount = framebufferCount;
 
-        var framebufferFormat = VK_FORMAT_R8G8B8A8_UNORM;
+        var framebufferFormat = GraphicsFormat.R8G8B8A8_UNORM;
         _framebufferFormat = framebufferFormat;
 
         var vkSurface = CreateVkSurface(device, surface);
@@ -125,8 +125,8 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
     /// <inheritdoc cref="GraphicsSwapchain.Fence" />
     public new VulkanGraphicsFence Fence => base.Fence.As<VulkanGraphicsFence>();
 
-    /// <summary>Gets the <see cref="VkFormat" /> used by <see cref="VkSwapchain" />.</summary>
-    public VkFormat FramebufferFormat => _framebufferFormat;
+    /// <inheritdoc />
+    public override GraphicsFormat FramebufferFormat => _framebufferFormat;
 
     /// <inheritdoc />
     public override uint FramebufferIndex => _framebufferIndex;
@@ -292,14 +292,14 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         return vkFramebuffers;
     }
 
-    private UnmanagedArray<VkImageView> CreateVkImageViews(VulkanGraphicsDevice device, VkFormat vkFormat, UnmanagedArray<VkImage> vkImages)
+    private UnmanagedArray<VkImageView> CreateVkImageViews(VulkanGraphicsDevice device, GraphicsFormat framebufferFormat, UnmanagedArray<VkImage> vkImages)
     {
         var vkImageViews = new UnmanagedArray<VkImageView>(vkImages.Length);
 
         var vkImageViewCreateInfo = new VkImageViewCreateInfo {
             sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
             viewType = VK_IMAGE_VIEW_TYPE_2D,
-            format = vkFormat,
+            format = framebufferFormat.AsVkFormat(),
             components = new VkComponentMapping {
                 r = VK_COMPONENT_SWIZZLE_R,
                 g = VK_COMPONENT_SWIZZLE_G,
@@ -332,7 +332,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         return framebufferIndex;
     }
 
-    private static VkSwapchainKHR CreateVkSwapchain(VulkanGraphicsDevice device, IGraphicsSurface surface, uint framebufferCount, VkFormat framebufferFormat, VkSurfaceKHR vkSurface)
+    private static VkSwapchainKHR CreateVkSwapchain(VulkanGraphicsDevice device, IGraphicsSurface surface, uint framebufferCount, GraphicsFormat framebufferFormat, VkSurfaceKHR vkSurface)
     {
         VkSwapchainKHR vkSwapchain;
         var vkPhysicalDevice = device.Adapter.VkPhysicalDevice;
@@ -378,9 +378,10 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         var surfaceFormats = stackalloc VkSurfaceFormatKHR[(int)surfaceFormatCount];
         ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, vkSurface, &surfaceFormatCount, surfaceFormats));
 
+        var vkFramebufferFormat = framebufferFormat.AsVkFormat();
         for (uint i = 0; i < surfaceFormatCount; i++)
         {
-            if (surfaceFormats[i].format == framebufferFormat)
+            if (surfaceFormats[i].format == vkFramebufferFormat)
             {
                 swapChainCreateInfo.imageFormat = surfaceFormats[i].format;
                 swapChainCreateInfo.imageColorSpace = surfaceFormats[i].colorSpace;

@@ -72,7 +72,7 @@ public static class UnmanagedValueListTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueList = new UnmanagedValueList<int>(array.AsUnmanagedSpan()))
+        using (var valueList = new UnmanagedValueList<int>(array))
         {
             Assert.That(() => valueList,
                 Has.Property("Capacity").EqualTo((nuint)3)
@@ -80,7 +80,7 @@ public static class UnmanagedValueListTests
             );
         }
 
-        using (var valueList = new UnmanagedValueList<int>(array.AsUnmanagedSpan(), 2))
+        using (var valueList = new UnmanagedValueList<int>(array, 2))
         {
             Assert.That(() => valueList,
                 Has.Property("Capacity").EqualTo((nuint)3)
@@ -88,7 +88,7 @@ public static class UnmanagedValueListTests
             );
         }
 
-        Assert.That(() => new UnmanagedValueList<int>(array.AsUnmanagedSpan(), 3),
+        Assert.That(() => new UnmanagedValueList<int>(array, 3),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                     .And.Property("ActualValue").EqualTo((nuint)3)
                     .And.Property("ParamName").EqualTo("alignment")

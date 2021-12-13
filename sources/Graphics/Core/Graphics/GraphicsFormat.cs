@@ -3,7 +3,7 @@
 namespace TerraFX.Graphics;
 
 /// <summary>Defines the format kind for a graphics resource.</summary>
-public enum GraphicsFormatKind
+public enum GraphicsFormat
 {
     /// <summary>An unknown graphics format.</summary>
     Unknown,

@@ -148,8 +148,8 @@ public sealed class HelloTexture : HelloWindow
             var inputs = new GraphicsPipelineInput[1] {
                 new GraphicsPipelineInput(
                     new GraphicsPipelineInputElement[2] {
-                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
-                        new GraphicsPipelineInputElement(typeof(Vector2), GraphicsPipelineInputElementKind.TextureCoordinate, size: 8),
+                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Position, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
+                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.TextureCoordinate, GraphicsFormat.R32G32_SFLOAT, size: 8, alignment: 4),
                     }
                 ),
             };

@@ -79,6 +79,11 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
     /// <inheritdoc />
     public override VulkanGraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, GraphicsMemoryHeapRegionAllocationFlags allocationFlags = GraphicsMemoryHeapRegionAllocationFlags.None, GraphicsFormat format = GraphicsFormat.Unknown)
     {
+        if (format == GraphicsFormat.Unknown)
+        {
+            format = GraphicsFormat.R8G8B8A8_UNORM;
+        }
+
         var device = Device;
         var vkDevice = device.VkDevice;
 

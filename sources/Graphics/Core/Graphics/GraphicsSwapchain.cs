@@ -28,6 +28,9 @@ public abstract class GraphicsSwapchain : GraphicsDeviceObject
     /// <summary>Gets the fence used to synchronize the swapchain.</summary>
     public GraphicsFence Fence => _fence;
 
+    /// <summary>Gets the backing-format for the framebuffers of the swapchain.</summary>
+    public abstract GraphicsFormat FramebufferFormat { get; }
+
     /// <summary>Gets the index of the current framebuffer.</summary>
     public abstract uint FramebufferIndex { get; }
 

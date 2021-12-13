@@ -149,6 +149,10 @@ public partial struct UnmanagedValueList<T> : IDisposable
         _items[count] = item;
     }
 
+    /// <summary>Converts the backing array for the list to a span.</summary>
+    /// <returns>A span that covers the backing array for the list.</returns>
+    public Span<T> AsSpanUnsafe() => AsUnmanagedSpanUnsafe().AsSpan();
+
     /// <summary>Converts the backing array for the list to an unmanaged span.</summary>
     /// <returns>An unmanaged span that covers the backing array for the list.</returns>
     /// <remarks>

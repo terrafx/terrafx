@@ -170,7 +170,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
                 {
                     vkVertexInputAttributeDescriptions = new UnmanagedArray<VkVertexInputAttributeDescription>(inputElementsCount);
 
-                    for (var inputIndex = 0; inputIndex < inputs.Length; inputIndex++)
+                    for (nuint inputIndex = 0; inputIndex < inputs.Length; inputIndex++)
                     {
                         var input = inputs[inputIndex];
                         var inputElements = input.Elements;
@@ -178,11 +178,11 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
                         var inputBindingStride = 0u;
                         var maxAlignment = 0u;
 
-                        for (var inputElementIndex = 0; inputElementIndex < inputElements.Length; inputElementIndex++)
+                        for (nuint inputElementIndex = 0; inputElementIndex < inputElements.Length; inputElementIndex++)
                         {
                             var inputElement = inputElements[inputElementIndex];
 
-                            var inputElementAlignment = GetInputElementAlignment(inputElement.Type);
+                            var inputElementAlignment = inputElement.Alignment;
                             inputBindingStride = AlignUp(inputBindingStride, inputElementAlignment);
 
                             maxAlignment = Max(maxAlignment, inputElementAlignment);
@@ -190,7 +190,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
                             vkVertexInputAttributeDescriptions[inputElementsIndex] = new VkVertexInputAttributeDescription {
                                 location = unchecked((uint)inputElementIndex),
                                 binding = unchecked((uint)inputIndex),
-                                format = GetInputElementFormat(inputElement.Type),
+                                format = inputElement.Format.AsVkFormat(),
                                 offset = inputBindingStride,
                             };
 
@@ -242,56 +242,16 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
             return vkPipeline;
         }
 
-        static uint GetInputElementAlignment(Type type)
+        static nuint GetInputElementCount(UnmanagedReadOnlySpan<GraphicsPipelineInput> inputs)
         {
-            var inputElementAlignment = 1u;
+            nuint inputElementsCount = 0;
 
-            if (type == typeof(Vector2))
+            for (nuint i = 0; i <inputs.Length; i++)
             {
-                inputElementAlignment = 4;
-            }
-            else if (type == typeof(Vector3))
-            {
-                inputElementAlignment = 4;
-            }
-            else if ((type == typeof(Vector4)) || (type == typeof(ColorRgba)))
-            {
-                inputElementAlignment = 16;
-            }
-
-            return inputElementAlignment;
-        }
-
-        static nuint GetInputElementCount(ReadOnlySpan<GraphicsPipelineInput> inputs)
-        {
-            var inputElementsCount = (nuint)0;
-
-            foreach (var input in inputs)
-            {
-                inputElementsCount += (uint)input.Elements.Length;
+                inputElementsCount += inputs[i].Elements.Length;
             }
 
             return inputElementsCount;
-        }
-
-        static VkFormat GetInputElementFormat(Type type)
-        {
-            var inputElementFormat = VK_FORMAT_UNDEFINED;
-
-            if (type == typeof(Vector2))
-            {
-                inputElementFormat = VK_FORMAT_R32G32_SFLOAT;
-            }
-            else if (type == typeof(Vector3))
-            {
-                inputElementFormat = VK_FORMAT_R32G32B32_SFLOAT;
-            }
-            else if ((type == typeof(Vector4)) || (type == typeof(ColorRgba)))
-            {
-                inputElementFormat = VK_FORMAT_R32G32B32A32_SFLOAT;
-            }
-
-            return inputElementFormat;
         }
     }
 

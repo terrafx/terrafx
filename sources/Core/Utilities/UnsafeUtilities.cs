@@ -75,6 +75,14 @@ public static unsafe class UnsafeUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T AsRef<T>(in T source) => ref Unsafe.AsRef(in source);
 
+    /// <inheritdoc cref="Unsafe.AsRef{T}(in T)" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ref TTo AsRef<TFrom, TTo>(in TFrom source)
+    {
+        ref var mutable = ref AsRef(in source);
+        return ref As<TFrom, TTo>(ref mutable);
+    }
+
     /// <inheritdoc cref="Unsafe.AsRef{T}(void*)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T AsRef<T>(void* source) => ref Unsafe.AsRef<T>(source);
@@ -100,6 +108,18 @@ public static unsafe class UnsafeUtilities
         where TTo : struct
     {
         return MemoryMarshal.Cast<TFrom, TTo>(span);
+    }
+
+    /// <inheritdoc cref="Unsafe.CopyBlock(ref byte, ref byte, uint)" />
+    public static void CopyBlock<TDestination, TSource>(ref TDestination destination, in TSource source, uint byteCount)
+    {
+        Unsafe.CopyBlock(ref As<TDestination, byte>(ref destination), ref AsRef<TSource, byte>(in source), byteCount);
+    }
+
+    /// <inheritdoc cref="Unsafe.CopyBlockUnaligned(ref byte, ref byte, uint)" />
+    public static void CopyBlockUnaligned<TDestination, TSource>(ref TDestination destination, ref TSource source, uint byteCount)
+    {
+        Unsafe.CopyBlockUnaligned(ref As<TDestination, byte>(ref destination), ref As<TSource, byte>(ref source), byteCount);
     }
 
     /// <inheritdoc cref="MemoryMarshal.CreateSpan{T}(ref T, int)" />
@@ -157,6 +177,48 @@ public static unsafe class UnsafeUtilities
     /// <inheritdoc cref="Unsafe.SkipInit{T}(out T)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SkipInit<T>(out T value) => Unsafe.SkipInit(out value);
+
+    /// <summary>Converts the span to an unmanaged array with the same length and contents.</summary>
+    /// <typeparam name="T">The type of items in the span.</typeparam>
+    /// <param name="span">The span that contains the items to copy.</param>
+    /// <param name="alignment">The alignment, in bytes, of the items in the array or <c>zero</c> to use the system default.</param>
+    /// <returns>The allocated unmanaged array containing the items from <paramref name="span" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static UnmanagedArray<T> ToUnmanagedArray<T>(this Span<T> span, nuint alignment = 0)
+        where T : unmanaged
+    {
+        var length = (uint)span.Length;
+
+        if (length == 0)
+        {
+            return UnmanagedArray<T>.Empty;
+        }
+
+        var destination = new UnmanagedArray<T>(length, alignment, zero: false);
+        CopyBlock(ref destination.GetReferenceUnsafe(0), in span.GetReference(), SizeOf<T>() * length);
+        return destination;
+    }
+
+    /// <summary>Converts the span to an unmanaged array with the same length and contents.</summary>
+    /// <typeparam name="T">The type of items in the span.</typeparam>
+    /// <param name="span">The span that contains the items to copy.</param>
+    /// <param name="alignment">The alignment, in bytes, of the items in the array or <c>zero</c> to use the system default.</param>
+    /// <returns>The allocated unmanaged array containing the items from <paramref name="span" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static UnmanagedArray<T> ToUnmanagedArray<T>(this ReadOnlySpan<T> span, nuint alignment = 0)
+        where T : unmanaged
+    {
+        var length = (uint)span.Length;
+
+        if (length == 0)
+        {
+            return UnmanagedArray<T>.Empty;
+        }
+
+        var destination = new UnmanagedArray<T>(length, alignment, zero: false);
+        CopyBlock(ref destination.GetReferenceUnsafe(0), in span.GetReference(), SizeOf<T>() * length);
+        return destination;
+    }
 
     /// <inheritdoc cref="Unsafe.WriteUnaligned{T}(void*, T)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
