@@ -240,11 +240,11 @@ public class QuaternionTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="Quaternion.Inverse(Quaternion)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="Quaternion.Inverse(Quaternion, Vector4)" /> method.</summary>
     [Test]
     public static void InverseTest()
     {
-        Assert.That(() => Quaternion.Inverse(Quaternion.Create(0.24740396f, 0.0f, 0.0f, 0.9689124f)),
+        Assert.That(() => Quaternion.Inverse(Quaternion.Create(0.24740396f, 0.0f, 0.0f, 0.9689124f), Vector4.Create(VectorUtilities.NearZeroEpsilon)),
             Is.EqualTo(Quaternion.Create(-0.24740396f, -0.0f, -0.0f, 0.9689124f))
         );
     }

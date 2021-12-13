@@ -379,7 +379,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     /// <summary>Compares two matrices to determine approximate equality.</summary>
     /// <param name="left">The matrix to compare with <paramref name="right" />.</param>
     /// <param name="right">The matrix to compare with <paramref name="left" />.</param>
-    /// <param name="epsilon">The maximum (exclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
+    /// <param name="epsilon">The maximum (inclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CompareEqualAll(Matrix4x4 left, in Matrix4x4 right, in Matrix4x4 epsilon)

@@ -41,9 +41,10 @@ public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
 
     /// <summary>Tries to create an affine transform from a matrix.</summary>
     /// <param name="matrix">The matrix from which the affine transform should be created.</param>
+    /// <param name="epsilon">The maximum (inclusive) difference between the <c>(scaleX, scaleY, scaleZ, determinant)</c> and zero for which they should be considered equivalent.</param>
     /// <param name="result">The resulting affine transform or <see cref="Zero" /> if creation from <paramref name="matrix" /> failed.</param>
     /// <returns><c>true</c> if an affine transform was succesfully created from <paramref name="matrix" />; otherwise, <c>false</c>.</returns>
-    public static unsafe bool TryCreateFromMatrix(Matrix4x4 matrix, out AffineTransform result)
+    public static unsafe bool TryCreateFromMatrix(Matrix4x4 matrix, Vector4 epsilon, out AffineTransform result)
     {
         var translation = Vector3.Create(matrix.W.Value);
 
@@ -69,13 +70,13 @@ public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
 
         var (a, b, c) = RankDecompose(scale[0], scale[1], scale[2]);
 
-        if (scale[a] < NearZeroEpsilon)
+        if (scale[a] <= epsilon.X)
         {
             pMatrix[a] = canonicalBasis[a];
         }
         pMatrix[a] = Normalize(pMatrix[a]);
 
-        if (scale[b] < NearZeroEpsilon)
+        if (scale[b] <= epsilon.Y)
         {
             var abs = Abs(pMatrix[a]);
             var (aa, bb, cc) = RankDecompose(abs.GetX(), abs.GetY(), abs.GetZ());
@@ -83,7 +84,7 @@ public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
         }
         pMatrix[b] = Normalize(pMatrix[b]);
 
-        if (scale[c] < NearZeroEpsilon)
+        if (scale[c] <= epsilon.Z)
         {
             pMatrix[c] = CrossProduct(pMatrix[a], pMatrix[b]);
         }
@@ -104,7 +105,7 @@ public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
         determinant -= 1.0f;
         determinant *= determinant;
 
-        if (NearZeroEpsilon < determinant)
+        if (epsilon.W < determinant)
         {
             // Non-SRT matrix encountered
             result = Zero;

@@ -46,10 +46,10 @@ public class Matrix4x4Tests
             Vector128.Create(12.0f, 13.0f, 14.0f, 15.0f)
         );
 
-        Assert.That(() => value.X, Is.EqualTo(Vector128.Create(00.0f, 01.0f, 02.0f, 03.0f)));
-        Assert.That(() => value.Y, Is.EqualTo(Vector128.Create(04.0f, 05.0f, 06.0f, 07.0f)));
-        Assert.That(() => value.Z, Is.EqualTo(Vector128.Create(08.0f, 09.0f, 10.0f, 11.0f)));
-        Assert.That(() => value.W, Is.EqualTo(Vector128.Create(12.0f, 13.0f, 14.0f, 15.0f)));
+        Assert.That(() => value.X, Is.EqualTo(Vector4.Create(00.0f, 01.0f, 02.0f, 03.0f)));
+        Assert.That(() => value.Y, Is.EqualTo(Vector4.Create(04.0f, 05.0f, 06.0f, 07.0f)));
+        Assert.That(() => value.Z, Is.EqualTo(Vector4.Create(08.0f, 09.0f, 10.0f, 11.0f)));
+        Assert.That(() => value.W, Is.EqualTo(Vector4.Create(12.0f, 13.0f, 14.0f, 15.0f)));
 
         value = Matrix4x4.Create(new SysMatrix4x4(
             16.0f, 17.0f, 18.0f, 19.0f,
@@ -58,10 +58,10 @@ public class Matrix4x4Tests
             28.0f, 29.0f, 30.0f, 31.0f
         ));
 
-        Assert.That(() => value.X, Is.EqualTo(Vector128.Create(16.0f, 17.0f, 18.0f, 19.0f)));
-        Assert.That(() => value.Y, Is.EqualTo(Vector128.Create(20.0f, 21.0f, 22.0f, 23.0f)));
-        Assert.That(() => value.Z, Is.EqualTo(Vector128.Create(24.0f, 25.0f, 26.0f, 27.0f)));
-        Assert.That(() => value.W, Is.EqualTo(Vector128.Create(28.0f, 29.0f, 30.0f, 31.0f)));
+        Assert.That(() => value.X, Is.EqualTo(Vector4.Create(16.0f, 17.0f, 18.0f, 19.0f)));
+        Assert.That(() => value.Y, Is.EqualTo(Vector4.Create(20.0f, 21.0f, 22.0f, 23.0f)));
+        Assert.That(() => value.Z, Is.EqualTo(Vector4.Create(24.0f, 25.0f, 26.0f, 27.0f)));
+        Assert.That(() => value.W, Is.EqualTo(Vector4.Create(28.0f, 29.0f, 30.0f, 31.0f)));
     }
 
     /// <summary>Provides validation of the <see cref="Matrix4x4.Determinant" /> property.</summary>

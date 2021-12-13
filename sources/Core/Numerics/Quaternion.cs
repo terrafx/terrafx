@@ -343,13 +343,14 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
 
     /// <summary>Computes the inverse of a quaternion.</summary>
     /// <param name="value">The quaternion to invert.</param>
+    /// <param name="epsilon">The maximum (inclusive) difference between the <c>LengthSquared</c> and zero for which they should be considered equivalent.</param>
     /// <returns>The inverse of <paramref name="value" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Quaternion Inverse(Quaternion value)
+    public static Quaternion Inverse(Quaternion value, Vector4 epsilon)
     {
         var lengthSq = LengthSquared(value._value);
         var conjugate = QuaternionConjugate(value._value);
-        var condition = CompareLessThanOrEqual(lengthSq, Vector128.Create(NearZeroEpsilon));
+        var condition = CompareLessThanOrEqual(lengthSq, epsilon.Value);
 
         var result = Divide(conjugate, lengthSq);
         result = ElementwiseSelect(condition, Vector128<float>.Zero, result);

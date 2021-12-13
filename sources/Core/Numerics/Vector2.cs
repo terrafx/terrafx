@@ -196,7 +196,7 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     /// <summary>Compares two vectors to determine approximate equality.</summary>
     /// <param name="left">The vector to compare with <paramref name="right" />.</param>
     /// <param name="right">The vector to compare with <paramref name="left" />.</param>
-    /// <param name="epsilon">The maximum (exclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
+    /// <param name="epsilon">The maximum (inclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 CompareEqual(Vector2 left, Vector2 right, Vector2 epsilon)
