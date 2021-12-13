@@ -58,9 +58,10 @@ public sealed class HelloTriangle : HelloWindow
     private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer)
     {
         var graphicsDevice = GraphicsDevice;
-        var graphicsSurface = GraphicsSwapchain.Surface;
+        var graphicsRenderPass = GraphicsRenderPass;
+        var graphicsSurface = graphicsRenderPass.Surface;
 
-        var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Identity", "main", "main");
+        var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Identity", "main", "main");
         var vertexBuffer = _vertexBuffer;
 
         var vertexBufferView = CreateVertexBufferView(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
@@ -97,13 +98,15 @@ public sealed class HelloTriangle : HelloWindow
             return vertexBufferView;
         }
 
-        GraphicsPipeline CreateGraphicsPipeline(GraphicsDevice graphicsDevice, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
+        GraphicsPipeline CreateGraphicsPipeline(GraphicsRenderPass graphicsRenderPass, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
         {
+            var graphicsDevice = graphicsRenderPass.Device;
+
             var signature = CreateGraphicsPipelineSignature(graphicsDevice);
             var vertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint);
             var pixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint);
 
-            return graphicsDevice.CreatePipeline(signature, vertexShader, pixelShader);
+            return graphicsRenderPass.CreatePipeline(signature, vertexShader, pixelShader);
         }
 
         static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)

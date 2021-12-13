@@ -144,6 +144,10 @@ public static unsafe class UnsafeUtilities
     public static T* GetPointer<T>(this ReadOnlySpan<T> span)
         where T : unmanaged => AsPointer(ref AsRef(in span.GetReference()));
 
+    /// <inheritdoc cref="MemoryMarshal.GetArrayDataReference{T}(T[])" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ref T GetReference<T>(this T[] array) => ref MemoryMarshal.GetArrayDataReference(array);
+
     /// <inheritdoc cref="MemoryMarshal.GetReference{T}(Span{T})" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T GetReference<T>(this Span<T> span) => ref MemoryMarshal.GetReference(span);

@@ -6,27 +6,33 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics;
 
 /// <summary>A graphics pipeline which defines how a graphics primitive should be rendered.</summary>
-public abstract class GraphicsPipeline : GraphicsDeviceObject
+public abstract class GraphicsPipeline : GraphicsRenderPassObject
 {
     private readonly GraphicsPipelineSignature _signature;
     private readonly GraphicsShader? _vertexShader;
     private readonly GraphicsShader? _pixelShader;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsPipeline" /> class.</summary>
-    /// <param name="device">The device for which the pipeline is being created.</param>
+    /// <param name="renderPass">The render pass for which the pipeline is being created.</param>
     /// <param name="signature">The signature which details the inputs given and resources available to the pipeline.</param>
     /// <param name="vertexShader">The vertex shader for the pipeline or <c>null</c> if none exists.</param>
     /// <param name="pixelShader">The pixel shader for the pipeline or <c>null</c> if none exists.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="renderPass" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="signature" /> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="signature" /> was not created for the same device as <paramref name="renderPass" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">The kind of <paramref name="vertexShader" /> is not <see cref="GraphicsShaderKind.Vertex" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> was not created for <paramref name="device" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> was not created for the same device as <paramref name="renderPass" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">The kind of <paramref name="pixelShader" /> is not <see cref="GraphicsShaderKind.Pixel" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> was not created for <paramref name="device" />.</exception>
-    protected GraphicsPipeline(GraphicsDevice device, GraphicsPipelineSignature signature, GraphicsShader? vertexShader, GraphicsShader? pixelShader)
-        : base(device)
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> was not created for the same device as <paramref name="renderPass" />.</exception>
+    protected GraphicsPipeline(GraphicsRenderPass renderPass, GraphicsPipelineSignature signature, GraphicsShader? vertexShader, GraphicsShader? pixelShader)
+        : base(renderPass)
     {
         ThrowIfNull(signature);
+
+        if (signature.Device != renderPass.Device)
+        {
+            ThrowForInvalidParent(signature.Device);
+        }
 
         if (vertexShader is not null)
         {
@@ -35,7 +41,7 @@ public abstract class GraphicsPipeline : GraphicsDeviceObject
                 ThrowForInvalidKind(vertexShader.Kind, GraphicsShaderKind.Vertex);
             }
 
-            if (vertexShader.Device != device)
+            if (vertexShader.Device != renderPass.Device)
             {
                 ThrowForInvalidParent(vertexShader.Device);
             }
@@ -48,7 +54,7 @@ public abstract class GraphicsPipeline : GraphicsDeviceObject
                 ThrowForInvalidKind(pixelShader.Kind, GraphicsShaderKind.Pixel);
             }
 
-            if (pixelShader.Device != device)
+            if (pixelShader.Device != renderPass.Device)
             {
                 ThrowForInvalidParent(pixelShader.Device);
             }

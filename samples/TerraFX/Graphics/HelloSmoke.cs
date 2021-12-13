@@ -98,9 +98,10 @@ public sealed class HelloSmoke : HelloWindow
     private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
     {
         var graphicsDevice = GraphicsDevice;
-        var graphicsSurface = GraphicsSwapchain.Surface;
+        var graphicsRenderPass = GraphicsRenderPass;
+        var graphicsSurface = graphicsRenderPass.Surface;
 
-        var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Smoke", "main", "main");
+        var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Smoke", "main", "main");
 
         var constantBuffer = _constantBuffer;
         var indexBuffer = _indexBuffer;
@@ -384,13 +385,15 @@ public sealed class HelloSmoke : HelloWindow
             return vertexBufferView;
         }
 
-        GraphicsPipeline CreateGraphicsPipeline(GraphicsDevice graphicsDevice, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
+        GraphicsPipeline CreateGraphicsPipeline(GraphicsRenderPass graphicsRenderPass, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
         {
+            var graphicsDevice = graphicsRenderPass.Device;
+
             var signature = CreateGraphicsPipelineSignature(graphicsDevice);
             var vertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint);
             var pixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint);
 
-            return graphicsDevice.CreatePipeline(signature, vertexShader, pixelShader);
+            return graphicsRenderPass.CreatePipeline(signature, vertexShader, pixelShader);
         }
 
         static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)

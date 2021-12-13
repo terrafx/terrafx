@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 using TerraFX.Numerics;
@@ -24,16 +25,11 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
 {
-    private const uint DrawingInitializing = 2;
-
-    private const uint DrawingInitialized = 3;
-
     private readonly ID3D12CommandAllocator* _d3d12CommandAllocator;
     private readonly ID3D12GraphicsCommandList* _d3d12GraphicsCommandList;
     private readonly D3D12GraphicsFence _fence;
 
-    private uint _framebufferIndex;
-    private D3D12GraphicsSwapchain? _swapchain;
+    private D3D12GraphicsRenderPass? _renderPass;
 
     private VolatileState _state;
 
@@ -100,32 +96,37 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     /// <inheritdoc />
     public override D3D12GraphicsFence Fence => _fence;
 
+    /// <inheritdoc />
+    public override D3D12GraphicsRenderPass? RenderPass => _renderPass;
+
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
-    public override D3D12GraphicsSwapchain? Swapchain => _swapchain;
+    public override void BeginRenderPass(GraphicsRenderPass renderPass, ColorRgba renderTargetClearColor)
+        => BeginRenderPass((D3D12GraphicsRenderPass)renderPass, renderTargetClearColor);
 
-    /// <inheritdoc />
-    public override void BeginDrawing(uint framebufferIndex, ColorRgba backgroundColor)
+    /// <inheritdoc cref="BeginRenderPass(GraphicsRenderPass, ColorRgba)" />
+    public void BeginRenderPass(D3D12GraphicsRenderPass renderPass, ColorRgba renderTargetClearColor)
     {
-        _state.Transition(from: Initialized, to: DrawingInitializing);
-        Debug.Assert(Swapchain is not null);
+        ThrowIfNull(renderPass);
+
+        if (Interlocked.CompareExchange(ref _renderPass, renderPass, null) is not null)
+        {
+            ThrowForInvalidState(nameof(RenderPass));
+        }
 
         var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
-        var swapchain = Swapchain;
+        var renderTarget = renderPass.Swapchain.RenderTarget;
 
-        var d3d12RtvResourceBarrier = D3D12_RESOURCE_BARRIER.InitTransition(swapchain.D3D12RenderTargetResources[framebufferIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+        var d3d12RtvResourceBarrier = D3D12_RESOURCE_BARRIER.InitTransition(renderTarget.D3D12RtvResource, D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
         d3d12GraphicsCommandList->ResourceBarrier(1, &d3d12RtvResourceBarrier);
 
-        var d3d12RtvDescriptor = swapchain.D3D12RtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart().Offset((int)framebufferIndex, Device.D3D12RtvDescriptorHandleIncrementSize);
-        d3d12GraphicsCommandList->OMSetRenderTargets(1, &d3d12RtvDescriptor, RTsSingleHandleToDescriptorRange: TRUE, pDepthStencilDescriptor: null);
+        var d3d12RtvDescriptorHandle = renderTarget.D3D12RtvDescriptorHandle;
+        d3d12GraphicsCommandList->OMSetRenderTargets(1, &d3d12RtvDescriptorHandle, RTsSingleHandleToDescriptorRange: TRUE, pDepthStencilDescriptor: null);
 
-        d3d12GraphicsCommandList->ClearRenderTargetView(d3d12RtvDescriptor, (float*)&backgroundColor, NumRects: 0, pRects: null);
+        d3d12GraphicsCommandList->ClearRenderTargetView(d3d12RtvDescriptorHandle, (float*)&renderTargetClearColor, NumRects: 0, pRects: null);
         d3d12GraphicsCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-        _framebufferIndex = framebufferIndex;
-        _state.Transition(from: DrawingInitializing, to: DrawingInitialized);
     }
 
     /// <inheritdoc />
@@ -326,9 +327,11 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     {
         ThrowIfNull(primitive);
 
-        if (_state < DrawingInitialized)
+        var renderPass = RenderPass;
+
+        if (renderPass is null)
         {
-            ThrowInvalidOperationException("GraphicsContext.BeginDraw has not been called");
+            ThrowForInvalidState(nameof(RenderPass));
         }
 
         var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
@@ -404,15 +407,17 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
-    public override void EndDrawing()
+    public override void EndRenderPass()
     {
-        _state.Transition(from: DrawingInitialized, to: DrawingInitializing);
+        var renderPass = Interlocked.Exchange(ref _renderPass, null);
 
-        Debug.Assert(Swapchain is not null);
-        var d3d12RtvResourceBarrier = D3D12_RESOURCE_BARRIER.InitTransition(Swapchain.D3D12RenderTargetResources[_framebufferIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+        if (renderPass is null)
+        {
+            ThrowForInvalidState(nameof(RenderPass));
+        }
+
+        var d3d12RtvResourceBarrier = D3D12_RESOURCE_BARRIER.InitTransition(renderPass.Swapchain.RenderTarget.D3D12RtvResource, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
         D3D12GraphicsCommandList->ResourceBarrier(1, &d3d12RtvResourceBarrier);
-
-        _state.Transition(from: DrawingInitializing, to: Initialized);
     }
 
     /// <inheritdoc />
@@ -432,8 +437,6 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     /// <inheritdoc />
     public override void Reset()
     {
-        _swapchain = null;
-
         Fence.Reset();
 
         var d3d12CommandAllocator = D3D12CommandAllocator;
@@ -478,23 +481,6 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
             };
         }
         D3D12GraphicsCommandList->RSSetScissorRects(count, d3d12Rects);
-    }
-
-    /// <inheritdoc />
-    public override void SetSwapchain(GraphicsSwapchain swapchain)
-        => SetSwapchain((D3D12GraphicsSwapchain)swapchain);
-
-    /// <inheritdoc cref="SetSwapchain(GraphicsSwapchain)" />
-    public void SetSwapchain(D3D12GraphicsSwapchain swapchain)
-    {
-        ThrowIfNull(swapchain);
-
-        if (swapchain.Device != Device)
-        {
-            ThrowForInvalidParent(swapchain.Device);
-        }
-
-        _swapchain = swapchain;
     }
 
     /// <inheritdoc />

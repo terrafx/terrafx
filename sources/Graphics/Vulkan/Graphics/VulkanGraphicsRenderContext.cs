@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Numerics;
 using TerraFX.Threading;
@@ -29,16 +30,11 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
 {
-    private const uint DrawingInitializing = 2;
-
-    private const uint DrawingInitialized = 3;
-
     private readonly VulkanGraphicsFence _fence;
     private readonly VkCommandBuffer _vkCommandBuffer;
     private readonly VkCommandPool _vkCommandPool;
 
-    private uint _framebufferIndex;
-    private VulkanGraphicsSwapchain? _swapchain;
+    private VulkanGraphicsRenderPass? _renderPass;
 
     private VolatileState _state;
 
@@ -94,11 +90,11 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     /// <inheritdoc />
     public override VulkanGraphicsFence Fence => _fence;
 
+    /// <inheritdoc />
+    public override VulkanGraphicsRenderPass? RenderPass => _renderPass;
+
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
-
-    /// <inheritdoc />
-    public override VulkanGraphicsSwapchain? Swapchain => _swapchain;
 
     /// <summary>Gets the <see cref="Interop.Vulkan.VkCommandBuffer" /> used by the context.</summary>
     public VkCommandBuffer VkCommandBuffer
@@ -121,28 +117,26 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
-    public override void BeginDrawing(uint framebufferIndex, ColorRgba backgroundColor)
+    public override void BeginRenderPass(GraphicsRenderPass renderPass, ColorRgba renderTargetClearColor)
+        => BeginRenderPass((VulkanGraphicsRenderPass) renderPass, renderTargetClearColor);
+
+    /// <inheritdoc cref="BeginRenderPass(GraphicsRenderPass, ColorRgba)" />
+    public void BeginRenderPass(VulkanGraphicsRenderPass renderPass, ColorRgba renderTargetClearColor)
     {
-        _state.Transition(from: Initialized, to: DrawingInitializing);
-        Debug.Assert(Swapchain is not null);
+        ThrowIfNull(renderPass);
 
-        var vkClearValue = new VkClearValue();
+        if (Interlocked.CompareExchange(ref _renderPass, renderPass, null) is not null)
+        {
+            ThrowForInvalidState(nameof(RenderPass));
+        }
 
-        vkClearValue.color.float32[0] = backgroundColor.Red;
-        vkClearValue.color.float32[1] = backgroundColor.Green;
-        vkClearValue.color.float32[2] = backgroundColor.Blue;
-        vkClearValue.color.float32[3] = backgroundColor.Alpha;
-
-        var device = Device;
-        var surface = Swapchain.Surface;
-
-        var surfaceWidth = surface.Width;
-        var surfaceHeight = surface.Height;
+        var surface = renderPass.Surface;
+        var renderTarget = renderPass.Swapchain.RenderTarget;
 
         var vkRenderPassBeginInfo = new VkRenderPassBeginInfo {
             sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-            renderPass = device.VkRenderPass,
-            framebuffer = Swapchain.VkFramebuffers[framebufferIndex],
+            renderPass = renderPass.VkRenderPass,
+            framebuffer = renderTarget.VkFramebuffer,
             renderArea = new VkRect2D {
                 extent = new VkExtent2D {
                     width = (uint)surface.Width,
@@ -150,14 +144,9 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
                 },
             },
             clearValueCount = 1,
-            pClearValues = &vkClearValue,
+            pClearValues = (VkClearValue*)&renderTargetClearColor,
         };
-
-        var vkCommandBuffer = VkCommandBuffer;
-        vkCmdBeginRenderPass(vkCommandBuffer, &vkRenderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-        _framebufferIndex = framebufferIndex;
-        _state.Transition(from: DrawingInitializing, to: DrawingInitialized);
+        vkCmdBeginRenderPass(VkCommandBuffer, &vkRenderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
     }
 
     /// <inheritdoc />
@@ -256,9 +245,11 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     {
         ThrowIfNull(primitive);
 
-        if (_state < DrawingInitialized)
+        var renderPass = RenderPass;
+
+        if (renderPass is null)
         {
-            ThrowInvalidOperationException("GraphicsContext.BeginDraw has not been called");
+            ThrowForInvalidState(nameof(RenderPass));
         }
 
         var vkCommandBuffer = VkCommandBuffer;
@@ -353,11 +344,16 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
-    public override void EndDrawing()
+    public override void EndRenderPass()
     {
-        _state.Transition(from: DrawingInitialized, to: DrawingInitializing);
+        var renderPass = Interlocked.Exchange(ref _renderPass, null);
+
+        if (renderPass is null)
+        {
+            ThrowForInvalidState(nameof(RenderPass));
+        }
+
         vkCmdEndRenderPass(VkCommandBuffer);
-        _state.Transition(from: DrawingInitializing, to: Initialized);
     }
 
     /// <inheritdoc />
@@ -380,7 +376,6 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     /// <inheritdoc />
     public override void Reset()
     {
-        _swapchain = null;
         Fence.Reset();
 
         var vkCommandBufferBeginInfo = new VkCommandBufferBeginInfo {
@@ -433,23 +428,6 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
             };
         }
         vkCmdSetScissor(VkCommandBuffer, firstScissor: 0, count, vkRect2Ds);
-    }
-
-    /// <inheritdoc />
-    public override void SetSwapchain(GraphicsSwapchain swapchain)
-        => SetSwapchain((VulkanGraphicsSwapchain)swapchain);
-
-    /// <inheritdoc cref="SetSwapchain(GraphicsSwapchain)" />
-    public void SetSwapchain(VulkanGraphicsSwapchain swapchain)
-    {
-        ThrowIfNull(swapchain);
-
-        if (swapchain.Device != Device)
-        {
-            ThrowForInvalidParent(swapchain.Device);
-        }
-
-        _swapchain = swapchain;
     }
 
     /// <inheritdoc />

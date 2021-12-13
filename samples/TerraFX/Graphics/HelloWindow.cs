@@ -13,7 +13,7 @@ namespace TerraFX.Samples.Graphics;
 public class HelloWindow : Sample
 {
     private GraphicsDevice _graphicsDevice = null!;
-    private GraphicsSwapchain _graphicsSwapchain = null!;
+    private GraphicsRenderPass _graphicsRenderPass = null!;
     private Window _window = null!;
     private TimeSpan _elapsedTime;
     private uint _secondsOfLastFpsUpdate;
@@ -25,13 +25,13 @@ public class HelloWindow : Sample
 
     public GraphicsDevice GraphicsDevice => _graphicsDevice;
 
-    public GraphicsSwapchain GraphicsSwapchain => _graphicsSwapchain;
+    public GraphicsRenderPass GraphicsRenderPass => _graphicsRenderPass;
 
     public Window Window => _window;
 
     public override void Cleanup()
     {
-        _graphicsSwapchain?.Dispose();
+        _graphicsRenderPass?.Dispose();
         _graphicsDevice?.Dispose();
         _window?.Dispose();
 
@@ -72,7 +72,7 @@ public class HelloWindow : Sample
         var graphicsDevice = graphicsAdapter.CreateDevice();
         _graphicsDevice = graphicsDevice;
 
-        _graphicsSwapchain = graphicsDevice.CreateSwapchain(_window);
+        _graphicsRenderPass = graphicsDevice.CreateRenderPass(_window, GraphicsFormat.R8G8B8A8_UNORM);
         base.Initialize(application, timeout);
     }
 
@@ -109,17 +109,16 @@ public class HelloWindow : Sample
         }
     }
 
-    protected void Present() => GraphicsSwapchain.Present();
+    protected void Present() => GraphicsRenderPass.Swapchain.Present();
 
     protected void Render()
     {
         var graphicsRenderContext = GraphicsDevice.RentRenderContext();
         {
             graphicsRenderContext.Reset();
-            graphicsRenderContext.SetSwapchain(GraphicsSwapchain);
-            graphicsRenderContext.BeginDrawing(GraphicsSwapchain.FramebufferIndex, Colors.CornflowerBlue);
+            graphicsRenderContext.BeginRenderPass(GraphicsRenderPass, Colors.CornflowerBlue);
             {
-                var surfaceSize = GraphicsSwapchain.Surface.Size;
+                var surfaceSize = GraphicsRenderPass.Surface.Size;
 
                 var viewport = BoundingBox.CreateFromSize(Vector3.Zero, Vector3.Create(surfaceSize, 1.0f));
                 graphicsRenderContext.SetViewport(viewport);
@@ -129,7 +128,7 @@ public class HelloWindow : Sample
 
                 Draw(graphicsRenderContext);
             }
-            graphicsRenderContext.EndDrawing();
+            graphicsRenderContext.EndRenderPass();
             graphicsRenderContext.Flush();
         }
         GraphicsDevice.ReturnRenderContext(graphicsRenderContext);

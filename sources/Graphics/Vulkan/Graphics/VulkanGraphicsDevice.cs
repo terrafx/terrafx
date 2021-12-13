@@ -3,13 +3,7 @@
 using System;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
-using static TerraFX.Interop.Vulkan.VkAttachmentLoadOp;
-using static TerraFX.Interop.Vulkan.VkAttachmentStoreOp;
-using static TerraFX.Interop.Vulkan.VkFormat;
-using static TerraFX.Interop.Vulkan.VkImageLayout;
-using static TerraFX.Interop.Vulkan.VkPipelineBindPoint;
 using static TerraFX.Interop.Vulkan.VkQueueFlags;
-using static TerraFX.Interop.Vulkan.VkSampleCountFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
@@ -26,7 +20,6 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     private readonly VkQueue _vkCommandQueue;
     private readonly uint _vkCommandQueueFamilyIndex;
     private readonly VkDevice _vkDevice;
-    private readonly VkRenderPass _vkRenderPass;
     private readonly VulkanGraphicsMemoryAllocator _memoryAllocator;
 
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext> _renderContextPool;
@@ -42,7 +35,6 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
         _vkDevice = vkDevice;
 
         _vkCommandQueue = GetVkCommandQueue(vkDevice, vkCommandQueueFamilyIndex);
-        _vkRenderPass = CreateVkRenderPass(vkDevice);
 
         _memoryAllocator = CreateMemoryAllocator(this);
         _renderContextPool = new ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext>();
@@ -100,41 +92,6 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
             ThrowExternalExceptionIfNotSuccess(vkCreateDevice(adapter.VkPhysicalDevice, &vkDeviceCreateInfo, pAllocator: null, &vkDevice));
 
             return vkDevice;
-        }
-
-        static VkRenderPass CreateVkRenderPass(VkDevice vkDevice)
-        {
-            VkRenderPass vkRenderPass;
-
-            var vkAttachmentDescription = new VkAttachmentDescription {
-                format = VK_FORMAT_R8G8B8A8_UNORM,
-                samples = VK_SAMPLE_COUNT_1_BIT,
-                loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
-                stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-                stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
-                finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-            };
-
-            var vkColorAttachmentReference = new VkAttachmentReference {
-                layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-            };
-
-            var vkSubpassDescription = new VkSubpassDescription {
-                pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
-                colorAttachmentCount = 1,
-                pColorAttachments = &vkColorAttachmentReference,
-            };
-
-            var vkRenderPassCreateInfo = new VkRenderPassCreateInfo {
-                sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
-                attachmentCount = 1,
-                pAttachments = &vkAttachmentDescription,
-                subpassCount = 1,
-                pSubpasses = &vkSubpassDescription,
-            };
-            ThrowExternalExceptionIfNotSuccess(vkCreateRenderPass(vkDevice, &vkRenderPassCreateInfo, pAllocator: null, &vkRenderPass));
-
-            return vkRenderPass;
         }
 
         static VkQueue GetVkCommandQueue(VkDevice vkDevice, uint vkCommandQueueFamilyIndex)
@@ -207,16 +164,6 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkDevice"/> for the device.</summary>
     public VkDevice VkDevice => _vkDevice;
 
-    /// <summary>Gets the <see cref="Interop.Vulkan.VkRenderPass" /> used by the device.</summary>
-    public VkRenderPass VkRenderPass
-    {
-        get
-        {
-            AssertNotDisposedOrDisposing(_state);
-            return _vkRenderPass.Value;
-        }
-    }
-
     // VK_LAYER_KHRONOS_validation
     private static ReadOnlySpan<sbyte> VK_LAYER_KHRONOS_VALIDATION_NAME => new sbyte[] { 0x56, 0x4B, 0x5F, 0x4C, 0x41, 0x59, 0x45, 0x52, 0x5F, 0x4B, 0x48, 0x52, 0x4F, 0x4E, 0x4F, 0x53, 0x5F, 0x76, 0x61, 0x6C, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x00 };
 
@@ -225,17 +172,6 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     {
         ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
         return new VulkanGraphicsFence(this, isSignalled);
-    }
-
-    /// <inheritdoc />
-    public override VulkanGraphicsPipeline CreatePipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null)
-        => CreatePipeline((VulkanGraphicsPipelineSignature)signature, (VulkanGraphicsShader?)vertexShader, (VulkanGraphicsShader?)pixelShader);
-
-    /// <inheritdoc cref="CreatePipeline(GraphicsPipelineSignature, GraphicsShader?, GraphicsShader?)" />
-    public VulkanGraphicsPipeline CreatePipeline(VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader = null, VulkanGraphicsShader? pixelShader = null)
-    {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
-        return new VulkanGraphicsPipeline(this, signature, vertexShader, pixelShader);
     }
 
     /// <inheritdoc />
@@ -264,10 +200,10 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
-    public override VulkanGraphicsSwapchain CreateSwapchain(IGraphicsSurface surface)
+    public override VulkanGraphicsRenderPass CreateRenderPass(IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
-        return new VulkanGraphicsSwapchain(this, surface);
+        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsRenderPass));
+        return new VulkanGraphicsRenderPass(this, surface, renderTargetFormat, minimumRenderTargetCount);
     }
 
     /// <inheritdoc />
@@ -329,10 +265,7 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
                 _memoryAllocator?.Dispose();
             }
 
-            var vkDevice = _vkDevice;
-
-            DisposeVkRenderPass(vkDevice, _vkRenderPass);
-            DisposeVkDevice(vkDevice);
+            DisposeVkDevice(_vkDevice);
         }
 
         _state.EndDispose();
@@ -342,14 +275,6 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
             if (vkDevice != VkDevice.NULL)
             {
                 vkDestroyDevice(vkDevice, pAllocator: null);
-            }
-        }
-
-        static void DisposeVkRenderPass(VkDevice vkDevice, VkRenderPass vkRenderPass)
-        {
-            if (vkRenderPass != VkRenderPass.NULL)
-            {
-                vkDestroyRenderPass(vkDevice, vkRenderPass, pAllocator: null);
             }
         }
     }
