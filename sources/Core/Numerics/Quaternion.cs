@@ -4,18 +4,15 @@
 // The original code is Copyright © Microsoft. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
-using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
-using System.Runtime.Intrinsics.Arm;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
 using TerraFX.Utilities;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VectorUtilities;
 using SysQuaternion = System.Numerics.Quaternion;
+using SysVector4 = System.Numerics.Vector4;
 
 namespace TerraFX.Numerics;
 
@@ -23,75 +20,39 @@ namespace TerraFX.Numerics;
 public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
 {
     /// <summary>Defines a quaternion where all components are zero.</summary>
-    public static Quaternion Zero => new Quaternion(Vector128<float>.Zero);
+    public static Quaternion Zero => Create(0.0f, 0.0f, 0.0f, 0.0f);
 
     /// <summary>Defines the identity quaternion.</summary>
-    public static Quaternion Identity => new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+    public static Quaternion Identity => Create(0.0f, 0.0f, 0.0f, 1.0f);
 
     private readonly Vector128<float> _value;
 
-    /// <summary>Initializes a new instance of the <see cref="Quaternion" /> struct.</summary>
+    /// <summary>Creates a quaternion from a system quaternion.</summary>
+    /// <param name="value">The value of the quaternion.</param>
+    public static Quaternion Create(SysQuaternion value) => As<SysQuaternion, Quaternion>(ref value);
+
+    /// <summary>Creates a quaternion from a system vector.</summary>
+    /// <param name="value">The value of the quaternion.</param>
+    public static Quaternion Create(SysVector4 value) => new Quaternion(value.AsVector128());
+
+    /// <summary>Creates a quaternion from a vector.</summary>
+    /// <param name="value">The value of the quaternion.</param>
+    public static Quaternion Create(Vector4 value) => new Quaternion(value.Value);
+
+    /// <summary>Creates a quaternion from a hardware vector.</summary>
+    /// <param name="value">The value of the quaternion.</param>
+    public static Quaternion Create(Vector128<float> value) => new Quaternion(value);
+
+    /// <summary>Creates a quaternion from an X, Y, Z, and W component.</summary>
     /// <param name="x">The value of the x-component.</param>
     /// <param name="y">The value of the y-component.</param>
     /// <param name="z">The value of the z-component.</param>
     /// <param name="w">The value of the w-component.</param>
-    public Quaternion(float x, float y, float z, float w)
-    {
-        _value = Vector128.Create(x, y, z, w);
-    }
+    public static Quaternion Create(float x, float y, float z, float w) => Create(Vector128.Create(x, y, z, w));
 
-    /// <summary>Initializes a new instance of the <see cref="Quaternion" /> struct.</summary>
-    /// <param name="value">The value of the quaternion.</param>
-    public Quaternion(SysQuaternion value)
-    {
-        _value = As<SysQuaternion, Vector128<float>>(ref value);
-    }
-
-    /// <summary>Initializes a new instance of the <see cref="Quaternion" /> struct.</summary>
-    /// <param name="value">The value of the quaternion.</param>
-    public Quaternion(Vector128<float> value)
+    private Quaternion(Vector128<float> value)
     {
         _value = value;
-    }
-
-    /// <summary>Gets the value of the x-component.</summary>
-    public float X
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _value.ToScalar();
-        }
-    }
-
-    /// <summary>Gets the value of the y-component.</summary>
-    public float Y
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _value.GetElement(1);
-        }
-    }
-
-    /// <summary>Gets the value of the z-component.</summary>
-    public float Z
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _value.GetElement(2);
-        }
-    }
-
-    /// <summary>Gets the value of the w-component.</summary>
-    public float W
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _value.GetElement(3);
-        }
     }
 
     /// <summary>Gets the angle of the quaternion.</summary>
@@ -110,7 +71,7 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
         {
-            return new Vector3(_value);
+            return Vector3.Create(_value);
         }
     }
 
@@ -147,6 +108,56 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
         }
     }
 
+    /// <summary>Gets the value of the quaternion.</summary>
+    public Vector128<float> Value
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return _value;
+        }
+    }
+
+    /// <summary>Gets the value of the x-component.</summary>
+    public float X
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return _value.ToScalar();
+        }
+    }
+
+    /// <summary>Gets the value of the y-component.</summary>
+    public float Y
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return _value.GetY();
+        }
+    }
+
+    /// <summary>Gets the value of the z-component.</summary>
+    public float Z
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return _value.GetZ();
+        }
+    }
+
+    /// <summary>Gets the value of the w-component.</summary>
+    public float W
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return _value.GetW();
+        }
+    }
+
     /// <summary>Compares two quaternions to determine equality.</summary>
     /// <param name="left">The quaternion to compare with <paramref name="right" />.</param>
     /// <param name="right">The quaternion to compare with <paramref name="left" />.</param>
@@ -168,28 +179,11 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Quaternion operator *(Quaternion left, Quaternion right)
     {
-        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
-        {
-            var result = MultiplyByW(right._value, left._value);
-            result = MultiplyAdd(result, MultiplyByX(CreateFromWZYX(right._value), left._value), Vector128.Create(+1.0f, -1.0f, +1.0f, -1.0f));
-            result = MultiplyAdd(result, MultiplyByY(CreateFromZWXY(right._value), left._value), Vector128.Create(+1.0f, +1.0f, -1.0f, -1.0f));
-            result = MultiplyAdd(result, MultiplyByZ(CreateFromYXWZ(right._value), left._value), Vector128.Create(-1.0f, +1.0f, +1.0f, -1.0f));
-            return new Quaternion(result);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Quaternion SoftwareFallback(Quaternion left, Quaternion right)
-        {
-            return new Quaternion(
-                (left.W * right.X) + (left.X * right.W) + (left.Y * right.Z) - (left.Z * right.Y),
-                (left.W * right.Y) - (left.X * right.Z) + (left.Y * right.W) + (left.Z * right.X),
-                (left.W * right.Z) + (left.X * right.Y) - (left.Y * right.X) + (left.Z * right.W),
-                (left.W * right.W) - (left.X * right.X) - (left.Y * right.Y) - (left.Z * right.Z)
-            );
-        }
+        var result = MultiplyByW(right._value, left._value);
+        result = MultiplyAdd(result, MultiplyByX(CreateFromWZYX(right._value), left._value), Vector128.Create(+1.0f, -1.0f, +1.0f, -1.0f));
+        result = MultiplyAdd(result, MultiplyByY(CreateFromZWXY(right._value), left._value), Vector128.Create(+1.0f, +1.0f, -1.0f, -1.0f));
+        result = MultiplyAdd(result, MultiplyByZ(CreateFromYXWZ(right._value), left._value), Vector128.Create(-1.0f, +1.0f, +1.0f, -1.0f));
+        return new Quaternion(result);
     }
 
     /// <summary>Compares two quaternions to determine if all elements are equal.</summary>
@@ -242,9 +236,9 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
     /// <returns>A quaternion that represents <paramref name="matrix" />.</returns>
     public static Quaternion CreateFromMatrix(Matrix4x4 matrix)
     {
-        var r0 = matrix.X.AsVector128();
-        var r1 = matrix.Y.AsVector128();
-        var r2 = matrix.Z.AsVector128();
+        var r0 = matrix.X.Value;
+        var r1 = matrix.Y.Value;
+        var r2 = matrix.Z.Value;
 
         var r00 = CreateFromX(r0);
         var r11 = CreateFromY(r1);
@@ -305,22 +299,10 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
     public static Quaternion CreateFromNormalizedAxisAngle(Vector3 normalizedAxis, float angle)
     {
         (var sin, var cos) = MathUtilities.SinCos(angle * 0.5f);
+        var result = Multiply(normalizedAxis.AsVector128(), Vector128.Create(sin));
 
-        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
-        {
-            var result = Multiply(normalizedAxis.AsVector128(), Vector128.Create(sin));
-            result = result.WithElement(3, cos);
-            return new Quaternion(result);
-        }
-        else
-        {
-            return new Quaternion(
-                sin * normalizedAxis.X,
-                sin * normalizedAxis.Y,
-                sin * normalizedAxis.Z,
-                cos
-            );
-        }
+        result = result.WithW(cos);
+        return new Quaternion(result);
     }
 
     /// <summary>Creates a quaternion from a specified pitch, yaw, and roll.</summary>
@@ -361,36 +343,18 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
 
     /// <summary>Computes the inverse of a quaternion.</summary>
     /// <param name="value">The quaternion to invert.</param>
+    /// <param name="epsilon">The maximum (inclusive) difference between the <c>LengthSquared</c> and zero for which they should be considered equivalent.</param>
     /// <returns>The inverse of <paramref name="value" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Quaternion Inverse(Quaternion value)
+    public static Quaternion Inverse(Quaternion value, Vector4 epsilon)
     {
-        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
-        {
-            var lengthSq = LengthSquared(value._value);
-            var conjugate = QuaternionConjugate(value._value);
-            var condition = CompareLessThanOrEqual(lengthSq, Vector128.Create(NearZeroEpsilon));
+        var lengthSq = LengthSquared(value._value);
+        var conjugate = QuaternionConjugate(value._value);
+        var condition = CompareLessThanOrEqual(lengthSq, epsilon.Value);
 
-            var result = Divide(conjugate, lengthSq);
-            result = ElementwiseSelect(condition, Vector128<float>.Zero, result);
-            return new Quaternion(result);
-        }
-        else
-        {
-            var lengthSq = value.LengthSquared;
-
-            if (lengthSq <= NearZeroEpsilon)
-            {
-                return Zero;
-            }
-
-            return new Quaternion(
-                -value.X / lengthSq,
-                -value.Y / lengthSq,
-                -value.Z / lengthSq,
-                +value.W / lengthSq
-            );
-        }
+        var result = Divide(conjugate, lengthSq);
+        result = ElementwiseSelect(condition, Vector128<float>.Zero, result);
+        return new Quaternion(result);
     }
 
     /// <summary>Determines if any elements in a quaternion are either <see cref="float.PositiveInfinity" /> or <see cref="float.NegativeInfinity" />.</summary>
@@ -434,83 +398,95 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
     /// <summary>Reinterprets the current instance as a new <see cref="SysQuaternion" />.</summary>
     /// <returns>The current instance reintepreted as a new <see cref="SysQuaternion" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public SysQuaternion AsQuaternion() => AsReadonly<Vector128<float>, SysQuaternion>(in _value);
+    public SysQuaternion AsSystemQuaternion() => AsReadonly<Vector128<float>, SysQuaternion>(in _value);
 
-    /// <summary>Reinterprets the current instance as a new <see cref="Vector128{Single}" />.</summary>
-    /// <returns>The current instance reintepreted as a new <see cref="Vector128{Single}" />.</returns>
+    /// <summary>Reinterprets the current instance as a new <see cref="SysVector4" />.</summary>
+    /// <returns>The current instance reintepreted as a new <see cref="SysVector4" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vector128<float> AsVector128() => _value;
+    public SysVector4 AsSystemVector4() => AsReadonly<Vector128<float>, SysVector4>(in _value);
+
+    /// <summary>Reinterprets the current instance as a new <see cref="Vector4" />.</summary>
+    /// <returns>The current instance reintepreted as a new <see cref="Vector4" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public SysVector4 AsVector4() => _value.AsVector4();
 
     /// <inheritdoc />
     public override bool Equals(object? obj) => (obj is Quaternion other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(Quaternion other) => _value.Equals(other._value);
+    public bool Equals(Quaternion other)
+    {
+        return X.Equals(other.X)
+            && Y.Equals(other.Y)
+            && Z.Equals(other.Z)
+            && W.Equals(other.W);
+    }
 
     /// <inheritdoc />
-    public override int GetHashCode() => _value.GetHashCode();
+    public override int GetHashCode() => HashCode.Combine(X, Y, Z, W);
 
     /// <inheritdoc />
     public override string ToString() => _value.ToString();
 
     /// <inheritdoc />
     public string ToString(string? format, IFormatProvider? formatProvider)
-    {
-        var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
+        => $"{nameof(Quaternion)} {{ {nameof(Axis)} = {Axis.ToString(format, formatProvider)}, {nameof(Angle)} = {Angle.ToString(format, formatProvider)} }}";
 
-        return new StringBuilder(9 + (separator.Length * 3))
-            .Append('<')
-            .Append(X.ToString(format, formatProvider))
-            .Append(separator)
-            .Append(' ')
-            .Append(Y.ToString(format, formatProvider))
-            .Append(separator)
-            .Append(' ')
-            .Append(Z.ToString(format, formatProvider))
-            .Append(separator)
-            .Append(' ')
-            .Append(W.ToString(format, formatProvider))
-            .Append('>')
-            .ToString();
+    /// <summary>Creates a new quaternion with <see cref="Angle" /> set to the specified value.</summary>
+    /// <param name="angle">The new angle of the quaternion.</param>
+    /// <returns>A new quaternion with <see cref="Angle" /> set to <paramref name="angle" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Quaternion WithAngle(float angle)
+    {
+        return CreateFromAxisAngle(Axis, angle);
     }
 
-    /// <summary>Creates a new <see cref="Quaternion" /> instance with <see cref="X" /> set to the specified value.</summary>
-    /// <param name="x">The new value of the x-component.</param>
-    /// <returns>A new <see cref="Quaternion" /> instance with <see cref="X" /> set to <paramref name="x" />.</returns>
+    /// <summary>Creates a new quaternion with <see cref="Axis" /> set to the specified value.</summary>
+    /// <param name="axis">The new axis of the quaternion.</param>
+    /// <returns>A new quaternion with <see cref="Axis" /> set to <paramref name="axis" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Quaternion WithAxis(Vector3 axis)
+    {
+        return CreateFromAxisAngle(axis, Angle);
+    }
+
+    /// <summary>Creates a new quaternion with <see cref="X" /> set to the specified value.</summary>
+    /// <param name="x">The new x-component of the quaternion.</param>
+    /// <returns>A new quaternion with <see cref="X" /> set to <paramref name="x" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Quaternion WithX(float x)
     {
-        var result = _value.WithElement(0, x);
+        var result = _value.WithX(x);
         return new Quaternion(result);
     }
 
-    /// <summary>Creates a new <see cref="Quaternion" /> instance with <see cref="Y" /> set to the specified value.</summary>
+    /// <summary>Creates a new quaternion with <see cref="Y" /> set to the specified value.</summary>
     /// <param name="y">The new value of the y-component.</param>
-    /// <returns>A new <see cref="Quaternion" /> instance with <see cref="Y" /> set to <paramref name="y" />.</returns>
+    /// <returns>A new quaternion with <see cref="Y" /> set to <paramref name="y" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Quaternion WithY(float y)
     {
-        var result = _value.WithElement(1, y);
+        var result = _value.WithY(y);
         return new Quaternion(result);
     }
 
-    /// <summary>Creates a new <see cref="Quaternion" /> instance with <see cref="Z" /> set to the specified value.</summary>
+    /// <summary>Creates a new quaternion with <see cref="Z" /> set to the specified value.</summary>
     /// <param name="z">The new value of the z-component.</param>
-    /// <returns>A new <see cref="Quaternion" /> instance with <see cref="Z" /> set to <paramref name="z" />.</returns>
+    /// <returns>A new quaternion with <see cref="Z" /> set to <paramref name="z" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Quaternion WithZ(float z)
     {
-        var result = _value.WithElement(2, z);
+        var result = _value.WithZ(z);
         return new Quaternion(result);
     }
 
-    /// <summary>Creates a new <see cref="Quaternion" /> instance with <see cref="W" /> set to the specified value.</summary>
+    /// <summary>Creates a new quaternion with <see cref="W" /> set to the specified value.</summary>
     /// <param name="w">The new value of the w-component.</param>
-    /// <returns>A new <see cref="Quaternion" /> instance with <see cref="W" /> set to <paramref name="w" />.</returns>
+    /// <returns>A new quaternion with <see cref="W" /> set to <paramref name="w" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Quaternion WithW(float w)
     {
-        var result = _value.WithElement(3, w);
+        var result = _value.WithW(w);
         return new Quaternion(result);
     }
 }

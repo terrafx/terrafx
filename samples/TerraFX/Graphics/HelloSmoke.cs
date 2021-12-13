@@ -43,8 +43,7 @@ public sealed class HelloSmoke : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        var graphicsSwapchain = GraphicsSwapchain;
-        var currentGraphicsContext = graphicsDevice.Contexts[(int)graphicsSwapchain.FramebufferIndex];
+        var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
         var textureSize = 64 * 1024 * 16 * (_isQuickAndDirty ? 1 : 64);
 
@@ -56,11 +55,12 @@ public sealed class HelloSmoke : HelloWindow
         _indexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
         _vertexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
 
-        currentGraphicsContext.BeginFrame(graphicsSwapchain);
-        _quadPrimitive = CreateQuadPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
-        currentGraphicsContext.EndFrame();
+        graphicsRenderContext.Reset();
+        _quadPrimitive = CreateQuadPrimitive(graphicsRenderContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
+        graphicsRenderContext.Flush();
 
         graphicsDevice.WaitForIdle();
+        graphicsDevice.ReturnRenderContext(graphicsRenderContext);
     }
 
     protected override unsafe void Update(TimeSpan delta)
@@ -79,20 +79,20 @@ public sealed class HelloSmoke : HelloWindow
         var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
 
         // Shaders take transposed matrices, so we want to set X.W
-        pConstantBuffer[0] = new Matrix4x4(
-            new Vector4(0.5f, 0.0f, 0.0f, 0.5f),      // *0.5f and +0.5f since the input vertex coordinates are in range [-1, 1]  but output texture coordinates needs to be [0, 1]
-            new Vector4(0.0f, 0.5f, 0.0f, 0.5f - dydz), // *0.5f and +0.5f as above, -dydz to slide the view of the texture vertically each frame
-            new Vector4(0.0f, 0.0f, 0.5f, dydz / 5.0f), // +dydz to slide the start of the compositing ray in depth each frame
+        pConstantBuffer[0] = Matrix4x4.Create(
+            Vector4.Create(0.5f, 0.0f, 0.0f, 0.5f),      // *0.5f and +0.5f since the input vertex coordinates are in range [-1, 1]  but output texture coordinates needs to be [0, 1]
+            Vector4.Create(0.0f, 0.5f, 0.0f, 0.5f - dydz), // *0.5f and +0.5f as above, -dydz to slide the view of the texture vertically each frame
+            Vector4.Create(0.0f, 0.0f, 0.5f, dydz / 5.0f), // +dydz to slide the start of the compositing ray in depth each frame
             Vector4.UnitW
         );
 
         constantBufferView.UnmapAndWrite();
     }
 
-    protected override void Draw(GraphicsContext graphicsContext)
+    protected override void Draw(GraphicsRenderContext graphicsRenderContext)
     {
-        graphicsContext.Draw(_quadPrimitive);
-        base.Draw(graphicsContext);
+        graphicsRenderContext.Draw(_quadPrimitive);
+        base.Draw(graphicsRenderContext);
     }
 
     private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
@@ -167,7 +167,7 @@ public sealed class HelloSmoke : HelloWindow
             var textureDz = textureWidth * textureHeight;
             var texturePixels = textureDz * textureDepth;
 
-            var texture = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, textureWidth, textureHeight, textureDepth, texelFormat: TexelFormat.R8G8B8A8_UNORM);
+            var texture = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, textureWidth, textureHeight, textureDepth, format: GraphicsFormat.R8G8B8A8_UNORM);
             var textureView = new GraphicsResourceView {
                 Offset = 0,
                 Resource = texture,
@@ -361,23 +361,23 @@ public sealed class HelloSmoke : HelloWindow
             var x = y / aspectRatio;
 
             pVertexBuffer[0] = new Texture3DVertex {             //
-                Position = new Vector3(-x, y, 0.0f),             //   y          in this setup
-                UVW = new Vector3(0, 0, 0),                      //   ^     z    the origin o
+                Position = Vector3.Create(-x, y, 0.0f),             //   y          in this setup
+                UVW = Vector3.Create(0, 0, 0),                      //   ^     z    the origin o
             };                                                   //   |   /      is in the middle
                                                                  //   | /        of the rendered scene
             pVertexBuffer[1] = new Texture3DVertex {             //   o------>x
-                Position = new Vector3(x, y, 0.0f),              //
-                UVW = new Vector3(1, 0, 0),                      //   0 ----- 1
+                Position = Vector3.Create(x, y, 0.0f),              //
+                UVW = Vector3.Create(1, 0, 0),                      //   0 ----- 1
             };                                                   //   | \     |
                                                                  //   |   \   |
             pVertexBuffer[2] = new Texture3DVertex {             //   |     \ |
-                Position = new Vector3(x, -y, 0.0f),             //   3-------2
-                UVW = new Vector3(1, 1, 0),                      //
+                Position = Vector3.Create(x, -y, 0.0f),             //   3-------2
+                UVW = Vector3.Create(1, 1, 0),                      //
             };
 
             pVertexBuffer[3] = new Texture3DVertex {
-                Position = new Vector3(-x, -y, 0),
-                UVW = new Vector3(0, 1, 0),
+                Position = Vector3.Create(-x, -y, 0),
+                UVW = Vector3.Create(0, 1, 0),
             };
 
             vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);
@@ -398,8 +398,8 @@ public sealed class HelloSmoke : HelloWindow
             var inputs = new GraphicsPipelineInput[1] {
                 new GraphicsPipelineInput(
                     new GraphicsPipelineInputElement[2] {
-                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
-                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.TextureCoordinate, size: 12),
+                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Position, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
+                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.TextureCoordinate, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
                     }
                 ),
             };

@@ -23,14 +23,13 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
 {
-    private readonly VulkanGraphicsContext[] _contexts;
-
     private readonly VkQueue _vkCommandQueue;
     private readonly uint _vkCommandQueueFamilyIndex;
     private readonly VkDevice _vkDevice;
     private readonly VkRenderPass _vkRenderPass;
     private readonly VulkanGraphicsMemoryAllocator _memoryAllocator;
 
+    private ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext> _renderContextPool;
     private VolatileState _state;
 
     internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter)
@@ -44,23 +43,11 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
 
         _vkCommandQueue = GetVkCommandQueue(vkDevice, vkCommandQueueFamilyIndex);
         _vkRenderPass = CreateVkRenderPass(vkDevice);
-        
-        _contexts = CreateGraphicsContexts(this, contextCount: 2);
+
         _memoryAllocator = CreateMemoryAllocator(this);
+        _renderContextPool = new ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext>();
 
         _ = _state.Transition(to: Initialized);
-
-        static VulkanGraphicsContext[] CreateGraphicsContexts(VulkanGraphicsDevice device, int contextCount)
-        {
-            var contexts = new VulkanGraphicsContext[contextCount];
-
-            for (var index = 0; index < contexts.Length; index++)
-            {
-                contexts[index] = new VulkanGraphicsContext(device);
-            }
-
-            return contexts;
-        }
 
         static VulkanGraphicsMemoryAllocator CreateMemoryAllocator(VulkanGraphicsDevice device)
         {
@@ -192,9 +179,6 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc />
-    public override ReadOnlySpan<GraphicsContext> Contexts => _contexts;
-
-    /// <inheritdoc />
     public override VulkanGraphicsMemoryAllocator MemoryAllocator => _memoryAllocator;
 
     /// <inheritdoc cref="GraphicsDevice.Service" />
@@ -287,6 +271,36 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
+    public override VulkanGraphicsRenderContext RentRenderContext()
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        return _renderContextPool.Rent(this, &CreateRenderContext);
+
+        static VulkanGraphicsRenderContext CreateRenderContext(VulkanGraphicsDevice device)
+        {
+            AssertNotNull(device);
+            return new VulkanGraphicsRenderContext(device);
+        }
+    }
+
+    /// <inheritdoc />
+    public override void ReturnRenderContext(GraphicsRenderContext renderContext)
+        => ReturnRenderContext((VulkanGraphicsRenderContext)renderContext);
+
+    /// <inheritdoc cref="ReturnRenderContext(GraphicsRenderContext)" />
+    public void ReturnRenderContext(VulkanGraphicsRenderContext renderContext)
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfNull(renderContext);
+
+        if (renderContext.Device != this)
+        {
+            ThrowForInvalidParent(renderContext.Device);
+        }
+        _renderContextPool.Return(renderContext);
+    }
+
+    /// <inheritdoc />
     public override void Signal(GraphicsFence fence)
         => Signal((VulkanGraphicsFence)fence);
 
@@ -311,11 +325,7 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
 
             if (isDisposing)
             {
-                foreach (var context in _contexts)
-                {
-                    context?.Dispose();
-                }
-
+                _renderContextPool.Dispose();
                 _memoryAllocator?.Dispose();
             }
 

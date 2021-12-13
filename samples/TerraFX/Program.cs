@@ -181,7 +181,7 @@ public static unsafe class Program
             }
             if (xOk && yOk)
             {
-                windowLocation = new Vector2(x, y);
+                windowLocation = Vector2.Create(x, y);
             }
         }
         Vector2? windowSize = null;
@@ -198,7 +198,7 @@ public static unsafe class Program
             }
             if (wOk && hOk)
             {
-                windowSize = new Vector2(w, h);
+                windowSize = Vector2.Create(w, h);
             }
         }
 

@@ -4,12 +4,8 @@
 // The original code is Copyright © Microsoft. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
-using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
-using System.Runtime.Intrinsics.Arm;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.VectorUtilities;
 using SysVector3 = System.Numerics.Vector3;
@@ -20,88 +16,60 @@ namespace TerraFX.Numerics;
 public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
 {
     /// <summary>Defines a <see cref="Vector3" /> where all components are zero.</summary>
-    public static Vector3 Zero => new Vector3(SysVector3.Zero);
+    public static Vector3 Zero => Create(0.0f, 0.0f, 0.0f);
 
     /// <summary>Defines a <see cref="Vector3" /> whose x-component is one and whose remaining components are zero.</summary>
-    public static Vector3 UnitX => new Vector3(SysVector3.UnitX);
+    public static Vector3 UnitX => Create(1.0f, 0.0f, 0.0f);
 
     /// <summary>Defines a <see cref="Vector3" /> whose y-component is one and whose remaining components are zero.</summary>
-    public static Vector3 UnitY = new Vector3(SysVector3.UnitY);
+    public static Vector3 UnitY = Create(0.0f, 1.0f, 0.0f);
 
     /// <summary>Defines a <see cref="Vector3" /> whose z-component is one and whose remaining components are zero.</summary>
-    public static Vector3 UnitZ = new Vector3(SysVector3.UnitZ);
+    public static Vector3 UnitZ = Create(0.0f, 0.0f, 1.0f);
 
     /// <summary>Defines a <see cref="Vector3" /> where all components are one.</summary>
-    public static Vector3 One = new Vector3(SysVector3.One);
+    public static Vector3 One = Create(1.0f, 1.0f, 1.0f);
 
     private readonly SysVector3 _value;
 
-    /// <summary>Initializes a new instance of the <see cref="Vector3" /> struct.</summary>
-    /// <param name="x">The value of the x-dimension.</param>
-    /// <param name="y">The value of the y-dimension.</param>
-    /// <param name="z">The value of the z-dimension.</param>
-    public Vector3(float x, float y, float z)
-    {
-        _value = new SysVector3(x, y, z);
-    }
-
-    /// <summary>Initializes a new instance of the <see cref="Vector3" /> struct with each component set to <paramref name="value" />.</summary>
+    /// <summary>Creates a vector where each component is set a specified value.</summary>
     /// <param name="value">The value to set each component to.</param>
-    public Vector3(float value)
+    public static Vector3 Create(float value)
     {
-        _value = new SysVector3(value);
+        var vector = new SysVector3(value);
+        return new Vector3(vector);
     }
 
-    /// <summary>Initializes a new instance of the <see cref="Vector3" /> struct.</summary>
-    /// <param name="vector">The value of the x and y dimensions.</param>
-    /// <param name="z">The value of the z-dimension.</param>
-    public Vector3(Vector2 vector, float z)
-    {
-        _value = new SysVector3(vector.AsVector2(), z);
-    }
-
-    /// <summary>Initializes a new instance of the <see cref="Vector3" /> struct.</summary>
+    /// <summary>Creates a vector from a system vector.</summary>
     /// <param name="value">The value of the vector.</param>
-    public Vector3(SysVector3 value)
+    public static Vector3 Create(SysVector3 value) => new Vector3(value);
+
+    /// <summary>Creates a vector from a hardware vector.</summary>
+    /// <param name="value">The value of the vector.</param>
+    public static Vector3 Create(Vector128<float> value) => new Vector3(value.AsVector3());
+
+    /// <summary>Creates a vector from a two-dimensional vector and a Z-component</summary>
+    /// <param name="vector">The value of the x and y dimensions.</param>
+    /// <param name="z">The value of the z-component.</param>
+    public static Vector3 Create(Vector2 vector, float z)
+    {
+        var value = new SysVector3(vector.AsSystemVector2(), z);
+        return new Vector3(value);
+    }
+
+    /// <summary>Creates a vector from an X, Y, and Z component.</summary>
+    /// <param name="x">The value of the x-component.</param>
+    /// <param name="y">The value of the y-component.</param>
+    /// <param name="z">The value of the z-component.</param>
+    public static Vector3 Create(float x, float y, float z)
+    {
+        var value = new SysVector3(x, y, z);
+        return new Vector3(value);
+    }
+
+    private Vector3(SysVector3 value)
     {
         _value = value;
-    }
-
-    /// <summary>Initializes a new instance of the <see cref="Vector3" /> struct.</summary>
-    /// <param name="value">The value of the vector.</param>
-    public Vector3(Vector128<float> value)
-    {
-        _value = value.AsVector3();
-    }
-
-    /// <summary>Gets the value of the x-dimension.</summary>
-    public float X
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _value.X;
-        }
-    }
-
-    /// <summary>Gets the value of the y-dimension.</summary>
-    public float Y
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _value.Y;
-        }
-    }
-
-    /// <summary>Gets the value of the z-dimension.</summary>
-    public float Z
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _value.Z;
-        }
     }
 
     /// <summary>Gets the square-rooted length of the vector.</summary>
@@ -132,6 +100,36 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
         {
             var result = ReciprocalLengthEstimate(_value.AsVector128());
             return result.ToScalar();
+        }
+    }
+
+    /// <summary>Gets the value of the x-component.</summary>
+    public float X
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return _value.X;
+        }
+    }
+
+    /// <summary>Gets the value of the y-component.</summary>
+    public float Y
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return _value.Y;
+        }
+    }
+
+    /// <summary>Gets the value of the z-component.</summary>
+    public float Z
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return _value.Z;
         }
     }
 
@@ -217,52 +215,20 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector3 CompareEqual(Vector3 left, Vector3 right)
     {
-        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
-        {
-            var result = VectorUtilities.CompareEqual(left._value.AsVector128(), right._value.AsVector128());
-            return new Vector3(result);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector3 SoftwareFallback(Vector3 left, Vector3 right)
-        {
-            return new Vector3(
-                (left.X == right.X) ? AllBitsSet : 0.0f,
-                (left.Y == right.Y) ? AllBitsSet : 0.0f,
-                (left.Z == right.Z) ? AllBitsSet : 0.0f
-            );
-        }
+        var result = VectorUtilities.CompareEqual(left._value.AsVector128(), right._value.AsVector128());
+        return new Vector3(result.AsVector3());
     }
 
     /// <summary>Compares two vectors to determine approximate equality.</summary>
     /// <param name="left">The vector to compare with <paramref name="right" />.</param>
     /// <param name="right">The vector to compare with <paramref name="left" />.</param>
-    /// <param name="epsilon">The maximum (exclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
+    /// <param name="epsilon">The maximum (inclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector3 CompareEqual(Vector3 left, Vector3 right, Vector3 epsilon)
     {
-        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
-        {
-            var result = VectorUtilities.CompareEqual(left._value.AsVector128(), right._value.AsVector128(), epsilon._value.AsVector128());
-            return new Vector3(result);
-        }
-        else
-        {
-            return SoftwareFallback(left, right, epsilon);
-        }
-
-        static Vector3 SoftwareFallback(Vector3 left, Vector3 right, Vector3 epsilon)
-        {
-            return new Vector3(
-                MathUtilities.CompareEqual(left.X, right.X, epsilon.X) ? AllBitsSet : 0.0f,
-                MathUtilities.CompareEqual(left.Y, right.Y, epsilon.Y) ? AllBitsSet : 0.0f,
-                MathUtilities.CompareEqual(left.Z, right.Z, epsilon.Z) ? AllBitsSet : 0.0f
-            );
-        }
+        var result = VectorUtilities.CompareEqual(left._value.AsVector128(), right._value.AsVector128(), epsilon._value.AsVector128());
+        return new Vector3(result.AsVector3());
     }
 
     /// <summary>Compares two vectors to determine if all elements are equal.</summary>
@@ -279,23 +245,7 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CompareEqualAll(Vector3 left, Vector3 right, Vector3 epsilon)
-    {
-        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
-        {
-            return VectorUtilities.CompareEqualAll(left._value.AsVector128(), right._value.AsVector128(), epsilon._value.AsVector128());
-        }
-        else
-        {
-            return SoftwareFallback(left, right, epsilon);
-        }
-
-        static bool SoftwareFallback(Vector3 left, Vector3 right, Vector3 epsilon)
-        {
-            return MathUtilities.CompareEqual(left.X, right.X, epsilon.X)
-                && MathUtilities.CompareEqual(left.Y, right.Y, epsilon.Y)
-                && MathUtilities.CompareEqual(left.Z, right.Z, epsilon.Z);
-        }
-    }
+        => VectorUtilities.CompareEqualAll(left._value.AsVector128(), right._value.AsVector128(), epsilon._value.AsVector128());
 
     /// <summary>Computes the cross product of two vectors.</summary>
     /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
@@ -334,24 +284,8 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector3 Max(Vector3 left, Vector3 right)
     {
-        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
-        {
-            var result = VectorUtilities.Max(left._value.AsVector128(), right._value.AsVector128());
-            return new Vector3(result);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector3 SoftwareFallback(Vector3 left, Vector3 right)
-        {
-            return new Vector3(
-                MathUtilities.Max(left.X, right.X),
-                MathUtilities.Max(left.Y, right.Y),
-                MathUtilities.Max(left.Z, right.Z)
-            );
-        }
+        var result = VectorUtilities.Max(left._value.AsVector128(), right._value.AsVector128());
+        return new Vector3(result.AsVector3());
     }
 
     /// <summary>Compares two vectors to determine the combined minimum.</summary>
@@ -361,24 +295,8 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector3 Min(Vector3 left, Vector3 right)
     {
-        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
-        {
-            var result = VectorUtilities.Min(left._value.AsVector128(), right._value.AsVector128());
-            return new Vector3(result);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector3 SoftwareFallback(Vector3 left, Vector3 right)
-        {
-            return new Vector3(
-                MathUtilities.Min(left.X, right.X),
-                MathUtilities.Min(left.Y, right.Y),
-                MathUtilities.Min(left.Z, right.Z)
-            );
-        }
+        var result = VectorUtilities.Min(left._value.AsVector128(), right._value.AsVector128());
+        return new Vector3(result.AsVector3());
     }
 
     /// <summary>Computes the normalized form of a vector.</summary>
@@ -398,7 +316,7 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
     public static Vector3 NormalizeEstimate(Vector3 value)
     {
         var result = VectorUtilities.NormalizeEstimate(value._value.AsVector128());
-        return new Vector3(result);
+        return new Vector3(result.AsVector3());
     }
 
     /// <summary>Computes an estimate of the reciprocal of a vector.</summary>
@@ -408,7 +326,7 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
     public static Vector3 ReciprocalEstimate(Vector3 value)
     {
         var result = VectorUtilities.ReciprocalEstimate(value._value.AsVector128());
-        return new Vector3(result);
+        return new Vector3(result.AsVector3());
     }
 
     /// <summary>Computes an estimate of the reciprocal square-root of a vector.</summary>
@@ -418,7 +336,7 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
     public static Vector3 ReciprocalSqrtEstimate(Vector3 value)
     {
         var result = VectorUtilities.ReciprocalSqrtEstimate(value._value.AsVector128());
-        return new Vector3(result);
+        return new Vector3(result.AsVector3());
     }
 
     /// <summary>Rotates a vector using a quaternion.</summary>
@@ -428,13 +346,13 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector3 Rotate(Vector3 value, Quaternion rotation)
     {
-        var vValue = new Quaternion(value._value.AsVector128());
+        var vValue = Quaternion.Create(value._value.AsVector128());
         var conjugate = Quaternion.Conjugate(rotation);
 
         var result = Quaternion.Concatenate(conjugate, vValue);
         result = Quaternion.Concatenate(result, rotation);
 
-        return new Vector3(result.AsVector128());
+        return Create(result.Value);
     }
 
     /// <summary>Rotates a vector using the inverse of a quaternion.</summary>
@@ -443,13 +361,13 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
     /// <returns><paramref name="value" /> rotated by the inverse of <paramref name="rotation" />.</returns>
     public static Vector3 RotateInverse(Vector3 value, Quaternion rotation)
     {
-        var vValue = new Quaternion(value._value.AsVector128());
+        var vValue = Quaternion.Create(value._value.AsVector128());
         var conjugate = Quaternion.Conjugate(rotation);
 
         var result = Quaternion.Concatenate(rotation, vValue);
         result = Quaternion.Concatenate(result, conjugate);
 
-        return new Vector3(result.AsVector128());
+        return Create(result.Value);
     }
 
     /// <summary>Computes the square-root of a vector.</summary>
@@ -458,24 +376,8 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector3 Sqrt(Vector3 value)
     {
-        if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
-        {
-            var result = VectorUtilities.Sqrt(value._value.AsVector128());
-            return new Vector3(result);
-        }
-        else
-        {
-            return SoftwareFallback(value);
-        }
-
-        static Vector3 SoftwareFallback(Vector3 value)
-        {
-            return new Vector3(
-                MathUtilities.Sqrt(value.X),
-                MathUtilities.Sqrt(value.Y),
-                MathUtilities.Sqrt(value.Z)
-            );
-        }
+        var result = VectorUtilities.Sqrt(value._value.AsVector128());
+        return new Vector3(result.AsVector3());
     }
 
     /// <summary>Transforms a vector using a matrix.</summary>
@@ -486,11 +388,11 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
     {
         var vValue = value._value.AsVector128();
 
-        var result = matrix.W.AsVector128();
-        result = MultiplyAddByX(result, matrix.X.AsVector128(), vValue);
-        result = MultiplyAddByY(result, matrix.Y.AsVector128(), vValue);
-        result = MultiplyAddByZ(result, matrix.Z.AsVector128(), vValue);
-        return new Vector3(result);
+        var result = matrix.W.Value;
+        result = MultiplyAddByX(result, matrix.X.Value, vValue);
+        result = MultiplyAddByY(result, matrix.Y.Value, vValue);
+        result = MultiplyAddByZ(result, matrix.Z.Value, vValue);
+        return Create(result);
     }
 
     /// <summary>Transforms a vector using a normalized matrix.</summary>
@@ -501,16 +403,16 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
     {
         var vValue = value._value.AsVector128();
 
-        var result = MultiplyByX(matrix.X.AsVector128(), vValue);
-        result = MultiplyAddByY(result, matrix.Y.AsVector128(), vValue);
-        result = MultiplyAddByZ(result, matrix.Z.AsVector128(), vValue);
-        return new Vector3(result);
+        var result = MultiplyByX(matrix.X.Value, vValue);
+        result = MultiplyAddByY(result, matrix.Y.Value, vValue);
+        result = MultiplyAddByZ(result, matrix.Z.Value, vValue);
+        return Create(result);
     }
 
     /// <summary>Reinterprets the current instance as a new <see cref="SysVector3" />.</summary>
     /// <returns>The current instance reintepreted as a new <see cref="SysVector3" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public SysVector3 AsVector3() => _value;
+    public SysVector3 AsSystemVector3() => _value;
 
     /// <summary>Reinterprets the current instance as a new <see cref="Vector128{Single}" />.</summary>
     /// <returns>The current instance reintepreted as a new <see cref="Vector128{Single}" />.</returns>
@@ -536,25 +438,11 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
 
     /// <inheritdoc />
     public string ToString(string? format, IFormatProvider? formatProvider)
-    {
-        var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
+        => $"{nameof(Vector3)} {{ {nameof(X)} = {X.ToString(format, formatProvider)}, {nameof(Y)} = {Y.ToString(format, formatProvider)}, {nameof(Z)} = {Z.ToString(format, formatProvider)} }}";
 
-        return new StringBuilder(7 + (separator.Length * 2))
-            .Append('<')
-            .Append(X.ToString(format, formatProvider))
-            .Append(separator)
-            .Append(' ')
-            .Append(Y.ToString(format, formatProvider))
-            .Append(separator)
-            .Append(' ')
-            .Append(Z.ToString(format, formatProvider))
-            .Append('>')
-            .ToString();
-    }
-
-    /// <summary>Creates a new <see cref="Vector3" /> instance with <see cref="X" /> set to the specified value.</summary>
-    /// <param name="x">The new value of the x-dimension.</param>
-    /// <returns>A new <see cref="Vector3" /> instance with <see cref="X" /> set to <paramref name="x" />.</returns>
+    /// <summary>Creates a new vector with <see cref="X" /> set to the specified value.</summary>
+    /// <param name="x">The new x-component of the vector.</param>
+    /// <returns>A new vector with <see cref="X" /> set to <paramref name="x" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector3 WithX(float x)
     {
@@ -563,9 +451,9 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
         return new Vector3(result);
     }
 
-    /// <summary>Creates a new <see cref="Vector3" /> instance with <see cref="Y" /> set to the specified value.</summary>
-    /// <param name="y">The new value of the y-dimension.</param>
-    /// <returns>A new <see cref="Vector3" /> instance with <see cref="Y" /> set to <paramref name="y" />.</returns>
+    /// <summary>Creates a new vector with <see cref="Y" /> set to the specified value.</summary>
+    /// <param name="y">The new y-component of the vector.</param>
+    /// <returns>A new vector with <see cref="Y" /> set to <paramref name="y" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector3 WithY(float y)
     {
@@ -574,9 +462,9 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
         return new Vector3(result);
     }
 
-    /// <summary>Creates a new <see cref="Vector3" /> instance with <see cref="Z" /> set to the specified value.</summary>
-    /// <param name="z">The new value of the z-dimension.</param>
-    /// <returns>A new <see cref="Vector3" /> instance with <see cref="Z" /> set to <paramref name="z" />.</returns>
+    /// <summary>Creates a new vector with <see cref="Z" /> set to the specified value.</summary>
+    /// <param name="z">The new z-component of the vector.</param>
+    /// <returns>A new vector with <see cref="Z" /> set to <paramref name="z" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector3 WithZ(float z)
     {

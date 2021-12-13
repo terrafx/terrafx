@@ -1,12 +1,14 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using System;
+using System.Diagnostics;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
+using TerraFX.Numerics;
 using TerraFX.Threading;
-using static TerraFX.Interop.DirectX.D3D12;
+using static TerraFX.Interop.DirectX.D3D_PRIMITIVE_TOPOLOGY;
 using static TerraFX.Interop.DirectX.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_RESOURCE_STATES;
-using static TerraFX.Interop.DirectX.D3D_PRIMITIVE_TOPOLOGY;
 using static TerraFX.Interop.DirectX.DXGI_FORMAT;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Runtime.Configuration;
@@ -14,21 +16,17 @@ using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
-using System.Diagnostics;
 
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public sealed unsafe class D3D12GraphicsContext : GraphicsContext
+public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
 {
-    private const uint FrameInitializing = 2;
+    private const uint DrawingInitializing = 2;
 
-    private const uint FrameInitialized = 3;
-
-    private const uint DrawingInitializing = 4;
-
-    private const uint DrawingInitialized = 5;
+    private const uint DrawingInitialized = 3;
 
     private readonly ID3D12CommandAllocator* _d3d12CommandAllocator;
     private readonly ID3D12GraphicsCommandList* _d3d12GraphicsCommandList;
@@ -39,7 +37,7 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
 
     private VolatileState _state;
 
-    internal D3D12GraphicsContext(D3D12GraphicsDevice device)
+    internal D3D12GraphicsRenderContext(D3D12GraphicsDevice device)
         : base(device)
     {
         var d3d12CommandAllocator = CreateD3D12CommandAllocator(device);
@@ -70,8 +68,8 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
         }
     }
 
-    /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsContext" /> class.</summary>
-    ~D3D12GraphicsContext() => Dispose(isDisposing: false);
+    /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsRenderContext" /> class.</summary>
+    ~D3D12GraphicsRenderContext() => Dispose(isDisposing: false);
 
     /// <summary>Gets the <see cref="ID3D12CommandAllocator" /> used by the context.</summary>
     public ID3D12CommandAllocator* D3D12CommandAllocator
@@ -105,7 +103,7 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
     /// <inheritdoc />
     public override void BeginDrawing(uint framebufferIndex, ColorRgba backgroundColor)
     {
-        _state.Transition(from: FrameInitialized, to: DrawingInitializing);
+        _state.Transition(from: Initialized, to: DrawingInitializing);
         Debug.Assert(Swapchain is not null);
 
         var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
@@ -117,52 +115,11 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
         var d3d12RtvDescriptor = swapchain.D3D12RtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart().Offset((int)framebufferIndex, Device.D3D12RtvDescriptorHandleIncrementSize);
         d3d12GraphicsCommandList->OMSetRenderTargets(1, &d3d12RtvDescriptor, RTsSingleHandleToDescriptorRange: TRUE, pDepthStencilDescriptor: null);
 
-        var surface = swapchain.Surface;
-
-        var surfaceWidth = surface.Width;
-        var surfaceHeight = surface.Height;
-
-        var d3d12Viewport = new D3D12_VIEWPORT {
-            Width = surfaceWidth,
-            Height = surfaceHeight,
-            MinDepth = D3D12_MIN_DEPTH,
-            MaxDepth = D3D12_MAX_DEPTH,
-        };
-        d3d12GraphicsCommandList->RSSetViewports(1, &d3d12Viewport);
-
-        var d3d12ScissorRect = new RECT {
-            right = (int)surfaceWidth,
-            bottom = (int)surfaceHeight,
-        };
-        d3d12GraphicsCommandList->RSSetScissorRects(1, &d3d12ScissorRect);
-
         d3d12GraphicsCommandList->ClearRenderTargetView(d3d12RtvDescriptor, (float*)&backgroundColor, NumRects: 0, pRects: null);
         d3d12GraphicsCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         _framebufferIndex = framebufferIndex;
         _state.Transition(from: DrawingInitializing, to: DrawingInitialized);
-    }
-
-    /// <inheritdoc />
-    public override void BeginFrame(GraphicsSwapchain swapchain)
-        => BeginFrame((D3D12GraphicsSwapchain)swapchain);
-
-    /// <inheritdoc cref="BeginFrame(GraphicsSwapchain)" />
-    public void BeginFrame(D3D12GraphicsSwapchain swapchain)
-    {
-        ThrowIfNull(swapchain);
-
-        _state.Transition(from: Initialized, to: FrameInitializing);
-        _swapchain = swapchain;
-
-        Fence.Reset();
-
-        var d3d12CommandAllocator = D3D12CommandAllocator;
-
-        ThrowExternalExceptionIfFailed(d3d12CommandAllocator->Reset());
-        ThrowExternalExceptionIfFailed(D3D12GraphicsCommandList->Reset(d3d12CommandAllocator, pInitialState: null));
-
-        _state.Transition(from: FrameInitializing, to: FrameInitialized);
     }
 
     /// <inheritdoc />
@@ -178,11 +135,6 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
     {
         ThrowIfNull(destination);
         ThrowIfNull(source);
-
-        if (_state < FrameInitialized)
-        {
-            ThrowInvalidOperationException("GraphicsContext.BeginFrame has not been called");
-        }
 
         var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
 
@@ -269,11 +221,6 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
     {
         ThrowIfNull(destination);
         ThrowIfNull(source);
-
-        if (_state < FrameInitialized)
-        {
-            ThrowInvalidOperationException("GraphicsContext.BeginFrame has not been called");
-        }
 
         var d3d12Device = Device.D3D12Device;
         var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
@@ -459,13 +406,12 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
         var d3d12RtvResourceBarrier = D3D12_RESOURCE_BARRIER.InitTransition(Swapchain.D3D12RenderTargetResources[_framebufferIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
         D3D12GraphicsCommandList->ResourceBarrier(1, &d3d12RtvResourceBarrier);
 
-        _state.Transition(from: DrawingInitializing, to: FrameInitialized);
+        _state.Transition(from: DrawingInitializing, to: Initialized);
     }
 
     /// <inheritdoc />
-    public override void EndFrame()
+    public override void Flush()
     {
-        _state.Transition(from: FrameInitialized, to: FrameInitializing);
         var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
 
         var d3d12CommandQueue = Device.D3D12CommandQueue;
@@ -475,9 +421,116 @@ public sealed unsafe class D3D12GraphicsContext : GraphicsContext
         var fence = Fence;
         ThrowExternalExceptionIfFailed(d3d12CommandQueue->Signal(fence.D3D12Fence, fence.D3D12FenceSignalValue));
         fence.Wait();
+    }
 
+    /// <inheritdoc />
+    public override void Reset()
+    {
         _swapchain = null;
-        _state.Transition(from: FrameInitializing, to: Initialized);
+
+        Fence.Reset();
+
+        var d3d12CommandAllocator = D3D12CommandAllocator;
+
+        ThrowExternalExceptionIfFailed(d3d12CommandAllocator->Reset());
+        ThrowExternalExceptionIfFailed(D3D12GraphicsCommandList->Reset(d3d12CommandAllocator, pInitialState: null));
+    }
+
+    /// <inheritdoc />
+    public override void SetScissor(BoundingRectangle scissor)
+    {
+        var topLeft = scissor.Location;
+        var bottomRight = topLeft + scissor.Size;
+
+        var d3d12Rect = new RECT {
+            left = (int)topLeft.X,
+            top = (int)topLeft.Y,
+            right = (int)bottomRight.X,
+            bottom = (int)bottomRight.Y,
+        };
+        D3D12GraphicsCommandList->RSSetScissorRects(NumRects: 1, &d3d12Rect);
+    }
+
+    /// <inheritdoc />
+    public override void SetScissors(ReadOnlySpan<BoundingRectangle> scissors)
+    {
+        var count = (uint)scissors.Length;
+        var d3d12Rects = AllocateArray<RECT>(count);
+
+        for (var i = 0u; i < count; i++)
+        {
+            ref readonly var scissor = ref scissors[(int)i];
+
+            var upperLeft = scissor.Location;
+            var bottomRight = upperLeft + scissor.Size;
+
+            d3d12Rects[i] = new RECT {
+                left = (int)upperLeft.X,
+                top = (int)upperLeft.Y,
+                right = (int)bottomRight.X,
+                bottom = (int)bottomRight.Y,
+            };
+        }
+        D3D12GraphicsCommandList->RSSetScissorRects(count, d3d12Rects);
+    }
+
+    /// <inheritdoc />
+    public override void SetSwapchain(GraphicsSwapchain swapchain)
+        => SetSwapchain((D3D12GraphicsSwapchain)swapchain);
+
+    /// <inheritdoc cref="SetSwapchain(GraphicsSwapchain)" />
+    public void SetSwapchain(D3D12GraphicsSwapchain swapchain)
+    {
+        ThrowIfNull(swapchain);
+
+        if (swapchain.Device != Device)
+        {
+            ThrowForInvalidParent(swapchain.Device);
+        }
+
+        _swapchain = swapchain;
+    }
+
+    /// <inheritdoc />
+    public override void SetViewport(BoundingBox viewport)
+    {
+        var location = viewport.Location;
+        var size = viewport.Size;
+
+        var d3d12Viewport = new D3D12_VIEWPORT {
+            TopLeftX = location.X,
+            TopLeftY = location.Y,
+            Width = size.X,
+            Height = size.Y,
+            MinDepth = location.Z,
+            MaxDepth = size.Z,
+        };
+        D3D12GraphicsCommandList->RSSetViewports(NumViewports: 1, &d3d12Viewport);
+    }
+
+    /// <inheritdoc />
+    public override void SetViewports(ReadOnlySpan<BoundingBox> viewports)
+    {
+        var count = (uint)viewports.Length;
+        var d3d12Viewports = AllocateArray<D3D12_VIEWPORT>(count);
+
+        for (var i = 0u; i < count; i++)
+        {
+            ref readonly var viewport = ref viewports[(int)i];
+
+            var location = viewport.Location;
+            var size = viewport.Size;
+
+            d3d12Viewports[i] = new D3D12_VIEWPORT {
+                TopLeftX = location.X,
+                TopLeftY = location.Y,
+                Width = size.X,
+                Height = size.Y,
+                MinDepth = location.Z,
+                MaxDepth = size.Z,
+            };
+        }
+        D3D12GraphicsCommandList->RSSetViewports(count, d3d12Viewports);
     }
 
     /// <inheritdoc />

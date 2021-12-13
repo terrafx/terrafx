@@ -50,7 +50,7 @@ public sealed unsafe class WinFormsGraphicsSurface : IGraphicsSurface
     private void HandleControlClientSizeChanged(object? sender, EventArgs eventArgs)
     {
         var controlClientSize = _control.ClientSize;
-        var currentSize = new Vector2(controlClientSize.Width, controlClientSize.Height);
+        var currentSize = Vector2.Create(controlClientSize.Width, controlClientSize.Height);
 
         var previousSize = _size;
         _size = currentSize;

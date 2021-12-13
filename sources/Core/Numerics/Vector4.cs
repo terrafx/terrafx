@@ -4,10 +4,8 @@
 // The original code is Copyright © Microsoft. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
-using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
-using System.Text;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.VectorUtilities;
 using SysVector4 = System.Numerics.Vector4;
@@ -18,113 +16,66 @@ namespace TerraFX.Numerics;
 public readonly struct Vector4 : IEquatable<Vector4>, IFormattable
 {
     /// <summary>Defines a <see cref="Vector4" /> where all components are zero.</summary>
-    public static Vector4 Zero => new Vector4(Vector128<float>.Zero);
+    public static Vector4 Zero => Create(0.0f, 0.0f, 0.0f, 0.0f);
 
     /// <summary>Defines a <see cref="Vector4" /> whose x-component is one and whose remaining components are zero.</summary>
-    public static Vector4 UnitX => new Vector4(SysVector4.UnitX);
+    public static Vector4 UnitX => Create(1.0f, 0.0f, 0.0f, 0.0f);
 
     /// <summary>Defines a <see cref="Vector4" /> whose y-component is one and whose remaining components are zero.</summary>
-    public static Vector4 UnitY => new Vector4(SysVector4.UnitY);
+    public static Vector4 UnitY => Create(0.0f, 1.0f, 0.0f, 0.0f);
 
     /// <summary>Defines a <see cref="Vector4" /> whose z-component is one and whose remaining components are zero.</summary>
-    public static Vector4 UnitZ => new Vector4(SysVector4.UnitZ);
+    public static Vector4 UnitZ => Create(0.0f, 0.0f, 1.0f, 0.0f);
 
     /// <summary>Defines a <see cref="Vector4" /> whose w-component is one and whose remaining components are zero.</summary>
-    public static Vector4 UnitW => new Vector4(SysVector4.UnitW);
+    public static Vector4 UnitW => Create(0.0f, 0.0f, 0.0f, 1.0f);
 
     /// <summary>Defines a <see cref="Vector4" /> where all components are one.</summary>
-    public static Vector4 One => new Vector4(SysVector4.One);
+    public static Vector4 One => Create(1.0f, 1.0f, 1.0f, 1.0f);
 
     private readonly Vector128<float> _value;
 
-    /// <summary>Initializes a new instance of the <see cref="Vector4" /> struct.</summary>
-    /// <param name="x">The value of the x-dimension.</param>
-    /// <param name="y">The value of the y-dimension.</param>
-    /// <param name="z">The value of the z-dimension.</param>
-    /// <param name="w">The value of the w-dimension.</param>
-    public Vector4(float x, float y, float z, float w)
-    {
-        _value = Vector128.Create(x, y, z, w);
-    }
-
-    /// <summary>Initializes a new instance of the <see cref="Vector4" /> struct with each component set to <paramref name="value" />.</summary>
+    /// <summary>Creates a vector where each component is set a specified value.</summary>
     /// <param name="value">The value to set each component to.</param>
-    public Vector4(float value)
-    {
-        _value = Vector128.Create(value);
-    }
+    public static Vector4 Create(float value) => new Vector4(Vector128.Create(value));
 
-    /// <summary>Initializes a new instance of the <see cref="Vector4" /> struct.</summary>
-    /// <param name="vector">The value of the x and y dimensions.</param>
-    /// <param name="z">The value of the z-dimension.</param>
-    /// <param name="w">The value of the w-dimension.</param>
-    public Vector4(Vector2 vector, float z, float w)
-    {
-        var value = new SysVector4(vector.AsVector2(), z, w);
-        _value = value.AsVector128();
-    }
+    /// <summary>Creates a vector from a system vector.</summary>
+    /// <param name="value">The value of the vector.</param>
+    public static Vector4 Create(SysVector4 value) => new Vector4(value.AsVector128());
 
-    /// <summary>Initializes a new instance of the <see cref="Vector4" /> struct.</summary>
+    /// <summary>Creates a vector from a hardware vector.</summary>
+    /// <param name="value">The value of the vector.</param>
+    public static Vector4 Create(Vector128<float> value) => new Vector4(value);
+
+    /// <summary>Creates a vector from a three-dimensional vector and a W-component</summary>
     /// <param name="vector">The value of the x, y and z-dimensions.</param>
-    /// <param name="w">The value of the w-dimension.</param>
-    public Vector4(Vector3 vector, float w)
+    /// <param name="w">The value of the w-component.</param>
+    public static Vector4 Create(Vector3 vector, float w)
     {
-        var value = new SysVector4(vector.AsVector3(), w);
-        _value = value.AsVector128();
+        var value = new SysVector4(vector.AsSystemVector3(), w);
+        return new Vector4(value.AsVector128());
     }
 
-    /// <summary>Initializes a new instance of the <see cref="Vector4" /> struct.</summary>
-    /// <param name="value">The value of the vector.</param>
-    public Vector4(SysVector4 value)
+    /// <summary>Creates a vector from a two-dimensional vector, a Y-component, and a Z-component</summary>
+    /// <param name="vector">The value of the x and y dimensions.</param>
+    /// <param name="z">The value of the z-component.</param>
+    /// <param name="w">The value of the w-component.</param>
+    public static Vector4 Create(Vector2 vector, float z, float w)
     {
-        _value = value.AsVector128();
+        var value = new SysVector4(vector.AsSystemVector2(), z, w);
+        return new Vector4(value.AsVector128());
     }
 
-    /// <summary>Initializes a new instance of the <see cref="Vector4" /> struct.</summary>
-    /// <param name="value">The value of the vector.</param>
-    public Vector4(Vector128<float> value)
+    /// <summary>Creates a vector from an X, Y, Z, and W-component.</summary>
+    /// <param name="x">The value of the x-component.</param>
+    /// <param name="y">The value of the y-component.</param>
+    /// <param name="z">The value of the z-component.</param>
+    /// <param name="w">The value of the w-component.</param>
+    public static Vector4 Create(float x, float y, float z, float w) => new Vector4(Vector128.Create(x, y, z, w));
+
+    private Vector4(Vector128<float> value)
     {
         _value = value;
-    }
-
-    /// <summary>Gets the value of the x-dimension.</summary>
-    public float X
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _value.ToScalar();
-        }
-    }
-
-    /// <summary>Gets the value of the y-dimension.</summary>
-    public float Y
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _value.GetElement(1);
-        }
-    }
-
-    /// <summary>Gets the value of the z-dimension.</summary>
-    public float Z
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _value.GetElement(2);
-        }
-    }
-
-    /// <summary>Gets the value of the w-dimension.</summary>
-    public float W
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _value.GetElement(3);
-        }
     }
 
     /// <summary>Gets the length of the vector.</summary>
@@ -157,6 +108,56 @@ public readonly struct Vector4 : IEquatable<Vector4>, IFormattable
         {
             var result = ReciprocalLengthEstimate(_value);
             return result.ToScalar();
+        }
+    }
+
+    /// <summary>Gets the value of the vector.</summary>
+    public Vector128<float> Value
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return _value;
+        }
+    }
+
+    /// <summary>Gets the value of the x-component.</summary>
+    public float X
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return _value.ToScalar();
+        }
+    }
+
+    /// <summary>Gets the value of the y-component.</summary>
+    public float Y
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return _value.GetY();
+        }
+    }
+
+    /// <summary>Gets the value of the z-component.</summary>
+    public float Z
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return _value.GetZ();
+        }
+    }
+
+    /// <summary>Gets the value of the w-component.</summary>
+    public float W
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return _value.GetW();
         }
     }
 
@@ -400,22 +401,17 @@ public readonly struct Vector4 : IEquatable<Vector4>, IFormattable
     /// <returns><paramref name="value" /> transformed by <paramref name="matrix" />.</returns>
     public static Vector4 Transform(Vector4 value, Matrix4x4 matrix)
     {
-        var result = MultiplyByX(matrix.X._value, value._value);
-        result = MultiplyAddByY(result, matrix.Y._value, value._value);
-        result = MultiplyAddByZ(result, matrix.Z._value, value._value);
-        result = MultiplyAddByW(result, matrix.W._value, value._value);
+        var result = MultiplyByX(matrix.X.Value, value._value);
+        result = MultiplyAddByY(result, matrix.Y.Value, value._value);
+        result = MultiplyAddByZ(result, matrix.Z.Value, value._value);
+        result = MultiplyAddByW(result, matrix.W.Value, value._value);
         return new Vector4(result);
     }
 
     /// <summary>Reinterprets the current instance as a new <see cref="SysVector4" />.</summary>
     /// <returns>The current instance reintepreted as a new <see cref="SysVector4" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public SysVector4 AsVector4() => _value.AsVector4();
-
-    /// <summary>Reinterprets the current instance as a new <see cref="Vector128{Single}" />.</summary>
-    /// <returns>The current instance reintepreted as a new <see cref="Vector128{Single}" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vector128<float> AsVector128() => _value;
+    public SysVector4 AsSystemVector4() => _value.AsVector4();
 
     /// <inheritdoc />
     public override bool Equals(object? obj) => (obj is Vector4 other) && Equals(other);
@@ -437,62 +433,45 @@ public readonly struct Vector4 : IEquatable<Vector4>, IFormattable
 
     /// <inheritdoc />
     public string ToString(string? format, IFormatProvider? formatProvider)
-    {
-        var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
+        => $"{nameof(Vector4)} {{ {nameof(X)} = {X.ToString(format, formatProvider)}, {nameof(Y)} = {Y.ToString(format, formatProvider)}, {nameof(Z)} = {Z.ToString(format, formatProvider)}, {nameof(W)} = {W.ToString(format, formatProvider)} }}";
 
-        return new StringBuilder(9 + (separator.Length * 3))
-            .Append('<')
-            .Append(X.ToString(format, formatProvider))
-            .Append(separator)
-            .Append(' ')
-            .Append(Y.ToString(format, formatProvider))
-            .Append(separator)
-            .Append(' ')
-            .Append(Z.ToString(format, formatProvider))
-            .Append(separator)
-            .Append(' ')
-            .Append(W.ToString(format, formatProvider))
-            .Append('>')
-            .ToString();
-    }
-
-    /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="X" /> set to the specified value.</summary>
-    /// <param name="x">The new value of the x-dimension.</param>
-    /// <returns>A new <see cref="Vector4" /> instance with <see cref="X" /> set to <paramref name="x" />.</returns>
+    /// <summary>Creates a new vector with <see cref="X" /> set to the specified value.</summary>
+    /// <param name="x">The new x-component of the vector.</param>
+    /// <returns>A new vector with <see cref="X" /> set to <paramref name="x" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector4 WithX(float x)
     {
-        var result = _value.WithElement(0, x);
+        var result = _value.WithX(x);
         return new Vector4(result);
     }
 
-    /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="Y" /> set to the specified value.</summary>
-    /// <param name="y">The new value of the y-dimension.</param>
-    /// <returns>A new <see cref="Vector4" /> instance with <see cref="Y" /> set to <paramref name="y" />.</returns>
+    /// <summary>Creates a new vector with <see cref="Y" /> set to the specified value.</summary>
+    /// <param name="y">The new y-component of the vector.</param>
+    /// <returns>A new vector with <see cref="Y" /> set to <paramref name="y" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector4 WithY(float y)
     {
-        var result = _value.WithElement(1, y);
+        var result = _value.WithY(y);
         return new Vector4(result);
     }
 
-    /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="Z" /> set to the specified value.</summary>
-    /// <param name="z">The new value of the z-dimension.</param>
-    /// <returns>A new <see cref="Vector4" /> instance with <see cref="Z" /> set to <paramref name="z" />.</returns>
+    /// <summary>Creates a new vector with <see cref="Z" /> set to the specified value.</summary>
+    /// <param name="z">The new z-component of the vector.</param>
+    /// <returns>A new vector with <see cref="Z" /> set to <paramref name="z" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector4 WithZ(float z)
     {
-        var result = _value.WithElement(2, z);
+        var result = _value.WithZ(z);
         return new Vector4(result);
     }
 
-    /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="W" /> set to the specified value.</summary>
-    /// <param name="w">The new value of the w-dimension.</param>
-    /// <returns>A new <see cref="Vector4" /> instance with <see cref="W" /> set to <paramref name="w" />.</returns>
+    /// <summary>Creates a new vector with <see cref="W" /> set to the specified value.</summary>
+    /// <param name="w">The new z-component of the vector.</param>
+    /// <returns>A new vector with <see cref="W" /> set to <paramref name="w" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector4 WithW(float w)
     {
-        var result = _value.WithElement(3, w);
+        var result = _value.WithW(w);
         return new Vector4(result);
     }
 }

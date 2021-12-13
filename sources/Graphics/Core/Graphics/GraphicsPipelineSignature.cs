@@ -1,17 +1,15 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
 
 /// <summary>A graphics pipeline signature which details the inputs given and resources available to a graphics pipeline.</summary>
 public abstract class GraphicsPipelineSignature : GraphicsDeviceObject
 {
-    // TODO: Make this UnmanagedArray<GraphicsPipelineInput>
-    private readonly GraphicsPipelineInput[] _inputs;
-
-    // TODO: Make this UnmanagedArray<GraphicsPipelineResource>
-    private readonly GraphicsPipelineResource[] _resources;
+    private readonly UnmanagedArray<GraphicsPipelineInput> _inputs;
+    private readonly UnmanagedArray<GraphicsPipelineResource> _resources;
 
     /// <summary>Creates a new instance of the <see cref="GraphicsPipelineSignature" /> class.</summary>
     /// <param name="device">The device for which the pipeline signature is being created.</param>
@@ -21,13 +19,13 @@ public abstract class GraphicsPipelineSignature : GraphicsDeviceObject
     protected GraphicsPipelineSignature(GraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResource> resources)
         : base(device)
     {
-        _inputs = inputs.ToArray();
-        _resources = resources.ToArray();
+        _inputs = inputs.ToUnmanagedArray();
+        _resources = resources.ToUnmanagedArray();
     }
 
-    /// <summary>Gets the inputs given to the graphics pipeline or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</summary>
-    public ReadOnlySpan<GraphicsPipelineInput> Inputs => _inputs;
+    /// <summary>Gets the inputs given to the graphics pipeline or <see cref="UnmanagedReadOnlySpan{T}.Empty" /> if none exist.</summary>
+    public UnmanagedReadOnlySpan<GraphicsPipelineInput> Inputs => _inputs;
 
-    /// <summary>Gets the resources available to the graphics pipeline or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</summary>
-    public ReadOnlySpan<GraphicsPipelineResource> Resources => _resources;
+    /// <summary>Gets the resources available to the graphics pipeline or <see cref="UnmanagedReadOnlySpan{T}.Empty" /> if none exist.</summary>
+    public UnmanagedReadOnlySpan<GraphicsPipelineResource> Resources => _resources;
 }

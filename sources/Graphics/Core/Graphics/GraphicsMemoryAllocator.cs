@@ -111,14 +111,14 @@ public abstract class GraphicsMemoryAllocator : GraphicsDeviceObject, IReadOnlyC
     /// <param name="height">The height, in pixels, of the graphics texture.</param>
     /// <param name="depth">The depth, in pixels, of the graphics texture.</param>
     /// <param name="allocationFlags">Additional flags used when allocating the backing memory for the buffer.</param>
-    /// <param name="texelFormat">Optional parameter to specify the texel format.</param>
+    /// <param name="format">The backing format of the graphics texture..</param>
     /// <returns>A created graphics texture.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="kind" /> is unsupported.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="width" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="height" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="depth" /> is <c>zero</c>.</exception>
     /// <exception cref="ObjectDisposedException">The allocator has been disposed.</exception>
-    public abstract GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, GraphicsMemoryHeapRegionAllocationFlags allocationFlags = GraphicsMemoryHeapRegionAllocationFlags.None, TexelFormat texelFormat = default);
+    public abstract GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, GraphicsMemoryHeapRegionAllocationFlags allocationFlags = GraphicsMemoryHeapRegionAllocationFlags.None, GraphicsFormat format = GraphicsFormat.Unknown);
 
     /// <summary>Gets the budget for a heap collection.</summary>
     /// <param name="heapCollection">The heap collection for which the budget should be retrieved.</param>

@@ -37,8 +37,7 @@ public sealed class HelloQuad : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        var graphicsSwapchain = GraphicsSwapchain;
-        var currentGraphicsContext = graphicsDevice.Contexts[(int)graphicsSwapchain.FramebufferIndex];
+        var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
         using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
         _vertexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
@@ -46,17 +45,18 @@ public sealed class HelloQuad : HelloWindow
         using var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
         _indexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
 
-        currentGraphicsContext.BeginFrame(graphicsSwapchain);
-        _quadPrimitive = CreateQuadPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer);
-        currentGraphicsContext.EndFrame();
+        graphicsRenderContext.Reset();
+        _quadPrimitive = CreateQuadPrimitive(graphicsRenderContext, vertexStagingBuffer, indexStagingBuffer);
+        graphicsRenderContext.Flush();
 
         graphicsDevice.WaitForIdle();
+        graphicsDevice.ReturnRenderContext(graphicsRenderContext);
     }
 
-    protected override void Draw(GraphicsContext graphicsContext)
+    protected override void Draw(GraphicsRenderContext graphicsRenderContext)
     {
-        graphicsContext.Draw(_quadPrimitive);
-        base.Draw(graphicsContext);
+        graphicsRenderContext.Draw(_quadPrimitive);
+        base.Draw(graphicsRenderContext);
     }
 
     private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer)
@@ -113,22 +113,22 @@ public sealed class HelloQuad : HelloWindow
 
             pVertexBuffer[0] = new IdentityVertex {                         //
                 Color = Colors.Red,                                         //   y          in this setup
-                Position = new Vector3(-0.25f, 0.25f * aspectRatio, 0.0f),  //   ^     z    the origin o
+                Position = Vector3.Create(-0.25f, 0.25f * aspectRatio, 0.0f),  //   ^     z    the origin o
             };                                                              //   |   /      is in the middle
                                                                             //   | /        of the rendered scene
             pVertexBuffer[1] = new IdentityVertex {                         //   o------>x
                 Color = Colors.Lime,                                        //
-                Position = new Vector3(0.25f, 0.25f * aspectRatio, 0.0f),   //   0 ----- 1
+                Position = Vector3.Create(0.25f, 0.25f * aspectRatio, 0.0f),   //   0 ----- 1
             };                                                              //   | \     |
                                                                             //   |   \   |
             pVertexBuffer[2] = new IdentityVertex {                         //   |     \ |
                 Color = Colors.Blue,                                        //   3-------2
-                Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),  //
+                Position = Vector3.Create(0.25f, -0.25f * aspectRatio, 0.0f),  //
             };
 
             pVertexBuffer[3] = new IdentityVertex {
                 Color = Colors.Lime,
-                Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
+                Position = Vector3.Create(-0.25f, -0.25f * aspectRatio, 0.0f),
             };
 
             vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);
@@ -149,8 +149,8 @@ public sealed class HelloQuad : HelloWindow
             var inputs = new GraphicsPipelineInput[1] {
                 new GraphicsPipelineInput(
                     new GraphicsPipelineInputElement[2] {
-                        new GraphicsPipelineInputElement(typeof(ColorRgba), GraphicsPipelineInputElementKind.Color, size: 16),
-                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
+                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Color, GraphicsFormat.R32G32B32A32_SFLOAT, size: 16, alignment: 16),
+                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Position, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
                     }
                 ),
             };

@@ -67,13 +67,13 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
                 var inputs = signature.Inputs;
 
                 var inputElementsCount = GetInputElementCount(inputs);
-                var inputElementsIndex = (nuint)0;
+                nuint inputElementsIndex = 0;
 
                 if (inputElementsCount != 0)
                 {
                     d3d12InputElementDescs = new UnmanagedArray<D3D12_INPUT_ELEMENT_DESC>(inputElementsCount);
 
-                    for (var inputIndex = 0; inputIndex < inputs.Length; inputIndex++)
+                    for (nuint inputIndex = 0; inputIndex < inputs.Length; inputIndex++)
                     {
                         var input = inputs[inputIndex];
                         var inputElements = input.Elements;
@@ -81,18 +81,18 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
                         var inputLayoutStride = 0u;
                         var maxAlignment = 0u;
 
-                        for (var inputElementIndex = 0; inputElementIndex < inputElements.Length; inputElementIndex++)
+                        for (nuint inputElementIndex = 0; inputElementIndex < inputElements.Length; inputElementIndex++)
                         {
                             var inputElement = inputElements[inputElementIndex];
 
-                            var inputElementAlignment = GetInputElementAlignment(inputElement.Type);
+                            var inputElementAlignment = inputElement.Alignment;
                             inputLayoutStride = AlignUp(inputLayoutStride, inputElementAlignment);
 
                             maxAlignment = Max(maxAlignment, inputElementAlignment);
 
                             d3d12InputElementDescs[inputElementsIndex] = new D3D12_INPUT_ELEMENT_DESC {
                                 SemanticName = GetInputElementSemanticName(inputElement.Kind).GetPointer(),
-                                Format = GetInputElementFormat(inputElement.Type),
+                                Format = inputElement.Format.AsDxgiFormat(),
                                 InputSlot = unchecked((uint)inputIndex),
                                 AlignedByteOffset = inputLayoutStride,
                             };
@@ -122,56 +122,16 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
             return d3d12GraphicsPipelineState;
         }
 
-        static uint GetInputElementAlignment(Type type)
+        static nuint GetInputElementCount(UnmanagedReadOnlySpan<GraphicsPipelineInput> inputs)
         {
-            var inputElementAlignment = 1u;
+            nuint inputElementCount = 0;
 
-            if (type == typeof(Vector2))
+            for (nuint i = 0; i < inputs.Length; i++)
             {
-                inputElementAlignment = 4;
-            }
-            else if (type == typeof(Vector3))
-            {
-                inputElementAlignment = 4;
-            }
-            else if ((type == typeof(Vector4)) || (type == typeof(ColorRgba)))
-            {
-                inputElementAlignment = 16;
-            }
-
-            return inputElementAlignment;
-        }
-
-        static nuint GetInputElementCount(ReadOnlySpan<GraphicsPipelineInput> inputs)
-        {
-            var inputElementCount = (nuint)0;
-
-            foreach (var input in inputs)
-            {
-                inputElementCount += (uint)input.Elements.Length;
+                inputElementCount += inputs[i].Elements.Length;
             }
 
             return inputElementCount;
-        }
-
-        static DXGI_FORMAT GetInputElementFormat(Type type)
-        {
-            var inputElementFormat = DXGI_FORMAT_UNKNOWN;
-
-            if (type == typeof(Vector2))
-            {
-                inputElementFormat = DXGI_FORMAT_R32G32_FLOAT;
-            }
-            else if (type == typeof(Vector3))
-            {
-                inputElementFormat = DXGI_FORMAT_R32G32B32_FLOAT;
-            }
-            else if ((type == typeof(Vector4)) || (type == typeof(ColorRgba)))
-            {
-                inputElementFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
-            }
-
-            return inputElementFormat;
         }
 
         static ReadOnlySpan<sbyte> GetInputElementSemanticName(GraphicsPipelineInputElementKind inputElementKind)

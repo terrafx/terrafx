@@ -46,8 +46,7 @@ public class HelloSierpinski : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        var graphicsSwapchain = GraphicsSwapchain;
-        var currentGraphicsContext = graphicsDevice.Contexts[(int)graphicsSwapchain.FramebufferIndex];
+        var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
         var vertices = 2 * 12 * (ulong)MathF.Pow(4, _recursionDepth);
         var vertexBufferSize = vertices * SizeOf<PosNormTex3DVertex>();
@@ -61,11 +60,12 @@ public class HelloSierpinski : HelloWindow
         _indexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.GpuOnly, indexBufferSize);
         _vertexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.GpuOnly, vertexBufferSize);
 
-        currentGraphicsContext.BeginFrame(graphicsSwapchain);
-        _pyramid = CreateGraphicsPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
-        currentGraphicsContext.EndFrame();
+        graphicsRenderContext.Reset();
+        _pyramid = CreateGraphicsPrimitive(graphicsRenderContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
+        graphicsRenderContext.Flush();
 
         graphicsDevice.WaitForIdle();
+        graphicsDevice.ReturnRenderContext(graphicsRenderContext);
     }
 
     protected override unsafe void Update(TimeSpan delta)
@@ -86,20 +86,20 @@ public class HelloSierpinski : HelloWindow
         var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
 
         // Shaders take transposed matrices, so we want to mirror along the diagonal
-        pConstantBuffer[0] = new Matrix4x4(
-            new Vector4(+cos, 0.0f, -sin, 0.0f),
+        pConstantBuffer[0] = Matrix4x4.Create(
+            Vector4.Create(+cos, 0.0f, -sin, 0.0f),
             Vector4.UnitY,
-            new Vector4(+sin, 0.0f, +cos, 0.0f),
+            Vector4.Create(+sin, 0.0f, +cos, 0.0f),
             Vector4.UnitW
         );
 
         constantBufferView.UnmapAndWrite();
     }
 
-    protected override void Draw(GraphicsContext graphicsContext)
+    protected override void Draw(GraphicsRenderContext graphicsRenderContext)
     {
-        graphicsContext.Draw(_pyramid);
-        base.Draw(graphicsContext);
+        graphicsRenderContext.Draw(_pyramid);
+        base.Draw(graphicsRenderContext);
     }
 
     private unsafe GraphicsPrimitive CreateGraphicsPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
@@ -208,8 +208,8 @@ public class HelloSierpinski : HelloWindow
 
             // assumes the vertices are in a box from (-1,-1,-1) to (1,1,1)
 
-            var offset3D = new Vector3(1, 1, 1); // to move lower left corner to (0,0,0)
-            var scale3D = new Vector3(0.5f, 0.5f, 0.5f); // to scale to side length 1
+            var offset3D = Vector3.Create(1, 1, 1); // to move lower left corner to (0,0,0)
+            var scale3D = Vector3.Create(0.5f, 0.5f, 0.5f); // to scale to side length 1
 
             for (var i = 0; i < vertices.Count; i++)
             {
@@ -242,9 +242,9 @@ public class HelloSierpinski : HelloWindow
             var inputs = new GraphicsPipelineInput[1] {
                 new GraphicsPipelineInput(
                     new GraphicsPipelineInputElement[3] {
-                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
-                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Normal, size: 12),
-                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.TextureCoordinate, size: 12),
+                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Position, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
+                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Normal, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
+                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.TextureCoordinate, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
                     }
                 ),
             };

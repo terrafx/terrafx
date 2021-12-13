@@ -38,7 +38,7 @@
     <PackageReference Update="NUnit" Version="3.13.2" />
     <PackageReference Update="NUnit3TestAdapter" Version="4.0.0" />
     <PackageReference Update="System.IO.Pipelines" Version="5.0.1" />
-    <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-beta3.1460839204" />
+    <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-beta3.1568090783" />
     <PackageReference Update="TerraFX.Interop.Mimalloc" Version="1.6.0-beta3.1460839352" />
     <PackageReference Update="TerraFX.Interop.PulseAudio" Version="13.99.0-beta3.1460840491" />
     <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.189-rc2.1460983340" />

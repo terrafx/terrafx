@@ -120,6 +120,21 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
         }
     }
 
+    /// <summary>Converts the array to a span.</summary>
+    /// <returns>A span that covers the array.</returns>
+    public Span<T> AsSpan() => AsUnmanagedSpan().AsSpan();
+
+    /// <summary>Converts the array to a span starting at the specified index.</summary>
+    /// <param name="start">The index of the array at which the span should start.</param>
+    /// <returns>A span that covers the array beginning at <paramref name="start" />.</returns>
+    public Span<T> AsSpan(nuint start) => AsUnmanagedSpan().AsSpan(start);
+
+    /// <summary>Converts the array to a span starting at the specified index and continuing for the specified number of items.</summary>
+    /// <param name="start">The index of the array at which the span should start.</param>
+    /// <param name="length">The length, in items, of the span.</param>
+    /// <returns>A span that covers the array beginning at <paramref name="start" /> and continuing for <paramref name="length" /> items.</returns>
+    public Span<T> AsSpan(nuint start, nuint length) => AsUnmanagedSpan().AsSpan(start, length);
+
     /// <summary>Converts the array to an unmanaged span.</summary>
     /// <returns>An unmanaged span that covers the array.</returns>
     public UnmanagedSpan<T> AsUnmanagedSpan() => new UnmanagedSpan<T>(this);

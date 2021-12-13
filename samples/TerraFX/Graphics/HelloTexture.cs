@@ -35,25 +35,25 @@ public sealed class HelloTexture : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        var graphicsSwapchain = GraphicsSwapchain;
-        var currentGraphicsContext = graphicsDevice.Contexts[(int)graphicsSwapchain.FramebufferIndex];
+        var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
         using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
         using var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024 * 4);
 
         _vertexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
 
-        currentGraphicsContext.BeginFrame(graphicsSwapchain);
-        _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer, textureStagingBuffer);
-        currentGraphicsContext.EndFrame();
+        graphicsRenderContext.Reset();
+        _trianglePrimitive = CreateTrianglePrimitive(graphicsRenderContext, vertexStagingBuffer, textureStagingBuffer);
+        graphicsRenderContext.Flush();
 
         graphicsDevice.WaitForIdle();
+        graphicsDevice.ReturnRenderContext(graphicsRenderContext);
     }
 
-    protected override void Draw(GraphicsContext graphicsContext)
+    protected override void Draw(GraphicsRenderContext graphicsRenderContext)
     {
-        graphicsContext.Draw(_trianglePrimitive);
-        base.Draw(graphicsContext);
+        graphicsRenderContext.Draw(_trianglePrimitive);
+        base.Draw(graphicsRenderContext);
     }
 
     private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer textureStagingBuffer)
@@ -116,18 +116,18 @@ public sealed class HelloTexture : HelloWindow
             var pVertexBuffer = vertexStagingBuffer.Map<TextureVertex>(vertexBufferView.Offset, vertexBufferView.Size);
 
             pVertexBuffer[0] = new TextureVertex {
-                Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
-                UV = new Vector2(0.5f, 0.0f)
+                Position = Vector3.Create(0.0f, 0.25f * aspectRatio, 0.0f),
+                UV = Vector2.Create(0.5f, 0.0f)
             };
 
             pVertexBuffer[1] = new TextureVertex {
-                Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
-                UV = new Vector2(1.0f, 1.0f)
+                Position = Vector3.Create(0.25f, -0.25f * aspectRatio, 0.0f),
+                UV = Vector2.Create(1.0f, 1.0f)
             };
 
             pVertexBuffer[2] = new TextureVertex {
-                Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
-                UV = new Vector2(0.0f, 1.0f)
+                Position = Vector3.Create(-0.25f, -0.25f * aspectRatio, 0.0f),
+                UV = Vector2.Create(0.0f, 1.0f)
             };
 
             vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);
@@ -148,8 +148,8 @@ public sealed class HelloTexture : HelloWindow
             var inputs = new GraphicsPipelineInput[1] {
                 new GraphicsPipelineInput(
                     new GraphicsPipelineInputElement[2] {
-                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
-                        new GraphicsPipelineInputElement(typeof(Vector2), GraphicsPipelineInputElementKind.TextureCoordinate, size: 8),
+                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Position, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
+                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.TextureCoordinate, GraphicsFormat.R32G32_SFLOAT, size: 8, alignment: 4),
                     }
                 ),
             };

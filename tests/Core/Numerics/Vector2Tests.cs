@@ -14,7 +14,7 @@ public class Vector2Tests
     public static void ZeroTest()
     {
         Assert.That(() => Vector2.Zero,
-            Is.EqualTo(new Vector2(0.0f, 0.0f))
+            Is.EqualTo(Vector2.Create(0.0f, 0.0f))
         );
     }
 
@@ -23,7 +23,7 @@ public class Vector2Tests
     public static void UnitXTest()
     {
         Assert.That(() => Vector2.UnitX,
-            Is.EqualTo(new Vector2(1.0f, 0.0f))
+            Is.EqualTo(Vector2.Create(1.0f, 0.0f))
         );
     }
 
@@ -32,7 +32,7 @@ public class Vector2Tests
     public static void UnitYTest()
     {
         Assert.That(() => Vector2.UnitY,
-            Is.EqualTo(new Vector2(0.0f, 1.0f))
+            Is.EqualTo(Vector2.Create(0.0f, 1.0f))
         );
     }
 
@@ -41,35 +41,35 @@ public class Vector2Tests
     public static void OneTest()
     {
         Assert.That(() => Vector2.One,
-            Is.EqualTo(new Vector2(1.0f, 1.0f))
+            Is.EqualTo(Vector2.Create(1.0f, 1.0f))
         );
     }
 
-    /// <summary>Provides validation of the <see cref="Vector2()" /> constructors.</summary>
+    /// <summary>Provides validation of the <see cref="M:Vector2.Create" /> methods.</summary>
     [Test]
-    public static void CtorTest()
+    public static void CreateTest()
     {
-        var value = new Vector2();
+        var value = Vector2.Zero;
 
         Assert.That(() => value.X, Is.EqualTo(0.0f));
         Assert.That(() => value.Y, Is.EqualTo(0.0f));
 
-        value = new Vector2(0.0f, 1.0f);
+        value = Vector2.Create(0.0f, 1.0f);
 
         Assert.That(() => value.X, Is.EqualTo(0.0f));
         Assert.That(() => value.Y, Is.EqualTo(1.0f));
 
-        value = new Vector2(2.0f);
+        value = Vector2.Create(2.0f);
 
         Assert.That(() => value.X, Is.EqualTo(2.0f));
         Assert.That(() => value.Y, Is.EqualTo(2.0f));
 
-        value = new Vector2(new SysVector2(3.0f, 4.0f));
+        value = Vector2.Create(new SysVector2(3.0f, 4.0f));
 
         Assert.That(() => value.X, Is.EqualTo(3.0f));
         Assert.That(() => value.Y, Is.EqualTo(4.0f));
 
-        value = new Vector2(Vector128.Create(5.0f, 6.0f, 7.0f, 8.0f));
+        value = Vector2.Create(Vector128.Create(5.0f, 6.0f, 7.0f, 8.0f));
 
         Assert.That(() => value.X, Is.EqualTo(5.0f));
         Assert.That(() => value.Y, Is.EqualTo(6.0f));
@@ -79,7 +79,7 @@ public class Vector2Tests
     [Test]
     public static void LengthTest()
     {
-        Assert.That(() => new Vector2(0.0f, 1.0f).Length,
+        Assert.That(() => Vector2.Create(0.0f, 1.0f).Length,
             Is.EqualTo(1.0f)
         );
     }
@@ -88,7 +88,7 @@ public class Vector2Tests
     [Test]
     public static void LengthSquaredTest()
     {
-        Assert.That(() => new Vector2(0.0f, 1.0f).LengthSquared,
+        Assert.That(() => Vector2.Create(0.0f, 1.0f).LengthSquared,
             Is.EqualTo(1.0f)
         );
     }
@@ -97,11 +97,11 @@ public class Vector2Tests
     [Test]
     public static void OpEqualityTest()
     {
-        Assert.That(() => new Vector2(0.0f, 1.0f) == new Vector2(0.0f, 1.0f),
+        Assert.That(() => Vector2.Create(0.0f, 1.0f) == Vector2.Create(0.0f, 1.0f),
             Is.True
         );
 
-        Assert.That(() => new Vector2(0.0f, 1.0f) == new Vector2(2.0f, 3.0f),
+        Assert.That(() => Vector2.Create(0.0f, 1.0f) == Vector2.Create(2.0f, 3.0f),
             Is.False
         );
     }
@@ -110,11 +110,11 @@ public class Vector2Tests
     [Test]
     public static void OpInequalityTest()
     {
-        Assert.That(() => new Vector2(0.0f, 1.0f) != new Vector2(0.0f, 1.0f),
+        Assert.That(() => Vector2.Create(0.0f, 1.0f) != Vector2.Create(0.0f, 1.0f),
             Is.False
         );
 
-        Assert.That(() => new Vector2(0.0f, 1.0f) != new Vector2(2.0f, 3.0f),
+        Assert.That(() => Vector2.Create(0.0f, 1.0f) != Vector2.Create(2.0f, 3.0f),
             Is.True
         );
     }
@@ -123,8 +123,8 @@ public class Vector2Tests
     [Test]
     public static void OpUnaryPlusTest()
     {
-        Assert.That(() => +new Vector2(0.0f, 1.0f),
-            Is.EqualTo(new Vector2(0.0f, 1.0f))
+        Assert.That(() => +Vector2.Create(0.0f, 1.0f),
+            Is.EqualTo(Vector2.Create(0.0f, 1.0f))
         );
     }
 
@@ -132,8 +132,8 @@ public class Vector2Tests
     [Test]
     public static void OpUnaryNegationTest()
     {
-        Assert.That(() => -new Vector2(1.0f, 2.0f),
-            Is.EqualTo(new Vector2(-1.0f, -2.0f))
+        Assert.That(() => -Vector2.Create(1.0f, 2.0f),
+            Is.EqualTo(Vector2.Create(-1.0f, -2.0f))
         );
     }
 
@@ -141,8 +141,8 @@ public class Vector2Tests
     [Test]
     public static void OpAdditionTest()
     {
-        Assert.That(() => new Vector2(0.0f, 1.0f) + new Vector2(2.0f, 3.0f),
-            Is.EqualTo(new Vector2(2.0f, 4.0f))
+        Assert.That(() => Vector2.Create(0.0f, 1.0f) + Vector2.Create(2.0f, 3.0f),
+            Is.EqualTo(Vector2.Create(2.0f, 4.0f))
         );
     }
 
@@ -150,8 +150,8 @@ public class Vector2Tests
     [Test]
     public static void OpSubtractionTest()
     {
-        Assert.That(() => new Vector2(0.0f, 1.0f) - new Vector2(2.0f, 3.0f),
-            Is.EqualTo(new Vector2(-2.0f, -2.0f))
+        Assert.That(() => Vector2.Create(0.0f, 1.0f) - Vector2.Create(2.0f, 3.0f),
+            Is.EqualTo(Vector2.Create(-2.0f, -2.0f))
         );
     }
 
@@ -159,12 +159,12 @@ public class Vector2Tests
     [Test]
     public static void OpMultiplyTest()
     {
-        Assert.That(() => new Vector2(0.0f, 1.0f) * new Vector2(2.0f, 3.0f),
-            Is.EqualTo(new Vector2(0.0f, 3.0f))
+        Assert.That(() => Vector2.Create(0.0f, 1.0f) * Vector2.Create(2.0f, 3.0f),
+            Is.EqualTo(Vector2.Create(0.0f, 3.0f))
         );
 
-        Assert.That(() => new Vector2(0.0f, 1.0f) * 2.0f,
-            Is.EqualTo(new Vector2(0.0f, 2.0f))
+        Assert.That(() => Vector2.Create(0.0f, 1.0f) * 2.0f,
+            Is.EqualTo(Vector2.Create(0.0f, 2.0f))
         );
     }
 
@@ -172,12 +172,12 @@ public class Vector2Tests
     [Test]
     public static void OpDivisionTest()
     {
-        Assert.That(() => new Vector2(0.0f, 1.0f) / new Vector2(2.0f, 3.0f),
-            Is.EqualTo(new Vector2(0.0f, 0.33333334f))
+        Assert.That(() => Vector2.Create(0.0f, 1.0f) / Vector2.Create(2.0f, 3.0f),
+            Is.EqualTo(Vector2.Create(0.0f, 0.33333334f))
         );
 
-        Assert.That(() => new Vector2(0.0f, 1.0f) / 2.0f,
-            Is.EqualTo(new Vector2(0.0f, 0.5f))
+        Assert.That(() => Vector2.Create(0.0f, 1.0f) / 2.0f,
+            Is.EqualTo(Vector2.Create(0.0f, 0.5f))
         );
     }
 
@@ -185,11 +185,11 @@ public class Vector2Tests
     [Test]
     public static void CompareEqualAllTest()
     {
-        Assert.That(() => Vector2.CompareEqualAll(new Vector2(0.0f, 1.0f), new Vector2(0.0f, 1.0f)),
+        Assert.That(() => Vector2.CompareEqualAll(Vector2.Create(0.0f, 1.0f), Vector2.Create(0.0f, 1.0f)),
             Is.True
         );
 
-        Assert.That(() => Vector2.CompareEqualAll(new Vector2(0.0f, 1.0f), new Vector2(2.0f, 3.0f)),
+        Assert.That(() => Vector2.CompareEqualAll(Vector2.Create(0.0f, 1.0f), Vector2.Create(2.0f, 3.0f)),
             Is.False
         );
     }
@@ -198,7 +198,7 @@ public class Vector2Tests
     [Test]
     public static void DotProductTest()
     {
-        Assert.That(() => Vector2.DotProduct(new Vector2(0.0f, 1.0f), new Vector2(2.0f, 3.0f)),
+        Assert.That(() => Vector2.DotProduct(Vector2.Create(0.0f, 1.0f), Vector2.Create(2.0f, 3.0f)),
             Is.EqualTo(3.0f)
         );
     }
@@ -207,15 +207,15 @@ public class Vector2Tests
     [Test]
     public static void IsAnyInfinityTest()
     {
-        Assert.That(() => Vector2.IsAnyInfinity(new Vector2(0.0f, float.PositiveInfinity)),
+        Assert.That(() => Vector2.IsAnyInfinity(Vector2.Create(0.0f, float.PositiveInfinity)),
             Is.True
         );
 
-        Assert.That(() => Vector2.IsAnyInfinity(new Vector2(0.0f, float.NegativeInfinity)),
+        Assert.That(() => Vector2.IsAnyInfinity(Vector2.Create(0.0f, float.NegativeInfinity)),
             Is.True
         );
 
-        Assert.That(() => Vector2.IsAnyInfinity(new Vector2(0.0f, 1.0f)),
+        Assert.That(() => Vector2.IsAnyInfinity(Vector2.Create(0.0f, 1.0f)),
             Is.False
         );
     }
@@ -224,11 +224,11 @@ public class Vector2Tests
     [Test]
     public static void IsAnyNaNTest()
     {
-        Assert.That(() => Vector2.IsAnyNaN(new Vector2(0.0f, float.NaN)),
+        Assert.That(() => Vector2.IsAnyNaN(Vector2.Create(0.0f, float.NaN)),
             Is.True
         );
 
-        Assert.That(() => Vector2.IsAnyNaN(new Vector2(0.0f, 1.0f)),
+        Assert.That(() => Vector2.IsAnyNaN(Vector2.Create(0.0f, 1.0f)),
             Is.False
         );
     }
@@ -237,8 +237,8 @@ public class Vector2Tests
     [Test]
     public static void MaxTest()
     {
-        Assert.That(() => Vector2.Max(new Vector2(0.0f, 1.0f), new Vector2(1.0f, 0.0f)),
-            Is.EqualTo(new Vector2(1.0f, 1.0f))
+        Assert.That(() => Vector2.Max(Vector2.Create(0.0f, 1.0f), Vector2.Create(1.0f, 0.0f)),
+            Is.EqualTo(Vector2.Create(1.0f, 1.0f))
         );
     }
 
@@ -246,8 +246,8 @@ public class Vector2Tests
     [Test]
     public static void MinTest()
     {
-        Assert.That(() => Vector2.Min(new Vector2(-0.0f, -1.0f), new Vector2(-1.0f, -0.0f)),
-            Is.EqualTo(new Vector2(-1.0f, -1.0f))
+        Assert.That(() => Vector2.Min(Vector2.Create(-0.0f, -1.0f), Vector2.Create(-1.0f, -0.0f)),
+            Is.EqualTo(Vector2.Create(-1.0f, -1.0f))
         );
     }
 
@@ -255,8 +255,8 @@ public class Vector2Tests
     [Test]
     public static void NormalizeTest()
     {
-        Assert.That(() => Vector2.Normalize(new Vector2(0.0f, 1.0f)),
-            Is.EqualTo(new Vector2(0.0f, 1.0f))
+        Assert.That(() => Vector2.Normalize(Vector2.Create(0.0f, 1.0f)),
+            Is.EqualTo(Vector2.Create(0.0f, 1.0f))
         );
     }
 
@@ -264,16 +264,16 @@ public class Vector2Tests
     [Test]
     public static void SqrtTest()
     {
-        Assert.That(() => Vector2.Sqrt(new Vector2(0.0f, 1.0f)),
-            Is.EqualTo(new Vector2(0.0f, 1.0f))
+        Assert.That(() => Vector2.Sqrt(Vector2.Create(0.0f, 1.0f)),
+            Is.EqualTo(Vector2.Create(0.0f, 1.0f))
         );
     }
 
-    /// <summary>Provides validation of the <see cref="Vector2.AsVector2" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="Vector2.AsSystemVector2" /> method.</summary>
     [Test]
-    public static void AsVector2Test()
+    public static void AsSystemVector2Test()
     {
-        Assert.That(() => new Vector2(0.0f, 1.0f).AsVector2(),
+        Assert.That(() => Vector2.Create(0.0f, 1.0f).AsSystemVector2(),
             Is.EqualTo(new SysVector2(0.0f, 1.0f))
         );
     }
@@ -282,7 +282,7 @@ public class Vector2Tests
     [Test]
     public static void AsVector128Test()
     {
-        Assert.That(() => new Vector2(0.0f, 1.0f).AsVector128(),
+        Assert.That(() => Vector2.Create(0.0f, 1.0f).AsVector128(),
             Is.EqualTo(Vector128.Create(0.0f, 1.0f, 0.0f, 0.0f))
         );
     }
@@ -291,8 +291,8 @@ public class Vector2Tests
     [Test]
     public static void WithXTest()
     {
-        Assert.That(() => new Vector2(0.0f, 1.0f).WithX(5.0f),
-            Is.EqualTo(new Vector2(5.0f, 1.0f))
+        Assert.That(() => Vector2.Create(0.0f, 1.0f).WithX(5.0f),
+            Is.EqualTo(Vector2.Create(5.0f, 1.0f))
         );
     }
 
@@ -300,8 +300,8 @@ public class Vector2Tests
     [Test]
     public static void WithYTest()
     {
-        Assert.That(() => new Vector2(0.0f, 1.0f).WithY(5.0f),
-            Is.EqualTo(new Vector2(0.0f, 5.0f))
+        Assert.That(() => Vector2.Create(0.0f, 1.0f).WithY(5.0f),
+            Is.EqualTo(Vector2.Create(0.0f, 5.0f))
         );
     }
 }

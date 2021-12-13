@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using TerraFX.Interop.Vulkan;
+using TerraFX.Numerics;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkAccessFlags;
 using static TerraFX.Interop.Vulkan.VkCommandPoolCreateFlags;
@@ -19,21 +20,18 @@ using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public sealed unsafe class VulkanGraphicsContext : GraphicsContext
+public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
 {
-    private const uint FrameInitializing = 2;
+    private const uint DrawingInitializing = 2;
 
-    private const uint FrameInitialized = 3;
-
-    private const uint DrawingInitializing = 4;
-
-    private const uint DrawingInitialized = 5;
+    private const uint DrawingInitialized = 3;
 
     private readonly VulkanGraphicsFence _fence;
     private readonly VkCommandBuffer _vkCommandBuffer;
@@ -44,7 +42,7 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
 
     private VolatileState _state;
 
-    internal VulkanGraphicsContext(VulkanGraphicsDevice device)
+    internal VulkanGraphicsRenderContext(VulkanGraphicsDevice device)
         : base(device)
     {
         var vkCommandPool = CreateVkCommandPool(device);
@@ -84,8 +82,8 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
         }
     }
 
-    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsContext" /> class.</summary>
-    ~VulkanGraphicsContext() => Dispose(isDisposing: false);
+    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsRenderContext" /> class.</summary>
+    ~VulkanGraphicsRenderContext() => Dispose(isDisposing: false);
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
@@ -119,7 +117,7 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
     /// <inheritdoc />
     public override void BeginDrawing(uint framebufferIndex, ColorRgba backgroundColor)
     {
-        _state.Transition(from: FrameInitialized, to: DrawingInitializing);
+        _state.Transition(from: Initialized, to: DrawingInitializing);
         Debug.Assert(Swapchain is not null);
 
         var vkClearValue = new VkClearValue();
@@ -152,48 +150,8 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
         var vkCommandBuffer = VkCommandBuffer;
         vkCmdBeginRenderPass(vkCommandBuffer, &vkRenderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        var vkViewport = new VkViewport {
-            x = 0,
-            y = surface.Height,
-            width = surface.Width,
-            height = -surface.Height,
-            minDepth = 0.0f,
-            maxDepth = 1.0f,
-        };
-        vkCmdSetViewport(vkCommandBuffer, firstViewport: 0, viewportCount: 1, &vkViewport);
-
-        var vkScissorRect = new VkRect2D {
-            extent = new VkExtent2D {
-                width = (uint)surface.Width,
-                height = (uint)surface.Height,
-            },
-        };
-        vkCmdSetScissor(vkCommandBuffer, firstScissor: 0, scissorCount: 1, &vkScissorRect);
-
         _framebufferIndex = framebufferIndex;
         _state.Transition(from: DrawingInitializing, to: DrawingInitialized);
-    }
-
-    /// <inheritdoc />
-    public override void BeginFrame(GraphicsSwapchain swapchain)
-        => BeginFrame((VulkanGraphicsSwapchain)swapchain);
-
-    /// <inheritdoc cref="BeginFrame(GraphicsSwapchain)" />
-    public void BeginFrame(VulkanGraphicsSwapchain swapchain)
-    {
-        ThrowIfNull(swapchain);
-
-        _state.Transition(from: Initialized, to: FrameInitializing);
-        _swapchain = swapchain;
-
-        Fence.Reset();
-
-        var vkCommandBufferBeginInfo = new VkCommandBufferBeginInfo {
-            sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-        };
-        ThrowExternalExceptionIfNotSuccess(vkBeginCommandBuffer(VkCommandBuffer, &vkCommandBufferBeginInfo));
-
-        _state.Transition(from: FrameInitializing, to: FrameInitialized);
     }
 
     /// <inheritdoc />
@@ -210,11 +168,6 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
         ThrowIfNull(destination);
         ThrowIfNull(source);
 
-        if (_state < FrameInitialized)
-        {
-            ThrowInvalidOperationException("GraphicsContext.BeginFrame has not been called");
-        }
-
         var vkBufferCopy = new VkBufferCopy {
             srcOffset = 0,
             dstOffset = 0,
@@ -228,11 +181,6 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
     {
         ThrowIfNull(destination);
         ThrowIfNull(source);
-
-        if (_state < FrameInitialized)
-        {
-            ThrowInvalidOperationException("GraphicsContext.BeginFrame has not been called");
-        }
 
         var vkCommandBuffer = VkCommandBuffer;
         var vkImage = destination.VkImage;
@@ -403,14 +351,12 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
     {
         _state.Transition(from: DrawingInitialized, to: DrawingInitializing);
         vkCmdEndRenderPass(VkCommandBuffer);
-        _state.Transition(from: DrawingInitializing, to: FrameInitialized);
+        _state.Transition(from: DrawingInitializing, to: Initialized);
     }
 
     /// <inheritdoc />
-    public override void EndFrame()
+    public override void Flush()
     {
-        _state.Transition(from: FrameInitialized, to: FrameInitializing);
-
         var vkCommandBuffer = VkCommandBuffer;
         ThrowExternalExceptionIfNotSuccess(vkEndCommandBuffer(vkCommandBuffer));
 
@@ -423,9 +369,123 @@ public sealed unsafe class VulkanGraphicsContext : GraphicsContext
         var fence = Fence;
         ThrowExternalExceptionIfNotSuccess(vkQueueSubmit(Device.VkCommandQueue, submitCount: 1, &vkSubmitInfo, fence.VkFence));
         fence.Wait();
+    }
 
+    /// <inheritdoc />
+    public override void Reset()
+    {
         _swapchain = null;
-        _state.Transition(from: FrameInitializing, to: Initialized);
+        Fence.Reset();
+
+        var vkCommandBufferBeginInfo = new VkCommandBufferBeginInfo {
+            sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+        };
+        ThrowExternalExceptionIfNotSuccess(vkBeginCommandBuffer(VkCommandBuffer, &vkCommandBufferBeginInfo));
+    }
+
+    /// <inheritdoc />
+    public override void SetScissor(BoundingRectangle scissor)
+    {
+        var location = scissor.Location;
+        var size = scissor.Size;
+
+        var vkRect2D = new VkRect2D {
+            offset = new VkOffset2D {
+                x = (int)location.X,
+                y = (int)location.Y,
+            },
+            extent = new VkExtent2D {
+                width = (uint)size.X,
+                height = (uint)size.Y
+            },
+        };
+        vkCmdSetScissor(VkCommandBuffer, firstScissor: 0, scissorCount: 1, &vkRect2D);
+    }
+
+    /// <inheritdoc />
+    public override void SetScissors(ReadOnlySpan<BoundingRectangle> scissors)
+    {
+        var count = (uint)scissors.Length;
+        var vkRect2Ds = AllocateArray<VkRect2D>(count);
+
+        for (var i = 0u; i < count; i++)
+        {
+            ref readonly var scissor = ref scissors[(int)i];
+
+            var location = scissor.Location;
+            var size = scissor.Size;
+
+            vkRect2Ds[i] = new VkRect2D {
+                offset = new VkOffset2D {
+                    x = (int)location.X,
+                    y = (int)location.Y,
+                },
+                extent = new VkExtent2D {
+                    width = (uint)size.X,
+                    height = (uint)size.Y
+                },
+            };
+        }
+        vkCmdSetScissor(VkCommandBuffer, firstScissor: 0, count, vkRect2Ds);
+    }
+
+    /// <inheritdoc />
+    public override void SetSwapchain(GraphicsSwapchain swapchain)
+        => SetSwapchain((VulkanGraphicsSwapchain)swapchain);
+
+    /// <inheritdoc cref="SetSwapchain(GraphicsSwapchain)" />
+    public void SetSwapchain(VulkanGraphicsSwapchain swapchain)
+    {
+        ThrowIfNull(swapchain);
+
+        if (swapchain.Device != Device)
+        {
+            ThrowForInvalidParent(swapchain.Device);
+        }
+
+        _swapchain = swapchain;
+    }
+
+    /// <inheritdoc />
+    public override void SetViewport(BoundingBox viewport)
+    {
+        var location = viewport.Location;
+        var size = viewport.Size;
+
+        var vkViewport = new VkViewport {
+            x = location.X,
+            y = location.Y + size.Y,
+            width = size.X,
+            height = -size.Y,
+            minDepth = location.Z,
+            maxDepth = size.Z,
+        };
+        vkCmdSetViewport(VkCommandBuffer, firstViewport: 0, viewportCount: 1, &vkViewport);
+    }
+
+    /// <inheritdoc />
+    public override void SetViewports(ReadOnlySpan<BoundingBox> viewports)
+    {
+        var count = (uint)viewports.Length;
+        var vkViewports = AllocateArray<VkViewport>(count);
+
+        for (var i = 0u; i < count; i++)
+        {
+            ref readonly var viewport = ref viewports[(int)i];
+
+            var location = viewport.Location;
+            var size = viewport.Size;
+
+            vkViewports[i] = new VkViewport {
+                x = location.X,
+                y = location.Y + size.Y,
+                width = size.X,
+                height = -size.Y,
+                minDepth = location.Z,
+                maxDepth = size.Z,
+            };
+        }
+        vkCmdSetViewport(VkCommandBuffer, firstViewport: 0, count, vkViewports);
     }
 
     /// <inheritdoc />

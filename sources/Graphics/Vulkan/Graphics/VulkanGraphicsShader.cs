@@ -57,7 +57,7 @@ public sealed unsafe class VulkanGraphicsShader : GraphicsShader
     ~VulkanGraphicsShader() => Dispose(isDisposing: true);
 
     /// <inheritdoc />
-    public override UnmanagedReadOnlySpan<byte> Bytecode => _bytecode.AsUnmanagedSpan();
+    public override UnmanagedReadOnlySpan<byte> Bytecode => _bytecode;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();

@@ -8,7 +8,6 @@ using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_RTV_DIMENSION;
 using static TerraFX.Interop.DirectX.DXGI;
-using static TerraFX.Interop.DirectX.DXGI_FORMAT;
 using static TerraFX.Interop.DirectX.DXGI_SWAP_EFFECT;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Threading.VolatileState;
@@ -26,7 +25,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     private readonly UnmanagedArray<Pointer<ID3D12Resource>> _d3d12RtvResources;
     private readonly IDXGISwapChain3* _dxgiSwapchain;
     private readonly uint _framebufferCount;
-    private readonly DXGI_FORMAT _framebufferFormat;
+    private readonly GraphicsFormat _framebufferFormat;
 
     private uint _framebufferIndex;
 
@@ -38,7 +37,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
         var framebufferCount = 2u;
         _framebufferCount = framebufferCount;
 
-        var framebufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+        var framebufferFormat = GraphicsFormat.R8G8B8A8_UNORM;
         _framebufferFormat = framebufferFormat;
 
         var dxgiSwapchain = CreateDxgiSwapchain(device, surface, framebufferCount, framebufferFormat);
@@ -54,7 +53,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
         InitializeD3D12RtvResources();
         Surface.SizeChanged += OnGraphicsSurfaceSizeChanged;
 
-        static IDXGISwapChain3* CreateDxgiSwapchain(D3D12GraphicsDevice device, IGraphicsSurface surface, uint framebufferCount, DXGI_FORMAT framebufferFormat)
+        static IDXGISwapChain3* CreateDxgiSwapchain(D3D12GraphicsDevice device, IGraphicsSurface surface, uint framebufferCount, GraphicsFormat framebufferFormat)
         {
             IDXGISwapChain3* dxgiSwapchain;
             var surfaceHandle = (HWND)surface.Handle;
@@ -62,7 +61,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
             var dxgiSwapchainDesc = new DXGI_SWAP_CHAIN_DESC1 {
                 Width = (uint)surface.Width,
                 Height = (uint)surface.Height,
-                Format = framebufferFormat,
+                Format = framebufferFormat.AsDxgiFormat(),
                 SampleDesc = new DXGI_SAMPLE_DESC(count: 1, quality: 0),
                 BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
                 BufferCount = framebufferCount,
@@ -134,7 +133,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
         get
         {
             AssertNotDisposedOrDisposing(_state);
-            return _d3d12RtvResources.AsUnmanagedSpan();
+            return _d3d12RtvResources;
         }
     }
 
@@ -155,8 +154,8 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     /// <inheritdoc cref="GraphicsSwapchain.Fence" />
     public new D3D12GraphicsFence Fence => base.Fence.As<D3D12GraphicsFence>();
 
-    /// <summary>Gets the <see cref="DXGI_FORMAT" /> used by <see cref="DxgiSwapchain" />.</summary>
-    public DXGI_FORMAT FramebufferFormat => _framebufferFormat;
+    /// <inheritdoc />
+    public override GraphicsFormat FramebufferFormat => _framebufferFormat;
 
     /// <inheritdoc />
     public override uint FramebufferIndex => _framebufferIndex;
@@ -228,7 +227,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
         var d3d12RtvDescriptorHeapStart = D3D12RtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 
         var d3d12RtvDesc = new D3D12_RENDER_TARGET_VIEW_DESC {
-            Format = FramebufferFormat,
+            Format = FramebufferFormat.AsDxgiFormat(),
             ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D,
             Anonymous = new D3D12_RENDER_TARGET_VIEW_DESC._Anonymous_e__Union {
                 Texture2D = new D3D12_TEX2D_RTV(),
@@ -259,7 +258,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
         CleanupD3D12RtvResources();
 
         var dxgiSwapchain = DxgiSwapchain;
-        ThrowExternalExceptionIfFailed(dxgiSwapchain->ResizeBuffers(_framebufferCount, (uint)eventArgs.CurrentValue.X, (uint)eventArgs.CurrentValue.Y, _framebufferFormat, SwapChainFlags: 0));
+        ThrowExternalExceptionIfFailed(dxgiSwapchain->ResizeBuffers(_framebufferCount, (uint)eventArgs.CurrentValue.X, (uint)eventArgs.CurrentValue.Y, _framebufferFormat.AsDxgiFormat(), SwapChainFlags: 0));
         _framebufferIndex = dxgiSwapchain->GetCurrentBackBufferIndex();
 
         InitializeD3D12RtvResources();

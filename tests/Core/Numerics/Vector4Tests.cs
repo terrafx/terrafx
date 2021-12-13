@@ -14,7 +14,7 @@ public class Vector4Tests
     public static void ZeroTest()
     {
         Assert.That(() => Vector4.Zero,
-            Is.EqualTo(new Vector4(0.0f, 0.0f, 0.0f, 0.0f))
+            Is.EqualTo(Vector4.Create(0.0f, 0.0f, 0.0f, 0.0f))
         );
     }
 
@@ -23,7 +23,7 @@ public class Vector4Tests
     public static void UnitXTest()
     {
         Assert.That(() => Vector4.UnitX,
-            Is.EqualTo(new Vector4(1.0f, 0.0f, 0.0f, 0.0f))
+            Is.EqualTo(Vector4.Create(1.0f, 0.0f, 0.0f, 0.0f))
         );
     }
 
@@ -32,7 +32,7 @@ public class Vector4Tests
     public static void UnitYTest()
     {
         Assert.That(() => Vector4.UnitY,
-            Is.EqualTo(new Vector4(0.0f, 1.0f, 0.0f, 0.0f))
+            Is.EqualTo(Vector4.Create(0.0f, 1.0f, 0.0f, 0.0f))
         );
     }
 
@@ -41,7 +41,7 @@ public class Vector4Tests
     public static void UnitZTest()
     {
         Assert.That(() => Vector4.UnitZ,
-            Is.EqualTo(new Vector4(0.0f, 0.0f, 1.0f, 0.0f))
+            Is.EqualTo(Vector4.Create(0.0f, 0.0f, 1.0f, 0.0f))
         );
     }
 
@@ -59,57 +59,57 @@ public class Vector4Tests
     public static void OneTest()
     {
         Assert.That(() => Vector4.One,
-            Is.EqualTo(new Vector4(1.0f, 1.0f, 1.0f, 1.0f))
+            Is.EqualTo(Vector4.Create(1.0f, 1.0f, 1.0f, 1.0f))
         );
     }
 
-    /// <summary>Provides validation of the <see cref="Vector4()" /> constructors.</summary>
+    /// <summary>Provides validation of the <see cref="M:Vector4.Create" /> methods.</summary>
     [Test]
-    public static void CtorTest()
+    public static void CreateTest()
     {
-        var value = new Vector4();
+        var value = Vector4.Zero;
 
         Assert.That(() => value.X, Is.EqualTo(0.0f));
         Assert.That(() => value.Y, Is.EqualTo(0.0f));
         Assert.That(() => value.Z, Is.EqualTo(0.0f));
         Assert.That(() => value.W, Is.EqualTo(0.0f));
 
-        value = new Vector4(0.0f, 1.0f, 2.0f, 3.0f);
+        value = Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f);
 
         Assert.That(() => value.X, Is.EqualTo(0.0f));
         Assert.That(() => value.Y, Is.EqualTo(1.0f));
         Assert.That(() => value.Z, Is.EqualTo(2.0f));
         Assert.That(() => value.W, Is.EqualTo(3.0f));
 
-        value = new Vector4(5.0f);
+        value = Vector4.Create(5.0f);
 
         Assert.That(() => value.X, Is.EqualTo(5.0f));
         Assert.That(() => value.Y, Is.EqualTo(5.0f));
         Assert.That(() => value.Z, Is.EqualTo(5.0f));
         Assert.That(() => value.W, Is.EqualTo(5.0f));
 
-        value = new Vector4(new Vector2(6.0f, 7.0f), 8.0f, 9.0f);
+        value = Vector4.Create(Vector2.Create(6.0f, 7.0f), 8.0f, 9.0f);
 
         Assert.That(() => value.X, Is.EqualTo(6.0f));
         Assert.That(() => value.Y, Is.EqualTo(7.0f));
         Assert.That(() => value.Z, Is.EqualTo(8.0f));
         Assert.That(() => value.W, Is.EqualTo(9.0f));
 
-        value = new Vector4(new Vector3(10.0f, 11.0f, 12.0f), 13.0f);
+        value = Vector4.Create(Vector3.Create(10.0f, 11.0f, 12.0f), 13.0f);
 
         Assert.That(() => value.X, Is.EqualTo(10.0f));
         Assert.That(() => value.Y, Is.EqualTo(11.0f));
         Assert.That(() => value.Z, Is.EqualTo(12.0f));
         Assert.That(() => value.W, Is.EqualTo(13.0f));
 
-        value = new Vector4(new SysVector4(14.0f, 15.0f, 16.0f, 17.0f));
+        value = Vector4.Create(new SysVector4(14.0f, 15.0f, 16.0f, 17.0f));
 
         Assert.That(() => value.X, Is.EqualTo(14.0f));
         Assert.That(() => value.Y, Is.EqualTo(15.0f));
         Assert.That(() => value.Z, Is.EqualTo(16.0f));
         Assert.That(() => value.W, Is.EqualTo(17.0f));
 
-        value = new Vector4(Vector128.Create(18.0f, 19.0f, 20.0f, 21.0f));
+        value = Vector4.Create(Vector128.Create(18.0f, 19.0f, 20.0f, 21.0f));
 
         Assert.That(() => value.X, Is.EqualTo(18.0f));
         Assert.That(() => value.Y, Is.EqualTo(19.0f));
@@ -121,7 +121,7 @@ public class Vector4Tests
     [Test]
     public static void LengthTest()
     {
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f).Length,
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f).Length,
             Is.EqualTo(3.7416575f)
         );
     }
@@ -130,8 +130,17 @@ public class Vector4Tests
     [Test]
     public static void LengthSquaredTest()
     {
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f).LengthSquared,
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f).LengthSquared,
             Is.EqualTo(14.0f)
+        );
+    }
+
+    /// <summary>Provides validation of the <see cref="Vector4.Value" /> property.</summary>
+    [Test]
+    public static void ValueTest()
+    {
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f).Value,
+            Is.EqualTo(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f))
         );
     }
 
@@ -139,11 +148,11 @@ public class Vector4Tests
     [Test]
     public static void OpEqualityTest()
     {
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) == new Vector4(0.0f, 1.0f, 2.0f, 3.0f),
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f) == Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f),
             Is.True
         );
 
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) == new Vector4(4.0f, 5.0f, 6.0f, 7.0f),
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f) == Vector4.Create(4.0f, 5.0f, 6.0f, 7.0f),
             Is.False
         );
     }
@@ -152,11 +161,11 @@ public class Vector4Tests
     [Test]
     public static void OpInequalityTest()
     {
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) != new Vector4(0.0f, 1.0f, 2.0f, 3.0f),
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f) != Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f),
             Is.False
         );
 
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) != new Vector4(4.0f, 5.0f, 6.0f, 7.0f),
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f) != Vector4.Create(4.0f, 5.0f, 6.0f, 7.0f),
             Is.True
         );
     }
@@ -165,8 +174,8 @@ public class Vector4Tests
     [Test]
     public static void OpUnaryPlusTest()
     {
-        Assert.That(() => +new Vector4(0.0f, 1.0f, 2.0f, 3.0f),
-            Is.EqualTo(new Vector4(0.0f, 1.0f, 2.0f, 3.0f))
+        Assert.That(() => +Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f),
+            Is.EqualTo(Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f))
         );
     }
 
@@ -174,8 +183,8 @@ public class Vector4Tests
     [Test]
     public static void OpUnaryNegationTest()
     {
-        Assert.That(() => -new Vector4(1.0f, 2.0f, 3.0f, 4.0f),
-            Is.EqualTo(new Vector4(-1.0f, -2.0f, -3.0f, -4.0f))
+        Assert.That(() => -Vector4.Create(1.0f, 2.0f, 3.0f, 4.0f),
+            Is.EqualTo(Vector4.Create(-1.0f, -2.0f, -3.0f, -4.0f))
         );
     }
 
@@ -183,8 +192,8 @@ public class Vector4Tests
     [Test]
     public static void OpAdditionTest()
     {
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) + new Vector4(4.0f, 5.0f, 6.0f, 7.0f),
-            Is.EqualTo(new Vector4(4.0f, 6.0f, 8.0f, 10.0f))
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f) + Vector4.Create(4.0f, 5.0f, 6.0f, 7.0f),
+            Is.EqualTo(Vector4.Create(4.0f, 6.0f, 8.0f, 10.0f))
         );
     }
 
@@ -192,8 +201,8 @@ public class Vector4Tests
     [Test]
     public static void OpSubtractionTest()
     {
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) - new Vector4(4.0f, 5.0f, 6.0f, 7.0f),
-            Is.EqualTo(new Vector4(-4.0f, -4.0f, -4.0f, -4.0f))
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f) - Vector4.Create(4.0f, 5.0f, 6.0f, 7.0f),
+            Is.EqualTo(Vector4.Create(-4.0f, -4.0f, -4.0f, -4.0f))
         );
     }
 
@@ -201,12 +210,12 @@ public class Vector4Tests
     [Test]
     public static void OpMultiplyTest()
     {
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) * new Vector4(4.0f, 5.0f, 6.0f, 7.0f),
-            Is.EqualTo(new Vector4(0.0f, 5.0f, 12.0f, 21.0f))
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f) * Vector4.Create(4.0f, 5.0f, 6.0f, 7.0f),
+            Is.EqualTo(Vector4.Create(0.0f, 5.0f, 12.0f, 21.0f))
         );
 
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) * 4.0f,
-            Is.EqualTo(new Vector4(0.0f, 4.0f, 8.0f, 12.0f))
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f) * 4.0f,
+            Is.EqualTo(Vector4.Create(0.0f, 4.0f, 8.0f, 12.0f))
         );
     }
 
@@ -214,12 +223,12 @@ public class Vector4Tests
     [Test]
     public static void OpDivisionTest()
     {
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) / new Vector4(4.0f, 5.0f, 6.0f, 7.0f),
-            Is.EqualTo(new Vector4(0.0f, 0.2f, 0.33333334f, 0.42857143f))
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f) / Vector4.Create(4.0f, 5.0f, 6.0f, 7.0f),
+            Is.EqualTo(Vector4.Create(0.0f, 0.2f, 0.33333334f, 0.42857143f))
         );
 
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) / 4.0f,
-            Is.EqualTo(new Vector4(0.0f, 0.25f, 0.5f, 0.75f))
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f) / 4.0f,
+            Is.EqualTo(Vector4.Create(0.0f, 0.25f, 0.5f, 0.75f))
         );
     }
 
@@ -227,11 +236,11 @@ public class Vector4Tests
     [Test]
     public static void CompareEqualAllTest()
     {
-        Assert.That(() => Vector4.CompareEqualAll(new Vector4(0.0f, 1.0f, 2.0f, 3.0f), new Vector4(0.0f, 1.0f, 2.0f, 3.0f)),
+        Assert.That(() => Vector4.CompareEqualAll(Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f), Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f)),
             Is.True
         );
 
-        Assert.That(() => Vector4.CompareEqualAll(new Vector4(0.0f, 1.0f, 2.0f, 3.0f), new Vector4(4.0f, 5.0f, 6.0f, 7.0f)),
+        Assert.That(() => Vector4.CompareEqualAll(Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f), Vector4.Create(4.0f, 5.0f, 6.0f, 7.0f)),
             Is.False
         );
     }
@@ -240,7 +249,7 @@ public class Vector4Tests
     [Test]
     public static void DotProductTest()
     {
-        Assert.That(() => Vector4.DotProduct(new Vector4(0.0f, 1.0f, 2.0f, 3.0f), new Vector4(4.0f, 5.0f, 6.0f, 7.0f)),
+        Assert.That(() => Vector4.DotProduct(Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f), Vector4.Create(4.0f, 5.0f, 6.0f, 7.0f)),
             Is.EqualTo(38.0f)
         );
     }
@@ -249,15 +258,15 @@ public class Vector4Tests
     [Test]
     public static void IsAnyInfinityTest()
     {
-        Assert.That(() => Vector4.IsAnyInfinity(new Vector4(0.0f, 1.0f, 2.0f, float.PositiveInfinity)),
+        Assert.That(() => Vector4.IsAnyInfinity(Vector4.Create(0.0f, 1.0f, 2.0f, float.PositiveInfinity)),
             Is.True
         );
 
-        Assert.That(() => Vector4.IsAnyInfinity(new Vector4(0.0f, 1.0f, 2.0f, float.NegativeInfinity)),
+        Assert.That(() => Vector4.IsAnyInfinity(Vector4.Create(0.0f, 1.0f, 2.0f, float.NegativeInfinity)),
             Is.True
         );
 
-        Assert.That(() => Vector4.IsAnyInfinity(new Vector4(0.0f, 1.0f, 2.0f, 3.0f)),
+        Assert.That(() => Vector4.IsAnyInfinity(Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f)),
             Is.False
         );
     }
@@ -266,11 +275,11 @@ public class Vector4Tests
     [Test]
     public static void IsAnyNaNTest()
     {
-        Assert.That(() => Vector4.IsAnyNaN(new Vector4(0.0f, 1.0f, 2.0f, float.NaN)),
+        Assert.That(() => Vector4.IsAnyNaN(Vector4.Create(0.0f, 1.0f, 2.0f, float.NaN)),
             Is.True
         );
 
-        Assert.That(() => Vector4.IsAnyNaN(new Vector4(0.0f, 1.0f, 2.0f, 3.0f)),
+        Assert.That(() => Vector4.IsAnyNaN(Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f)),
             Is.False
         );
     }
@@ -279,8 +288,8 @@ public class Vector4Tests
     [Test]
     public static void MaxTest()
     {
-        Assert.That(() => Vector4.Max(new Vector4(0.0f, 1.0f, 2.0f, 3.0f), new Vector4(3.0f, 2.0f, 1.0f, 0.0f)),
-            Is.EqualTo(new Vector4(3.0f, 2.0f, 2.0f, 3.0f))
+        Assert.That(() => Vector4.Max(Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f), Vector4.Create(3.0f, 2.0f, 1.0f, 0.0f)),
+            Is.EqualTo(Vector4.Create(3.0f, 2.0f, 2.0f, 3.0f))
         );
     }
 
@@ -288,8 +297,8 @@ public class Vector4Tests
     [Test]
     public static void MinTest()
     {
-        Assert.That(() => Vector4.Min(new Vector4(-0.0f, -1.0f, -2.0f, -3.0f), new Vector4(-3.0f, -2.0f, -1.0f, -0.0f)),
-            Is.EqualTo(new Vector4(-3.0f, -2.0f, -2.0f, -3.0f))
+        Assert.That(() => Vector4.Min(Vector4.Create(-0.0f, -1.0f, -2.0f, -3.0f), Vector4.Create(-3.0f, -2.0f, -1.0f, -0.0f)),
+            Is.EqualTo(Vector4.Create(-3.0f, -2.0f, -2.0f, -3.0f))
         );
     }
 
@@ -297,8 +306,8 @@ public class Vector4Tests
     [Test]
     public static void NormalizeTest()
     {
-        Assert.That(() => Vector4.Normalize(new Vector4(0.0f, 1.0f, 2.0f, 3.0f)),
-            Is.EqualTo(new Vector4(0.0f, 0.26726124f, 0.5345225f, 0.8017837f))
+        Assert.That(() => Vector4.Normalize(Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f)),
+            Is.EqualTo(Vector4.Create(0.0f, 0.26726124f, 0.5345225f, 0.8017837f))
         );
     }
 
@@ -306,8 +315,8 @@ public class Vector4Tests
     [Test]
     public static void SqrtTest()
     {
-        Assert.That(() => Vector4.Sqrt(new Vector4(0.0f, 1.0f, 2.0f, 3.0f)),
-            Is.EqualTo(new Vector4(0.0f, 1.0f, 1.4142135f, 1.7320508f))
+        Assert.That(() => Vector4.Sqrt(Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f)),
+            Is.EqualTo(Vector4.Create(0.0f, 1.0f, 1.4142135f, 1.7320508f))
         );
     }
 
@@ -315,30 +324,21 @@ public class Vector4Tests
     [Test]
     public static void TransformTest()
     {
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f) * Matrix4x4.Identity,
-            Is.EqualTo(new Vector4(0.0f, 1.0f, 2.0f, 3.0f))
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f) * Matrix4x4.Identity,
+            Is.EqualTo(Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f))
         );
 
-        Assert.That(() => Vector4.Transform(new Vector4(0.0f, 1.0f, 2.0f, 3.0f), Matrix4x4.Identity),
-            Is.EqualTo(new Vector4(0.0f, 1.0f, 2.0f, 3.0f))
+        Assert.That(() => Vector4.Transform(Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f), Matrix4x4.Identity),
+            Is.EqualTo(Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f))
         );
     }
 
-    /// <summary>Provides validation of the <see cref="Vector4.AsVector4" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="Vector4.AsSystemVector4" /> method.</summary>
     [Test]
     public static void AsVector4Test()
     {
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f).AsVector4(),
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f).AsSystemVector4(),
             Is.EqualTo(new SysVector4(0.0f, 1.0f, 2.0f, 3.0f))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="Vector4.AsVector128" /> method.</summary>
-    [Test]
-    public static void AsVector128Test()
-    {
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f).AsVector128(),
-            Is.EqualTo(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f))
         );
     }
 
@@ -346,8 +346,8 @@ public class Vector4Tests
     [Test]
     public static void WithXTest()
     {
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f).WithX(5.0f),
-            Is.EqualTo(new Vector4(5.0f, 1.0f, 2.0f, 3.0f))
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f).WithX(5.0f),
+            Is.EqualTo(Vector4.Create(5.0f, 1.0f, 2.0f, 3.0f))
         );
     }
 
@@ -355,8 +355,8 @@ public class Vector4Tests
     [Test]
     public static void WithYTest()
     {
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f).WithY(5.0f),
-            Is.EqualTo(new Vector4(0.0f, 5.0f, 2.0f, 3.0f))
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f).WithY(5.0f),
+            Is.EqualTo(Vector4.Create(0.0f, 5.0f, 2.0f, 3.0f))
         );
     }
 
@@ -364,8 +364,8 @@ public class Vector4Tests
     [Test]
     public static void WithZTest()
     {
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f).WithZ(5.0f),
-            Is.EqualTo(new Vector4(0.0f, 1.0f, 5.0f, 3.0f))
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f).WithZ(5.0f),
+            Is.EqualTo(Vector4.Create(0.0f, 1.0f, 5.0f, 3.0f))
         );
     }
 
@@ -373,8 +373,8 @@ public class Vector4Tests
     [Test]
     public static void WithWTest()
     {
-        Assert.That(() => new Vector4(0.0f, 1.0f, 2.0f, 3.0f).WithW(5.0f),
-            Is.EqualTo(new Vector4(0.0f, 1.0f, 2.0f, 5.0f))
+        Assert.That(() => Vector4.Create(0.0f, 1.0f, 2.0f, 3.0f).WithW(5.0f),
+            Is.EqualTo(Vector4.Create(0.0f, 1.0f, 2.0f, 5.0f))
         );
     }
 }

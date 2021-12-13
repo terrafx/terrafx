@@ -8,22 +8,22 @@ using System.Runtime.CompilerServices;
 
 namespace TerraFX.Numerics;
 
-/// <summary>Defines a bounding box.</summary>
-public struct BoundingBox : IEquatable<BoundingBox>, IFormattable
+/// <summary>Defines a bounding rectangle.</summary>
+public struct BoundingRectangle : IEquatable<BoundingRectangle>, IFormattable
 {
-    /// <summary>Gets a bounding box with zero extent.</summary>
-    public static readonly BoundingBox Zero = CreateFromExtent(Vector3.Zero, Vector3.Zero);
+    /// <summary>Gets a bounding rectangle with zero extent.</summary>
+    public static readonly BoundingRectangle Zero = CreateFromExtent(Vector2.Zero, Vector2.Zero);
 
-    private Vector3 _center;
-    private Vector3 _extent;
+    private Vector2 _center;
+    private Vector2 _extent;
 
-    /// <summary>Creates a bounding box from a center and extent.</summary>
-    /// <param name="center">The center of the bounding box.</param>
-    /// <param name="extent">The distance from the center to each side of the bounding box.</param>
+    /// <summary>Creates a bounding rectangle from a center and extent.</summary>
+    /// <param name="center">The center of the bounding rectangle.</param>
+    /// <param name="extent">The distance from the center to each side of the bounding rectangle.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static BoundingBox CreateFromExtent(Vector3 center, Vector3 extent)
+    public static BoundingRectangle CreateFromExtent(Vector2 center, Vector2 extent)
     {
-        Unsafe.SkipInit(out BoundingBox result);
+        Unsafe.SkipInit(out BoundingRectangle result);
 
         result._center = center;
         result._extent = extent;
@@ -31,13 +31,13 @@ public struct BoundingBox : IEquatable<BoundingBox>, IFormattable
         return result;
     }
 
-    /// <summary>Creates a bounding box from a location and size.</summary>
-    /// <param name="location">The location of the front-upper-left of the bounding box.</param>
-    /// <param name="size">The size of the bounding box.</param>
+    /// <summary>Creates a bounding rectangle from a location and size.</summary>
+    /// <param name="location">The location of the upper-left of the bounding rectangle.</param>
+    /// <param name="size">The size of the bounding rectangle.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static BoundingBox CreateFromSize(Vector3 location, Vector3 size)
+    public static BoundingRectangle CreateFromSize(Vector2 location, Vector2 size)
     {
-        Unsafe.SkipInit(out BoundingBox result);
+        Unsafe.SkipInit(out BoundingRectangle result);
         var extent = size * 0.5f;
 
         result._center = location + extent;
@@ -46,8 +46,8 @@ public struct BoundingBox : IEquatable<BoundingBox>, IFormattable
         return result;
     }
 
-    /// <summary>Gets or sets the center of the bounding box.</summary>
-    public Vector3 Center
+    /// <summary>Gets or sets the center of the bounding rectangle.</summary>
+    public Vector2 Center
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
@@ -62,24 +62,8 @@ public struct BoundingBox : IEquatable<BoundingBox>, IFormattable
         }
     }
 
-    /// <summary>Gets or sets the depth of the bounding box.</summary>
-    public float Depth
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _extent.Z * 2.0f;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        set
-        {
-            _extent = _extent.WithZ(value * 0.5f);
-        }
-    }
-
-    /// <summary>Gets or sets the distance from the center to each side of the bounding box.</summary>
-    public Vector3 Extent
+    /// <summary>Gets or sets the distance from the center to each side of the bounding rectangle.</summary>
+    public Vector2 Extent
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
@@ -94,7 +78,7 @@ public struct BoundingBox : IEquatable<BoundingBox>, IFormattable
         }
     }
 
-    /// <summary>Gets or sets the height of the bounding box.</summary>
+    /// <summary>Gets or sets the height of the bounding rectangle.</summary>
     public float Height
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -110,8 +94,8 @@ public struct BoundingBox : IEquatable<BoundingBox>, IFormattable
         }
     }
 
-    /// <summary>Gets or sets the location of the front-upper-left of the bounding box.</summary>
-    public Vector3 Location
+    /// <summary>Gets or sets the location of the upper-left of the bounding rectangle.</summary>
+    public Vector2 Location
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
@@ -125,8 +109,8 @@ public struct BoundingBox : IEquatable<BoundingBox>, IFormattable
         }
     }
 
-    /// <summary>Gets or sets the size of the bounding box.</summary>
-    public Vector3 Size
+    /// <summary>Gets or sets the size of the bounding rectangle.</summary>
+    public Vector2 Size
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
@@ -140,7 +124,7 @@ public struct BoundingBox : IEquatable<BoundingBox>, IFormattable
         }
     }
 
-    /// <summary>Gets or sets the width of the bounding box.</summary>
+    /// <summary>Gets or sets the width of the bounding rectangle.</summary>
     public float Width
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -156,7 +140,7 @@ public struct BoundingBox : IEquatable<BoundingBox>, IFormattable
         }
     }
 
-    /// <summary>Gets or sets the x-coordinate for the location of the front-upper-left of the bounding box.</summary>
+    /// <summary>Gets or sets the x-coordinate for the location of the upper-left of the bounding rectangle.</summary>
     public float X
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -172,7 +156,7 @@ public struct BoundingBox : IEquatable<BoundingBox>, IFormattable
         }
     }
 
-    /// <summary>Gets or sets the y-coordinate for the location of the front-upper-left of the bounding box.</summary>
+    /// <summary>Gets or sets the y-coordinate for the location of the upper-left of the bounding rectangle.</summary>
     public float Y
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -188,49 +172,33 @@ public struct BoundingBox : IEquatable<BoundingBox>, IFormattable
         }
     }
 
-    /// <summary>Gets or sets the z-coordinate for the location of the front-upper-left of the bounding box.</summary>
-    public float Z
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return _center.Z - _extent.Z;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        set
-        {
-            _center = _center.WithZ(value + _extent.Z);
-        }
-    }
-
-    /// <summary>Compares two bounding boxes to determine equality.</summary>
-    /// <param name="left">The bounding box to compare with <paramref name="right" />.</param>
-    /// <param name="right">The bounding box to compare with <paramref name="left" />.</param>
+    /// <summary>Compares two bounding rectanglees to determine equality.</summary>
+    /// <param name="left">The bounding rectangle to compare with <paramref name="right" />.</param>
+    /// <param name="right">The bounding rectangle to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator ==(BoundingBox left, BoundingBox right)
-    { 
+    public static bool operator ==(BoundingRectangle left, BoundingRectangle right)
+    {
         return (left._center == right._center)
             && (left._extent == right._extent);
     }
 
-    /// <summary>Compares two bounding boxes instances to determine inequality.</summary>
-    /// <param name="left">The bounding box to compare with <paramref name="right" />.</param>
-    /// <param name="right">The bounding box to compare with <paramref name="left" />.</param>
+    /// <summary>Compares two bounding rectanglees instances to determine inequality.</summary>
+    /// <param name="left">The bounding rectangle to compare with <paramref name="right" />.</param>
+    /// <param name="right">The bounding rectangle to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator !=(BoundingBox left, BoundingBox right)
-    { 
+    public static bool operator !=(BoundingRectangle left, BoundingRectangle right)
+    {
         return (left._center != right._center)
             || (left._extent != right._extent);
     }
 
     /// <inheritdoc />
-    public override bool Equals(object? obj) => (obj is BoundingBox other) && Equals(other);
+    public override bool Equals(object? obj) => (obj is BoundingRectangle other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(BoundingBox other)
+    public bool Equals(BoundingRectangle other)
     {
         return _center.Equals(other._center)
             && _extent.Equals(other._extent);
@@ -244,5 +212,5 @@ public struct BoundingBox : IEquatable<BoundingBox>, IFormattable
 
     /// <inheritdoc />
     public string ToString(string? format, IFormatProvider? formatProvider)
-        => $"{nameof(BoundingBox)} {{ {nameof(Center)} = {_center.ToString(format, formatProvider)}, {nameof(Extent)} = {_extent.ToString(format, formatProvider)} }}";
+        => $"{nameof(BoundingRectangle)} {{ {nameof(Center)} = {_center.ToString(format, formatProvider)}, {nameof(Extent)} = {_extent.ToString(format, formatProvider)} }}";
 }

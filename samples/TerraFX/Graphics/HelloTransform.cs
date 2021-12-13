@@ -38,25 +38,25 @@ public sealed class HelloTransform : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        var graphicsSwapchain = GraphicsSwapchain;
-        var currentGraphicsContext = graphicsDevice.Contexts[(int)graphicsSwapchain.FramebufferIndex];
+        var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
         using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
 
         _constantBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Constant, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
         _vertexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
 
-        currentGraphicsContext.BeginFrame(graphicsSwapchain);
-        _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer);
-        currentGraphicsContext.EndFrame();
+        graphicsRenderContext.Reset();
+        _trianglePrimitive = CreateTrianglePrimitive(graphicsRenderContext, vertexStagingBuffer);
+        graphicsRenderContext.Flush();
 
         graphicsDevice.WaitForIdle();
+        graphicsDevice.ReturnRenderContext(graphicsRenderContext);
     }
 
-    protected override void Draw(GraphicsContext graphicsContext)
+    protected override void Draw(GraphicsRenderContext graphicsRenderContext)
     {
-        graphicsContext.Draw(_trianglePrimitive);
-        base.Draw(graphicsContext);
+        graphicsRenderContext.Draw(_trianglePrimitive);
+        base.Draw(graphicsRenderContext);
     }
 
     protected override unsafe void Update(TimeSpan delta)
@@ -80,7 +80,7 @@ public sealed class HelloTransform : HelloWindow
 
         // Shaders take transposed matrices, so we want to set X.W
         pConstantBuffer[0] = Matrix4x4.Identity;
-        pConstantBuffer[0].X = new Vector4(1.0f, 0.0f, 0.0f, trianglePrimitiveTranslationX);
+        pConstantBuffer[0].X = Vector4.Create(1.0f, 0.0f, 0.0f, trianglePrimitiveTranslationX);
 
         constantBufferView.UnmapAndWrite();
     }
@@ -132,17 +132,17 @@ public sealed class HelloTransform : HelloWindow
 
             pVertexBuffer[0] = new IdentityVertex {
                 Color = Colors.Red,
-                Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
+                Position = Vector3.Create(0.0f, 0.25f * aspectRatio, 0.0f),
             };
 
             pVertexBuffer[1] = new IdentityVertex {
                 Color = Colors.Lime,
-                Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
+                Position = Vector3.Create(0.25f, -0.25f * aspectRatio, 0.0f),
             };
 
             pVertexBuffer[2] = new IdentityVertex {
                 Color = Colors.Blue,
-                Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
+                Position = Vector3.Create(-0.25f, -0.25f * aspectRatio, 0.0f),
             };
 
             vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);
@@ -163,8 +163,8 @@ public sealed class HelloTransform : HelloWindow
             var inputs = new GraphicsPipelineInput[1] {
                 new GraphicsPipelineInput(
                     new GraphicsPipelineInputElement[2] {
-                        new GraphicsPipelineInputElement(typeof(ColorRgba), GraphicsPipelineInputElementKind.Color, size: 16),
-                        new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
+                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Color, GraphicsFormat.R32G32B32A32_SFLOAT, size: 16, alignment: 16),
+                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Position, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
                     }
                 ),
             };
