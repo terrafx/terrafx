@@ -85,11 +85,17 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsRenderContext" /> class.</summary>
     ~VulkanGraphicsRenderContext() => Dispose(isDisposing: false);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
+
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
     /// <inheritdoc />
     public override VulkanGraphicsFence Fence => _fence;
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <inheritdoc />
     public override VulkanGraphicsSwapchain? Swapchain => _swapchain;

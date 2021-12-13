@@ -190,8 +190,8 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
     // TEXCOORD
     private static ReadOnlySpan<sbyte> TEXCOORD_SEMANTIC_NAME => new sbyte[] { 0x54, 0x45, 0x58, 0x43, 0x4F, 0x4F, 0x52, 0x44, 0x00 };
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-    public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <summary>Gets the underlying <see cref="ID3D12PipelineState" /> for the pipeline.</summary>
     public ID3D12PipelineState* D3D12PipelineState
@@ -203,8 +203,14 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
         }
     }
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
+    public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
     /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
     public new D3D12GraphicsShader? PixelShader => base.PixelShader.As<D3D12GraphicsShader>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc cref="GraphicsPipeline.Signature" />
     public new D3D12GraphicsPipelineSignature Signature => base.Signature.As<D3D12GraphicsPipelineSignature>();

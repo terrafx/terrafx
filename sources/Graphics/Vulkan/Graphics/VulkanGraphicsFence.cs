@@ -49,8 +49,14 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsFence" /> class.</summary>
     ~VulkanGraphicsFence() => Dispose(isDisposing: false);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
+
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkFence" /> for the fence.</summary>
     public VkFence VkFence

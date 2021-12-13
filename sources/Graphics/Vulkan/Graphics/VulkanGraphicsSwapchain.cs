@@ -119,6 +119,9 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsSwapchain" /> class.</summary>
     ~VulkanGraphicsSwapchain() => Dispose(isDisposing: false);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
+
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
@@ -130,6 +133,9 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
 
     /// <inheritdoc />
     public override uint FramebufferIndex => _framebufferIndex;
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the <see cref="VkFramebuffer"/> used by the context.</summary>
     public UnmanagedReadOnlySpan<VkFramebuffer> VkFramebuffers

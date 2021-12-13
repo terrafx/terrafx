@@ -46,11 +46,17 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsMemoryHeap
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsMemoryHeap" /> class.</summary>
     ~VulkanGraphicsMemoryHeap() => Dispose(isDisposing: true);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
+
     /// <inheritdoc cref="GraphicsMemoryHeap.Collection" />
     public new VulkanGraphicsMemoryHeapCollection Collection => base.Collection.As<VulkanGraphicsMemoryHeapCollection>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the <see cref="Interop.Vulkan.VkDeviceMemory" /> for the memory heap.</summary>
     public VkDeviceMemory VkDeviceMemory

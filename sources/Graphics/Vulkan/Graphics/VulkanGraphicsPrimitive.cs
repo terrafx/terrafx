@@ -21,11 +21,17 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPrimitive" /> class.</summary>
     ~VulkanGraphicsPrimitive() => Dispose(isDisposing: true);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
+
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
     /// <inheritdoc cref="GraphicsPrimitive.Pipeline" />
     public new VulkanGraphicsPipeline Pipeline => base.Pipeline.As<VulkanGraphicsPipeline>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)

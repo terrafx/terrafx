@@ -71,6 +71,9 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsRenderContext" /> class.</summary>
     ~D3D12GraphicsRenderContext() => Dispose(isDisposing: false);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
+
     /// <summary>Gets the <see cref="ID3D12CommandAllocator" /> used by the context.</summary>
     public ID3D12CommandAllocator* D3D12CommandAllocator
     {
@@ -96,6 +99,9 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
 
     /// <inheritdoc />
     public override D3D12GraphicsFence Fence => _fence;
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
     public override D3D12GraphicsSwapchain? Swapchain => _swapchain;

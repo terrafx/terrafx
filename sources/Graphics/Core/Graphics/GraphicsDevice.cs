@@ -9,6 +9,7 @@ namespace TerraFX.Graphics;
 public abstract partial class GraphicsDevice : IDisposable
 {
     private readonly GraphicsAdapter _adapter;
+    private readonly GraphicsService _service;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsDevice" /> class.</summary>
     /// <param name="adapter">The underlying adapter for the device.</param>
@@ -16,7 +17,9 @@ public abstract partial class GraphicsDevice : IDisposable
     protected GraphicsDevice(GraphicsAdapter adapter)
     {
         ThrowIfNull(adapter);
+
         _adapter = adapter;
+        _service = adapter.Service;
     }
 
     /// <summary>Gets the underlying adapter for the device.</summary>
@@ -26,7 +29,7 @@ public abstract partial class GraphicsDevice : IDisposable
     public abstract GraphicsMemoryAllocator MemoryAllocator { get; }
 
     /// <summary>Gets the service which enumerated <see cref="Adapter" />.</summary>
-    public GraphicsService Service => Adapter.Service;
+    public GraphicsService Service => _service;
 
     /// <summary>Creates a new graphics fence for the device.</summary>
     /// <param name="isSignalled">The default state of <see cref="GraphicsFence.IsSignalled" /> for the created fence.</param>

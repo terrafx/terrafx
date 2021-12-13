@@ -110,6 +110,9 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsPrimitive" /> class.</summary>
     ~D3D12GraphicsPrimitive() => Dispose(isDisposing: false);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
+
     /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> used by the primitive for constant buffer, shader resource, and unordered access views.</summary>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public ID3D12DescriptorHeap* D3D12CbvSrvUavDescriptorHeap
@@ -126,6 +129,9 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
 
     /// <inheritdoc cref="GraphicsPrimitive.Pipeline" />
     public new D3D12GraphicsPipeline Pipeline => base.Pipeline.As<D3D12GraphicsPipeline>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)

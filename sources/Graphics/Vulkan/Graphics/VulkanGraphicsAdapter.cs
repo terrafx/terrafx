@@ -61,7 +61,7 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     /// <inheritdoc />
     public override string Name => _name;
 
-    /// <inheritdoc cref="GraphicsAdapter.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <inheritdoc />
@@ -91,7 +91,7 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     }
 
     /// <inheritdoc />
-    /// <remarks>While there are no unmanaged resources to cleanup, we still want to mark the instance as disposed if, for example, <see cref="GraphicsAdapter.Service" /> was disposed.</remarks>
+    /// <remarks>While there are no unmanaged resources to cleanup, we still want to mark the instance as disposed if, for example, <see cref="GraphicsServiceObject.Service" /> was disposed.</remarks>
     protected override void Dispose(bool isDisposing)
     {
         _ = _state.BeginDispose();

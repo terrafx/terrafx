@@ -258,11 +258,17 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPipeline" /> class.</summary>
     ~VulkanGraphicsPipeline() => Dispose(isDisposing: true);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
+
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
     /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
     public new VulkanGraphicsShader? PixelShader => base.PixelShader.As<VulkanGraphicsShader>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <inheritdoc cref="GraphicsPipeline.Signature" />
     public new VulkanGraphicsPipelineSignature Signature => base.Signature.As<VulkanGraphicsPipelineSignature>();

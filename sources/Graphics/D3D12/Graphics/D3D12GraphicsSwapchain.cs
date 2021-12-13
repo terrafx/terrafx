@@ -116,6 +116,9 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsSwapchain" /> class.</summary>
     ~D3D12GraphicsSwapchain() => Dispose(isDisposing: false);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
+
     /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> used by the device for render target resources.</summary>
     public ID3D12DescriptorHeap* D3D12RtvDescriptorHeap
     {
@@ -159,6 +162,9 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
 
     /// <inheritdoc />
     public override uint FramebufferIndex => _framebufferIndex;
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
     public override void Present()

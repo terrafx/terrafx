@@ -56,11 +56,17 @@ public sealed unsafe class VulkanGraphicsShader : GraphicsShader
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsShader" /> class.</summary>
     ~VulkanGraphicsShader() => Dispose(isDisposing: true);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
+
     /// <inheritdoc />
     public override UnmanagedReadOnlySpan<byte> Bytecode => _bytecode;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the underlying <see cref="VkShaderModule" /> for the shader.</summary>
     public VkShaderModule VulkanShaderModule

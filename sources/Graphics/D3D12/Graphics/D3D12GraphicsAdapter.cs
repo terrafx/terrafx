@@ -69,7 +69,7 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
     /// <inheritdoc />
     public override string Name => _name;
 
-    /// <inheritdoc cref="GraphicsAdapter.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />

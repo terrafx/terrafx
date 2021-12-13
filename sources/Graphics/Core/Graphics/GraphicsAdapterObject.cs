@@ -5,30 +5,25 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics;
 
-/// <summary>An object which is created for a graphics device.</summary>
-public abstract class GraphicsDeviceObject : IGraphicsDeviceObject
+/// <summary>An object which is created for a graphics adapter.</summary>
+public abstract class GraphicsAdapterObject : IGraphicsAdapterObject
 {
     private readonly GraphicsAdapter _adapter;
-    private readonly GraphicsDevice _device;
     private readonly GraphicsService _service;
 
-    /// <summary>Initializes a new instance of the <see cref="GraphicsDeviceObject" /> class.</summary>
-    /// <param name="device">The device for which the object is being created.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
-    protected GraphicsDeviceObject(GraphicsDevice device)
+    /// <summary>Initializes a new instance of the <see cref="GraphicsAdapterObject" /> class.</summary>
+    /// <param name="adapter">The adapter for which the object is being created.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="adapter" /> is <c>null</c>.</exception>
+    protected GraphicsAdapterObject(GraphicsAdapter adapter)
     {
-        ThrowIfNull(device);
+        ThrowIfNull(adapter);
 
-        _adapter = device.Adapter;
-        _device = device;
-        _service = device.Service;
+        _adapter = adapter;
+        _service = adapter.Service;
     }
 
-    /// <summary>Gets the underlying adapter for <see cref="Device" />.</summary>
+    /// <summary>Gets the adapter for which the object was created.</summary>
     public GraphicsAdapter Adapter => _adapter;
-
-    /// <summary>Gets the device for which the object was created.</summary>
-    public GraphicsDevice Device => _device;
 
     /// <summary>Gets the underlying service for <see cref="Adapter" />.</summary>
     public GraphicsService Service => _service;
