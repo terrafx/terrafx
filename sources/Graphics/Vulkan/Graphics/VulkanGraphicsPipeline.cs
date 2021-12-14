@@ -2,13 +2,11 @@
 
 using System;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Numerics;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkColorComponentFlags;
 using static TerraFX.Interop.Vulkan.VkCompareOp;
 using static TerraFX.Interop.Vulkan.VkCullModeFlags;
 using static TerraFX.Interop.Vulkan.VkDynamicState;
-using static TerraFX.Interop.Vulkan.VkFormat;
 using static TerraFX.Interop.Vulkan.VkFrontFace;
 using static TerraFX.Interop.Vulkan.VkPrimitiveTopology;
 using static TerraFX.Interop.Vulkan.VkSampleCountFlags;

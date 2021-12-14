@@ -10,7 +10,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Threading;
+using TerraFX.Collections;
 using TerraFX.Threading;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
@@ -23,10 +23,9 @@ namespace TerraFX.Graphics;
 public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IReadOnlyCollection<GraphicsMemoryHeap>
 {
     private readonly GraphicsMemoryAllocator _allocator;
-
-    private readonly List<GraphicsMemoryHeap> _heaps;
     private readonly ValueReaderWriterLock _rwLock;
 
+    private ValueList<GraphicsMemoryHeap> _heaps;
     private GraphicsMemoryHeap? _emptyHeap;
 
     private ulong _minimumSize;
@@ -52,7 +51,7 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
 
         _allocator = allocator;
 
-        _heaps = new List<GraphicsMemoryHeap>();
+        _heaps = new ValueList<GraphicsMemoryHeap>();
         _rwLock = new ValueReaderWriterLock();
 
         ref readonly var allocatorSettings = ref _allocator.Settings;
@@ -335,7 +334,7 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
     {
         var result = 0UL;
 
-        var heaps = CollectionsMarshal.AsSpan(_heaps);
+        var heaps = _heaps.AsSpanUnsafe(0, _heaps.Count);
         var maximumSharedHeapSize = MaximumSharedHeapSize;
 
         for (var i = heaps.Length; i-- != 0;)
@@ -361,7 +360,7 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
         // Bubble sort only until first swap. This is called after
         // freeing a region and will result in eventual consistency
 
-        var heaps = CollectionsMarshal.AsSpan(_heaps);
+        var heaps = _heaps.AsSpanUnsafe(0, _heaps.Count);
 
         if (heaps.Length >= 2)
         {
@@ -416,7 +415,7 @@ public abstract class GraphicsMemoryHeapCollection : GraphicsDeviceObject, IRead
         var maximumSharedHeapSize = MaximumSharedHeapSize;
         var sizeWithMargins = size + (2 * _allocator.Settings.MinimumAllocatedRegionMarginSize.GetValueOrDefault());
 
-        var heaps = CollectionsMarshal.AsSpan(_heaps);
+        var heaps = _heaps.AsSpanUnsafe(0, _heaps.Count);
 
         var availableMemory = (budget.EstimatedUsage < budget.EstimatedBudget) ? (budget.EstimatedBudget - budget.EstimatedUsage) : 0;
         var canCreateNewHeap = !useExistingHeap && (heaps.Length < MaximumHeapCount) && (availableMemory >= sizeWithMargins);

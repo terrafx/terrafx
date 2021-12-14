@@ -24,12 +24,13 @@ namespace TerraFX.Graphics;
 public abstract partial class GraphicsMemoryHeap : GraphicsDeviceObject, IReadOnlyCollection<GraphicsMemoryHeapRegion>
 {
     private readonly GraphicsMemoryHeapCollection _collection;
-    private readonly LinkedList<GraphicsMemoryHeapRegion> _regions;
     private readonly ulong _minimumFreeRegionSizeToRegister;
     private readonly ulong _minimumAllocatedRegionMarginSize;
     private readonly ulong _size;
 
-    private ValueList<LinkedListNode<GraphicsMemoryHeapRegion>> _freeRegionsBySize;
+    private ValueLinkedList<GraphicsMemoryHeapRegion> _regions;
+    private ValueList<ValueLinkedList<GraphicsMemoryHeapRegion>.Node> _freeRegionsBySize;
+
     private ulong _totalFreeRegionSize;
     private int _freeRegionCount;
 
@@ -53,8 +54,8 @@ public abstract partial class GraphicsMemoryHeap : GraphicsDeviceObject, IReadOn
 
         _collection = collection;
 
-        _freeRegionsBySize = new ValueList<LinkedListNode<GraphicsMemoryHeapRegion>>();
-        _regions = new LinkedList<GraphicsMemoryHeapRegion>();
+        _freeRegionsBySize = new ValueList<ValueLinkedList<GraphicsMemoryHeapRegion>.Node>();
+        _regions = new ValueLinkedList<GraphicsMemoryHeapRegion>();
 
         ref readonly var settings = ref collection.Allocator.Settings;
 
@@ -119,8 +120,7 @@ public abstract partial class GraphicsMemoryHeap : GraphicsDeviceObject, IReadOn
         _freeRegionCount = 1;
         _totalFreeRegionSize = size;
 
-        var regions = _regions;
-        regions.Clear();
+        _regions.Clear();
 
         var region = new GraphicsMemoryHeapRegion {
             Alignment = 1,
@@ -130,7 +130,7 @@ public abstract partial class GraphicsMemoryHeap : GraphicsDeviceObject, IReadOn
             Size = size,
         };
 
-        var regionNode = regions.AddFirst(region);
+        var regionNode = _regions.AddFirst(region);
 
         _freeRegionsBySize.Clear();
         _freeRegionsBySize.Add(regionNode);
@@ -144,9 +144,8 @@ public abstract partial class GraphicsMemoryHeap : GraphicsDeviceObject, IReadOn
     public void Free(in GraphicsMemoryHeapRegion region)
     {
         var freedRegion = false;
-        var regions = _regions;
 
-        for (var regionNode = regions.First; regionNode is not null; regionNode = regionNode.Next)
+        for (var regionNode = _regions.First; regionNode is not null; regionNode = regionNode.Next)
         {
             if (regionNode.ValueRef != region)
             {
@@ -159,7 +158,7 @@ public abstract partial class GraphicsMemoryHeap : GraphicsDeviceObject, IReadOn
 
         if (!freedRegion)
         {
-            ThrowKeyNotFoundException(region, nameof(regions));
+            ThrowKeyNotFoundException(region, nameof(_regions));
         }
         Validate();
     }
@@ -243,7 +242,7 @@ public abstract partial class GraphicsMemoryHeap : GraphicsDeviceObject, IReadOn
         return index;
     }
 
-    private LinkedListNode<GraphicsMemoryHeapRegion> FreeRegion(LinkedListNode<GraphicsMemoryHeapRegion> regionNode)
+    private ValueLinkedList<GraphicsMemoryHeapRegion>.Node FreeRegion(ValueLinkedList<GraphicsMemoryHeapRegion>.Node regionNode)
     {
         ref var region = ref regionNode.ValueRef;
 
@@ -304,7 +303,7 @@ public abstract partial class GraphicsMemoryHeap : GraphicsDeviceObject, IReadOn
         }
     }
 
-    private void MergeFreeRegionWithNext(LinkedListNode<GraphicsMemoryHeapRegion> regionNode)
+    private void MergeFreeRegionWithNext(ValueLinkedList<GraphicsMemoryHeapRegion>.Node regionNode)
     {
         AssertNotNull(regionNode);
         Assert(AssertionsEnabled && !regionNode.ValueRef.IsAllocated);
@@ -330,7 +329,7 @@ public abstract partial class GraphicsMemoryHeap : GraphicsDeviceObject, IReadOn
         _regions.Remove(nextRegionNode);
     }
 
-    private void RegisterFreeRegion(LinkedListNode<GraphicsMemoryHeapRegion> regionNode)
+    private void RegisterFreeRegion(ValueLinkedList<GraphicsMemoryHeapRegion>.Node regionNode)
     {
         Assert(AssertionsEnabled && !regionNode.ValueRef.IsAllocated);
         Assert(AssertionsEnabled && (regionNode.ValueRef.Size > 0));
@@ -353,7 +352,7 @@ public abstract partial class GraphicsMemoryHeap : GraphicsDeviceObject, IReadOn
         ValidateFreeRegionsBySizeList();
     }
 
-    private bool TryAllocate(ulong size, ulong alignment, LinkedListNode<GraphicsMemoryHeapRegion> regionNode)
+    private bool TryAllocate(ulong size, ulong alignment, ValueLinkedList<GraphicsMemoryHeapRegion>.Node regionNode)
     {
         Assert(AssertionsEnabled && (size > 0));
         AssertNotNull(regionNode);
@@ -452,7 +451,7 @@ public abstract partial class GraphicsMemoryHeap : GraphicsDeviceObject, IReadOn
         return true;
     }
 
-    private void UnregisterFreeRegion(LinkedListNode<GraphicsMemoryHeapRegion> regionNode)
+    private void UnregisterFreeRegion(ValueLinkedList<GraphicsMemoryHeapRegion>.Node regionNode)
     {
         Assert(AssertionsEnabled && !regionNode.ValueRef.IsAllocated);
         Assert(AssertionsEnabled && (regionNode.ValueRef.Size > 0));

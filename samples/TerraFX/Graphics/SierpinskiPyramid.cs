@@ -1,18 +1,19 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Collections.Generic;
+using TerraFX.Collections;
 using TerraFX.Numerics;
 
 namespace TerraFX.Samples.Graphics;
 
 internal class SierpinskiPyramid
 {
-    internal static (List<Vector3> vertices, List<uint> indices) CreateMeshTetrahedron(int recursionDepth)
+    internal static (UnmanagedValueList<Vector3> vertices, UnmanagedValueList<uint> indices) CreateMeshTetrahedron(int recursionDepth)
     {
         var scale = 1.0f;
-        var vertices = new List<Vector3>();
-        var indices = new List<uint>();
+
+        var vertices = new UnmanagedValueList<Vector3>();
+        var indices = new UnmanagedValueList<uint>();
 
         //         d
         //         .
@@ -36,12 +37,12 @@ internal class SierpinskiPyramid
         var c = Vector3.Create(0, -r6 - 0.4f, -2 * r3);
         var d = Vector3.Create(0, (3 * r6) - 0.4f, 0);
 
-        TetrahedronRecursion(recursionDepth, a, b, c, d, vertices, indices);
+        TetrahedronRecursion(recursionDepth, a, b, c, d, ref vertices, ref indices);
 
         return (vertices, indices);
     }
 
-    private static void TetrahedronRecursion(int recursionDepth, Vector3 a, Vector3 b, Vector3 c, Vector3 d, List<Vector3> vertices, List<uint> indices)
+    private static void TetrahedronRecursion(int recursionDepth, Vector3 a, Vector3 b, Vector3 c, Vector3 d, ref UnmanagedValueList<Vector3> vertices, ref UnmanagedValueList<uint> indices)
     {
         //         d
         //         .
@@ -57,7 +58,7 @@ internal class SierpinskiPyramid
         //         c
         if (recursionDepth == 0)
         {
-            BaseCaseTetrahedron(a, b, c, d, vertices, indices);
+            BaseCaseTetrahedron(a, b, c, d, ref vertices, ref indices);
         }
         else
         {
@@ -69,14 +70,14 @@ internal class SierpinskiPyramid
             var h = (a + d) / 2;
             var i = (b + d) / 2;
             var j = (c + d) / 2;
-            TetrahedronRecursion(recursionDepth - 1, a, e, f, h, vertices, indices);
-            TetrahedronRecursion(recursionDepth - 1, e, b, g, i, vertices, indices);
-            TetrahedronRecursion(recursionDepth - 1, f, g, c, j, vertices, indices);
-            TetrahedronRecursion(recursionDepth - 1, h, i, j, d, vertices, indices);
+            TetrahedronRecursion(recursionDepth - 1, a, e, f, h, ref vertices, ref indices);
+            TetrahedronRecursion(recursionDepth - 1, e, b, g, i, ref vertices, ref indices);
+            TetrahedronRecursion(recursionDepth - 1, f, g, c, j, ref vertices, ref indices);
+            TetrahedronRecursion(recursionDepth - 1, h, i, j, d, ref vertices, ref indices);
         }
     }
 
-    private static void BaseCaseTetrahedron(Vector3 a, Vector3 b, Vector3 c, Vector3 d, List<Vector3> vertices, List<uint> indices)
+    private static void BaseCaseTetrahedron(Vector3 a, Vector3 b, Vector3 c, Vector3 d, ref UnmanagedValueList<Vector3> vertices, ref UnmanagedValueList<uint> indices)
     {
         //         d
         //         .
@@ -94,23 +95,43 @@ internal class SierpinskiPyramid
         // Clockwise when looking at the triangle from the outside.
         // Replicate vertices in order for normals be different.
         // In spite of normal interpolation we want a flat surface shading effect
-        vertices.AddRange(new[] { a, b, c }); // bottom
-        vertices.AddRange(new[] { a, c, d }); // left
-        vertices.AddRange(new[] { b, d, c }); // right
-        vertices.AddRange(new[] { a, d, b }); // back
+
+        vertices.EnsureCapacity(vertices.Count + 12);
+
+        // bottom
+        vertices.Add(a);
+        vertices.Add(b);
+        vertices.Add(c);
+
+        // left
+        vertices.Add(a);
+        vertices.Add(c);
+        vertices.Add(d);
+
+        // right
+        vertices.Add(b);
+        vertices.Add(d);
+        vertices.Add(c);
+
+        // back
+        vertices.Add(a);
+        vertices.Add(d);
+        vertices.Add(b);
 
         var i = indices.Count;
-        for (var j = 0; j < 12; j++)
+
+        for (nuint j = 0; j < 12; j++)
         {
             indices.Add((uint)(i + j));
         }
     }
 
-    internal static (List<Vector3> vertices, List<uint> indices) CreateMeshQuad(int recursionDepth)
+    internal static (UnmanagedValueList<Vector3> vertices, UnmanagedValueList<uint> indices) CreateMeshQuad(int recursionDepth)
     {
         var r = 0.99f;
-        var vertices = new List<Vector3>();
-        var indices = new List<uint>();
+
+        var vertices = new UnmanagedValueList<Vector3>();
+        var indices = new UnmanagedValueList<uint>();
 
         //
         //  a-------b    y          in this setup
@@ -125,12 +146,12 @@ internal class SierpinskiPyramid
         var c = Vector3.Create(+r, -r, 0f);
         var d = Vector3.Create(-r, -r, 0f);
 
-        QuadRecursion(recursionDepth, a, b, c, d, vertices, indices);
+        QuadRecursion(recursionDepth, a, b, c, d, ref vertices, ref indices);
 
         return (vertices, indices);
     }
 
-    private static void QuadRecursion(int recursionDepth, Vector3 a, Vector3 b, Vector3 c, Vector3 d, List<Vector3> vertices, List<uint> indices)
+    private static void QuadRecursion(int recursionDepth, Vector3 a, Vector3 b, Vector3 c, Vector3 d, ref UnmanagedValueList<Vector3> vertices, ref UnmanagedValueList<uint> indices)
     {
         //
         //  a-e---f-b    y          in this setup
@@ -141,7 +162,7 @@ internal class SierpinskiPyramid
         //
         if (recursionDepth == 0)
         {
-            BaseCaseQuad(a, b, c, d, vertices, indices);
+            BaseCaseQuad(a, b, c, d, ref vertices, ref indices);
         }
         else
         {
@@ -161,14 +182,14 @@ internal class SierpinskiPyramid
             var o = (a * s) + (c * t);
             var n = (b * t) + (d * s);
             var p = (b * s) + (d * t);
-            QuadRecursion(recursionDepth - 1, a, e, m, l, vertices, indices);
-            QuadRecursion(recursionDepth - 1, f, b, g, n, vertices, indices);
-            QuadRecursion(recursionDepth - 1, o, h, c, i, vertices, indices);
-            QuadRecursion(recursionDepth - 1, k, p, j, d, vertices, indices);
+            QuadRecursion(recursionDepth - 1, a, e, m, l, ref vertices, ref indices);
+            QuadRecursion(recursionDepth - 1, f, b, g, n, ref vertices, ref indices);
+            QuadRecursion(recursionDepth - 1, o, h, c, i, ref vertices, ref indices);
+            QuadRecursion(recursionDepth - 1, k, p, j, d, ref vertices, ref indices);
         }
     }
 
-    private static void BaseCaseQuad(Vector3 a, Vector3 b, Vector3 c, Vector3 d, List<Vector3> vertices, List<uint> indices)
+    private static void BaseCaseQuad(Vector3 a, Vector3 b, Vector3 c, Vector3 d, ref UnmanagedValueList<Vector3> vertices, ref UnmanagedValueList<uint> indices)
     {
         //
         //  a-------b    y          in this setup
@@ -181,22 +202,40 @@ internal class SierpinskiPyramid
         // Clockwise when looking at the triangle from the outside.
         // Replicate vertices in order for normals be different.
         // In spite of normal interpolation we want a flat surface shading effect
-        vertices.AddRange(new[] { a, b, c }); // both windings
-        vertices.AddRange(new[] { a, c, b }); // so we can rotate
-        vertices.AddRange(new[] { a, c, d }); // 360 degrees
-        vertices.AddRange(new[] { a, d, c }); // and still see it
+
+        vertices.EnsureCapacity(vertices.Count + 12);
+
+        // Add both windings so we can rotate 360 degrees and still see it
+
+        vertices.Add(a);
+        vertices.Add(b);
+        vertices.Add(c);
+
+        vertices.Add(a);
+        vertices.Add(c);
+        vertices.Add(b);
+
+        vertices.Add(a);
+        vertices.Add(c);
+        vertices.Add(d);
+
+        vertices.Add(a);
+        vertices.Add(d);
+        vertices.Add(c);
 
         var i = indices.Count;
-        for (var j = 0; j < 12; j++)
+
+        for (nuint j = 0; j < 12; j++)
         {
             indices.Add((uint)(i + j));
         }
     }
 
-    internal static List<Vector3> MeshNormals(List<Vector3> vertices)
+    internal static UnmanagedValueList<Vector3> MeshNormals(in UnmanagedValueList<Vector3> vertices)
     {
         var n4 = new Vector3[4];
-        for (var i = 0; i < 12; i += 3)
+
+        for (nuint i = 0; i < 12; i += 3)
         {
             var a = vertices[i + 0];
             var b = vertices[i + 1];
@@ -204,12 +243,18 @@ internal class SierpinskiPyramid
             n4[i / 3] = Vector3.Normalize(Vector3.CrossProduct(b - a, c - a));
         }
 
-        var normals = new List<Vector3>();
-        for (var i = 0; i < vertices.Count; i += 3)
+        var normals = new UnmanagedValueList<Vector3>();
+
+        for (nuint i = 0; i < vertices.Count; i += 3)
         {
             // same normal for all three triangle vertices to ensure flat shaded surfaces
+
             var n = n4[i % 4];
-            normals.AddRange(new Vector3[] { n, n, n });
+            normals.EnsureCapacity(normals.Count + 3);
+
+            normals.Add(n);
+            normals.Add(n);
+            normals.Add(n);
         }
 
         return normals;

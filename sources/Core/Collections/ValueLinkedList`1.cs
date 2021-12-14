@@ -1,6 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-// This file includes code based on the linked list<T> class from https://github.com/dotnet/runtime/
+// This file includes code based on the Linkedlist<T> class from https://github.com/dotnet/runtime/
 // The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
