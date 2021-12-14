@@ -4,12 +4,16 @@
 // The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using static TerraFX.Runtime.Configuration;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Collections;
 
@@ -18,11 +22,10 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
 [DebuggerTypeProxy(typeof(ValueList<>.DebugView))]
-public partial struct ValueList<T>
+public partial struct ValueList<T> : IEnumerable<T>
 {
     private T[] _items;
     private int _count;
-    private int _version;
 
     /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the list.</param>
@@ -41,7 +44,6 @@ public partial struct ValueList<T>
         }
 
         _count = 0;
-        _version = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>
@@ -51,9 +53,7 @@ public partial struct ValueList<T>
     {
         // This is an extension method and throws ArgumentNullException if null
         _items = source.ToArray();
-
         _count = _items.Length;
-        _version = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>
@@ -72,7 +72,6 @@ public partial struct ValueList<T>
         }
 
         _count = span.Length;
-        _version = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>
@@ -95,7 +94,6 @@ public partial struct ValueList<T>
         }
 
         _count = array.Length;
-        _version = 0;
     }
 
     /// <summary>Gets the number of items that can be contained by the list without being resized.</summary>
@@ -126,8 +124,6 @@ public partial struct ValueList<T>
         set
         {
             ThrowIfNotInBounds(index, Count);
-            _version++;
-
             _items[index] = value;
         }
     }
@@ -139,11 +135,7 @@ public partial struct ValueList<T>
         var count = Count;
         var newCount = count + 1;
 
-        if (newCount <= Capacity)
-        {
-            _version++;
-        }
-        else
+        if (newCount > Capacity)
         {
             EnsureCapacity(newCount);
         }
@@ -173,8 +165,6 @@ public partial struct ValueList<T>
     /// <summary>Removes all items from the list.</summary>
     public void Clear()
     {
-        _version++;
-
         if (RuntimeHelpers.IsReferenceOrContainsReferences<T>() && (_items is not null))
         {
             Array.Clear(_items, 0, Count);
@@ -206,10 +196,26 @@ public partial struct ValueList<T>
             var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
 
             CopyTo(newItems);
-
-            _version++;
             _items = newItems;
         }
+    }
+
+    /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
+    /// <returns>An enumerator that can iterate through the items in the list.</returns>
+    public Enumerator GetEnumerator() => new Enumerator(this);
+
+    /// <summary>Gets a reference to the item at the specified index of the list.</summary>
+    /// <param name="index">The index of the item to get a pointer to.</param>
+    /// <returns>A reference to the item that exists at <paramref name="index" /> in the list.</returns>
+    /// <remarks>
+    ///     <para>This method is because other operations may invalidate the backing array.</para>
+    ///     <para>This method is because it does not validate that <paramref name="index" /> is less than <see cref="Capacity" />.</para>
+    /// </remarks>
+    public ref T GetReferenceUnsafe(int index)
+    {
+        AssertNotNull(_items);
+        Assert(AssertionsEnabled && unchecked((uint)index <= (uint)Capacity));
+        return ref _items.GetReference(index);
     }
 
     /// <summary>Gets the index of the first occurence of an item in the list.</summary>
@@ -232,11 +238,7 @@ public partial struct ValueList<T>
 
         var newCount = count + 1;
 
-        if (newCount <= Capacity)
-        {
-            _version++;
-        }
-        else
+        if (newCount > Capacity)
         {
             EnsureCapacity(newCount);
         }
@@ -281,8 +283,6 @@ public partial struct ValueList<T>
         var newCount = count - 1;
         var items = _items;
 
-        _version++;
-
         if (index < newCount)
         {
             Array.Copy(items, index + 1, items, index, newCount - index);
@@ -321,9 +321,11 @@ public partial struct ValueList<T>
         {
             var newItems = GC.AllocateUninitializedArray<T>(count);
             CopyTo(newItems);
-
-            _version++;
             _items = newItems;
         }
     }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }

@@ -4,14 +4,17 @@
 // The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Collections;
 
@@ -20,13 +23,12 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
 [DebuggerTypeProxy(typeof(ValueQueue<>.DebugView))]
-public partial struct ValueQueue<T>
+public partial struct ValueQueue<T> : IEnumerable<T>
 {
     private T[] _items;
     private int _count;
     private int _head;
     private int _tail;
-    private int _version;
 
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the queue.</param>
@@ -47,7 +49,6 @@ public partial struct ValueQueue<T>
         _count = 0;
         _head = 0;
         _tail = 0;
-        _version = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
@@ -61,7 +62,6 @@ public partial struct ValueQueue<T>
         _count = _items.Length;
         _head = 0;
         _tail = 0;
-        _version = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
@@ -82,7 +82,6 @@ public partial struct ValueQueue<T>
         _count = span.Length;
         _head = 0;
         _tail = 0;
-        _version = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
@@ -107,7 +106,6 @@ public partial struct ValueQueue<T>
         _count = array.Length;
         _head = 0;
         _tail = 0;
-        _version = 0;
     }
 
     /// <summary>Gets the number of items that can be contained by the queue without being resized.</summary>
@@ -126,8 +124,6 @@ public partial struct ValueQueue<T>
     /// <summary>Removes all items from the queue.</summary>
     public void Clear()
     {
-        _version++;
-
         if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
         {
             var head = _head;
@@ -219,11 +215,7 @@ public partial struct ValueQueue<T>
         var count = Count;
         var newCount = count + 1;
 
-        if (newCount <= Capacity)
-        {
-            _version++;
-        }
-        else
+        if (newCount > Capacity)
         {
             EnsureCapacity(count + 1);
         }
@@ -254,12 +246,44 @@ public partial struct ValueQueue<T>
             var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
 
             CopyTo(newItems);
-
-            _version++;
             _items = newItems;
 
             _head = 0;
             _tail = Count;
+        }
+    }
+
+    /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
+    /// <returns>An enumerator that can iterate through the items in the list.</returns>
+    public Enumerator GetEnumerator() => new Enumerator(this);
+
+    /// <summary>Gets a reference to the item at the specified index of the list.</summary>
+    /// <param name="index">The index of the item to get a pointer to.</param>
+    /// <returns>A reference to the item that exists at <paramref name="index" /> in the list.</returns>
+    /// <remarks>
+    ///     <para>This method is because other operations may invalidate the backing array.</para>
+    ///     <para>This method is because it does not validate that <paramref name="index" /> is less than <see cref="Capacity" />.</para>
+    /// </remarks>
+    public ref T GetReferenceUnsafe(int index)
+    {
+        var count = Count;
+
+        if (unchecked((uint)index < (uint)_count))
+        {
+            var head = _head;
+
+            if ((head < _tail) || (index < (count - head)))
+            {
+                return ref _items.GetReference(head + index);
+            }
+            else
+            {
+                return ref _items.GetReference(index);
+            }
+        }
+        else
+        {
+            return ref NullRef<T>();
         }
     }
 
@@ -302,9 +326,7 @@ public partial struct ValueQueue<T>
             var newItems = GC.AllocateUninitializedArray<T>(count);
             CopyTo(newItems);
 
-            _version++;
             _items = newItems;
-
             _head = 0;
             _tail = count;
         }
@@ -323,8 +345,6 @@ public partial struct ValueQueue<T>
             item = default!;
             return false;
         }
-
-        _version++;
 
         var head = _head;
         var newHead = head + 1;
@@ -373,7 +393,7 @@ public partial struct ValueQueue<T>
     {
         var count = Count;
 
-        if (unchecked((uint)index < count))
+        if (unchecked((uint)index < (uint)count))
         {
             var head = _head;
 
@@ -393,4 +413,8 @@ public partial struct ValueQueue<T>
             return false;
         }
     }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }

@@ -1,6 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -14,7 +16,7 @@ namespace TerraFX;
 /// <typeparam name="T">The type of items contained in the span.</typeparam>
 [DebuggerDisplay("IsEmpty = {IsEmpty}; Length = {Length}")]
 [DebuggerTypeProxy(typeof(UnmanagedSpan<>.DebugView))]
-public readonly unsafe partial struct UnmanagedSpan<T>
+public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
     where T : unmanaged
 {
     /// <summary>An empty span.</summary>
@@ -191,6 +193,10 @@ public readonly unsafe partial struct UnmanagedSpan<T>
         CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), items, length);
     }
 
+    /// <summary>Gets an enumerator that can iterate through the items in the span.</summary>
+    /// <returns>An enumerator that can iterate through the items in the span.</returns>
+    public Enumerator GetEnumerator() => new Enumerator(this);
+
     /// <summary>Gets a pointer to the item at the specified index of the span.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
     /// <returns>A pointer to the item that exists at <paramref name="index" /> in the span.</returns>
@@ -204,7 +210,7 @@ public readonly unsafe partial struct UnmanagedSpan<T>
     /// <summary>Gets a pointer to the item at the specified index of the span.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
     /// <returns>A pointer to the item that exists at <paramref name="index" /> in the span.</returns>
-    /// <remarks>This method is unsafe because it does not validated that <paramref name="index" /> is less than <see cref="Length" />.</remarks>
+    /// <remarks>This method is unsafe because it does not validate that <paramref name="index" /> is less than <see cref="Length" />.</remarks>
     public T* GetPointerUnsafe(nuint index)
     {
         Assert(AssertionsEnabled && (index < Length));
@@ -219,7 +225,7 @@ public readonly unsafe partial struct UnmanagedSpan<T>
     /// <summary>Gets a reference to the item at the specified index of the span.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
     /// <returns>A reference to the item that exists at <paramref name="index" /> in the span.</returns>
-    /// <remarks>This method is unsafe because it does not validated that <paramref name="index" /> is less than <see cref="Length" />.</remarks>
+    /// <remarks>This method is unsafe because it does not validate that <paramref name="index" /> is less than <see cref="Length" />.</remarks>
     public ref T GetReferenceUnsafe(nuint index) => ref AsRef<T>(GetPointerUnsafe(index));
 
     /// <summary>Slices the span so that it begins at the specified index.</summary>
@@ -241,4 +247,8 @@ public readonly unsafe partial struct UnmanagedSpan<T>
         ThrowIfNotInBounds(start + length, Length);
         return new UnmanagedSpan<T>(_items + start, length);
     }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }

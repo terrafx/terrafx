@@ -7,7 +7,7 @@ using static TerraFX.Utilities.MathUtilities;
 
 namespace TerraFX;
 
-public readonly partial struct UnmanagedArray<T>
+public partial struct UnmanagedArray<T>
 {
     internal sealed class DebugView
     {

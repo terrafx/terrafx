@@ -151,7 +151,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     public new D3D12GraphicsRenderPass RenderPass => base.RenderPass.As<D3D12GraphicsRenderPass>();
 
     /// <inheritdoc />
-    public override D3D12GraphicsRenderTarget RenderTarget => Unsafe.Add(ref _renderTargets.GetReference(), _renderTargetIndex);
+    public override D3D12GraphicsRenderTarget RenderTarget => _renderTargets.GetReference(_renderTargetIndex);
 
     /// <inheritdoc />
     public override uint RenderTargetCount => (uint)_renderTargets.Length;

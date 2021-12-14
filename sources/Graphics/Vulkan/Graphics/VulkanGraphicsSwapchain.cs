@@ -122,7 +122,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
     public new VulkanGraphicsRenderPass RenderPass => base.RenderPass.As<VulkanGraphicsRenderPass>();
 
     /// <inheritdoc />
-    public override VulkanGraphicsRenderTarget RenderTarget => Unsafe.Add(ref _renderTargets.GetReference(), _renderTargetIndex);
+    public override VulkanGraphicsRenderTarget RenderTarget => _renderTargets.GetReference(_renderTargetIndex);
 
     /// <inheritdoc />
     public override uint RenderTargetCount => (uint)_renderTargets.Length;

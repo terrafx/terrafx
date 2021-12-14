@@ -4,11 +4,15 @@
 // The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Collections;
 
@@ -17,12 +21,11 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
 [DebuggerTypeProxy(typeof(UnmanagedValueStack<>.DebugView))]
-public partial struct UnmanagedValueStack<T> : IDisposable
+public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T>
     where T : unmanaged
 {
     private UnmanagedArray<T> _items;
     private nuint _count;
-    private nuint _version;
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueStack{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the stack.</param>
@@ -44,14 +47,13 @@ public partial struct UnmanagedValueStack<T> : IDisposable
         }
 
         _count = 0;
-        _version = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueStack{T}" /> struct.</summary>
     /// <param name="span">The span that is used to populate the stack.</param>
     /// <param name="alignment">The alignment, in bytes, of the items in the stack or <c>zero</c> to use the system default.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not a <c>power of two</c>.</exception>
-    public unsafe UnmanagedValueStack(UnmanagedReadOnlySpan<T> span, nuint alignment = 0)
+    public UnmanagedValueStack(UnmanagedReadOnlySpan<T> span, nuint alignment = 0)
     {
         if (span.Length != 0)
         {
@@ -69,14 +71,13 @@ public partial struct UnmanagedValueStack<T> : IDisposable
         }
 
         _count = span.Length;
-        _version = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueStack{T}" /> struct.</summary>
     /// <param name="array">The array that is used to populate the stack.</param>
     /// <param name="takeOwnership"><c>true</c> if the stack should take ownership of the array; otherwise, <c>false</c>.</param>
     /// <exception cref="ArgumentNullException"><paramref name="array" /> is <c>null</c>.</exception>
-    public unsafe UnmanagedValueStack(UnmanagedArray<T> array, bool takeOwnership = false)
+    public UnmanagedValueStack(UnmanagedArray<T> array, bool takeOwnership = false)
     {
         ThrowIfNull(array);
 
@@ -92,7 +93,6 @@ public partial struct UnmanagedValueStack<T> : IDisposable
         }
 
         _count = array.Length;
-        _version = 0;
     }
 
     /// <summary>Gets the number of items that can be contained by the stack without being resized.</summary>
@@ -111,14 +111,13 @@ public partial struct UnmanagedValueStack<T> : IDisposable
     /// <summary>Removes all items from the stack.</summary>
     public void Clear()
     {
-        _version++;
         _count = 0;
     }
 
     /// <summary>Checks whether the stack contains a specified item.</summary>
     /// <param name="item">The item to check for in the stack.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was found in the stack; otherwise, <c>false</c>.</returns>
-    public readonly unsafe bool Contains(T item)
+    public readonly bool Contains(T item)
     {
         var items = _items;
         return !items.IsNull && TryGetLastIndexOfUnsafe(items.GetPointerUnsafe(0), Count, item, out _);
@@ -127,7 +126,7 @@ public partial struct UnmanagedValueStack<T> : IDisposable
     /// <summary>Copies the items of the stack to a span.</summary>
     /// <param name="destination">The span to which the items will be copied.</param>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="Count" /> is greater than the length of <paramref name="destination" />.</exception>
-    public readonly unsafe void CopyTo(UnmanagedSpan<T> destination)
+    public readonly void CopyTo(UnmanagedSpan<T> destination)
     {
         var count = Count;
 
@@ -143,7 +142,7 @@ public partial struct UnmanagedValueStack<T> : IDisposable
 
     /// <summary>Ensures the capacity of the stack is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the stack should support.</param>
-    public unsafe void EnsureCapacity(nuint capacity)
+    public void EnsureCapacity(nuint capacity)
     {
         var currentCapacity = Capacity;
 
@@ -159,10 +158,42 @@ public partial struct UnmanagedValueStack<T> : IDisposable
             CopyTo(newItems);
             items.Dispose();
 
-            _version++;
             _items = newItems;
         }
     }
+
+    /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
+    /// <returns>An enumerator that can iterate through the items in the list.</returns>
+    public Enumerator GetEnumerator() => new Enumerator(this);
+
+    /// <summary>Gets a pointer to the item at the specified index of the stack.</summary>
+    /// <param name="index">The index of the item to get a pointer to.</param>
+    /// <returns>A pointer to the item that exists at <paramref name="index" /> in the stack.</returns>
+    /// <remarks>This method is because other operations may invalidate the backing array.</remarks>
+    public T* GetPointerUnsafe(nuint index)
+    {
+        T* item;
+
+        if (index < _count)
+        {
+            item = _items.GetPointerUnsafe(_count - (index + 1));
+        }
+        else
+        {
+            item = null;
+        }
+
+        return item;
+    }
+
+    /// <summary>Gets a reference to the item at the specified index of the list.</summary>
+    /// <param name="index">The index of the item to get a pointer to.</param>
+    /// <returns>A reference to the item that exists at <paramref name="index" /> in the list.</returns>
+    /// <remarks>
+    ///     <para>This method is because other operations may invalidate the backing array.</para>
+    ///     <para>This method is because it does not validate that <paramref name="index" /> is less than <see cref="Count" />.</para>
+    /// </remarks>
+    public ref T GetReferenceUnsafe(nuint index) => ref AsRef<T>(GetPointerUnsafe(index));
 
     /// <summary>Peeks at the item at the top of the stack.</summary>
     /// <returns>The item at the top of the stack.</returns>
@@ -209,11 +240,7 @@ public partial struct UnmanagedValueStack<T> : IDisposable
         var count = Count;
         var newCount = count + 1;
 
-        if (newCount <= Capacity)
-        {
-            _version++;
-        }
-        else
+        if (newCount > Capacity)
         {
             EnsureCapacity(count + 1);
         }
@@ -240,7 +267,6 @@ public partial struct UnmanagedValueStack<T> : IDisposable
             CopyTo(newItems);
             items.Dispose();
 
-            _version++;
             _items = newItems;
         }
     }
@@ -298,7 +324,6 @@ public partial struct UnmanagedValueStack<T> : IDisposable
             return false;
         }
 
-        _version++;
         _count = newCount;
 
         var items = _items;
@@ -306,4 +331,8 @@ public partial struct UnmanagedValueStack<T> : IDisposable
 
         return true;
     }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }

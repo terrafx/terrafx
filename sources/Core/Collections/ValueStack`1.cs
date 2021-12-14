@@ -4,14 +4,17 @@
 // The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Collections;
 
@@ -20,11 +23,10 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
 [DebuggerTypeProxy(typeof(ValueStack<>.DebugView))]
-public partial struct ValueStack<T>
+public partial struct ValueStack<T> : IEnumerable<T>
 {
     private T[] _items;
     private int _count;
-    private int _version;
 
     /// <summary>Initializes a new instance of the <see cref="ValueStack{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the stack.</param>
@@ -43,7 +45,6 @@ public partial struct ValueStack<T>
         }
 
         _count = 0;
-        _version = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueStack{T}" /> struct.</summary>
@@ -53,9 +54,7 @@ public partial struct ValueStack<T>
     {
         // This is an extension method and throws ArgumentNullException if null
         _items = source.ToArray();
-
         _count = _items.Length;
-        _version = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueStack{T}" /> struct.</summary>
@@ -74,7 +73,6 @@ public partial struct ValueStack<T>
         }
 
         _count = span.Length;
-        _version = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueStack{T}" /> struct.</summary>
@@ -97,7 +95,6 @@ public partial struct ValueStack<T>
         }
 
         _count = array.Length;
-        _version = 0;
     }
 
     /// <summary>Gets the number of items that can be contained by the stack without being resized.</summary>
@@ -116,8 +113,6 @@ public partial struct ValueStack<T>
     /// <summary>Removes all items from the stack.</summary>
     public void Clear()
     {
-        _version++;
-
         if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
         {
             Array.Clear(_items, 0, Count);
@@ -162,9 +157,32 @@ public partial struct ValueStack<T>
             var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
 
             CopyTo(newItems);
-
-            _version++;
             _items = newItems;
+        }
+    }
+
+    /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
+    /// <returns>An enumerator that can iterate through the items in the list.</returns>
+    public Enumerator GetEnumerator() => new Enumerator(this);
+
+    /// <summary>Gets a reference to the item at the specified index of the list.</summary>
+    /// <param name="index">The index of the item to get a pointer to.</param>
+    /// <returns>A reference to the item that exists at <paramref name="index" /> in the list.</returns>
+    /// <remarks>
+    ///     <para>This method is because other operations may invalidate the backing array.</para>
+    ///     <para>This method is because it does not validate that <paramref name="index" /> is less than <see cref="Capacity" />.</para>
+    /// </remarks>
+    public ref T GetReferenceUnsafe(int index)
+    {
+        var count = Count;
+
+        if (unchecked((uint)index < (uint)count))
+        {
+            return ref _items.GetReference(count - (index + 1));
+        }
+        else
+        {
+            return ref NullRef<T>();
         }
     }
 
@@ -213,11 +231,7 @@ public partial struct ValueStack<T>
         var count = Count;
         var newCount = count + 1;
 
-        if (newCount <= Capacity)
-        {
-            _version++;
-        }
-        else
+        if (newCount > Capacity)
         {
             EnsureCapacity(count + 1);
         }
@@ -238,8 +252,6 @@ public partial struct ValueStack<T>
         {
             var newItems = GC.AllocateUninitializedArray<T>(count);
             CopyTo(newItems);
-
-            _version++;
             _items = newItems;
         }
     }
@@ -271,7 +283,7 @@ public partial struct ValueStack<T>
     {
         var count = Count;
 
-        if (unchecked((uint)index < count))
+        if (unchecked((uint)index < (uint)count))
         {
             item = _items[count - (index + 1)];
             return true;
@@ -297,7 +309,6 @@ public partial struct ValueStack<T>
             return false;
         }
 
-        _version++;
         _count = newCount;
 
         var items = _items;
@@ -310,4 +321,8 @@ public partial struct ValueStack<T>
 
         return true;
     }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }
