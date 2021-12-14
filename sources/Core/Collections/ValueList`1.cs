@@ -160,6 +160,16 @@ public partial struct ValueList<T>
     /// </remarks>
     public Span<T> AsSpanUnsafe() => new Span<T>(_items);
 
+    /// <summary>Converts the backing array for the list to a span starting at the specified index and continuing for the specified number of items.</summary>
+    /// <param name="start">The index of the first item to include in the span.</param>
+    /// <param name="length">The number of items to include in the span.</param>
+    /// <returns>A span that covers the backing array for the list starting at <paramref name="start" /> and continuing for <paramref name="length" /> items.</returns>
+    /// <remarks>
+    ///     <para>This method is unsafe because other operations may invalidate the backing array.</para>
+    ///     <para>This method is unsafe because it can give access to uninitialized memory in the backing array when <see cref="Count" /> is less than <see cref="Capacity" />.</para>
+    /// </remarks>
+    public Span<T> AsSpanUnsafe(int start, int length) => new Span<T>(_items, start, length);
+
     /// <summary>Removes all items from the list.</summary>
     public void Clear()
     {
