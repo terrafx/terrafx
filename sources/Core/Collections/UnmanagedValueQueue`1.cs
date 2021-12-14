@@ -4,11 +4,14 @@
 // The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Collections;
 
@@ -17,14 +20,13 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
 [DebuggerTypeProxy(typeof(UnmanagedValueQueue<>.DebugView))]
-public partial struct UnmanagedValueQueue<T> : IDisposable
+public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T>
     where T : unmanaged
 {
     private UnmanagedArray<T> _items;
     private nuint _count;
     private nuint _head;
     private nuint _tail;
-    private nuint _version;
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueQueue{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the queue.</param>
@@ -48,14 +50,13 @@ public partial struct UnmanagedValueQueue<T> : IDisposable
         _count = 0;
         _head = 0;
         _tail = 0;
-        _version = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueQueue{T}" /> struct.</summary>
     /// <param name="span">The span that is used to populate the queue.</param>
     /// <param name="alignment">The alignment, in bytes, of the items in the queue or <c>zero</c> to use the system default.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not a <c>power of two</c>.</exception>
-    public unsafe UnmanagedValueQueue(UnmanagedReadOnlySpan<T> span, nuint alignment = 0)
+    public UnmanagedValueQueue(UnmanagedReadOnlySpan<T> span, nuint alignment = 0)
     {
         if (span.Length != 0)
         {
@@ -75,14 +76,13 @@ public partial struct UnmanagedValueQueue<T> : IDisposable
         _count = span.Length;
         _head = 0;
         _tail = 0;
-        _version = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueQueue{T}" /> struct.</summary>
     /// <param name="array">The array that is used to populate the queue.</param>
     /// <param name="takeOwnership"><c>true</c> if the queue should take ownership of the array; otherwise, <c>false</c>.</param>
     /// <exception cref="ArgumentNullException"><paramref name="array" /> is <c>null</c>.</exception>
-    public unsafe UnmanagedValueQueue(UnmanagedArray<T> array, bool takeOwnership = false)
+    public UnmanagedValueQueue(UnmanagedArray<T> array, bool takeOwnership = false)
     {
         ThrowIfNull(array);
 
@@ -100,7 +100,6 @@ public partial struct UnmanagedValueQueue<T> : IDisposable
         _count = array.Length;
         _head = 0;
         _tail = 0;
-        _version = 0;
     }
 
     /// <summary>Gets the number of items that can be contained by the queue without being resized.</summary>
@@ -119,9 +118,7 @@ public partial struct UnmanagedValueQueue<T> : IDisposable
     /// <summary>Removes all items from the queue.</summary>
     public void Clear()
     {
-        _version++;
         _count = 0;
-
         _head = 0;
         _tail = 0;
     }
@@ -129,7 +126,7 @@ public partial struct UnmanagedValueQueue<T> : IDisposable
     /// <summary>Checks whether the queue contains a specified item.</summary>
     /// <param name="item">The item to check for in the queue.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was found in the queue; otherwise, <c>false</c>.</returns>
-    public readonly unsafe bool Contains(T item)
+    public readonly bool Contains(T item)
     {
         var items = _items;
 
@@ -157,7 +154,7 @@ public partial struct UnmanagedValueQueue<T> : IDisposable
     /// <summary>Copies the items of the queue to a span.</summary>
     /// <param name="destination">The span to which the items will be copied.</param>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="Count" /> is greater than the length of <paramref name="destination" />.</exception>
-    public readonly unsafe void CopyTo(UnmanagedSpan<T> destination)
+    public readonly void CopyTo(UnmanagedSpan<T> destination)
     {
         var count = Count;
 
@@ -203,11 +200,7 @@ public partial struct UnmanagedValueQueue<T> : IDisposable
         var count = Count;
         var newCount = count + 1;
 
-        if (newCount <= Capacity)
-        {
-            _version++;
-        }
-        else
+        if (newCount > Capacity)
         {
             EnsureCapacity(count + 1);
         }
@@ -227,7 +220,7 @@ public partial struct UnmanagedValueQueue<T> : IDisposable
 
     /// <summary>Ensures the capacity of the queue is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the queue should support.</param>
-    public unsafe void EnsureCapacity(nuint capacity)
+    public void EnsureCapacity(nuint capacity)
     {
         var currentCapacity = Capacity;
 
@@ -243,13 +236,54 @@ public partial struct UnmanagedValueQueue<T> : IDisposable
             CopyTo(newItems);
             items.Dispose();
 
-            _version++;
             _items = newItems;
 
             _head = 0;
             _tail = Count;
         }
     }
+
+    /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
+    /// <returns>An enumerator that can iterate through the items in the list.</returns>
+    public Enumerator GetEnumerator() => new Enumerator(this);
+
+    /// <summary>Gets a pointer to the item at the specified index of the queue.</summary>
+    /// <param name="index">The index of the item to get a pointer to.</param>
+    /// <returns>A pointer to the item that exists at <paramref name="index" /> in the queue.</returns>
+    /// <remarks>This method is because other operations may invalidate the backing data.</remarks>
+    public T* GetPointerUnsafe(nuint index)
+    {
+        T* item;
+
+        if (index < _count)
+        {
+            var head = _head;
+
+            if ((head < _tail) || (index < (_count - head)))
+            {
+                item = _items.GetPointerUnsafe(head + index);
+            }
+            else
+            {
+                item = _items.GetPointerUnsafe(index);
+            }
+        }
+        else
+        {
+            item = null;
+        }
+
+        return item;
+    }
+
+    /// <summary>Gets a reference to the item at the specified index of the list.</summary>
+    /// <param name="index">The index of the item to get a pointer to.</param>
+    /// <returns>A reference to the item that exists at <paramref name="index" /> in the list.</returns>
+    /// <remarks>
+    ///     <para>This method is because other operations may invalidate the backing array.</para>
+    ///     <para>This method is because it does not validate that <paramref name="index" /> is less than <see cref="Count" />.</para>
+    /// </remarks>
+    public ref T GetReferenceUnsafe(nuint index) => ref AsRef<T>(GetPointerUnsafe(index));
 
     /// <summary>Peeks at item at the head of the queue.</summary>
     /// <returns>The item at the head of the queue.</returns>
@@ -295,7 +329,6 @@ public partial struct UnmanagedValueQueue<T> : IDisposable
             CopyTo(newItems);
             items.Dispose();
 
-            _version++;
             _items = newItems;
 
             _head = 0;
@@ -316,8 +349,6 @@ public partial struct UnmanagedValueQueue<T> : IDisposable
             item = default!;
             return false;
         }
-
-        _version++;
 
         var head = _head;
         var newHead = head + 1;
@@ -381,4 +412,8 @@ public partial struct UnmanagedValueQueue<T> : IDisposable
             return false;
         }
     }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }

@@ -21,6 +21,9 @@ public sealed class D3D12GraphicsMemoryHeapCollection : GraphicsMemoryHeapCollec
         _d3d12HeapType = d3d12HeapType;
     }
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
+
     /// <inheritdoc cref="GraphicsMemoryHeapCollection.Allocator" />
     public new D3D12GraphicsMemoryAllocator Allocator => (D3D12GraphicsMemoryAllocator)base.Allocator;
 
@@ -32,6 +35,9 @@ public sealed class D3D12GraphicsMemoryHeapCollection : GraphicsMemoryHeapCollec
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
     protected override D3D12GraphicsMemoryHeap CreateHeap(ulong size) => new D3D12GraphicsMemoryHeap(Device, this, size);

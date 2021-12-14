@@ -70,6 +70,9 @@ public sealed unsafe class D3D12GraphicsBuffer : GraphicsBuffer
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsBuffer" /> class.</summary>
     ~D3D12GraphicsBuffer() => Dispose(isDisposing: true);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
+
     /// <inheritdoc cref="GraphicsResource.Allocator" />
     public new D3D12GraphicsMemoryAllocator Allocator => base.Allocator.As<D3D12GraphicsMemoryAllocator>();
 
@@ -91,6 +94,9 @@ public sealed unsafe class D3D12GraphicsBuffer : GraphicsBuffer
 
     /// <inheritdoc cref="GraphicsResource.Heap" />
     public new D3D12GraphicsMemoryHeap Heap => base.Heap.As<D3D12GraphicsMemoryHeap>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
     /// <exception cref="ExternalException">The call to <see cref="ID3D12Resource.Map(uint, D3D12_RANGE*, void**)" /> failed.</exception>

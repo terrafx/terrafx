@@ -2,7 +2,7 @@
 
 namespace TerraFX;
 
-public readonly partial struct UnmanagedArray<T>
+public partial struct UnmanagedArray<T>
 {
     private struct Metadata
     {

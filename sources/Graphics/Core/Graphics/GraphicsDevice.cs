@@ -9,6 +9,7 @@ namespace TerraFX.Graphics;
 public abstract partial class GraphicsDevice : IDisposable
 {
     private readonly GraphicsAdapter _adapter;
+    private readonly GraphicsService _service;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsDevice" /> class.</summary>
     /// <param name="adapter">The underlying adapter for the device.</param>
@@ -16,7 +17,9 @@ public abstract partial class GraphicsDevice : IDisposable
     protected GraphicsDevice(GraphicsAdapter adapter)
     {
         ThrowIfNull(adapter);
+
         _adapter = adapter;
+        _service = adapter.Service;
     }
 
     /// <summary>Gets the underlying adapter for the device.</summary>
@@ -26,25 +29,12 @@ public abstract partial class GraphicsDevice : IDisposable
     public abstract GraphicsMemoryAllocator MemoryAllocator { get; }
 
     /// <summary>Gets the service which enumerated <see cref="Adapter" />.</summary>
-    public GraphicsService Service => Adapter.Service;
+    public GraphicsService Service => _service;
 
     /// <summary>Creates a new graphics fence for the device.</summary>
     /// <param name="isSignalled">The default state of <see cref="GraphicsFence.IsSignalled" /> for the created fence.</param>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public abstract GraphicsFence CreateFence(bool isSignalled);
-
-    /// <summary>Creates a new graphics pipeline for the device.</summary>
-    /// <param name="signature">The signature which details the inputs given and resources available to the graphics pipeline.</param>
-    /// <param name="vertexShader">The vertex shader for the graphics pipeline or <c>null</c> if none exists.</param>
-    /// <param name="pixelShader">The pixel shader for the graphics pipeline or <c>null</c> if none exists.</param>
-    /// <returns>A new graphics pipeline created for the device.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="signature" /> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> is not <see cref="GraphicsShaderKind.Vertex"/>.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> was not created for this device.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> is not <see cref="GraphicsShaderKind.Pixel"/>.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> was not created for this device.</exception>
-    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-    public abstract GraphicsPipeline CreatePipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null);
 
     /// <summary>Creates a new graphics pipeline signature for the device.</summary>
     /// <param name="inputs">The inputs given to the graphics pipeline or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</param>
@@ -75,17 +65,20 @@ public abstract partial class GraphicsDevice : IDisposable
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public abstract GraphicsShader CreateShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName);
 
-    /// <summary>Creates a new graphics swapchain for the device.</summary>
-    /// <param name="surface">The surface on which the swapchain can render.</param>
-    /// <returns>A new graphics swapchain created for the device.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="surface" /> is <c>null</c>.</exception>
-    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-    public abstract GraphicsSwapchain CreateSwapchain(IGraphicsSurface surface);
-
     /// <summary>Rents a graphics render context from the device.</summary>
     /// <returns>A graphics render context for the device.</returns>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public abstract GraphicsRenderContext RentRenderContext();
+
+    /// <summary>Creates a new graphics render pass for the device.</summary>
+    /// <param name="surface">The surface used by the render pass.</param>
+    /// <param name="renderTargetFormat">The format of render targets used by the render pass.</param>
+    /// <param name="minimumRenderTargetCount">The minimum number of render targets to create or <c>zero</c> to use the system default.</param>
+    /// <returns>A new graphics render pass created for the device.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="surface" /> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="minimumRenderTargetCount" /> is greater than the maximum number of allowed render targets.</exception>
+    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+    public abstract GraphicsRenderPass CreateRenderPass(IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0);
 
     /// <summary>Returns a graphics render context to the device for further use.</summary>
     /// <param name="renderContext">The graphics render context that should be returned.</param>

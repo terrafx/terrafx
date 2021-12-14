@@ -46,6 +46,9 @@ public sealed unsafe class D3D12GraphicsMemoryHeap : GraphicsMemoryHeap
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsMemoryHeap" /> class.</summary>
     ~D3D12GraphicsMemoryHeap() => Dispose(isDisposing: true);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
+
     /// <inheritdoc cref="GraphicsMemoryHeap.Collection" />
     public new D3D12GraphicsMemoryHeapCollection Collection => base.Collection.As<D3D12GraphicsMemoryHeapCollection>();
 
@@ -61,6 +64,9 @@ public sealed unsafe class D3D12GraphicsMemoryHeap : GraphicsMemoryHeap
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     private static ulong GetAlignment(D3D12_HEAP_FLAGS heapFlags)
     {

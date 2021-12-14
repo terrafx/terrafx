@@ -2,7 +2,6 @@
 
 using System;
 using TerraFX.Interop.DirectX;
-using TerraFX.Numerics;
 using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Interop.DirectX.D3D12_PRIMITIVE_TOPOLOGY_TYPE;
@@ -23,21 +22,21 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
 
     private VolatileState _state;
 
-    internal D3D12GraphicsPipeline(D3D12GraphicsDevice device, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
-        : base(device, signature, vertexShader, pixelShader)
+    internal D3D12GraphicsPipeline(D3D12GraphicsRenderPass renderPass, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
+        : base(renderPass, signature, vertexShader, pixelShader)
     {
-        _d3d12PipelineState = CreateD3D12GraphicsPipelineState(device, signature, vertexShader, pixelShader);
+        _d3d12PipelineState = CreateD3D12GraphicsPipelineState(renderPass, signature, vertexShader, pixelShader);
 
         _ = _state.Transition(to: Initialized);
 
-        static ID3D12PipelineState* CreateD3D12GraphicsPipelineState(D3D12GraphicsDevice device, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
+        static ID3D12PipelineState* CreateD3D12GraphicsPipelineState(D3D12GraphicsRenderPass renderPass, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
         {
             var d3d12InputElementDescs = UnmanagedArray<D3D12_INPUT_ELEMENT_DESC>.Empty;
 
             try
             {
                 // We split this into two methods so the JIT can still optimize the "core" part
-                return CreateD3D12GraphicsPipelineStateInternal(device, signature, vertexShader, pixelShader, ref d3d12InputElementDescs);
+                return CreateD3D12GraphicsPipelineStateInternal(renderPass, signature, vertexShader, pixelShader, ref d3d12InputElementDescs);
             }
             finally
             {
@@ -45,7 +44,7 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
             }
         }
 
-        static ID3D12PipelineState* CreateD3D12GraphicsPipelineStateInternal(D3D12GraphicsDevice device, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader, ref UnmanagedArray<D3D12_INPUT_ELEMENT_DESC> d3d12InputElementDescs)
+        static ID3D12PipelineState* CreateD3D12GraphicsPipelineStateInternal(D3D12GraphicsRenderPass renderPass, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader, ref UnmanagedArray<D3D12_INPUT_ELEMENT_DESC> d3d12InputElementDescs)
         {
             ID3D12PipelineState* d3d12GraphicsPipelineState;
 
@@ -117,7 +116,7 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
                 pInputElementDescs = d3d12InputElementDescs.GetPointerUnsafe(0),
                 NumElements = (uint)d3d12InputElementDescs.Length,
             };
-            ThrowExternalExceptionIfFailed(device.D3D12Device->CreateGraphicsPipelineState(&d3d12GraphicsPipelineStateDesc, __uuidof<ID3D12PipelineState>(), (void**)&d3d12GraphicsPipelineState));
+            ThrowExternalExceptionIfFailed(renderPass.Device.D3D12Device->CreateGraphicsPipelineState(&d3d12GraphicsPipelineStateDesc, __uuidof<ID3D12PipelineState>(), (void**)&d3d12GraphicsPipelineState));
 
             return d3d12GraphicsPipelineState;
         }
@@ -190,8 +189,8 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
     // TEXCOORD
     private static ReadOnlySpan<sbyte> TEXCOORD_SEMANTIC_NAME => new sbyte[] { 0x54, 0x45, 0x58, 0x43, 0x4F, 0x4F, 0x52, 0x44, 0x00 };
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-    public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+    /// <inheritdoc cref="GraphicsRenderPassObject.Adapter" />
+    public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <summary>Gets the underlying <see cref="ID3D12PipelineState" /> for the pipeline.</summary>
     public ID3D12PipelineState* D3D12PipelineState
@@ -203,8 +202,17 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
         }
     }
 
+    /// <inheritdoc cref="GraphicsRenderPassObject.Device" />
+    public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
     /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
     public new D3D12GraphicsShader? PixelShader => base.PixelShader.As<D3D12GraphicsShader>();
+
+    /// <inheritdoc cref="GraphicsRenderPassObject.RenderPass" />
+    public new D3D12GraphicsRenderPass RenderPass => base.RenderPass.As<D3D12GraphicsRenderPass>();
+
+    /// <inheritdoc cref="GraphicsRenderPassObject.Service" />
+    public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc cref="GraphicsPipeline.Signature" />
     public new D3D12GraphicsPipelineSignature Signature => base.Signature.As<D3D12GraphicsPipelineSignature>();

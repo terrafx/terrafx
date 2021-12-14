@@ -2,13 +2,11 @@
 
 using System;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Numerics;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkColorComponentFlags;
 using static TerraFX.Interop.Vulkan.VkCompareOp;
 using static TerraFX.Interop.Vulkan.VkCullModeFlags;
 using static TerraFX.Interop.Vulkan.VkDynamicState;
-using static TerraFX.Interop.Vulkan.VkFormat;
 using static TerraFX.Interop.Vulkan.VkFrontFace;
 using static TerraFX.Interop.Vulkan.VkPrimitiveTopology;
 using static TerraFX.Interop.Vulkan.VkSampleCountFlags;
@@ -33,14 +31,14 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
 
     private VolatileState _state;
 
-    internal VulkanGraphicsPipeline(VulkanGraphicsDevice device, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
-        : base(device, signature, vertexShader, pixelShader)
+    internal VulkanGraphicsPipeline(VulkanGraphicsRenderPass renderPass, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
+        : base(renderPass, signature, vertexShader, pixelShader)
     {
-        _vkPipeline = CreateVkPipeline(device, signature, vertexShader, pixelShader);
+        _vkPipeline = CreateVkPipeline(renderPass, signature, vertexShader, pixelShader);
 
         _ = _state.Transition(to: Initialized);
 
-        static VkPipeline CreateVkPipeline(VulkanGraphicsDevice device, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
+        static VkPipeline CreateVkPipeline(VulkanGraphicsRenderPass renderPass, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
         {
             var vkPipelineShaderStageCreateInfos = new UnmanagedArray<VkPipelineShaderStageCreateInfo>(2);
             var vkVertexInputAttributeDescriptions = UnmanagedArray<VkVertexInputAttributeDescription>.Empty;
@@ -48,7 +46,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
             try
             {
                 // We split this into two methods so the JIT can still optimize the "core" part
-                return CreateVkPipelineInternal(device, signature, vertexShader, pixelShader, vkPipelineShaderStageCreateInfos, ref vkVertexInputAttributeDescriptions);
+                return CreateVkPipelineInternal(renderPass, signature, vertexShader, pixelShader, vkPipelineShaderStageCreateInfos, ref vkVertexInputAttributeDescriptions);
             }
             finally
             {
@@ -61,7 +59,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
             }
         }
 
-        static VkPipeline CreateVkPipelineInternal(VulkanGraphicsDevice device, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader, UnmanagedArray<VkPipelineShaderStageCreateInfo> vkPipelineShaderStageCreateInfos, ref UnmanagedArray<VkVertexInputAttributeDescription> vkVertexInputAttributeDescriptions)
+        static VkPipeline CreateVkPipelineInternal(VulkanGraphicsRenderPass renderPass, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader, UnmanagedArray<VkPipelineShaderStageCreateInfo> vkPipelineShaderStageCreateInfos, ref UnmanagedArray<VkVertexInputAttributeDescription> vkVertexInputAttributeDescriptions)
         {
             VkPipeline vkPipeline;
 
@@ -139,7 +137,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
                 pColorBlendState = &vkPipelineColorBlendStateCreateInfo,
                 pDynamicState = &vkPipelineDynamicStateCreateInfo,
                 layout = signature.VkPipelineLayout,
-                renderPass = device.VkRenderPass,
+                renderPass = renderPass.VkRenderPass,
             };
 
             var shaderIndex = 0u;
@@ -238,7 +236,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
             vkPipelineVertexInputStateCreateInfo.vertexAttributeDescriptionCount = (uint)vkVertexInputAttributeDescriptions.Length;
             vkPipelineVertexInputStateCreateInfo.pVertexAttributeDescriptions = vkVertexInputAttributeDescriptions.GetPointerUnsafe(0);
 
-            ThrowExternalExceptionIfNotSuccess(vkCreateGraphicsPipelines(device.VkDevice, pipelineCache: VkPipelineCache.NULL, 1, &vkPipelineCreateInfo, pAllocator: null, &vkPipeline));
+            ThrowExternalExceptionIfNotSuccess(vkCreateGraphicsPipelines(renderPass.Device.VkDevice, pipelineCache: VkPipelineCache.NULL, 1, &vkPipelineCreateInfo, pAllocator: null, &vkPipeline));
             return vkPipeline;
         }
 
@@ -258,11 +256,17 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPipeline" /> class.</summary>
     ~VulkanGraphicsPipeline() => Dispose(isDisposing: true);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
+
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
     /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
     public new VulkanGraphicsShader? PixelShader => base.PixelShader.As<VulkanGraphicsShader>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <inheritdoc cref="GraphicsPipeline.Signature" />
     public new VulkanGraphicsPipelineSignature Signature => base.Signature.As<VulkanGraphicsPipelineSignature>();

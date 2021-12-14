@@ -94,11 +94,11 @@ public sealed unsafe class D3D12GraphicsTexture : GraphicsTexture
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsTexture" /> class.</summary>
     ~D3D12GraphicsTexture() => Dispose(isDisposing: true);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
+
     /// <inheritdoc cref="GraphicsResource.Allocator" />
     public new D3D12GraphicsMemoryAllocator Allocator => base.Allocator.As<D3D12GraphicsMemoryAllocator>();
-
-    /// <inheritdoc cref="GraphicsResource.Heap" />
-    public new D3D12GraphicsMemoryHeap Heap => base.Heap.As<D3D12GraphicsMemoryHeap>();
 
     /// <summary>Gets the underlying <see cref="ID3D12Resource" /> for the texture.</summary>
     public ID3D12Resource* D3D12Resource
@@ -115,6 +115,12 @@ public sealed unsafe class D3D12GraphicsTexture : GraphicsTexture
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
+    /// <inheritdoc cref="GraphicsResource.Heap" />
+    public new D3D12GraphicsMemoryHeap Heap => base.Heap.As<D3D12GraphicsMemoryHeap>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
     /// <exception cref="ExternalException">The call to <see cref="ID3D12Resource.Map(uint, D3D12_RANGE*, void**)" /> failed.</exception>

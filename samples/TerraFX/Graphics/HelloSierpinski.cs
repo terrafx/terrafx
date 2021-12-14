@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using TerraFX.ApplicationModel;
+using TerraFX.Collections;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -105,22 +106,27 @@ public class HelloSierpinski : HelloWindow
     private unsafe GraphicsPrimitive CreateGraphicsPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
     {
         var graphicsDevice = GraphicsDevice;
-        var graphicsSurface = GraphicsSwapchain.Surface;
+        var graphicsRenderPass = GraphicsRenderPass;
+        var graphicsSurface = graphicsRenderPass.Surface;
 
-        var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Sierpinski", "main", "main");
+        var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Sierpinski", "main", "main");
 
         var constantBuffer = _constantBuffer;
         var indexBuffer = _indexBuffer;
         var vertexBuffer = _vertexBuffer;
 
         (var vertices, var indices) = (_sierpinskiShape == SierpinskiShape.Pyramid) ? SierpinskiPyramid.CreateMeshTetrahedron(_recursionDepth) : SierpinskiPyramid.CreateMeshQuad(_recursionDepth);
-        var normals = SierpinskiPyramid.MeshNormals(vertices);
+        var normals = SierpinskiPyramid.MeshNormals(in vertices);
 
-        var vertexBufferView = CreateVertexBufferView(graphicsContext, vertexBuffer, vertexStagingBuffer, vertices, normals);
+        var vertexBufferView = CreateVertexBufferView(graphicsContext, vertexBuffer, vertexStagingBuffer, in vertices, in normals);
         graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
 
-        var indexBufferView = CreateIndexBufferView(graphicsContext, indexBuffer, indexStagingBuffer, indices);
+        var indexBufferView = CreateIndexBufferView(graphicsContext, indexBuffer, indexStagingBuffer, in indices);
         graphicsContext.Copy(indexBuffer, indexStagingBuffer);
+
+        normals.Dispose();
+        indices.Dispose();
+        vertices.Dispose();
 
         var inputResourceViews = new GraphicsResourceView[3] {
             CreateConstantBufferView(graphicsContext, constantBuffer, index: 0),
@@ -145,7 +151,7 @@ public class HelloSierpinski : HelloWindow
             return constantBufferView;
         }
 
-        static GraphicsResourceView CreateIndexBufferView(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer indexStagingBuffer, List<uint> indices)
+        static GraphicsResourceView CreateIndexBufferView(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer indexStagingBuffer, in UnmanagedValueList<uint> indices)
         {
             var indexBufferView = new GraphicsResourceView {
                 Offset = 0,
@@ -153,14 +159,11 @@ public class HelloSierpinski : HelloWindow
                 Size = SizeOf<uint>() * (uint)indices.Count,
                 Stride = SizeOf<uint>(),
             };
+
             var pIndexBuffer = indexStagingBuffer.Map<uint>(indexBufferView.Offset, indexBufferView.Size);
-
-            for (var i = 0; i < indices.Count; i++)
-            {
-                pIndexBuffer[i] = indices[i];
-            }
-
+            indices.CopyTo(new UnmanagedSpan<uint>(pIndexBuffer, indices.Count));
             indexStagingBuffer.UnmapAndWrite(indexBufferView.Offset, indexBufferView.Size);
+
             return indexBufferView;
         }
 
@@ -196,7 +199,7 @@ public class HelloSierpinski : HelloWindow
             return textureView;
         }
 
-        static GraphicsResourceView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, List<Vector3> vertices, List<Vector3> normals)
+        static GraphicsResourceView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, in UnmanagedValueList<Vector3> vertices, in UnmanagedValueList<Vector3> normals)
         {
             var vertexBufferView = new GraphicsResourceView {
                 Offset = 0,
@@ -211,7 +214,7 @@ public class HelloSierpinski : HelloWindow
             var offset3D = Vector3.Create(1, 1, 1); // to move lower left corner to (0,0,0)
             var scale3D = Vector3.Create(0.5f, 0.5f, 0.5f); // to scale to side length 1
 
-            for (var i = 0; i < vertices.Count; i++)
+            for (nuint i = 0; i < vertices.Count; i++)
             {
                 var xyz = vertices[i];                // position
                 var normal = normals[i];              // normal
@@ -228,13 +231,15 @@ public class HelloSierpinski : HelloWindow
             return vertexBufferView;
         }
 
-        GraphicsPipeline CreateGraphicsPipeline(GraphicsDevice graphicsDevice, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
+        GraphicsPipeline CreateGraphicsPipeline(GraphicsRenderPass graphicsRenderPass, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
         {
+            var graphicsDevice = graphicsRenderPass.Device;
+
             var signature = CreateGraphicsPipelineSignature(graphicsDevice);
             var vertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint);
             var pixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint);
 
-            return graphicsDevice.CreatePipeline(signature, vertexShader, pixelShader);
+            return graphicsRenderPass.CreatePipeline(signature, vertexShader, pixelShader);
         }
 
         static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)

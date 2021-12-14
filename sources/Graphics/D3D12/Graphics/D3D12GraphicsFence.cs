@@ -56,6 +56,9 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsFence" /> class.</summary>
     ~D3D12GraphicsFence() => Dispose(isDisposing: false);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
+
     /// <summary>Gets the underlying <see cref="ID3D12Fence" /> for the fence.</summary>
     public ID3D12Fence* D3D12Fence
     {
@@ -81,6 +84,9 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
     public override bool IsSignalled => D3D12Fence->GetCompletedValue() >= D3D12FenceSignalValue;

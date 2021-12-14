@@ -1,7 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Runtime.CompilerServices;
 using TerraFX.Numerics;
 
 namespace TerraFX.Graphics;
@@ -17,25 +16,28 @@ public abstract unsafe class GraphicsRenderContext : GraphicsContext
     {
     }
 
-    /// <summary>Gets the swapchain which provides framebuffers for the context or <c>null</c> if one has not been set.</summary>
-    public abstract GraphicsSwapchain? Swapchain { get; }
+    /// <summary>Gets the current render pass for the context or <c>null</c> if one has not been set.</summary>
+    public abstract GraphicsRenderPass? RenderPass { get; }
 
-    /// <summary>Begins the drawing stage.</summary>
-    /// <param name="framebufferIndex">The framebuffer index of <see cref="Swapchain" /> on which the context should draw.</param>
-    /// <param name="backgroundColor">A color to which the background should be cleared.</param>
-    /// <exception cref="ArgumentNullException"><see cref="Swapchain" /> is <c>null</c>.</exception>
+    /// <summary>Begins a render pass.</summary>
+    /// <param name="renderPass">The render pass to begin.</param>
+    /// <param name="renderTargetClearColor">The color to which the render target should be cleared.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="renderPass" /> is <c>null</c>.</exception>
+    /// <exception cref="InvalidOperationException">A render pass is already active.</exception>
     /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-    public abstract void BeginDrawing(uint framebufferIndex, ColorRgba backgroundColor);
+    public abstract void BeginRenderPass(GraphicsRenderPass renderPass, ColorRgba renderTargetClearColor);
 
     /// <summary>Draws a primitive to the render surface.</summary>
     /// <param name="primitive">The primitive to draw.</param>
     /// <exception cref="ArgumentNullException"><paramref name="primitive" /> is <c>null</c>.</exception>
+    /// <exception cref="InvalidOperationException">A render pass is not active.</exception>
     /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
     public abstract void Draw(GraphicsPrimitive primitive);
 
-    /// <summary>Ends the drawing stage.</summary>
+    /// <summary>Ends a render pass.</summary>
+    /// <exception cref="InvalidOperationException">A render pass is not active.</exception>
     /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-    public abstract void EndDrawing();
+    public abstract void EndRenderPass();
 
     /// <summary>Sets the scissor for the context.</summary>
     /// <param name="scissor">The scissor to set.</param>
@@ -44,12 +46,6 @@ public abstract unsafe class GraphicsRenderContext : GraphicsContext
     /// <summary>Sets the scissors for the context.</summary>
     /// <param name="scissors">The scissors to set.</param>
     public abstract void SetScissors(ReadOnlySpan<BoundingRectangle> scissors);
-
-    /// <summary>Sets the swapchain which provides framebuffers for the context.</summary>
-    /// <param name="swapchain">The swapchain which provides framebuffers for the context.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="swapchain" /> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="swapchain" /> doesn't belong to <see cref="GraphicsDeviceObject.Device" />.</exception>
-    public abstract void SetSwapchain(GraphicsSwapchain swapchain);
 
     /// <summary>Sets the viewport for the context.</summary>
     /// <param name="viewport">The viewport to set.</param>

@@ -144,13 +144,41 @@ public static unsafe class UnsafeUtilities
     public static T* GetPointer<T>(this ReadOnlySpan<T> span)
         where T : unmanaged => AsPointer(ref AsRef(in span.GetReference()));
 
+    /// <inheritdoc cref="MemoryMarshal.GetArrayDataReference{T}(T[])" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ref T GetReference<T>(this T[] array) => ref MemoryMarshal.GetArrayDataReference(array);
+
+    /// <inheritdoc cref="MemoryMarshal.GetArrayDataReference{T}(T[])" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ref T GetReference<T>(this T[] array, int index) => ref Unsafe.Add(ref array.GetReference(), index);
+
+    /// <inheritdoc cref="MemoryMarshal.GetArrayDataReference{T}(T[])" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ref T GetReference<T>(this T[] array, nuint index) => ref Unsafe.Add(ref array.GetReference(), index);
+
     /// <inheritdoc cref="MemoryMarshal.GetReference{T}(Span{T})" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T GetReference<T>(this Span<T> span) => ref MemoryMarshal.GetReference(span);
 
+    /// <inheritdoc cref="MemoryMarshal.GetReference{T}(Span{T})" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ref T GetReference<T>(this Span<T> span, int index) => ref Unsafe.Add(ref MemoryMarshal.GetReference(span), index);
+
+    /// <inheritdoc cref="MemoryMarshal.GetReference{T}(Span{T})" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ref T GetReference<T>(this Span<T> span, nuint index) => ref Unsafe.Add(ref MemoryMarshal.GetReference(span), index);
+
     /// <inheritdoc cref="MemoryMarshal.GetReference{T}(ReadOnlySpan{T})" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref readonly T GetReference<T>(this ReadOnlySpan<T> span) => ref MemoryMarshal.GetReference(span);
+
+    /// <inheritdoc cref="MemoryMarshal.GetReference{T}(ReadOnlySpan{T})" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ref readonly T GetReference<T>(this ReadOnlySpan<T> span, int index) => ref Unsafe.Add(ref MemoryMarshal.GetReference(span), index);
+
+    /// <inheritdoc cref="MemoryMarshal.GetReference{T}(ReadOnlySpan{T})" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ref readonly T GetReference<T>(this ReadOnlySpan<T> span, nuint index) => ref Unsafe.Add(ref MemoryMarshal.GetReference(span), index);
 
     /// <inheritdoc cref="Unsafe.IsNullRef{T}(ref T)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -223,7 +251,7 @@ public static unsafe class UnsafeUtilities
     /// <inheritdoc cref="Unsafe.WriteUnaligned{T}(void*, T)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteUnaligned<T>(void* source, T value)
-        where T : unmanaged => Unsafe.WriteUnaligned<T>(source, value);
+        where T : unmanaged => Unsafe.WriteUnaligned(source, value);
 
     /// <inheritdoc cref="Unsafe.WriteUnaligned{T}(void*, T)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

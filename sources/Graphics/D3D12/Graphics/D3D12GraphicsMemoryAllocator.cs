@@ -61,11 +61,17 @@ public sealed unsafe class D3D12GraphicsMemoryAllocator : GraphicsMemoryAllocato
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsMemoryAllocator" /> class.</summary>
     ~D3D12GraphicsMemoryAllocator() => Dispose(isDisposing: true);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
+
     /// <inheritdoc />
     public override int Count => _heapCollections.Length;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <summary>Gets <c>true</c> if <see cref="Device" /> supports <see cref="D3D12_RESOURCE_HEAP_TIER_2" />; otherwise, <c>false</c>.</summary>
     public bool SupportsD3D12ResourceHeapTier2 => _supportsD3D12ResourceHeapTier2;

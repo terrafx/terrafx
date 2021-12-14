@@ -162,6 +162,9 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsPipelineSignature" /> class.</summary>
     ~D3D12GraphicsPipelineSignature() => Dispose(isDisposing: false);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
+
     /// <summary>Gets the underlying <see cref="ID3D12RootSignature" /> for the pipeline.</summary>
     public ID3D12RootSignature* D3D12RootSignature
     {
@@ -174,6 +177,9 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)

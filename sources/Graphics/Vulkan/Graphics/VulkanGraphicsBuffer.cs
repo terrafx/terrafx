@@ -30,6 +30,9 @@ public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsBuffer" /> class.</summary>
     ~VulkanGraphicsBuffer() => Dispose(isDisposing: true);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
+
     /// <inheritdoc cref="GraphicsResource.Allocator" />
     public new VulkanGraphicsMemoryAllocator Allocator => base.Allocator.As<VulkanGraphicsMemoryAllocator>();
 
@@ -38,6 +41,9 @@ public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkBuffer" /> for the buffer.</summary>
     public VkBuffer VkBuffer

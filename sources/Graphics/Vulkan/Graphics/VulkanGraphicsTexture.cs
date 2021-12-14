@@ -93,14 +93,20 @@ public sealed unsafe class VulkanGraphicsTexture : GraphicsTexture
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsTexture" /> class.</summary>
     ~VulkanGraphicsTexture() => Dispose(isDisposing: true);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
+
     /// <inheritdoc cref="GraphicsResource.Allocator" />
     public new VulkanGraphicsMemoryAllocator Allocator => base.Allocator.As<VulkanGraphicsMemoryAllocator>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
+    public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
     /// <inheritdoc />
     public new VulkanGraphicsMemoryHeap Heap => base.Heap.As<VulkanGraphicsMemoryHeap>();
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-    public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkImage" /> for the buffer.</summary>
     public VkImage VkImage

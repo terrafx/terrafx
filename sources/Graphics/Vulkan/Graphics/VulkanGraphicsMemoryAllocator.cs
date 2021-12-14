@@ -45,11 +45,17 @@ public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocat
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsMemoryAllocator" /> class.</summary>
     ~VulkanGraphicsMemoryAllocator() => Dispose(isDisposing: true);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
+
     /// <inheritdoc />
     public override int Count => _heapCollections.Length;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <inheritdoc />
     public override VulkanGraphicsBuffer CreateBuffer(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, GraphicsMemoryHeapRegionAllocationFlags allocationFlags = GraphicsMemoryHeapRegionAllocationFlags.None)

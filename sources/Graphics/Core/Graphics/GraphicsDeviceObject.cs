@@ -6,9 +6,11 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics;
 
 /// <summary>An object which is created for a graphics device.</summary>
-public abstract class GraphicsDeviceObject : IDisposable
+public abstract class GraphicsDeviceObject : IGraphicsDeviceObject
 {
+    private readonly GraphicsAdapter _adapter;
     private readonly GraphicsDevice _device;
+    private readonly GraphicsService _service;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsDeviceObject" /> class.</summary>
     /// <param name="device">The device for which the object is being created.</param>
@@ -16,11 +18,20 @@ public abstract class GraphicsDeviceObject : IDisposable
     protected GraphicsDeviceObject(GraphicsDevice device)
     {
         ThrowIfNull(device);
+
+        _adapter = device.Adapter;
         _device = device;
+        _service = device.Service;
     }
+
+    /// <summary>Gets the underlying adapter for <see cref="Device" />.</summary>
+    public GraphicsAdapter Adapter => _adapter;
 
     /// <summary>Gets the device for which the object was created.</summary>
     public GraphicsDevice Device => _device;
+
+    /// <summary>Gets the underlying service for <see cref="Adapter" />.</summary>
+    public GraphicsService Service => _service;
 
     /// <inheritdoc />
     public void Dispose()

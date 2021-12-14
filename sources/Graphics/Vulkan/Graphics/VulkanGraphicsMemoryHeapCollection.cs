@@ -4,6 +4,7 @@
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
 using TerraFX.Interop.Vulkan;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
 
@@ -18,11 +19,17 @@ public sealed class VulkanGraphicsMemoryHeapCollection : GraphicsMemoryHeapColle
         _vkMemoryTypeIndex = vkMemoryTypeIndex;
     }
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
+
     /// <inheritdoc cref="GraphicsMemoryHeapCollection.Allocator" />
-    public new VulkanGraphicsMemoryAllocator Allocator => (VulkanGraphicsMemoryAllocator)base.Allocator;
+    public new VulkanGraphicsMemoryAllocator Allocator => base.Allocator.As<VulkanGraphicsMemoryAllocator>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
-    public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
+    public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the memory type index used when creating the <see cref="VkDeviceMemory" /> instance for a memory heap.</summary>
     public uint VkMemoryTypeIndex => _vkMemoryTypeIndex;

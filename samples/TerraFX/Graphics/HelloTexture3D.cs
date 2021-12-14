@@ -70,7 +70,7 @@ public class HelloTexture3D : HelloWindow
     protected override unsafe void Update(TimeSpan delta)
     {
         var graphicsDevice = GraphicsDevice;
-        var graphicsSurface = GraphicsSwapchain.Surface;
+        var graphicsSurface = GraphicsRenderPass.Surface;
         var scale255_256 = 255f / 256f;
         var aspectRatio = graphicsSurface.Width / graphicsSurface.Height;
         var scaleX = scale255_256;
@@ -111,9 +111,10 @@ public class HelloTexture3D : HelloWindow
     private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
     {
         var graphicsDevice = GraphicsDevice;
-        var graphicsSurface = GraphicsSwapchain.Surface;
+        var graphicsRenderPass = GraphicsRenderPass;
+        var graphicsSurface = graphicsRenderPass.Surface;
 
-        var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Texture3D", "main", "main");
+        var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Texture3D", "main", "main");
 
         var constantBuffer = _constantBuffer;
         var indexBuffer = _indexBuffer;
@@ -241,13 +242,15 @@ public class HelloTexture3D : HelloWindow
             return vertexBufferView;
         }
 
-        GraphicsPipeline CreateGraphicsPipeline(GraphicsDevice graphicsDevice, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
+        GraphicsPipeline CreateGraphicsPipeline(GraphicsRenderPass graphicsRenderPass, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
         {
+            var graphicsDevice = graphicsRenderPass.Device;
+
             var signature = CreateGraphicsPipelineSignature(graphicsDevice);
             var vertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint);
             var pixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint);
 
-            return graphicsDevice.CreatePipeline(signature, vertexShader, pixelShader);
+            return graphicsRenderPass.CreatePipeline(signature, vertexShader, pixelShader);
         }
 
         static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)

@@ -31,6 +31,9 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsShader" /> class.</summary>
     ~D3D12GraphicsShader() => Dispose(isDisposing: false);
 
+    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
+
     /// <inheritdoc />
     public override UnmanagedReadOnlySpan<byte> Bytecode => new UnmanagedReadOnlySpan<byte>((byte*)_d3d12ShaderBytecode.pShaderBytecode, _d3d12ShaderBytecode.BytecodeLength);
 
@@ -39,6 +42,9 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
+    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)

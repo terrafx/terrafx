@@ -1,6 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace TerraFX;
@@ -9,7 +11,7 @@ namespace TerraFX;
 /// <typeparam name="T">The type of items contained in the span.</typeparam>
 [DebuggerDisplay("IsEmpty = {IsEmpty}; Length = {Length}")]
 [DebuggerTypeProxy(typeof(UnmanagedReadOnlySpan<>.DebugView))]
-public readonly unsafe partial struct UnmanagedReadOnlySpan<T>
+public readonly unsafe partial struct UnmanagedReadOnlySpan<T> : IEnumerable<T>
     where T : unmanaged
 {
     /// <summary>An empty span.</summary>
@@ -71,6 +73,9 @@ public readonly unsafe partial struct UnmanagedReadOnlySpan<T>
     /// <inheritdoc cref="UnmanagedSpan{T}.CopyTo(UnmanagedSpan{T})" />
     public void CopyTo(UnmanagedSpan<T> destination) => _span.CopyTo(destination);
 
+    /// <inheritdoc cref="UnmanagedSpan{T}.GetEnumerator()" />
+    public Enumerator GetEnumerator() => new Enumerator(this);
+
     /// <inheritdoc cref="UnmanagedSpan{T}.GetPointer(nuint)" />
     public T* GetPointer(nuint index) => _span.GetPointer(index);
 
@@ -85,4 +90,8 @@ public readonly unsafe partial struct UnmanagedReadOnlySpan<T>
 
     /// <inheritdoc cref="UnmanagedSpan{T}.Slice(nuint, nuint)" />
     public UnmanagedReadOnlySpan<T> Slice(nuint start, nuint length) => _span.Slice(start, length);
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }

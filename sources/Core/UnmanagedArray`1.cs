@@ -1,6 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using static TerraFX.Runtime.Configuration;
@@ -11,11 +13,11 @@ using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX;
 
-/// <summary></summary>
-/// <typeparam name="T"></typeparam>
+/// <summary>Represents a non-resizable collection of items of a given type.</summary>
+/// <typeparam name="T">The type of the items contained by the array.</typeparam>
 [DebuggerDisplay("Alignment = {Alignment}; IsNull = {IsNull}; Length = {Length}")]
 [DebuggerTypeProxy(typeof(UnmanagedArray<>.DebugView))]
-public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
+public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerable<T>
     where T : unmanaged
 {
     /// <summary>An empty array.</summary>
@@ -193,6 +195,10 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
         CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), items, length);
     }
 
+    /// <summary>Gets an enumerator that can iterate through the items in the array.</summary>
+    /// <returns>An enumerator that can iterate through the items in the array.</returns>
+    public Enumerator GetEnumerator() => new Enumerator(this);
+
     /// <summary>Gets a pointer to the item at the specified index of the array.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
     /// <returns>A pointer to the item that exists at <paramref name="index" /> in the array.</returns>
@@ -206,7 +212,7 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
     /// <summary>Gets a pointer to the item at the specified index of the array.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
     /// <returns>A pointer to the item that exists at <paramref name="index" /> in the array.</returns>
-    /// <remarks>This method is unsafe because it does not validated that <paramref name="index" /> is less than <see cref="Length" />.</remarks>
+    /// <remarks>This method is unsafe because it does not validate that <paramref name="index" /> is less than <see cref="Length" />.</remarks>
     public T* GetPointerUnsafe(nuint index)
     {
         AssertNotNull(this);
@@ -224,6 +230,10 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
     /// <summary>Gets a reference to the item at the specified index of the array.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
     /// <returns>A reference to the item that exists at <paramref name="index" /> in the array.</returns>
-    /// <remarks>This method is unsafe because it does not validated that <paramref name="index" /> is less than <see cref="Length" />.</remarks>
+    /// <remarks>This method is unsafe because it does not validate that <paramref name="index" /> is less than <see cref="Length" />.</remarks>
     public ref T GetReferenceUnsafe(nuint index) => ref AsRef<T>(GetPointerUnsafe(index));
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }

@@ -133,16 +133,6 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
-    public override D3D12GraphicsPipeline CreatePipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null)
-        => CreatePipeline((D3D12GraphicsPipelineSignature)signature, (D3D12GraphicsShader?)vertexShader, (D3D12GraphicsShader?)pixelShader);
-
-    private D3D12GraphicsPipeline CreatePipeline(D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
-    {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
-        return new D3D12GraphicsPipeline(this, signature, vertexShader, pixelShader);
-    }
-
-    /// <inheritdoc />
     public override D3D12GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResource> resources = default)
     {
         ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
@@ -168,10 +158,10 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
-    public override D3D12GraphicsSwapchain CreateSwapchain(IGraphicsSurface surface)
+    public override D3D12GraphicsRenderPass CreateRenderPass(IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0)
     {
         ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
-        return new D3D12GraphicsSwapchain(this, surface);
+        return new D3D12GraphicsRenderPass(this, surface, renderTargetFormat, minimumRenderTargetCount);
     }
 
     /// <inheritdoc />
