@@ -46,14 +46,14 @@ public sealed class HelloTextureTransform : HelloWindow
         var graphicsDevice = GraphicsDevice;
         var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
-        using var vertexStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, 64 * 1024);
-        using var textureStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, 64 * 1024 * 4);
+        using var vertexUploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024);
+        using var textureUploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024 * 4);
 
-        _constantBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Constant, 64 * 1024);
-        _vertexBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.None, GraphicsBufferKind.Vertex, 64 * 1024);
+        _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsResourceCpuAccess.Write);
+        _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
         graphicsRenderContext.Reset();
-        _trianglePrimitive = CreateTrianglePrimitive(graphicsRenderContext, vertexStagingBuffer, textureStagingBuffer);
+        _trianglePrimitive = CreateTrianglePrimitive(graphicsRenderContext, vertexUploadBuffer, textureUploadBuffer);
         graphicsRenderContext.Flush();
 
         graphicsDevice.WaitForIdle();
@@ -139,7 +139,7 @@ public sealed class HelloTextureTransform : HelloWindow
             const uint CellWidth = TextureWidth / 8;
             const uint CellHeight = TextureHeight / 8;
 
-            var texture = graphicsContext.Device.CreateTexture(GraphicsResourceCpuAccess.None, GraphicsTextureKind.TwoDimensional, GraphicsFormat.R8G8B8A8_UNORM, TextureWidth, TextureHeight);
+            var texture = graphicsContext.Device.CreateTexture2D(GraphicsFormat.R8G8B8A8_UNORM, TextureWidth, TextureHeight);
             var textureView = new GraphicsResourceView {
                 Offset = 0,
                 Resource = texture,

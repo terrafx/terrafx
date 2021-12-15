@@ -14,7 +14,7 @@ using static TerraFX.Utilities.VulkanUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
+public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
 {
     private readonly VulkanGraphicsMemoryHeap _memoryHeap;
     private readonly VkBuffer _vkBuffer;
@@ -22,14 +22,14 @@ public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
     private string _name = null!;
     private VolatileState _state;
 
-    internal VulkanGraphicsBuffer(VulkanGraphicsDevice device, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment, in GraphicsMemoryRegion memoryRegion, GraphicsBufferKind kind, VkBuffer vkBuffer)
-        : base(device, cpuAccess, size, alignment, in memoryRegion, kind)
+    internal VulkanGraphicsBuffer(VulkanGraphicsDevice device, in CreateInfo createInfo)
+        : base(device, in createInfo.MemoryRegion, in createInfo.ResourceInfo, createInfo.Kind)
     {
-        var memoryHeap = memoryRegion.Allocator.DeviceObject.As<VulkanGraphicsMemoryHeap>();
+        var memoryHeap = createInfo.MemoryRegion.Allocator.DeviceObject.As<VulkanGraphicsMemoryHeap>();
         _memoryHeap = memoryHeap;
 
-        ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(device.VkDevice, vkBuffer, memoryHeap.VkDeviceMemory, memoryRegion.Offset));
-        _vkBuffer = vkBuffer;
+        ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(device.VkDevice, createInfo.VkBuffer, memoryHeap.VkDeviceMemory, createInfo.MemoryRegion.Offset));
+        _vkBuffer = createInfo.VkBuffer;
 
         _ = _state.Transition(to: Initialized);
         Name = nameof(VulkanGraphicsBuffer);

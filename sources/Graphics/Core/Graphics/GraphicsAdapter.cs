@@ -31,7 +31,7 @@ public abstract unsafe class GraphicsAdapter : GraphicsServiceObject
     public GraphicsDevice CreateDevice() => CreateDevice(createMemoryAllocator: null);
 
     /// <summary>Creates a new graphics device which utilizes the adapter.</summary>
-    /// <param name="createMemoryAllocator">A method which creates the backing memory allocators used by the device or <c>null</c> to use the system provided default memory allocator.</param>
+    /// <param name="createMemoryAllocator">A function pointer to a method which creates the backing memory allocators used by the device or <c>null</c> to use the system provided default memory allocator.</param>
     /// <exception cref="ObjectDisposedException">The adapter has been disposed.</exception>
     public abstract GraphicsDevice CreateDevice(delegate*<GraphicsDeviceObject, ulong, GraphicsMemoryAllocator> createMemoryAllocator);
 

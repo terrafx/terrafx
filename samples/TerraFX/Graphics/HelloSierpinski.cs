@@ -52,16 +52,16 @@ public class HelloSierpinski : HelloWindow
         var vertexBufferSize = vertices * SizeOf<PosNormTex3DVertex>();
         var indexBufferSize = vertices * SizeOf<uint>(); // matches vertices count because vertices are replicated, three unique ones per triangle
 
-        using var vertexStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, vertexBufferSize);
-        using var indexStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, indexBufferSize);
-        using var textureStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, 64 * 1024 * 1024);
+        using var vertexUploadBuffer = graphicsDevice.CreateUploadBuffer( vertexBufferSize);
+        using var indexUploadBuffer = graphicsDevice.CreateUploadBuffer(indexBufferSize);
+        using var textureUploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024 * 1024);
 
-        _constantBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Constant, 64 * 1024);
-        _indexBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.None, GraphicsBufferKind.Index, indexBufferSize);
-        _vertexBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.None, GraphicsBufferKind.Vertex, vertexBufferSize);
+        _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsResourceCpuAccess.Write);
+        _indexBuffer = graphicsDevice.CreateIndexBuffer(indexBufferSize);
+        _vertexBuffer = graphicsDevice.CreateVertexBuffer(vertexBufferSize);
 
         graphicsRenderContext.Reset();
-        _pyramid = CreateGraphicsPrimitive(graphicsRenderContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
+        _pyramid = CreateGraphicsPrimitive(graphicsRenderContext, vertexUploadBuffer, indexUploadBuffer, textureUploadBuffer);
         graphicsRenderContext.Flush();
 
         graphicsDevice.WaitForIdle();
@@ -174,7 +174,7 @@ public class HelloSierpinski : HelloWindow
             const uint TextureDz = TextureWidth * TextureHeight;
             const uint TexturePixels = TextureDz * TextureDepth;
 
-            var texture = graphicsContext.Device.CreateTexture(GraphicsResourceCpuAccess.None, GraphicsTextureKind.ThreeDimensional, GraphicsFormat.R8G8B8A8_UNORM, TextureWidth, TextureHeight, TextureDepth);
+            var texture = graphicsContext.Device.CreateTexture3D(GraphicsFormat.R8G8B8A8_UNORM, TextureWidth, TextureHeight, TextureDepth);
             var textureView = new GraphicsResourceView {
                 Offset = 0,
                 Resource = texture,

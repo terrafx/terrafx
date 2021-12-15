@@ -51,16 +51,16 @@ public class HelloTexture3D : HelloWindow
         var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
         var textureSize = 4u * TEXTURE3D_SIDE_LENGTH * TEXTURE3D_SIDE_LENGTH * TEXTURE3D_SIDE_LENGTH;
-        using var vertexStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, 64 * 1024);
-        using var indexStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, 64 * 1024);
-        using var textureStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, textureSize);
+        using var vertexUploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024);
+        using var indexUploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024);
+        using var textureUploadBuffer = graphicsDevice.CreateUploadBuffer(textureSize);
 
-        _constantBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Constant, 64 * 1024);
-        _indexBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.None, GraphicsBufferKind.Index, 64 * 1024);
-        _vertexBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.None, GraphicsBufferKind.Vertex, 64 * 1024);
+        _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsResourceCpuAccess.Write);
+        _indexBuffer = graphicsDevice.CreateIndexBuffer(64 * 1024);
+        _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
         graphicsRenderContext.Reset();
-        _quadPrimitive = CreateQuadPrimitive(graphicsRenderContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
+        _quadPrimitive = CreateQuadPrimitive(graphicsRenderContext, vertexUploadBuffer, indexUploadBuffer, textureUploadBuffer);
         graphicsRenderContext.Flush();
 
         graphicsDevice.WaitForIdle();
@@ -181,7 +181,7 @@ public class HelloTexture3D : HelloWindow
             const uint TextureDz = TextureWidth * TextureHeight;
             const uint TexturePixels = TextureDz * TextureDepth;
 
-            var texture = graphicsContext.Device.CreateTexture(GraphicsResourceCpuAccess.None, GraphicsTextureKind.ThreeDimensional, GraphicsFormat.R8G8B8A8_UNORM, TextureWidth, TextureHeight, (ushort)TextureDepth);
+            var texture = graphicsContext.Device.CreateTexture3D(GraphicsFormat.R8G8B8A8_UNORM, TextureWidth, TextureHeight, (ushort)TextureDepth);
             var textureView = new GraphicsResourceView {
                 Offset = 0,
                 Resource = texture,

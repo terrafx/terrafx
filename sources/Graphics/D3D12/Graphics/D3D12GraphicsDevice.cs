@@ -126,7 +126,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsDevice" /> class.</summary>
     ~D3D12GraphicsDevice() => Dispose(isDisposing: false);
 
-    /// <inheritdoc cref="GraphicsDevice.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <summary>Gets the descriptor handle increment size for <see cref="D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV" />.</summary>
@@ -176,27 +176,38 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
         }
     }
 
-    /// <inheritdoc cref="GraphicsDevice.Service" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <summary>Gets a fence that is used to wait for the device to become idle.</summary>
     public D3D12GraphicsFence WaitForIdleFence => _waitForIdleFence;
 
     /// <inheritdoc />
-    public override D3D12GraphicsBuffer CreateBuffer(GraphicsResourceCpuAccess cpuAccess, GraphicsBufferKind kind, ulong size)
+    public override D3D12GraphicsBuffer CreateBuffer(in GraphicsBufferCreateInfo bufferCreateInfo)
     {
         var d3d12Device = D3D12Device;
 
-        var d3d12ResourceDesc = GetD3D12ResourceDesc(size, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
+        var d3d12ResourceDesc = GetD3D12ResourceDesc(bufferCreateInfo.Size, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
         var d3d12ResourceAllocationInfo = d3d12Device->GetResourceAllocationInfo(visibleMask: 0, numResourceDescs: 1, &d3d12ResourceDesc);
 
-        var memoryManagerIndex = GetMemoryManagerIndex(cpuAccess, 0);
+        var memoryManagerIndex = GetMemoryManagerIndex(bufferCreateInfo.CpuAccess, 0);
         var memoryRegion = _memoryManagers[memoryManagerIndex].Allocate(d3d12ResourceAllocationInfo.SizeInBytes, d3d12ResourceAllocationInfo.Alignment, GraphicsMemoryAllocationFlags.None);
 
-        var d3d12ResourceState = GetD3D12ResourceState(cpuAccess, kind);
+        var d3d12ResourceState = GetD3D12ResourceState(bufferCreateInfo.CpuAccess, bufferCreateInfo.Kind);
         var d3d12Resource = CreateD3D12Resource(d3d12Device, &d3d12ResourceDesc, in memoryRegion, d3d12ResourceState);
 
-        return new D3D12GraphicsBuffer(this, cpuAccess, d3d12ResourceAllocationInfo.SizeInBytes, d3d12ResourceAllocationInfo.Alignment, in memoryRegion, kind, d3d12Resource, d3d12ResourceState);
+        var createInfo = new D3D12GraphicsBuffer.CreateInfo {
+            D3D12Resource = d3d12Resource,
+            D3D12ResourceState = d3d12ResourceState,
+            MemoryRegion = memoryRegion,
+            Kind = bufferCreateInfo.Kind,
+            ResourceInfo = new GraphicsResourceInfo {
+                Alignment = d3d12ResourceAllocationInfo.Alignment,
+                CpuAccess = bufferCreateInfo.CpuAccess,
+                Size = d3d12ResourceAllocationInfo.SizeInBytes,
+            },
+        };
+        return new D3D12GraphicsBuffer(this, in createInfo);
 
         static ID3D12Resource* CreateD3D12Resource(ID3D12Device* d3d12Device, D3D12_RESOURCE_DESC* d3d12ResourceDesc, in GraphicsMemoryRegion memoryRegion, D3D12_RESOURCE_STATES d3d12ResourceState)
         {
@@ -275,20 +286,37 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
-    public override D3D12GraphicsTexture CreateTexture(GraphicsResourceCpuAccess cpuAccess, GraphicsTextureKind kind, GraphicsFormat format, uint width, uint height = 1, ushort depth = 1)
+    public override D3D12GraphicsTexture CreateTexture(in GraphicsTextureCreateInfo textureCreateInfo)
     {
         var d3d12Device = D3D12Device;
 
-        var d3d12ResourceDesc = GetD3D12ResourceDesc(kind, format.AsDxgiFormat(), width, height, depth, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
+        var d3d12ResourceDesc = GetD3D12ResourceDesc(textureCreateInfo.Kind, textureCreateInfo.Format.AsDxgiFormat(), textureCreateInfo.Width, textureCreateInfo.Height, textureCreateInfo.Depth, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
         var d3d12ResourceAllocationInfo = d3d12Device->GetResourceAllocationInfo(visibleMask: 0, numResourceDescs: 1, &d3d12ResourceDesc);
 
-        var memoryManagerIndex = GetMemoryManagerIndex(cpuAccess, 1);
+        var memoryManagerIndex = GetMemoryManagerIndex(textureCreateInfo.CpuAccess, 1);
         var memoryRegion = _memoryManagers[memoryManagerIndex].Allocate(d3d12ResourceAllocationInfo.SizeInBytes, d3d12ResourceAllocationInfo.Alignment, GraphicsMemoryAllocationFlags.None);
 
-        var d3d12ResourceState = GetD3D12ResourceState(cpuAccess, kind);
+        var d3d12ResourceState = GetD3D12ResourceState(textureCreateInfo.CpuAccess, textureCreateInfo.Kind);
         var d3d12Resource = CreateD3D12Resource(d3d12Device, &d3d12ResourceDesc, in memoryRegion, d3d12ResourceState);
 
-        return new D3D12GraphicsTexture(this, cpuAccess, d3d12ResourceAllocationInfo.SizeInBytes, d3d12ResourceAllocationInfo.Alignment, in memoryRegion, kind, format, width, height, depth, d3d12Resource, d3d12ResourceState);
+        var createInfo = new D3D12GraphicsTexture.CreateInfo {
+            D3D12Resource = d3d12Resource,
+            D3D12ResourceState = d3d12ResourceState,
+            MemoryRegion = memoryRegion,
+            ResourceInfo = new GraphicsResourceInfo {
+                Alignment = d3d12ResourceAllocationInfo.Alignment,
+                CpuAccess = textureCreateInfo.CpuAccess,
+                Size = d3d12ResourceAllocationInfo.SizeInBytes,
+            },
+            TextureInfo = new GraphicsTextureInfo {
+                Depth = textureCreateInfo.Depth,
+                Format = textureCreateInfo.Format,
+                Height = textureCreateInfo.Height,
+                Kind = textureCreateInfo.Kind,
+                Width = textureCreateInfo.Width,
+            },
+        };
+        return new D3D12GraphicsTexture(this, in createInfo);
 
         static ID3D12Resource* CreateD3D12Resource(ID3D12Device* d3d12Device, D3D12_RESOURCE_DESC* d3d12ResourceDesc, in GraphicsMemoryRegion memoryRegion, D3D12_RESOURCE_STATES d3d12ResourceState)
         {

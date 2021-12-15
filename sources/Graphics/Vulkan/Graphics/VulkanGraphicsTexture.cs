@@ -21,7 +21,7 @@ using static TerraFX.Utilities.VulkanUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public sealed unsafe class VulkanGraphicsTexture : GraphicsTexture
+public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
 {
     private readonly VulkanGraphicsMemoryHeap _memoryHeap;
     private readonly VkImage _vkImage;
@@ -31,16 +31,16 @@ public sealed unsafe class VulkanGraphicsTexture : GraphicsTexture
     private string _name = null!;
     private VolatileState _state;
 
-    internal VulkanGraphicsTexture(VulkanGraphicsDevice device, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment, in GraphicsMemoryRegion memoryRegion, GraphicsTextureKind kind, GraphicsFormat format, uint width, uint height, ushort depth, VkImage vkImage)
-        : base(device, cpuAccess, size, alignment, in memoryRegion, kind, format, width, height, depth)
+    internal VulkanGraphicsTexture(VulkanGraphicsDevice device, in CreateInfo createInfo)
+        : base(device, in createInfo.MemoryRegion, in createInfo.ResourceInfo, in createInfo.TextureInfo)
     {
-        var memoryHeap = memoryRegion.Allocator.DeviceObject.As<VulkanGraphicsMemoryHeap>();
+        var memoryHeap = createInfo.MemoryRegion.Allocator.DeviceObject.As<VulkanGraphicsMemoryHeap>();
         _memoryHeap = memoryHeap;
 
-        ThrowExternalExceptionIfNotSuccess(vkBindImageMemory(device.VkDevice, vkImage, memoryHeap.VkDeviceMemory, memoryRegion.Offset));
-        _vkImage = vkImage;
+        ThrowExternalExceptionIfNotSuccess(vkBindImageMemory(device.VkDevice, createInfo.VkImage, memoryHeap.VkDeviceMemory, createInfo.MemoryRegion.Offset));
+        _vkImage = createInfo.VkImage;
 
-        _vkImageView = CreateVkImageView(device, kind, vkImage);
+        _vkImageView = CreateVkImageView(device, createInfo.TextureInfo.Kind, createInfo.VkImage);
         _vkSampler = CreateVkSampler(device);
 
         _ = _state.Transition(to: Initialized);

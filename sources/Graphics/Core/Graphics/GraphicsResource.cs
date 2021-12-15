@@ -5,40 +5,34 @@ using System;
 namespace TerraFX.Graphics;
 
 /// <summary>A graphics resource bound to a graphics device.</summary>
-public abstract unsafe partial class GraphicsResource : GraphicsDeviceObject
+public abstract unsafe class GraphicsResource : GraphicsDeviceObject
 {
-    private readonly ulong _alignment;
-    private readonly GraphicsResourceCpuAccess _cpuAccess;
     private readonly GraphicsMemoryRegion _memoryRegion;
-    private readonly ulong _size;
+    private readonly GraphicsResourceInfo _resourceInfo;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsResource" /> class.</summary>
     /// <param name="device">The device for which the resource was created.</param>
-    /// <param name="cpuAccess">The CPU access capabilities for the resource.</param>
-    /// <param name="size">The size, in bytes, of the resource.</param>
-    /// <param name="alignment">The alignment, in bytes, of the resource.</param>
-    /// <param name="memoryRegion">The memory region in which the resource exists.</param>
+    /// <param name="memoryRegion">The memory region in which the resource resides.</param>
+    /// <param name="resourceInfo">The resource info that describes the resource.</param>
     /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c></exception>
-    protected GraphicsResource(GraphicsDevice device, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment, in GraphicsMemoryRegion memoryRegion)
+    protected GraphicsResource(GraphicsDevice device, in GraphicsMemoryRegion memoryRegion, in GraphicsResourceInfo resourceInfo)
         : base(device)
     {
-        _alignment = alignment;
-        _cpuAccess = cpuAccess;
         _memoryRegion = memoryRegion;
-        _size = size;
+        _resourceInfo = resourceInfo;
     }
 
     /// <summary>Gets the alignment, in bytes, of the resource.</summary>
-    public ulong Alignment => _alignment;
+    public ulong Alignment => _resourceInfo.Alignment;
 
     /// <summary>Gets the CPU access capabilitites of the resource.</summary>
-    public GraphicsResourceCpuAccess CpuAccess => _cpuAccess;
+    public GraphicsResourceCpuAccess CpuAccess => _resourceInfo.CpuAccess;
 
     /// <summary>Gets the memory region in which the resource exists.</summary>
     public ref readonly GraphicsMemoryRegion MemoryRegion => ref _memoryRegion;
 
     /// <summary>Gets the size, in bytes, of the resource.</summary>
-    public ulong Size => _size;
+    public ulong Size => _resourceInfo.Size;
 
     /// <summary>Maps the resource into CPU memory.</summary>
     /// <typeparam name="T">The type of data contained by the resource.</typeparam>

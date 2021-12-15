@@ -11,7 +11,7 @@ using static TerraFX.Utilities.UnsafeUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public sealed unsafe class D3D12GraphicsBuffer : GraphicsBuffer
+public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
 {
     private readonly ID3D12Resource* _d3d12Resource;
     private readonly D3D12_RESOURCE_DESC _d3d12ResourceDesc;
@@ -22,14 +22,16 @@ public sealed unsafe class D3D12GraphicsBuffer : GraphicsBuffer
     private string _name = null!;
     private VolatileState _state;
 
-    internal D3D12GraphicsBuffer(D3D12GraphicsDevice device, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment, in GraphicsMemoryRegion memoryRegion, GraphicsBufferKind kind, ID3D12Resource* d3d12Resource, D3D12_RESOURCE_STATES d3d12ResourceState)
-        : base(device, cpuAccess, size, alignment, in memoryRegion, kind)
+    internal D3D12GraphicsBuffer(D3D12GraphicsDevice device, in CreateInfo createInfo)
+        : base(device, in createInfo.MemoryRegion, in createInfo.ResourceInfo, createInfo.Kind)
     {
+        var d3d12Resource = createInfo.D3D12Resource;
+
         _d3d12Resource = d3d12Resource;
         _d3d12ResourceDesc = d3d12Resource->GetDesc();
         _d3d12ResourceGpuVirtualAddress = d3d12Resource->GetGPUVirtualAddress();
-        _d3d12ResourceState = d3d12ResourceState;
-        _memoryHeap = memoryRegion.Allocator.DeviceObject.As<D3D12GraphicsMemoryHeap>();
+        _d3d12ResourceState = createInfo.D3D12ResourceState;
+        _memoryHeap = createInfo.MemoryRegion.Allocator.DeviceObject.As<D3D12GraphicsMemoryHeap>();
 
         _ = _state.Transition(to: Initialized);
         Name = nameof(D3D12GraphicsBuffer);

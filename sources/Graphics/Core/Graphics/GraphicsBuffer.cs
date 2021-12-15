@@ -11,14 +11,12 @@ public abstract unsafe class GraphicsBuffer : GraphicsResource
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsBuffer" /> class.</summary>
     /// <param name="device">The device for which the buffer was created.</param>
-    /// <param name="cpuAccess">The CPU access capabilities for the buffer.</param>
-    /// <param name="size">The size, in bytes, of the buffer.</param>
-    /// <param name="alignment">The alignment, in bytes, of the buffer.</param>
-    /// <param name="memoryRegion">The memory region in which the buffer exists.</param>
+    /// <param name="memoryRegion">The memory region in which the resource resides.</param>
+    /// <param name="resourceInfo">The resource info that describes the buffer.</param>
     /// <param name="kind">The buffer kind.</param>
     /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c></exception>
-    protected GraphicsBuffer(GraphicsDevice device, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment, in GraphicsMemoryRegion memoryRegion, GraphicsBufferKind kind)
-        : base(device, cpuAccess, size, alignment, in memoryRegion)
+    protected GraphicsBuffer(GraphicsDevice device, in GraphicsMemoryRegion memoryRegion, in GraphicsResourceInfo resourceInfo, GraphicsBufferKind kind)
+        : base(device, in memoryRegion, in resourceInfo)
     {
         _kind = kind;
     }

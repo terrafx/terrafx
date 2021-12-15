@@ -40,13 +40,13 @@ public sealed class HelloTransform : HelloWindow
         var graphicsDevice = GraphicsDevice;
         var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
-        using var vertexStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, 64 * 1024);
+        using var vertexUploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024);
 
-        _constantBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Constant, 64 * 1024);
-        _vertexBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.None, GraphicsBufferKind.Vertex, 64 * 1024);
+        _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsResourceCpuAccess.Write);
+        _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
         graphicsRenderContext.Reset();
-        _trianglePrimitive = CreateTrianglePrimitive(graphicsRenderContext, vertexStagingBuffer);
+        _trianglePrimitive = CreateTrianglePrimitive(graphicsRenderContext, vertexUploadBuffer);
         graphicsRenderContext.Flush();
 
         graphicsDevice.WaitForIdle();

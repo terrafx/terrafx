@@ -158,7 +158,7 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsDevice" /> class.</summary>
     ~VulkanGraphicsDevice() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsDevice.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc />
@@ -176,7 +176,7 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
         }
     }
 
-    /// <inheritdoc cref="GraphicsDevice.Service" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the <see cref="VkQueue" /> used by the device.</summary>
@@ -209,14 +209,14 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     private static ReadOnlySpan<sbyte> VK_LAYER_KHRONOS_VALIDATION_NAME => new sbyte[] { 0x56, 0x4B, 0x5F, 0x4C, 0x41, 0x59, 0x45, 0x52, 0x5F, 0x4B, 0x48, 0x52, 0x4F, 0x4E, 0x4F, 0x53, 0x5F, 0x76, 0x61, 0x6C, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x00 };
 
     /// <inheritdoc />
-    public override VulkanGraphicsBuffer CreateBuffer(GraphicsResourceCpuAccess cpuAccess, GraphicsBufferKind kind, ulong size)
+    public override VulkanGraphicsBuffer CreateBuffer(in GraphicsBufferCreateInfo bufferCreateInfo)
     {
         var vkDevice = VkDevice;
 
         var vkBufferCreateInfo = new VkBufferCreateInfo {
             sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-            size = size,
-            usage = GetVkBufferUsageKind(cpuAccess, kind)
+            size = bufferCreateInfo.Size,
+            usage = GetVkBufferUsageKind(bufferCreateInfo.CpuAccess, bufferCreateInfo.Kind)
         };
 
         VkBuffer vkBuffer;
@@ -225,10 +225,20 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
         VkMemoryRequirements vkMemoryRequirements;
         vkGetBufferMemoryRequirements(vkDevice, vkBuffer, &vkMemoryRequirements);
 
-        var memoryManagerIndex = GetMemoryManagerIndex(cpuAccess, vkMemoryRequirements.memoryTypeBits);
+        var memoryManagerIndex = GetMemoryManagerIndex(bufferCreateInfo.CpuAccess, vkMemoryRequirements.memoryTypeBits);
         var memoryRegion = _memoryManagers[memoryManagerIndex].Allocate(vkMemoryRequirements.size, vkMemoryRequirements.alignment, GraphicsMemoryAllocationFlags.None);
 
-        return new VulkanGraphicsBuffer(this, cpuAccess, vkMemoryRequirements.size, vkMemoryRequirements.alignment, in memoryRegion, kind, vkBuffer);
+        var createInfo = new VulkanGraphicsBuffer.CreateInfo {
+            MemoryRegion = memoryRegion,
+            Kind = bufferCreateInfo.Kind,
+            ResourceInfo = new GraphicsResourceInfo {
+                Alignment = vkMemoryRequirements.alignment,
+                CpuAccess = bufferCreateInfo.CpuAccess,
+                Size = vkMemoryRequirements.size,
+            },
+            VkBuffer = vkBuffer,
+        };
+        return new VulkanGraphicsBuffer(this, in createInfo);
 
         static VkBufferUsageFlags GetVkBufferUsageKind(GraphicsResourceCpuAccess cpuAccess, GraphicsBufferKind kind)
         {
@@ -285,28 +295,28 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
-    public override VulkanGraphicsTexture CreateTexture(GraphicsResourceCpuAccess cpuAccess, GraphicsTextureKind kind, GraphicsFormat format, uint width, uint height = 1, ushort depth = 1)
+    public override VulkanGraphicsTexture CreateTexture(in GraphicsTextureCreateInfo textureCreateInfo)
     {
         var vkDevice = VkDevice;
 
         var vkImageCreateInfo = new VkImageCreateInfo {
             sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
-            imageType = kind switch {
+            imageType = textureCreateInfo.Kind switch {
                 GraphicsTextureKind.OneDimensional => VK_IMAGE_TYPE_1D,
                 GraphicsTextureKind.TwoDimensional => VK_IMAGE_TYPE_2D,
                 GraphicsTextureKind.ThreeDimensional => VK_IMAGE_TYPE_3D,
                 _ => default,
             },
-            format = format.AsVkFormat(),
+            format = textureCreateInfo.Format.AsVkFormat(),
             extent = new VkExtent3D {
-                width = width,
-                height = height,
-                depth = depth,
+                width = textureCreateInfo.Width,
+                height = textureCreateInfo.Height,
+                depth = textureCreateInfo.Depth,
             },
             mipLevels = 1,
             arrayLayers = 1,
             samples = VK_SAMPLE_COUNT_1_BIT,
-            usage = GetVulkanImageUsageKind(cpuAccess, kind),
+            usage = GetVulkanImageUsageKind(textureCreateInfo.CpuAccess, textureCreateInfo.Kind),
         };
 
         VkImage vkImage;
@@ -315,10 +325,26 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
         VkMemoryRequirements vkMemoryRequirements;
         vkGetImageMemoryRequirements(vkDevice, vkImage, &vkMemoryRequirements);
 
-        var memoryManagerIndex = GetMemoryManagerIndex(cpuAccess, vkMemoryRequirements.memoryTypeBits);
+        var memoryManagerIndex = GetMemoryManagerIndex(textureCreateInfo.CpuAccess, vkMemoryRequirements.memoryTypeBits);
         var memoryRegion = _memoryManagers[memoryManagerIndex].Allocate(vkMemoryRequirements.size, vkMemoryRequirements.alignment, GraphicsMemoryAllocationFlags.None);
 
-        return new VulkanGraphicsTexture(this, cpuAccess, vkMemoryRequirements.size, vkMemoryRequirements.alignment, in memoryRegion, kind, format, width, height, depth, vkImage);
+        var createInfo = new VulkanGraphicsTexture.CreateInfo {
+            MemoryRegion = memoryRegion,
+            ResourceInfo = new GraphicsResourceInfo {
+                Alignment = vkMemoryRequirements.alignment,
+                CpuAccess = textureCreateInfo.CpuAccess,
+                Size = vkMemoryRequirements.size,
+            },
+            TextureInfo = new GraphicsTextureInfo {
+                Depth = textureCreateInfo.Depth,
+                Format = textureCreateInfo.Format,
+                Height = textureCreateInfo.Height,
+                Kind = textureCreateInfo.Kind,
+                Width = textureCreateInfo.Width,
+            },
+            VkImage = vkImage,
+        };
+        return new VulkanGraphicsTexture(this, in createInfo);
 
         static VkImageUsageFlags GetVulkanImageUsageKind(GraphicsResourceCpuAccess cpuAccess, GraphicsTextureKind kind)
         {

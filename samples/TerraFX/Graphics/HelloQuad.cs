@@ -39,14 +39,14 @@ public sealed class HelloQuad : HelloWindow
         var graphicsDevice = GraphicsDevice;
         var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
-        using var vertexStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, 64 * 1024);
-        _vertexBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.None, GraphicsBufferKind.Vertex, 64 * 1024);
+        using var vertexUploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024);
+        _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
-        using var indexStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, 64 * 1024);
-        _indexBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.None, GraphicsBufferKind.Index, 64 * 1024);
+        using var indexUploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024);
+        _indexBuffer = graphicsDevice.CreateIndexBuffer(64 * 1024);
 
         graphicsRenderContext.Reset();
-        _quadPrimitive = CreateQuadPrimitive(graphicsRenderContext, vertexStagingBuffer, indexStagingBuffer);
+        _quadPrimitive = CreateQuadPrimitive(graphicsRenderContext, vertexUploadBuffer, indexUploadBuffer);
         graphicsRenderContext.Flush();
 
         graphicsDevice.WaitForIdle();
