@@ -20,7 +20,7 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(UnmanagedValueLinkedList<>.DebugView))]
-public unsafe partial struct UnmanagedValueLinkedList<T> : IEnumerable<T>
+public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumerable<T>
     where T : unmanaged
 {
     private Node* _first;
@@ -336,6 +336,25 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IEnumerable<T>
 
                 current = current->_next;
                 index++;
+            }
+            while (current != _first);
+        }
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        var current = _first;
+
+        if (current is not null)
+        {
+            do
+            {
+                AssertNotNull(current);
+                var next = current->_next;
+
+                Free(current);
+                current = next;
             }
             while (current != _first);
         }
