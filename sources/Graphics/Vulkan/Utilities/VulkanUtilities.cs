@@ -129,50 +129,6 @@ internal static partial class VulkanUtilities
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static VkBufferUsageFlags GetVkBufferUsageKind(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess)
-    {
-        var vulkanBufferUsageKind = kind switch {
-            GraphicsBufferKind.Vertex => VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-            GraphicsBufferKind.Index => VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-            GraphicsBufferKind.Constant => VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-            _ => default,
-        };
-
-        // TODO: This is modeled poorly and doesn't accurately track the dst/src
-        // requirements for CPU to/from GPU copies. It might be simplest to just
-        // mirror what DX12 does for resources, but forcing "none" to be "dst"
-        // resolves the validation layer warnings for the time being.
-
-        vulkanBufferUsageKind |= cpuAccess switch {
-            GraphicsResourceCpuAccess.None => VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-            GraphicsResourceCpuAccess.Read => VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-            GraphicsResourceCpuAccess.Write => VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-            _ => default,
-        };
-
-        return vulkanBufferUsageKind;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static VkImageUsageFlags GetVulkanImageUsageKind(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess)
-    {
-        // TODO: This is modeled poorly and doesn't accurately track the dst/src
-        // requirements for CPU to/from GPU copies. It might be simplest to just
-        // mirror what DX12 does for resources, but forcing "none" to be "dst"
-        // resolves the validation layer warnings for the time being.
-
-        var vulkanImageUsageKind = cpuAccess switch {
-            GraphicsResourceCpuAccess.None => VK_IMAGE_USAGE_TRANSFER_DST_BIT,
-            GraphicsResourceCpuAccess.Read => VK_IMAGE_USAGE_TRANSFER_DST_BIT,
-            GraphicsResourceCpuAccess.Write => VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
-            _ => default,
-        };
-
-        vulkanImageUsageKind |= VK_IMAGE_USAGE_SAMPLED_BIT;
-        return vulkanImageUsageKind;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowExternalExceptionIfNotSuccess(VkResult value, [CallerArgumentExpression("value")] string? valueExpression = null)
     {
         if (value != VK_SUCCESS)

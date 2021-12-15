@@ -20,9 +20,9 @@ public readonly struct GraphicsMemoryBudget
     /// <summary>Gets the estimated usage of memory, in bytes.</summary>
     public ulong EstimatedUsage { get; init; }
 
-    /// <summary>Gets the size of all allocated regions for a given set of collections, in bytes.</summary>
-    public ulong TotalAllocatedRegionSize { get; init; }
+    /// <summary>Gets the size of all allocated memory regions for a given set of managers, in bytes.</summary>
+    public ulong TotalAllocatedMemoryRegionSize { get; init; }
 
-    /// <summary>Gets the size of all heaps for a given set of collections, in bytes.</summary>
-    public ulong TotalHeapSize { get; init; }
+    /// <summary>Gets the size of all allocators for a given set of managers, in bytes.</summary>
+    public ulong TotalAllocatorSize { get; init; }
 }

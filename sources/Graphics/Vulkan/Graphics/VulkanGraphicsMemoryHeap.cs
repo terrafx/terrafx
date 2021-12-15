@@ -1,6 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-// This file includes code based on the MemoryBlock class from https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator/
+// This file includes code based on the VmaDeviceMemoryBlock class from https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
 using TerraFX.Interop.Vulkan;
@@ -15,27 +15,29 @@ using static TerraFX.Utilities.VulkanUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsMemoryHeap
+public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
 {
     private readonly VkDeviceMemory _vkDeviceMemory;
+    private readonly ulong _size;
 
     private VolatileState _state;
 
-    internal VulkanGraphicsMemoryHeap(VulkanGraphicsDevice device, VulkanGraphicsMemoryHeapCollection collection, ulong size)
-        : base(device, collection, size)
+    internal VulkanGraphicsMemoryHeap(VulkanGraphicsDevice device, ulong size, uint vkMemoryTypeIndex)
+        : base(device)
     {
-        _vkDeviceMemory = CreateVkDeviceMemory(device, collection, size);
+        _vkDeviceMemory = CreateVkDeviceMemory(device, size, vkMemoryTypeIndex);
+        _size = size;
 
         _ = _state.Transition(to: Initialized);
 
-        static VkDeviceMemory CreateVkDeviceMemory(VulkanGraphicsDevice device, VulkanGraphicsMemoryHeapCollection collection, ulong size)
+        static VkDeviceMemory CreateVkDeviceMemory(VulkanGraphicsDevice device, ulong size, uint vkMemoryTypeIndex)
         {
             VkDeviceMemory vkDeviceMemory;
 
             var vkMemoryAllocateInfo = new VkMemoryAllocateInfo {
                 sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
                 allocationSize = size,
-                memoryTypeIndex = collection.VkMemoryTypeIndex,
+                memoryTypeIndex = vkMemoryTypeIndex,
             };
             ThrowExternalExceptionIfNotSuccess(vkAllocateMemory(device.VkDevice, &vkMemoryAllocateInfo, pAllocator: null, &vkDeviceMemory));
 
@@ -48,9 +50,6 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsMemoryHeap
 
     /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
-
-    /// <inheritdoc cref="GraphicsMemoryHeap.Collection" />
-    public new VulkanGraphicsMemoryHeapCollection Collection => base.Collection.As<VulkanGraphicsMemoryHeapCollection>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
