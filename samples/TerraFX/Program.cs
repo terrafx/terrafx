@@ -165,8 +165,6 @@ public static unsafe class Program
     {
         var ranAnySamples = false;
 
-        // initial window bounds from the command line.
-        // -windowLocation x y and/or -windowSize w h
         Vector2? windowLocation = null;
         if (args.Any((arg) => Matches(arg, "-windowLocation")))
         {
@@ -184,6 +182,7 @@ public static unsafe class Program
                 windowLocation = Vector2.Create(x, y);
             }
         }
+
         Vector2? windowSize = null;
         if (args.Any((arg) => Matches(arg, "-windowSize")))
         {
@@ -222,7 +221,24 @@ public static unsafe class Program
             }
         }
 
-        if (ranAnySamples == false)
+        if (ranAnySamples)
+        {
+            if (OperatingSystem.IsWindowsVersionAtLeast(10))
+            {
+                s_d3d12GraphicsServiceProvider.Dispose();
+            }
+
+            if (OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
+            {
+                s_vulkanGraphicsServiceProvider.Dispose();
+            }
+
+            if (OperatingSystem.IsLinux())
+            {
+                s_pulseAudioServiceProvider.Dispose();
+            }
+        }
+        else
         {
             PrintHelp();
         }

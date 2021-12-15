@@ -10,12 +10,14 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
 {
+    private string _name = null!;
     private VolatileState _state;
 
     internal VulkanGraphicsPrimitive(VulkanGraphicsDevice device, VulkanGraphicsPipeline pipeline, in GraphicsResourceView vertexBufferView, in GraphicsResourceView indexBufferView, ReadOnlySpan<GraphicsResourceView> inputResourceViews)
         : base(device, pipeline, in vertexBufferView, in indexBufferView, inputResourceViews)
     {
         _ = _state.Transition(to: Initialized);
+        Name = nameof(VulkanGraphicsPrimitive);
     }
 
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPrimitive" /> class.</summary>
@@ -26,6 +28,20 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <inheritdoc />
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? "";
+        }
+    }
 
     /// <inheritdoc cref="GraphicsPrimitive.Pipeline" />
     public new VulkanGraphicsPipeline Pipeline => base.Pipeline.As<VulkanGraphicsPipeline>();

@@ -30,6 +30,9 @@ public abstract class GraphicsDeviceObject : IGraphicsDeviceObject
     /// <summary>Gets the device for which the object was created.</summary>
     public GraphicsDevice Device => _device;
 
+    /// <summary>Gets the name for the deve object.</summary>
+    public abstract string Name { get; set; }
+
     /// <summary>Gets the underlying service for <see cref="Adapter" />.</summary>
     public GraphicsService Service => _service;
 
@@ -39,6 +42,9 @@ public abstract class GraphicsDeviceObject : IGraphicsDeviceObject
         Dispose(isDisposing: true);
         GC.SuppressFinalize(this);
     }
+
+    /// <inheritdoc />
+    public override string ToString() => Name;
 
     /// <inheritdoc cref="Dispose()" />
     /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>

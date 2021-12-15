@@ -37,9 +37,9 @@ public sealed class HelloTriangle : HelloWindow
         var graphicsDevice = GraphicsDevice;
         var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
-        using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
+        using var vertexStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, 64 * 1024);
 
-        _vertexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
+        _vertexBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.None, GraphicsBufferKind.Vertex, 64 * 1024);
 
         graphicsRenderContext.Reset();
         _trianglePrimitive = CreateTrianglePrimitive(graphicsRenderContext, vertexStagingBuffer);

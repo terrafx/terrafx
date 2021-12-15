@@ -11,13 +11,17 @@ namespace TerraFX.Graphics;
 public sealed unsafe class D3D12GraphicsRenderPass : GraphicsRenderPass
 {
     private readonly D3D12GraphicsSwapchain _swapchain;
+
+    private string _name = null!;
     private VolatileState _state;
 
     internal D3D12GraphicsRenderPass(D3D12GraphicsDevice device, IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0)
         : base(device, surface, renderTargetFormat)
     {
         _swapchain = new D3D12GraphicsSwapchain(this, surface, renderTargetFormat, minimumRenderTargetCount);
+
         _ = _state.Transition(to: Initialized);
+        Name = nameof(D3D12GraphicsRenderPass);
     }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
@@ -25,6 +29,20 @@ public sealed unsafe class D3D12GraphicsRenderPass : GraphicsRenderPass
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
+    /// <summary>Gets or sets the name for the pipeline signature.</summary>
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? "";
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();

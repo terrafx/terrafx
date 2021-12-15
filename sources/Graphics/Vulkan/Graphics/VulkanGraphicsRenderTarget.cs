@@ -5,6 +5,7 @@ using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkComponentSwizzle;
 using static TerraFX.Interop.Vulkan.VkImageAspectFlags;
 using static TerraFX.Interop.Vulkan.VkImageViewType;
+using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
@@ -20,6 +21,7 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
     private readonly VkFramebuffer _vkFramebuffer;
     private readonly VkImageView _vkFramebufferImageView;
 
+    private string _name = null!;
     private VolatileState _state;
 
     internal VulkanGraphicsRenderTarget(VulkanGraphicsSwapchain swapchain, uint index)
@@ -30,6 +32,9 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
 
         var vkFramebuffer = CreateVkFramebuffer(swapchain, vkFramebufferImageView);
         _vkFramebuffer = vkFramebuffer;
+
+        _ = _state.Transition(to: Initialized);
+        Name = nameof(VulkanGraphicsRenderTarget);
 
         static VkFramebuffer CreateVkFramebuffer(VulkanGraphicsSwapchain swapchain, VkImageView vkImageView)
         {
@@ -84,6 +89,21 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
 
     /// <inheritdoc cref="GraphicsSwapchainObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <inheritdoc />
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = Device.UpdateName(VK_OBJECT_TYPE_FRAMEBUFFER, VkFramebuffer, value);
+            _ = Device.UpdateName(VK_OBJECT_TYPE_IMAGE_VIEW, VkFramebufferImageView, value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsSwapchainObject.RenderPass" />
     public new VulkanGraphicsRenderPass RenderPass => base.RenderPass.As<VulkanGraphicsRenderPass>();

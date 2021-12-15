@@ -57,6 +57,11 @@ public static unsafe class UnsafeUtilities
     public static ref readonly TTo AsReadonly<TFrom, TTo>(in TFrom source)
         => ref Unsafe.As<TFrom, TTo>(ref AsRef(in source));
 
+    /// <inheritdoc cref="Unsafe.AsPointer{T}(ref T)" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T* AsReadonlyPointer<T>(in T source)
+        where T : unmanaged => AsPointer(ref AsRef(in source));
+
     /// <summary>Reinterprets the given native integer as a reference.</summary>
     /// <typeparam name="T">The type of the reference.</typeparam>
     /// <param name="source">The native integer to reinterpret.</param>
@@ -201,10 +206,6 @@ public static unsafe class UnsafeUtilities
     /// <inheritdoc cref="Unsafe.SizeOf{T}" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint SizeOf<T>() => unchecked((uint)Unsafe.SizeOf<T>());
-
-    /// <inheritdoc cref="Unsafe.SkipInit{T}(out T)" />
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SkipInit<T>(out T value) => Unsafe.SkipInit(out value);
 
     /// <summary>Converts the span to an unmanaged array with the same length and contents.</summary>
     /// <typeparam name="T">The type of items in the span.</typeparam>

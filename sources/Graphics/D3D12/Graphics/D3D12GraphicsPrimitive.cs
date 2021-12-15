@@ -21,6 +21,7 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
 {
     private readonly ID3D12DescriptorHeap* _d3d12CbvSrvUavDescriptorHeap;
 
+    private string _name = null!;
     private VolatileState _state;
 
     internal D3D12GraphicsPrimitive(D3D12GraphicsDevice device, D3D12GraphicsPipeline pipeline, in GraphicsResourceView vertexBufferView, in GraphicsResourceView indexBufferView, ReadOnlySpan<GraphicsResourceView> inputResourceViews)
@@ -29,6 +30,7 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
         _d3d12CbvSrvUavDescriptorHeap = CreateD3D12CbvSrvUavDescriptorHeap(device, inputResourceViews);
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(D3D12GraphicsPrimitive);
 
         static ID3D12DescriptorHeap* CreateD3D12CbvSrvUavDescriptorHeap(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsResourceView> inputResourceViews)
         {
@@ -126,6 +128,20 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
+    /// <summary>Gets or sets the name for the pipeline signature.</summary>
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = D3D12CbvSrvUavDescriptorHeap->UpdateD3D12Name(nameof(D3D12GraphicsPrimitive));
+        }
+    }
 
     /// <inheritdoc cref="GraphicsPrimitive.Pipeline" />
     public new D3D12GraphicsPipeline Pipeline => base.Pipeline.As<D3D12GraphicsPipeline>();

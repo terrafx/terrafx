@@ -56,14 +56,17 @@ public class HelloWindow : Sample
 
         _window = windowService.CreateWindow();
         _window.SetTitle(Name);
+
         if (windowLocation.HasValue)
         {
             _window.Relocate(windowLocation.GetValueOrDefault());
         }
+
         if (windowSize.HasValue)
         {
             _window.ResizeClient(windowSize.GetValueOrDefault());
         }
+
         _window.Show();
 
         var graphicsService = application.ServiceProvider.GraphicsService;

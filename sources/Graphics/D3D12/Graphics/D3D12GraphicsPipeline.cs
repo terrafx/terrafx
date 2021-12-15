@@ -20,6 +20,7 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
 {
     private readonly ID3D12PipelineState* _d3d12PipelineState;
 
+    private string _name = null!;
     private VolatileState _state;
 
     internal D3D12GraphicsPipeline(D3D12GraphicsRenderPass renderPass, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
@@ -28,6 +29,7 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
         _d3d12PipelineState = CreateD3D12GraphicsPipelineState(renderPass, signature, vertexShader, pixelShader);
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(D3D12GraphicsPipeline);
 
         static ID3D12PipelineState* CreateD3D12GraphicsPipelineState(D3D12GraphicsRenderPass renderPass, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
         {
@@ -204,6 +206,20 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
 
     /// <inheritdoc cref="GraphicsRenderPassObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
+    /// <summary>Gets or sets the name for the pipeline.</summary>
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = D3D12PipelineState->UpdateD3D12Name(value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
     public new D3D12GraphicsShader? PixelShader => base.PixelShader.As<D3D12GraphicsShader>();

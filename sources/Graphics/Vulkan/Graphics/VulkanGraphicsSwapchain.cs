@@ -5,6 +5,7 @@ using TerraFX.Numerics;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkCompositeAlphaFlagsKHR;
 using static TerraFX.Interop.Vulkan.VkImageUsageFlags;
+using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkPresentModeKHR;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.VkSurfaceTransformFlagsKHR;
@@ -23,6 +24,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
     private readonly GraphicsFormat _renderTargetFormat;
     private readonly VkSurfaceKHR _vkSurface;
 
+    private string _name = null!;
     private VulkanGraphicsRenderTarget[] _renderTargets;
     private UnmanagedArray<VkImage> _vkSwapchainImages;
     private VkSwapchainKHR _vkSwapchain;
@@ -51,6 +53,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         _renderTargetIndex = GetRenderTargetIndex(device, vkSwapchain, Fence);
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(VulkanGraphicsSwapchain);
 
         InitializeRenderTargets(this, _renderTargets);
         Surface.SizeChanged += OnGraphicsSurfaceSizeChanged;
@@ -116,6 +119,21 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
 
     /// <inheritdoc cref="GraphicsSwapchain.Fence" />
     public new VulkanGraphicsFence Fence => base.Fence.As<VulkanGraphicsFence>();
+
+    /// <inheritdoc />
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = Device.UpdateName(VK_OBJECT_TYPE_SURFACE_KHR, VkSurface, value);
+            _ = Device.UpdateName(VK_OBJECT_TYPE_SWAPCHAIN_KHR, VkSwapchain, value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsRenderPassObject.RenderPass" />
     public new VulkanGraphicsRenderPass RenderPass => base.RenderPass.As<VulkanGraphicsRenderPass>();

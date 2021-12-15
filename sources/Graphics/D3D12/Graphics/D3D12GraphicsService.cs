@@ -28,7 +28,7 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
     /// <summary>Initializes a new instance of the <see cref="D3D12GraphicsService" /> class.</summary>
     public D3D12GraphicsService() : base()
     {
-        var dxgiFactory = CreateDxgiFactory(DebugModeEnabled);
+        var dxgiFactory = CreateDxgiFactory(EnableDebugMode);
 
         _dxgiFactory = dxgiFactory;
         _adapters = GetAdapters(this, dxgiFactory);
@@ -119,7 +119,7 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
                 // We don't want to throw if the debug interface fails to be created
                 pD3D12Debug[0]->EnableDebugLayer();
 
-                if (SUCCEEDED(pD3D12Debug[0]->QueryInterface(__uuidof<ID3D12Debug1>(), (void**)pD3D12Debug1)))
+                if (EnableGpuValidation && SUCCEEDED(pD3D12Debug[0]->QueryInterface(__uuidof<ID3D12Debug1>(), (void**)pD3D12Debug1)))
                 {
                     pD3D12Debug1[0]->SetEnableGPUBasedValidation(TRUE);
                     pD3D12Debug1[0]->SetEnableSynchronizedCommandQueueValidation(TRUE);
@@ -167,7 +167,7 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
 
             ReleaseIfNotNull(_dxgiFactory);
 
-            if (DebugModeEnabled)
+            if (EnableDebugMode)
             {
                 TryReportLiveObjects();
             }

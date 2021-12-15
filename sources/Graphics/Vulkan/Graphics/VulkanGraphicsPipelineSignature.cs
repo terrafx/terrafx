@@ -5,6 +5,7 @@ using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkDescriptorPoolCreateFlags;
 using static TerraFX.Interop.Vulkan.VkDescriptorType;
+using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkShaderStageFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
@@ -23,6 +24,7 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
     private readonly VkDescriptorSetLayout _vkDescriptorSetLayout;
     private readonly VkPipelineLayout _vkPipelineLayout;
 
+    private string _name = null!;
     private VolatileState _state;
 
     internal VulkanGraphicsPipelineSignature(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResource> resources)
@@ -38,6 +40,7 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
         _vkPipelineLayout = CreateVkPipelineLayout(device, vkDescriptorSetLayout);
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(VulkanGraphicsPipelineSignature);
 
         static VkDescriptorPool CreateVkDescriptorPool(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineResource> resources)
         {
@@ -280,6 +283,23 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <inheritdoc />
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = Device.UpdateName(VK_OBJECT_TYPE_DESCRIPTOR_POOL, VkDescriptorPool, value);
+            _ = Device.UpdateName(VK_OBJECT_TYPE_DESCRIPTOR_SET, VkDescriptorSet, value);
+            _ = Device.UpdateName(VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, VkDescriptorSetLayout, value);
+            _ = Device.UpdateName(VK_OBJECT_TYPE_PIPELINE_LAYOUT, VkPipelineLayout, value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();

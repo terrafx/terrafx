@@ -15,8 +15,9 @@ namespace TerraFX.Graphics;
 public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
 {
     private readonly VkPhysicalDevice _vkPhysicalDevice;
-    private readonly VkPhysicalDeviceProperties _vkPhysicalDeviceProperties;
+    private readonly VkPhysicalDeviceFeatures _vkPhysicalDeviceFeatures;
     private readonly VkPhysicalDeviceMemoryProperties _vkPhysicalDeviceMemoryProperties;
+    private readonly VkPhysicalDeviceProperties _vkPhysicalDeviceProperties;
     private readonly string _name;
 
     private VolatileState _state;
@@ -28,8 +29,9 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
  
         _vkPhysicalDevice = vkPhysicalDevice;
 
-        _vkPhysicalDeviceMemoryProperties = GetVkPhysicalDeviceMemoryProperties(vkPhysicalDevice);
+        _vkPhysicalDeviceFeatures = GetVkPhysicalDeviceFeatures(vkPhysicalDevice);
         _vkPhysicalDeviceProperties = GetVkPhysicalDeviceProperties(vkPhysicalDevice);
+        _vkPhysicalDeviceMemoryProperties = GetVkPhysicalDeviceMemoryProperties(vkPhysicalDevice);
         _name = GetName(in _vkPhysicalDeviceProperties);
 
         _ = _state.Transition(to: Initialized);
@@ -40,18 +42,25 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
             return name ?? string.Empty;
         }
 
+        static VkPhysicalDeviceFeatures GetVkPhysicalDeviceFeatures(VkPhysicalDevice vkPhysicalDevice)
+        {
+            VkPhysicalDeviceFeatures vkPhysicalDeviceFeatures;
+            vkGetPhysicalDeviceFeatures(vkPhysicalDevice, &vkPhysicalDeviceFeatures);
+            return vkPhysicalDeviceFeatures;
+        }
+
         static VkPhysicalDeviceMemoryProperties GetVkPhysicalDeviceMemoryProperties(VkPhysicalDevice vkPhysicalDevice)
         {
-            VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
-            vkGetPhysicalDeviceMemoryProperties(vkPhysicalDevice, &physicalDeviceMemoryProperties);
-            return physicalDeviceMemoryProperties;
+            VkPhysicalDeviceMemoryProperties vkPhysicalDeviceMemoryProperties;
+            vkGetPhysicalDeviceMemoryProperties(vkPhysicalDevice, &vkPhysicalDeviceMemoryProperties);
+            return vkPhysicalDeviceMemoryProperties;
         }
 
         static VkPhysicalDeviceProperties GetVkPhysicalDeviceProperties(VkPhysicalDevice vkPhysicalDevice)
         {
-            VkPhysicalDeviceProperties physicalDeviceProperties;
-            vkGetPhysicalDeviceProperties(vkPhysicalDevice, &physicalDeviceProperties);
-            return physicalDeviceProperties;
+            VkPhysicalDeviceProperties vkPhysicalDeviceProperties;
+            vkGetPhysicalDeviceProperties(vkPhysicalDevice, &vkPhysicalDeviceProperties);
+            return vkPhysicalDeviceProperties;
         }
     }
 
@@ -76,6 +85,9 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
             return _vkPhysicalDevice;
         }
     }
+
+    /// <summary>Gets the <see cref="Interop.Vulkan.VkPhysicalDeviceFeatures" /> for <see cref="VkPhysicalDevice" />.</summary>
+    public ref readonly VkPhysicalDeviceFeatures VkPhysicalDeviceFeatures => ref _vkPhysicalDeviceFeatures;
 
     /// <summary>Gets the <see cref="Interop.Vulkan.VkPhysicalDeviceProperties" /> for <see cref="VkPhysicalDevice" />.</summary>
     public ref readonly VkPhysicalDeviceMemoryProperties VkPhysicalDeviceMemoryProperties => ref _vkPhysicalDeviceMemoryProperties;

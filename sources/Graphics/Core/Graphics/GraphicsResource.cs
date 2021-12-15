@@ -1,59 +1,44 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics;
 
 /// <summary>A graphics resource bound to a graphics device.</summary>
 public abstract unsafe partial class GraphicsResource : GraphicsDeviceObject
 {
-    private readonly GraphicsMemoryAllocator _allocator;
-    private readonly GraphicsMemoryHeapRegion _heapRegion;
+    private readonly ulong _alignment;
     private readonly GraphicsResourceCpuAccess _cpuAccess;
+    private readonly GraphicsMemoryRegion _memoryRegion;
+    private readonly ulong _size;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsResource" /> class.</summary>
     /// <param name="device">The device for which the resource was created.</param>
-    /// <param name="heapRegion">The memory heap region in which the resource exists.</param>
-    /// <param name="cpuAccess">The CPU access capabilities of the resource.</param>
+    /// <param name="cpuAccess">The CPU access capabilities for the resource.</param>
+    /// <param name="size">The size, in bytes, of the resource.</param>
+    /// <param name="alignment">The alignment, in bytes, of the resource.</param>
+    /// <param name="memoryRegion">The memory region in which the resource exists.</param>
     /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c></exception>
-    /// <exception cref="ArgumentNullException"><paramref name="heapRegion" />.<see cref="GraphicsMemoryHeapRegion.Heap" /> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="heapRegion" /> was not created for <paramref name="device" />.</exception>
-    protected GraphicsResource(GraphicsDevice device, in GraphicsMemoryHeapRegion heapRegion, GraphicsResourceCpuAccess cpuAccess)
+    protected GraphicsResource(GraphicsDevice device, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment, in GraphicsMemoryRegion memoryRegion)
         : base(device)
     {
-        ThrowIfNull(heapRegion.Heap);
-
-        if (heapRegion.Device != device)
-        {
-            ThrowForInvalidParent(heapRegion.Device);
-        }
-
-        _allocator = heapRegion.Heap.Collection.Allocator;
-        _heapRegion = heapRegion;
+        _alignment = alignment;
         _cpuAccess = cpuAccess;
+        _memoryRegion = memoryRegion;
+        _size = size;
     }
 
-    /// <summary>Gets the alignment of the resource, in bytes.</summary>
-    public ulong Alignment => HeapRegion.Alignment;
+    /// <summary>Gets the alignment, in bytes, of the resource.</summary>
+    public ulong Alignment => _alignment;
 
-    /// <summary>Gets the allocator which created the resource.</summary>
-    public GraphicsMemoryAllocator Allocator => _allocator;
-
-    /// <summary>Gets the CPU access capabilities of the resource.</summary>
+    /// <summary>Gets the CPU access capabilitites of the resource.</summary>
     public GraphicsResourceCpuAccess CpuAccess => _cpuAccess;
 
-    /// <summary>Gets the heap which contains the resource.</summary>
-    public GraphicsMemoryHeap Heap => HeapRegion.Heap;
+    /// <summary>Gets the memory region in which the resource exists.</summary>
+    public ref readonly GraphicsMemoryRegion MemoryRegion => ref _memoryRegion;
 
-    /// <summary>Gets the memory heap region in which the resource exists.</summary>
-    public ref readonly GraphicsMemoryHeapRegion HeapRegion => ref _heapRegion;
-
-    /// <summary>Gets the offset of the resource, in bytes.</summary>
-    public ulong Offset => HeapRegion.Offset;
-
-    /// <inheritdoc />
-    public ulong Size => HeapRegion.Size;
+    /// <summary>Gets the size, in bytes, of the resource.</summary>
+    public ulong Size => _size;
 
     /// <summary>Maps the resource into CPU memory.</summary>
     /// <typeparam name="T">The type of data contained by the resource.</typeparam>

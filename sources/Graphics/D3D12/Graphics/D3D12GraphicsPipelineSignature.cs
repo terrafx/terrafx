@@ -21,6 +21,7 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
 {
     private readonly ID3D12RootSignature* _d3d12RootSignature;
 
+    private string _name = null!;
     private VolatileState _state;
 
     internal D3D12GraphicsPipelineSignature(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResource> resources)
@@ -29,6 +30,7 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
         _d3d12RootSignature = CreateD3D12RootSignature(device, resources);
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(D3D12GraphicsPipelineSignature);
 
         static ID3D12RootSignature* CreateD3D12RootSignature(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsPipelineResource> resources)
         {
@@ -177,6 +179,20 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
+    /// <summary>Gets or sets the name for the pipeline signature.</summary>
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = D3D12RootSignature->UpdateD3D12Name(value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();

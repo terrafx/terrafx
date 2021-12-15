@@ -6,10 +6,12 @@ using System.Runtime.Versioning;
 using TerraFX.Graphics;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
+using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.DirectX.DXGI_FORMAT;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 [assembly: SupportedOSPlatform("windows10.0")]
 
@@ -151,5 +153,43 @@ internal static unsafe partial class D3D12Utilities
             AssertNotNull(valueExpression);
             ThrowExternalException(valueExpression, value);
         }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string UpdateD3D12Name<TD3D12Object>(ref this TD3D12Object self, string name, [CallerArgumentExpression("self")] string component = "")
+        where TD3D12Object : unmanaged, ID3D12Object.Interface
+    {
+        name ??= "";
+
+        if (GraphicsService.EnableDebugMode)
+        {
+            var componentName = $"{name}: {component}";
+
+            fixed (char* pName = componentName)
+            {
+                _ = self.SetName((ushort*)pName);
+            }
+        }
+
+        return name;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string UpdateDXGIName<TDXGIObject>(ref this TDXGIObject self, string name, [CallerArgumentExpression("self")] string component = "")
+        where TDXGIObject : unmanaged, IDXGIObject.Interface
+    {
+        name ??= "";
+
+        if (GraphicsService.EnableDebugMode)
+        {
+            var componentName = $"{name}: {component}";
+
+            fixed (char* pName = componentName)
+            {
+                _ = self.SetPrivateData(AsReadonlyPointer(in WKPDID_D3DDebugObjectName), (uint)componentName.Length, (ushort*)pName);
+            }
+        }
+
+        return name;
     }
 }

@@ -5,6 +5,7 @@ using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkAttachmentLoadOp;
 using static TerraFX.Interop.Vulkan.VkAttachmentStoreOp;
 using static TerraFX.Interop.Vulkan.VkImageLayout;
+using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkPipelineBindPoint;
 using static TerraFX.Interop.Vulkan.VkSampleCountFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
@@ -23,6 +24,7 @@ public sealed unsafe class VulkanGraphicsRenderPass : GraphicsRenderPass
     private readonly VulkanGraphicsSwapchain _swapchain;
     private readonly VkRenderPass _vkRenderPass;
 
+    private string _name = null!;
     private VolatileState _state;
 
     internal VulkanGraphicsRenderPass(VulkanGraphicsDevice device, IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0)
@@ -32,6 +34,7 @@ public sealed unsafe class VulkanGraphicsRenderPass : GraphicsRenderPass
         _swapchain = new VulkanGraphicsSwapchain(this, surface, renderTargetFormat, minimumRenderTargetCount);
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(VulkanGraphicsRenderPass);
 
         static VkRenderPass CreateVkRenderPass(VulkanGraphicsDevice device, GraphicsFormat renderTargetFormat)
         {
@@ -74,6 +77,20 @@ public sealed unsafe class VulkanGraphicsRenderPass : GraphicsRenderPass
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <inheritdoc />
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = Device.UpdateName(VK_OBJECT_TYPE_RENDER_PASS, VkRenderPass, value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();

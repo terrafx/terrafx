@@ -24,6 +24,7 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
     private readonly HANDLE _d3d12FenceSignalEvent;
 
     private ulong _d3d12FenceSignalValue;
+    private string _name = null!;
 
     private VolatileState _state;
 
@@ -34,6 +35,7 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
         _d3d12FenceSignalEvent = CreateEventHandle();
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(D3D12GraphicsDevice);
 
         static ID3D12Fence* CreateD3D12Fence(D3D12GraphicsDevice device, bool isSignalled)
         {
@@ -84,6 +86,20 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
+    /// <summary>Gets or sets the name for the fence.</summary>
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = D3D12Fence->UpdateD3D12Name(value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();

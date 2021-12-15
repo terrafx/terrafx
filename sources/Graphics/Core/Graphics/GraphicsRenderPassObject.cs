@@ -32,6 +32,9 @@ public abstract class GraphicsRenderPassObject : IGraphicsRenderPassObject
     /// <summary>Gets the underlying device for <see cref="RenderPass" />.</summary>
     public GraphicsDevice Device => _device;
 
+    /// <summary>Gets the name for the deve object.</summary>
+    public abstract string Name { get; set; }
+
     /// <summary>Gets the render pass for which the object was created.</summary>
     public GraphicsRenderPass RenderPass => _renderPass;
 
@@ -44,6 +47,9 @@ public abstract class GraphicsRenderPassObject : IGraphicsRenderPassObject
         Dispose(isDisposing: true);
         GC.SuppressFinalize(this);
     }
+
+    /// <inheritdoc />
+    public override string ToString() => Name;
 
     /// <inheritdoc cref="Dispose()" />
     /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>

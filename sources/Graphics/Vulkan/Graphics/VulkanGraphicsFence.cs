@@ -5,6 +5,7 @@ using System.Threading;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkFenceCreateFlags;
+using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkResult;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
@@ -22,6 +23,7 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
 {
     private readonly VkFence _vkFence;
 
+    private string _name = null!;
     private VolatileState _state;
 
     internal VulkanGraphicsFence(VulkanGraphicsDevice device, bool isSignalled)
@@ -30,6 +32,7 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
         _vkFence = CreateVkFence(device, isSignalled ? VK_FENCE_CREATE_SIGNALED_BIT : 0);
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(VulkanGraphicsFence);
 
         static VkFence CreateVkFence(VulkanGraphicsDevice device, VkFenceCreateFlags vkFenceCreateFlags)
         {
@@ -54,6 +57,20 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <inheritdoc />
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = Device.UpdateName(VK_OBJECT_TYPE_FENCE, VkFence, value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();

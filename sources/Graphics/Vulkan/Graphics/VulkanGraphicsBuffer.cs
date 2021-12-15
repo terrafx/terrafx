@@ -3,6 +3,7 @@
 using System.Runtime.InteropServices;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
+using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
@@ -15,16 +16,23 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
 {
+    private readonly VulkanGraphicsMemoryHeap _memoryHeap;
     private readonly VkBuffer _vkBuffer;
+
+    private string _name = null!;
     private VolatileState _state;
 
-    internal VulkanGraphicsBuffer(VulkanGraphicsDevice device, GraphicsBufferKind kind, in GraphicsMemoryHeapRegion heapRegion, GraphicsResourceCpuAccess cpuAccess, VkBuffer vkBuffer)
-        : base(device, kind, in heapRegion, cpuAccess)
+    internal VulkanGraphicsBuffer(VulkanGraphicsDevice device, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment, in GraphicsMemoryRegion memoryRegion, GraphicsBufferKind kind, VkBuffer vkBuffer)
+        : base(device, cpuAccess, size, alignment, in memoryRegion, kind)
     {
+        var memoryHeap = memoryRegion.Allocator.DeviceObject.As<VulkanGraphicsMemoryHeap>();
+        _memoryHeap = memoryHeap;
+
+        ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(device.VkDevice, vkBuffer, memoryHeap.VkDeviceMemory, memoryRegion.Offset));
         _vkBuffer = vkBuffer;
-        ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(device.VkDevice, vkBuffer, Heap.VkDeviceMemory, heapRegion.Offset));
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(VulkanGraphicsBuffer);
     }
 
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsBuffer" /> class.</summary>
@@ -33,14 +41,25 @@ public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
     /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
-    /// <inheritdoc cref="GraphicsResource.Allocator" />
-    public new VulkanGraphicsMemoryAllocator Allocator => base.Allocator.As<VulkanGraphicsMemoryAllocator>();
-
-    /// <inheritdoc />
-    public new VulkanGraphicsMemoryHeap Heap => base.Heap.As<VulkanGraphicsMemoryHeap>();
-
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <summary>Gets the memory heap in which the buffer exists.</summary>
+    public VulkanGraphicsMemoryHeap MemoryHeap => _memoryHeap;
+
+    /// <inheritdoc />
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = Device.UpdateName(VK_OBJECT_TYPE_BUFFER, VkBuffer, value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
@@ -60,7 +79,7 @@ public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
     public override T* Map<T>()
     {
         byte* pDestination;
-        ThrowExternalExceptionIfNotSuccess(vkMapMemory(Device.VkDevice, Heap.VkDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
+        ThrowExternalExceptionIfNotSuccess(vkMapMemory(Device.VkDevice, MemoryHeap.VkDeviceMemory, MemoryRegion.Offset, Size, flags: 0, (void**)&pDestination));
         return (T*)pDestination;
     }
 
@@ -69,7 +88,7 @@ public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
     public override T* Map<T>(nuint rangeOffset, nuint rangeLength)
     {
         byte* pDestination;
-        ThrowExternalExceptionIfNotSuccess(vkMapMemory(Device.VkDevice, Heap.VkDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
+        ThrowExternalExceptionIfNotSuccess(vkMapMemory(Device.VkDevice, MemoryHeap.VkDeviceMemory, MemoryRegion.Offset, Size, flags: 0, (void**)&pDestination));
         return (T*)(pDestination + rangeOffset);
     }
 
@@ -80,14 +99,14 @@ public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         var device = Device;
 
         var vkDevice = device.VkDevice;
-        var vkDeviceMemory = Heap.VkDeviceMemory;
+        var vkDeviceMemory = MemoryHeap.VkDeviceMemory;
 
         void* pDestination;
-        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vkDevice, vkDeviceMemory, Offset, Size, flags: 0, &pDestination));
+        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vkDevice, vkDeviceMemory, MemoryRegion.Offset, Size, flags: 0, &pDestination));
 
         var nonCoherentAtomSize = device.Adapter.VkPhysicalDeviceProperties.limits.nonCoherentAtomSize;
 
-        var offset = Offset;
+        var offset = MemoryRegion.Offset;
         var size = (Size + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
 
         var vkMappedMemoryRange = new VkMappedMemoryRange {
@@ -108,16 +127,16 @@ public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         var device = Device;
 
         var vkDevice = device.VkDevice;
-        var vkDeviceMemory = Heap.VkDeviceMemory;
+        var vkDeviceMemory = MemoryHeap.VkDeviceMemory;
 
         byte* pDestination;
-        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vkDevice, vkDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination));
+        ThrowExternalExceptionIfNotSuccess(vkMapMemory(vkDevice, vkDeviceMemory, MemoryRegion.Offset, Size, flags: 0, (void**)&pDestination));
 
         if (readRangeLength != 0)
         {
             var nonCoherentAtomSize = device.Adapter.VkPhysicalDeviceProperties.limits.nonCoherentAtomSize;
 
-            var offset = Offset + readRangeOffset;
+            var offset = MemoryRegion.Offset + readRangeOffset;
             var size = (readRangeLength + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
 
             var vkMappedMemoryRange = new VkMappedMemoryRange {
@@ -135,7 +154,7 @@ public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
     /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(VkDevice, uint, VkMappedMemoryRange*)" /> failed.</exception>
     public override void Unmap()
     {
-        vkUnmapMemory(Device.VkDevice, Heap.VkDeviceMemory);
+        vkUnmapMemory(Device.VkDevice, MemoryHeap.VkDeviceMemory);
     }
 
     /// <inheritdoc />
@@ -145,11 +164,11 @@ public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         var device = Device;
 
         var vkDevice = device.VkDevice;
-        var vkDeviceMemory = Heap.VkDeviceMemory;
+        var vkDeviceMemory = MemoryHeap.VkDeviceMemory;
 
         var nonCoherentAtomSize = device.Adapter.VkPhysicalDeviceProperties.limits.nonCoherentAtomSize;
 
-        var offset = Offset;
+        var offset = MemoryRegion.Offset;
         var size = (Size + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
 
         var vkMappedMemoryRange = new VkMappedMemoryRange {
@@ -167,16 +186,14 @@ public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
     /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(VkDevice, uint, VkMappedMemoryRange*)" /> failed.</exception>
     public override void UnmapAndWrite(nuint writtenRangeOffset, nuint writtenRangeLength)
     {
-        var device = Allocator.Device;
-
-        var vkDevice = device.VkDevice;
-        var vkDeviceMemory = Heap.VkDeviceMemory;
+        var vkDevice = Device.VkDevice;
+        var vkDeviceMemory = MemoryHeap.VkDeviceMemory;
 
         if (writtenRangeLength != 0)
         {
-            var nonCoherentAtomSize = device.Adapter.VkPhysicalDeviceProperties.limits.nonCoherentAtomSize;
+            var nonCoherentAtomSize = Device.Adapter.VkPhysicalDeviceProperties.limits.nonCoherentAtomSize;
 
-            var offset = Offset + writtenRangeOffset;
+            var offset = MemoryRegion.Offset + writtenRangeOffset;
             var size = (writtenRangeLength + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
 
             var vkMappedMemoryRange = new VkMappedMemoryRange {
@@ -198,7 +215,7 @@ public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         if (priorState < Disposing)
         {
             DisposeVulkanBuffer(Device.VkDevice, _vkBuffer);
-            HeapRegion.Heap.Free(in HeapRegion);
+            MemoryRegion.Dispose();
         }
 
         _state.EndDispose();

@@ -28,6 +28,7 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     private readonly ID3D12GraphicsCommandList* _d3d12GraphicsCommandList;
     private readonly D3D12GraphicsFence _fence;
 
+    private string _name = null!;
     private D3D12GraphicsRenderPass? _renderPass;
 
     private VolatileState _state;
@@ -42,6 +43,7 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
         _fence = device.CreateFence(isSignalled: true);
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(D3D12GraphicsRenderContext);
 
         static ID3D12CommandAllocator* CreateD3D12CommandAllocator(D3D12GraphicsDevice device)
         {
@@ -94,6 +96,21 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
 
     /// <inheritdoc />
     public override D3D12GraphicsFence Fence => _fence;
+
+    /// <summary>Gets or sets the name for the pipeline signature.</summary>
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = D3D12CommandAllocator->UpdateD3D12Name(value);
+            _ = D3D12GraphicsCommandList->UpdateD3D12Name(value);
+        }
+    }
 
     /// <inheritdoc />
     public override D3D12GraphicsRenderPass? RenderPass => _renderPass;
@@ -349,7 +366,7 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
         AssertNotNull(vertexBuffer);
 
         var d3d12VertexBufferView = new D3D12_VERTEX_BUFFER_VIEW {
-            BufferLocation = vertexBuffer.D3D12Resource->GetGPUVirtualAddress() + vertexBufferView.Offset,
+            BufferLocation = vertexBuffer.D3D12ResourceGpuVirtualAddress + vertexBufferView.Offset,
             StrideInBytes = primitive.VertexBufferView.Stride,
             SizeInBytes = vertexBufferView.Size,
         };
@@ -366,8 +383,7 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
 
             if (inputResourceView.Resource is D3D12GraphicsBuffer d3d12GraphicsBuffer)
             {
-                var gpuVirtualAddress = d3d12GraphicsBuffer.D3D12Resource->GetGPUVirtualAddress();
-                d3d12GraphicsCommandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), gpuVirtualAddress + inputResourceView.Offset);
+                d3d12GraphicsCommandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), d3d12GraphicsBuffer.D3D12ResourceGpuVirtualAddress + inputResourceView.Offset);
             }
             else if (inputResourceView.Resource is D3D12GraphicsTexture d3d12GraphicsTexture)
             {
@@ -391,8 +407,8 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
             }
 
             var d3d12IndexBufferView = new D3D12_INDEX_BUFFER_VIEW {
-                BufferLocation = indexBuffer.D3D12Resource->GetGPUVirtualAddress() + indexBufferView.Offset,
-                SizeInBytes = (uint)indexBufferView.Size,
+                BufferLocation = indexBuffer.D3D12ResourceGpuVirtualAddress + indexBufferView.Offset,
+                SizeInBytes = indexBufferView.Size,
                 Format = indexFormat,
             };
             d3d12GraphicsCommandList->IASetIndexBuffer(&d3d12IndexBufferView);
