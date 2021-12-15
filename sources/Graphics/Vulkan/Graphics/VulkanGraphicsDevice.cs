@@ -41,7 +41,7 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext> _renderContextPool;
     private VolatileState _state;
 
-    internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter)
+    internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter, delegate*<GraphicsDeviceObject, ulong, GraphicsMemoryAllocator> createMemoryAllocator)
         : base(adapter)
     {
         var vkCommandQueueFamilyIndex = GetVkCommandQueueFamilyIndex(adapter);
@@ -55,7 +55,7 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
         var vkMemoryTypeCount = adapter.VkPhysicalDeviceMemoryProperties.memoryTypeCount;
         _vkMemoryTypeCount = vkMemoryTypeCount;
 
-        _memoryManagers = CreateMemoryManagers(this, vkMemoryTypeCount);
+        _memoryManagers = CreateMemoryManagers(this, createMemoryAllocator, vkMemoryTypeCount);
         // TODO: UpdateBudget
 
         _renderContextPool = new ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext>();
@@ -63,13 +63,13 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
         _ = _state.Transition(to: Initialized);
         Name = nameof(VulkanGraphicsDevice);
 
-        static VulkanGraphicsMemoryManager[] CreateMemoryManagers(VulkanGraphicsDevice device, uint vkMemoryTypeCount)
+        static VulkanGraphicsMemoryManager[] CreateMemoryManagers(VulkanGraphicsDevice device, delegate*<GraphicsDeviceObject, ulong, GraphicsMemoryAllocator> createMemoryAllocator, uint vkMemoryTypeCount)
         {
             var memoryManagers = new VulkanGraphicsMemoryManager[vkMemoryTypeCount];
 
             for (var vkMemoryTypeIndex = 0u; vkMemoryTypeIndex < vkMemoryTypeCount; vkMemoryTypeIndex++)
             {
-                memoryManagers[vkMemoryTypeIndex] = new VulkanGraphicsMemoryManager(device, vkMemoryTypeIndex);
+                memoryManagers[vkMemoryTypeIndex] = new VulkanGraphicsMemoryManager(device, createMemoryAllocator, vkMemoryTypeIndex);
             }
 
             return memoryManagers;

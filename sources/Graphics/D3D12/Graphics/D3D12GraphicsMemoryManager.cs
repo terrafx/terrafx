@@ -18,8 +18,9 @@ using static TerraFX.Utilities.UnsafeUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public sealed class D3D12GraphicsMemoryManager : GraphicsMemoryManager
+public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
 {
+    private readonly delegate*<GraphicsDeviceObject, ulong, GraphicsMemoryAllocator> _createMemoryAllocator;
     private readonly D3D12_HEAP_FLAGS _d3d12HeapFlags;
     private readonly D3D12_HEAP_TYPE _d3d12HeapType;
     private readonly ValueMutex _mutex;
@@ -32,9 +33,15 @@ public sealed class D3D12GraphicsMemoryManager : GraphicsMemoryManager
 
     private VolatileState _state;
 
-    internal D3D12GraphicsMemoryManager(D3D12GraphicsDevice device, D3D12_HEAP_FLAGS d3d12HeapFlags, D3D12_HEAP_TYPE d3d12HeapType)
+    internal D3D12GraphicsMemoryManager(D3D12GraphicsDevice device, delegate*<GraphicsDeviceObject, ulong, GraphicsMemoryAllocator> createMemoryAllocator, D3D12_HEAP_FLAGS d3d12HeapFlags, D3D12_HEAP_TYPE d3d12HeapType)
         : base(device)
     {
+        if (createMemoryAllocator is null)
+        {
+            createMemoryAllocator = &GraphicsMemoryAllocator.CreateDefault;
+        }
+
+        _createMemoryAllocator = createMemoryAllocator;
         _d3d12HeapFlags = d3d12HeapFlags;
         _d3d12HeapType = d3d12HeapType;
         _mutex = new ValueMutex();
@@ -190,7 +197,7 @@ public sealed class D3D12GraphicsMemoryManager : GraphicsMemoryManager
     private GraphicsMemoryAllocator AddMemoryAllocator(ulong size)
     {
         var memoryHeap = new D3D12GraphicsMemoryHeap(Device, size, D3D12HeapType, D3D12HeapFlags);
-        var memoryAllocator = GraphicsMemoryAllocator.CreateDefault(memoryHeap, size);
+        var memoryAllocator = _createMemoryAllocator(memoryHeap, size);
 
         _memoryAllocators.Add(memoryAllocator);
         _size += size;

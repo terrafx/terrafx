@@ -18,10 +18,11 @@ using static TerraFX.Utilities.UnsafeUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public sealed class VulkanGraphicsMemoryManager : GraphicsMemoryManager
+public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
 {
-    private readonly uint _vkMemoryTypeIndex;
+    private readonly delegate*<GraphicsDeviceObject, ulong, GraphicsMemoryAllocator> _createMemoryAllocator;
     private readonly ValueMutex _mutex;
+    private readonly uint _vkMemoryTypeIndex;
 
     private GraphicsMemoryAllocator? _emptyMemoryAllocator;
     private ValueList<GraphicsMemoryAllocator> _memoryAllocators;
@@ -32,11 +33,17 @@ public sealed class VulkanGraphicsMemoryManager : GraphicsMemoryManager
 
     private VolatileState _state;
 
-    internal VulkanGraphicsMemoryManager(VulkanGraphicsDevice device, uint vkMemoryTypeIndex)
+    internal VulkanGraphicsMemoryManager(VulkanGraphicsDevice device, delegate*<GraphicsDeviceObject, ulong, GraphicsMemoryAllocator> createMemoryAllocator, uint vkMemoryTypeIndex)
         : base(device)
     {
-        _vkMemoryTypeIndex = vkMemoryTypeIndex;
+        if (createMemoryAllocator is null)
+        {
+            createMemoryAllocator = &GraphicsMemoryAllocator.CreateDefault;
+        }
+
+        _createMemoryAllocator = createMemoryAllocator;
         _mutex = new ValueMutex();
+        _vkMemoryTypeIndex = vkMemoryTypeIndex;
 
         _emptyMemoryAllocator = null;
         _memoryAllocators = new ValueList<GraphicsMemoryAllocator>();
@@ -187,7 +194,7 @@ public sealed class VulkanGraphicsMemoryManager : GraphicsMemoryManager
     private GraphicsMemoryAllocator AddMemoryAllocator(ulong size)
     {
         var memoryHeap = new VulkanGraphicsMemoryHeap(Device, size, VkMemoryTypeIndex);
-        var memoryAllocator = GraphicsMemoryAllocator.CreateDefault(memoryHeap, size);
+        var memoryAllocator = _createMemoryAllocator(memoryHeap, size);
 
         _memoryAllocators.Add(memoryAllocator);
         _size += size;
