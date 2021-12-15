@@ -27,6 +27,7 @@ public sealed class VulkanGraphicsMemoryManager : GraphicsMemoryManager
     private ValueList<GraphicsMemoryAllocator> _memoryAllocators;
 
     private ulong _minimumSize;
+    private string _name = null!;
     private ulong _size;
 
     private VolatileState _state;
@@ -44,6 +45,7 @@ public sealed class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         _size = 0;
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(VulkanGraphicsMemoryManager);
 
         for (var i = 0; i < MinimumMemoryAllocatorCount; ++i)
         {
@@ -66,6 +68,20 @@ public sealed class VulkanGraphicsMemoryManager : GraphicsMemoryManager
 
     /// <summary>Gets the minimum size of the manager, in bytes.</summary>
     public override ulong MinimumSize => _minimumSize;
+
+    /// <inheritdoc />
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? "";
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();

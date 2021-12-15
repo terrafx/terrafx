@@ -3,6 +3,7 @@
 using System.Runtime.InteropServices;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
+using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
@@ -18,6 +19,7 @@ public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
     private readonly VulkanGraphicsMemoryHeap _memoryHeap;
     private readonly VkBuffer _vkBuffer;
 
+    private string _name = null!;
     private VolatileState _state;
 
     internal VulkanGraphicsBuffer(VulkanGraphicsDevice device, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment, in GraphicsMemoryRegion memoryRegion, GraphicsBufferKind kind, VkBuffer vkBuffer)
@@ -30,6 +32,7 @@ public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
         _vkBuffer = vkBuffer;
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(VulkanGraphicsBuffer);
     }
 
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsBuffer" /> class.</summary>
@@ -43,6 +46,20 @@ public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
 
     /// <summary>Gets the memory heap in which the buffer exists.</summary>
     public VulkanGraphicsMemoryHeap MemoryHeap => _memoryHeap;
+
+    /// <inheritdoc />
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = Device.UpdateName(VK_OBJECT_TYPE_BUFFER, VkBuffer, value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();

@@ -14,6 +14,7 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
 {
     private readonly D3D12_SHADER_BYTECODE _d3d12ShaderBytecode;
 
+    private string _name = null!;
     private VolatileState _state;
 
     internal D3D12GraphicsShader(D3D12GraphicsDevice device, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
@@ -26,6 +27,7 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
         bytecode.CopyTo(destination);
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(D3D12GraphicsShader);
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsShader" /> class.</summary>
@@ -42,6 +44,20 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
+    /// <summary>Gets or sets the name for the pipeline signature.</summary>
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? "";
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();

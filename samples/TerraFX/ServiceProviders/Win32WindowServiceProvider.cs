@@ -30,10 +30,7 @@ public class Win32WindowServiceProvider : ApplicationServiceProvider
 
     protected override void DisposeCore(bool isDisposing)
     {
-        if (isDisposing)
-        {
-            _windowService.Dispose(DisposeWindowService);
-        }
+        _windowService.Dispose(DisposeWindowService);
     }
 
     private void DisposeWindowService(WindowService windowService)

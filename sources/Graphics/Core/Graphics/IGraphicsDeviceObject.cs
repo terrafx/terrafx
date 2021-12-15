@@ -7,4 +7,7 @@ public interface IGraphicsDeviceObject : IGraphicsAdapterObject
 {
     /// <summary>Gets the device for which the object was created.</summary>
     GraphicsDevice Device { get; }
+
+    /// <summary>Gets or sets the name of the device object.</summary>
+    string Name { get; set; }
 }

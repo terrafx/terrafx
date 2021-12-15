@@ -39,6 +39,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     private readonly D3D12GraphicsMemoryManager[] _memoryManagers;
     private readonly D3D12GraphicsFence _waitForIdleFence;
 
+    private string _name = null!;
     private ContextPool<D3D12GraphicsDevice, D3D12GraphicsRenderContext> _renderContextPool;
     private VolatileState _state;
 
@@ -61,9 +62,10 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
         // TODO: UpdateBudget
   
         _waitForIdleFence = CreateFence(isSignalled: false);
-
         _renderContextPool = new ContextPool<D3D12GraphicsDevice, D3D12GraphicsRenderContext>();
+
         _ = _state.Transition(to: Initialized);
+        Name = nameof(D3D12GraphicsDevice);
 
         static ID3D12CommandQueue* CreateD3D12CommandQueue(ID3D12Device* d3d12Device)
         {
@@ -158,6 +160,21 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
 
     /// <summary>Gets <c>true</c> if the device supports <see cref="D3D12_RESOURCE_HEAP_TIER_2" />; otherwise, <c>false</c>.</summary>
     public bool D3D12SupportsResourceHeapTier2 => _d3d12SupportsResourceHeapTier2;
+
+    /// <summary>Gets or sets the name for the device.</summary>
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = D3D12Device->UpdateD3D12Name(value);
+            _ = D3D12CommandQueue->UpdateD3D12Name(value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDevice.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();

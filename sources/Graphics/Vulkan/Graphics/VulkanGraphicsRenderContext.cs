@@ -6,11 +6,11 @@ using TerraFX.Interop.Vulkan;
 using TerraFX.Numerics;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkAccessFlags;
-using static TerraFX.Interop.Vulkan.VkCommandPoolCreateFlags;
 using static TerraFX.Interop.Vulkan.VkDescriptorType;
 using static TerraFX.Interop.Vulkan.VkImageAspectFlags;
 using static TerraFX.Interop.Vulkan.VkImageLayout;
 using static TerraFX.Interop.Vulkan.VkIndexType;
+using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkPipelineBindPoint;
 using static TerraFX.Interop.Vulkan.VkPipelineStageFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
@@ -33,6 +33,7 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     private readonly VkCommandBuffer _vkCommandBuffer;
     private readonly VkCommandPool _vkCommandPool;
 
+    private string _name = null!;
     private VulkanGraphicsRenderPass? _renderPass;
 
     private VolatileState _state;
@@ -47,6 +48,7 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
         _fence = device.CreateFence(isSignalled: true);
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(VulkanGraphicsRenderContext);
 
         static VkCommandBuffer CreateVkCommandBuffer(VulkanGraphicsDevice device, VkCommandPool vkCommandPool)
         {
@@ -68,7 +70,6 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
 
             var commandPoolCreateInfo = new VkCommandPoolCreateInfo {
                 sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-                flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
                 queueFamilyIndex = device.VkCommandQueueFamilyIndex,
             };
             ThrowExternalExceptionIfNotSuccess(vkCreateCommandPool(device.VkDevice, &commandPoolCreateInfo, pAllocator: null, &vkCommandPool));
@@ -88,6 +89,21 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
 
     /// <inheritdoc />
     public override VulkanGraphicsFence Fence => _fence;
+
+    /// <inheritdoc />
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = Device.UpdateName(VK_OBJECT_TYPE_COMMAND_BUFFER, VkCommandBuffer, value);
+            _ = Device.UpdateName(VK_OBJECT_TYPE_COMMAND_POOL, VkCommandPool, value);
+        }
+    }
 
     /// <inheritdoc />
     public override VulkanGraphicsRenderPass? RenderPass => _renderPass;
@@ -376,6 +392,8 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     public override void Reset()
     {
         Fence.Reset();
+
+        ThrowExternalExceptionIfNotSuccess(vkResetCommandPool(Device.VkDevice, VkCommandPool, 0));
 
         var vkCommandBufferBeginInfo = new VkCommandBufferBeginInfo {
             sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,

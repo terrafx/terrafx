@@ -4,9 +4,7 @@ using System;
 using System.Runtime.CompilerServices;
 using TerraFX.Graphics;
 using TerraFX.Interop.Vulkan;
-using static TerraFX.Interop.Vulkan.VkBufferUsageFlags;
 using static TerraFX.Interop.Vulkan.VkFormat;
-using static TerraFX.Interop.Vulkan.VkImageUsageFlags;
 using static TerraFX.Interop.Vulkan.VkResult;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -14,7 +12,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Utilities;
 
-internal static partial class VulkanUtilities
+internal static unsafe partial class VulkanUtilities
 {
     private static readonly VkFormat[] s_vkFormatMap = new VkFormat[] {
         VK_FORMAT_UNDEFINED,                    // Unknown

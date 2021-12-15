@@ -25,6 +25,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     private readonly D3D12GraphicsRenderTarget[] _renderTargets;
     private readonly GraphicsFormat _renderTargetFormat;
 
+    private string _name = null!;
     private uint _renderTargetIndex;
 
     private VolatileState _state;
@@ -44,6 +45,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
         _renderTargetIndex = GetRenderTargetIndex(dxgiSwapchain, Fence);
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(D3D12GraphicsSwapchain);
 
         InitializeRenderTargets(this, _renderTargets);
         Surface.SizeChanged += OnGraphicsSurfaceSizeChanged;
@@ -145,6 +147,21 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
 
     /// <inheritdoc cref="GraphicsSwapchain.Fence" />
     public new D3D12GraphicsFence Fence => base.Fence.As<D3D12GraphicsFence>();
+
+    /// <summary>Gets or sets the name for the pipeline signature.</summary>
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = DxgiSwapchain->UpdateDXGIName(value);
+            _ = D3D12RtvDescriptorHeap->UpdateD3D12Name(value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsRenderPassObject.RenderPass" />
     public new D3D12GraphicsRenderPass RenderPass => base.RenderPass.As<D3D12GraphicsRenderPass>();

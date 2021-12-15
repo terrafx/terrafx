@@ -26,8 +26,8 @@ public sealed class D3D12GraphicsMemoryManager : GraphicsMemoryManager
 
     private GraphicsMemoryAllocator? _emptyMemoryAllocator;
     private ValueList<GraphicsMemoryAllocator> _memoryAllocators;
-
     private ulong _minimumSize;
+    private string _name = null!;
     private ulong _size;
 
     private VolatileState _state;
@@ -41,11 +41,11 @@ public sealed class D3D12GraphicsMemoryManager : GraphicsMemoryManager
 
         _emptyMemoryAllocator = null;
         _memoryAllocators = new ValueList<GraphicsMemoryAllocator>();
-
         _minimumSize = 0;
         _size = 0;
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(D3D12GraphicsMemoryManager);
 
         for (var i = 0; i < MinimumMemoryAllocatorCount; ++i)
         {
@@ -74,6 +74,20 @@ public sealed class D3D12GraphicsMemoryManager : GraphicsMemoryManager
 
     /// <summary>Gets the minimum size of the manager, in bytes.</summary>
     public override ulong MinimumSize => _minimumSize;
+
+    /// <summary>Gets or sets the name for the manager.</summary>
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? "";
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();

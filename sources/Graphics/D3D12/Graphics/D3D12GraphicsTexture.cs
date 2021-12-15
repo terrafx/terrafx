@@ -18,6 +18,7 @@ public sealed unsafe class D3D12GraphicsTexture : GraphicsTexture
     private readonly D3D12_RESOURCE_STATES _d3d12ResourceState;
     private readonly D3D12GraphicsMemoryHeap _memoryHeap;
 
+    private string _name = null!;
     private VolatileState _state;
 
     internal D3D12GraphicsTexture(D3D12GraphicsDevice device, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment, in GraphicsMemoryRegion memoryRegion, GraphicsTextureKind kind, GraphicsFormat format, uint width, uint height, ushort depth, ID3D12Resource* d3d12Resource, D3D12_RESOURCE_STATES d3d12ResourceState)
@@ -29,6 +30,7 @@ public sealed unsafe class D3D12GraphicsTexture : GraphicsTexture
         _memoryHeap = memoryRegion.Allocator.DeviceObject.As<D3D12GraphicsMemoryHeap>();
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(D3D12GraphicsTexture);
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsTexture" /> class.</summary>
@@ -58,6 +60,20 @@ public sealed unsafe class D3D12GraphicsTexture : GraphicsTexture
 
     /// <summary>Gets the memory heap in which the buffer exists.</summary>
     public D3D12GraphicsMemoryHeap MemoryHeap => _memoryHeap;
+
+    /// <summary>Gets or sets the name for the pipeline signature.</summary>
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = D3D12Resource->UpdateD3D12Name(value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();

@@ -28,6 +28,7 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     private readonly ID3D12GraphicsCommandList* _d3d12GraphicsCommandList;
     private readonly D3D12GraphicsFence _fence;
 
+    private string _name = null!;
     private D3D12GraphicsRenderPass? _renderPass;
 
     private VolatileState _state;
@@ -42,6 +43,7 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
         _fence = device.CreateFence(isSignalled: true);
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(D3D12GraphicsRenderContext);
 
         static ID3D12CommandAllocator* CreateD3D12CommandAllocator(D3D12GraphicsDevice device)
         {
@@ -94,6 +96,21 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
 
     /// <inheritdoc />
     public override D3D12GraphicsFence Fence => _fence;
+
+    /// <summary>Gets or sets the name for the pipeline signature.</summary>
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = D3D12CommandAllocator->UpdateD3D12Name(value);
+            _ = D3D12GraphicsCommandList->UpdateD3D12Name(value);
+        }
+    }
 
     /// <inheritdoc />
     public override D3D12GraphicsRenderPass? RenderPass => _renderPass;

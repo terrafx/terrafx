@@ -34,6 +34,9 @@ public abstract class GraphicsSwapchainObject : IGraphicsSwapchainObject
     /// <summary>Gets the underlying device for <see cref="RenderPass" />.</summary>
     public GraphicsDevice Device => _device;
 
+    /// <summary>Gets or sets the name for the device object.</summary>
+    public abstract string Name { get; set; }
+
     /// <summary>Gets the underlying render pass for <see cref="Swapchain" />.</summary>
     public GraphicsRenderPass RenderPass => _renderPass;
 
@@ -49,6 +52,9 @@ public abstract class GraphicsSwapchainObject : IGraphicsSwapchainObject
         Dispose(isDisposing: true);
         GC.SuppressFinalize(this);
     }
+
+    /// <inheritdoc />
+    public override string ToString() => Name;
 
     /// <inheritdoc cref="Dispose()" />
     /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>

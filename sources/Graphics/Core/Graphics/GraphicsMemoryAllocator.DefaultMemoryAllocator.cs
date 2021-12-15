@@ -8,6 +8,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using TerraFX.Collections;
 using static TerraFX.Runtime.Configuration;
@@ -105,7 +106,7 @@ public partial class GraphicsMemoryAllocator
             }
             ThrowIfNotPow2(alignment);
 
-            SkipInit(out memoryRegion);
+            Unsafe.SkipInit(out memoryRegion);
 
             var sizeWithMargins = size + (2 * MinimumAllocatedMemoryRegionMarginSize);
             var wasMemoryRegionAllocated = false;

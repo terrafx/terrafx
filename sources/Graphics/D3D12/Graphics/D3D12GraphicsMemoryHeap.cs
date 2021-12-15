@@ -22,6 +22,7 @@ public sealed unsafe class D3D12GraphicsMemoryHeap : GraphicsDeviceObject
     private readonly D3D12_HEAP_DESC _d3d12HeapDesc;
     private readonly ulong _size;
 
+    private string _name = null!;
     private VolatileState _state;
 
     internal D3D12GraphicsMemoryHeap(D3D12GraphicsDevice device, ulong size, D3D12_HEAP_TYPE d3d12HeapType, D3D12_HEAP_FLAGS d3d12HeapFlags)
@@ -34,6 +35,7 @@ public sealed unsafe class D3D12GraphicsMemoryHeap : GraphicsDeviceObject
         _size = size;
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(D3D12GraphicsMemoryHeap);
 
         static ID3D12Heap* CreateD3D12Heap(D3D12GraphicsDevice device, ulong size, D3D12_HEAP_TYPE d3d12HeapType, D3D12_HEAP_FLAGS d3d12HeapFlags)
         {
@@ -76,6 +78,21 @@ public sealed unsafe class D3D12GraphicsMemoryHeap : GraphicsDeviceObject
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
+
+    /// <summary>Gets or sets the name for the device object.</summary>
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = D3D12Heap->UpdateD3D12Name(value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();

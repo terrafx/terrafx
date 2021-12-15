@@ -9,6 +9,7 @@ using static TerraFX.Interop.Vulkan.VkFilter;
 using static TerraFX.Interop.Vulkan.VkFormat;
 using static TerraFX.Interop.Vulkan.VkImageAspectFlags;
 using static TerraFX.Interop.Vulkan.VkImageViewType;
+using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkSamplerMipmapMode;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
@@ -27,6 +28,7 @@ public sealed unsafe class VulkanGraphicsTexture : GraphicsTexture
     private readonly VkImageView _vkImageView;
     private readonly VkSampler _vkSampler;
 
+    private string _name = null!;
     private VolatileState _state;
 
     internal VulkanGraphicsTexture(VulkanGraphicsDevice device, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment, in GraphicsMemoryRegion memoryRegion, GraphicsTextureKind kind, GraphicsFormat format, uint width, uint height, ushort depth, VkImage vkImage)
@@ -38,12 +40,13 @@ public sealed unsafe class VulkanGraphicsTexture : GraphicsTexture
         ThrowExternalExceptionIfNotSuccess(vkBindImageMemory(device.VkDevice, vkImage, memoryHeap.VkDeviceMemory, memoryRegion.Offset));
         _vkImage = vkImage;
 
-        _vkImageView = CreateVkImageView(device, kind, in memoryRegion, vkImage);
-        _vkSampler = CreateVkSampler(device, in memoryRegion);
+        _vkImageView = CreateVkImageView(device, kind, vkImage);
+        _vkSampler = CreateVkSampler(device);
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(VulkanGraphicsTexture);
 
-        static VkImageView CreateVkImageView(VulkanGraphicsDevice device, GraphicsTextureKind kind, in GraphicsMemoryRegion heapRegion, VkImage vkImage)
+        static VkImageView CreateVkImageView(VulkanGraphicsDevice device, GraphicsTextureKind kind, VkImage vkImage)
         {
             VkImageView vkImageView;
 
@@ -76,7 +79,7 @@ public sealed unsafe class VulkanGraphicsTexture : GraphicsTexture
             return vkImageView;
         }
 
-        static VkSampler CreateVkSampler(VulkanGraphicsDevice device, in GraphicsMemoryRegion heapRegion)
+        static VkSampler CreateVkSampler(VulkanGraphicsDevice device)
         {
             VkSampler vkSampler;
 
@@ -105,6 +108,22 @@ public sealed unsafe class VulkanGraphicsTexture : GraphicsTexture
 
     /// <summary>Gets the memory heap in which the buffer exists.</summary>
     public VulkanGraphicsMemoryHeap MemoryHeap => _memoryHeap;
+
+    /// <inheritdoc />
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = Device.UpdateName(VK_OBJECT_TYPE_IMAGE, VkImage, value);
+            _ = Device.UpdateName(VK_OBJECT_TYPE_IMAGE_VIEW, VkImageView, value);
+            _ = Device.UpdateName(VK_OBJECT_TYPE_SAMPLER, VkSampler, value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();

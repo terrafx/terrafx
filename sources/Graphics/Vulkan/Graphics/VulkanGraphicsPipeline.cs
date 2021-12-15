@@ -8,6 +8,7 @@ using static TerraFX.Interop.Vulkan.VkCompareOp;
 using static TerraFX.Interop.Vulkan.VkCullModeFlags;
 using static TerraFX.Interop.Vulkan.VkDynamicState;
 using static TerraFX.Interop.Vulkan.VkFrontFace;
+using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkPrimitiveTopology;
 using static TerraFX.Interop.Vulkan.VkSampleCountFlags;
 using static TerraFX.Interop.Vulkan.VkShaderStageFlags;
@@ -29,6 +30,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
 {
     private readonly VkPipeline _vkPipeline;
 
+    private string _name = null!;
     private VolatileState _state;
 
     internal VulkanGraphicsPipeline(VulkanGraphicsRenderPass renderPass, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
@@ -37,6 +39,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
         _vkPipeline = CreateVkPipeline(renderPass, signature, vertexShader, pixelShader);
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(VulkanGraphicsPipeline);
 
         static VkPipeline CreateVkPipeline(VulkanGraphicsRenderPass renderPass, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
         {
@@ -151,7 +154,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
                 vkPipelineShaderStageCreateInfos[shaderIndex] = new VkPipelineShaderStageCreateInfo {
                     sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
                     stage = VK_SHADER_STAGE_VERTEX_BIT,
-                    module = vertexShader.VulkanShaderModule,
+                    module = vertexShader.VkShaderModule,
                     pName = pName,
                 };
 
@@ -216,7 +219,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
                 vkPipelineShaderStageCreateInfos[shaderIndex] = new VkPipelineShaderStageCreateInfo {
                     sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
                     stage = VK_SHADER_STAGE_FRAGMENT_BIT,
-                    module = pixelShader.VulkanShaderModule,
+                    module = pixelShader.VkShaderModule,
                     pName = pName,
                 };
 
@@ -261,6 +264,20 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <inheritdoc />
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = Device.UpdateName(VK_OBJECT_TYPE_PIPELINE, VkPipeline, value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
     public new VulkanGraphicsShader? PixelShader => base.PixelShader.As<VulkanGraphicsShader>();

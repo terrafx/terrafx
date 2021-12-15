@@ -5,6 +5,7 @@
 
 using System;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkBufferUsageFlags;
@@ -12,6 +13,7 @@ using static TerraFX.Interop.Vulkan.VkImageType;
 using static TerraFX.Interop.Vulkan.VkImageUsageFlags;
 using static TerraFX.Interop.Vulkan.VkMemoryHeapFlags;
 using static TerraFX.Interop.Vulkan.VkMemoryPropertyFlags;
+using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkPhysicalDeviceType;
 using static TerraFX.Interop.Vulkan.VkQueueFlags;
 using static TerraFX.Interop.Vulkan.VkSampleCountFlags;
@@ -20,6 +22,7 @@ using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
@@ -34,6 +37,7 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     private readonly VkDevice _vkDevice;
     private readonly uint _vkMemoryTypeCount;
 
+    private string _name = null!;
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext> _renderContextPool;
     private VolatileState _state;
 
@@ -55,7 +59,9 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
         // TODO: UpdateBudget
 
         _renderContextPool = new ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext>();
+
         _ = _state.Transition(to: Initialized);
+        Name = nameof(VulkanGraphicsDevice);
 
         static VulkanGraphicsMemoryManager[] CreateMemoryManagers(VulkanGraphicsDevice device, uint vkMemoryTypeCount)
         {
@@ -82,15 +88,13 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
                 pQueuePriorities = &vkQueuePriority,
             };
 
-            var debugModeEnabled = adapter.Service.DebugModeEnabled;
-
             const int EnabledExtensionNamesCount = 1;
 
             var enabledVkExtensionNames = stackalloc sbyte*[EnabledExtensionNamesCount] {
                 (sbyte*)VK_KHR_SWAPCHAIN_EXTENSION_NAME.GetPointer(),
             };
 
-            var enabledVkLayersNamesCount = debugModeEnabled ? 1u : 0u;
+            var enabledVkLayersNamesCount = GraphicsService.EnableDebugMode ? 1u : 0u;
             var enabledVkLayerNames = stackalloc sbyte*[(int)enabledVkLayersNamesCount];
 
             var vkPhysicalDeviceFeatures = new VkPhysicalDeviceFeatures();
@@ -106,7 +110,7 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
                 pEnabledFeatures = &vkPhysicalDeviceFeatures,
             };
 
-            if (debugModeEnabled)
+            if (GraphicsService.EnableDebugMode)
             {
                 enabledVkLayerNames[enabledVkLayersNamesCount - 1] = VK_LAYER_KHRONOS_VALIDATION_NAME.GetPointer();
             }
@@ -156,6 +160,21 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
 
     /// <inheritdoc cref="GraphicsDevice.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
+
+    /// <inheritdoc />
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = UpdateName(VK_OBJECT_TYPE_DEVICE, VkDevice, value);
+            _ = UpdateName(VK_OBJECT_TYPE_QUEUE, VkCommandQueue, value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsDevice.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
@@ -399,6 +418,34 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
             }
         }
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal string UpdateName(VkObjectType objectType, ulong objectHandle, string name, [CallerArgumentExpression("objectHandle")] string component = "")
+    {
+        name ??= "";
+
+        if (GraphicsService.EnableDebugMode && (Service.VkSetDebugUtilsObjectName != null) && (objectHandle != 0))
+        {
+            var componentName = $"{name}: {component}";
+
+            fixed (sbyte* pName = componentName.GetUtf8Span())
+            {
+                var vkDebugUtilsObjectNameInfo = new VkDebugUtilsObjectNameInfoEXT {
+                    sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT,
+                    objectType = objectType,
+                    objectHandle = objectHandle,
+                    pObjectName = pName
+                };
+                _ = Service.VkSetDebugUtilsObjectName(VkDevice, &vkDebugUtilsObjectNameInfo);
+            }
+        }
+
+        return name;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal string UpdateName(VkObjectType objectType, void* objectHandle, string name, [CallerArgumentExpression("objectHandle")] string component = "")
+        => UpdateName(objectType, (ulong)objectHandle, name, component);
 
     private int GetMemoryManagerIndex(GraphicsResourceCpuAccess cpuAccess, uint vkMemoryTypeBits)
     {

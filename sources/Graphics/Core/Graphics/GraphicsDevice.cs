@@ -25,6 +25,9 @@ public abstract partial class GraphicsDevice : IDisposable
     /// <summary>Gets the underlying adapter for the device.</summary>
     public GraphicsAdapter Adapter => _adapter;
 
+    /// <summary>Gets or sets the name for the device.</summary>
+    public abstract string Name { get; set; }
+
     /// <summary>Gets the service which enumerated <see cref="Adapter" />.</summary>
     public GraphicsService Service => _service;
 
@@ -127,6 +130,9 @@ public abstract partial class GraphicsDevice : IDisposable
     /// <param name="fence">The fence to be signalled</param>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public abstract void Signal(GraphicsFence fence);
+
+    /// <inheritdoc />
+    public override string ToString() => Name;
 
     /// <summary>Waits for the device to become idle.</summary>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>

@@ -16,6 +16,7 @@ public sealed unsafe class D3D12GraphicsRenderTarget : GraphicsRenderTarget
     private readonly D3D12_CPU_DESCRIPTOR_HANDLE _d3d12RtvDescriptorHandle;
     private readonly ID3D12Resource* _d3d12RtvResource;
 
+    private string _name = null!;
     private VolatileState _state;
 
     internal D3D12GraphicsRenderTarget(D3D12GraphicsSwapchain swapchain, uint index)
@@ -27,6 +28,7 @@ public sealed unsafe class D3D12GraphicsRenderTarget : GraphicsRenderTarget
         _d3d12RtvResource = CreateD3D12RtvResource(swapchain, index, d3d12RtvDescriptorHandle);
 
         _ = _state.Transition(to: Initialized);
+        Name = nameof(D3D12GraphicsRenderTarget);
 
         static ID3D12Resource* CreateD3D12RtvResource(D3D12GraphicsSwapchain swapchain, uint index, D3D12_CPU_DESCRIPTOR_HANDLE d3d12RtvDescriptorHandle)
         {
@@ -69,6 +71,20 @@ public sealed unsafe class D3D12GraphicsRenderTarget : GraphicsRenderTarget
 
     /// <inheritdoc cref="GraphicsSwapchainObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
+
+    /// <summary>Gets or sets the name for the pipeline signature.</summary>
+    public override string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = D3D12RtvResource->UpdateD3D12Name(value);
+        }
+    }
 
     /// <inheritdoc cref="GraphicsSwapchainObject.RenderPass" />
     public new D3D12GraphicsRenderPass RenderPass => base.RenderPass.As<D3D12GraphicsRenderPass>();

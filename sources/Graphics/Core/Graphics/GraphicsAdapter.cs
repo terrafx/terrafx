@@ -29,4 +29,7 @@ public abstract class GraphicsAdapter : GraphicsServiceObject
     /// <summary>Creates a new graphics device which utilizes the adapter.</summary>
     /// <exception cref="ObjectDisposedException">The adapter has been disposed.</exception>
     public abstract GraphicsDevice CreateDevice();
+
+    /// <inheritdoc />
+    public override string ToString() => Name;
 }
