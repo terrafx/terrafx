@@ -349,7 +349,7 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
         AssertNotNull(vertexBuffer);
 
         var d3d12VertexBufferView = new D3D12_VERTEX_BUFFER_VIEW {
-            BufferLocation = vertexBuffer.D3D12Resource->GetGPUVirtualAddress() + vertexBufferView.Offset,
+            BufferLocation = vertexBuffer.D3D12ResourceGpuVirtualAddress + vertexBufferView.Offset,
             StrideInBytes = primitive.VertexBufferView.Stride,
             SizeInBytes = vertexBufferView.Size,
         };
@@ -366,8 +366,7 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
 
             if (inputResourceView.Resource is D3D12GraphicsBuffer d3d12GraphicsBuffer)
             {
-                var gpuVirtualAddress = d3d12GraphicsBuffer.D3D12Resource->GetGPUVirtualAddress();
-                d3d12GraphicsCommandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), gpuVirtualAddress + inputResourceView.Offset);
+                d3d12GraphicsCommandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), d3d12GraphicsBuffer.D3D12ResourceGpuVirtualAddress + inputResourceView.Offset);
             }
             else if (inputResourceView.Resource is D3D12GraphicsTexture d3d12GraphicsTexture)
             {
@@ -391,8 +390,8 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
             }
 
             var d3d12IndexBufferView = new D3D12_INDEX_BUFFER_VIEW {
-                BufferLocation = indexBuffer.D3D12Resource->GetGPUVirtualAddress() + indexBufferView.Offset,
-                SizeInBytes = (uint)indexBufferView.Size,
+                BufferLocation = indexBuffer.D3D12ResourceGpuVirtualAddress + indexBufferView.Offset,
+                SizeInBytes = indexBufferView.Size,
                 Format = indexFormat,
             };
             d3d12GraphicsCommandList->IASetIndexBuffer(&d3d12IndexBufferView);
