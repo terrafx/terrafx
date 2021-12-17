@@ -3,6 +3,7 @@
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using TerraFX.Utilities;
+using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -96,10 +97,24 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     public ref readonly VkPhysicalDeviceProperties VkPhysicalDeviceProperties => ref _vkPhysicalDeviceProperties;
 
     /// <inheritdoc />
-    public override VulkanGraphicsDevice CreateDevice(delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> createMemoryAllocator)
+    public override VulkanGraphicsDevice CreateDevice(delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator)
     {
         ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
         return new VulkanGraphicsDevice(this, createMemoryAllocator);
+    }
+
+    /// <summary>Tries to query the <see cref="VkPhysicalDeviceMemoryBudgetPropertiesEXT" /> for <see cref="VkPhysicalDevice" />.</summary>
+    /// <param name="vkPhysicalDeviceMemoryBudgetProperties">The memory budget properties that will be filled.</param>
+    /// <returns><c>true</c> if the query succeeded; otherwise, <c>false</c>.</returns>
+    public bool TryGetVkPhysicalDeviceMemoryBudgetProperties(VkPhysicalDeviceMemoryBudgetPropertiesEXT* vkPhysicalDeviceMemoryBudgetProperties)
+    {
+        var vkPhysicalDeviceMemoryProperties = new VkPhysicalDeviceMemoryProperties2 {
+            sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PROPERTIES_2_KHR,
+            pNext = vkPhysicalDeviceMemoryBudgetProperties,
+        };
+
+        vkGetPhysicalDeviceMemoryProperties2(VkPhysicalDevice, &vkPhysicalDeviceMemoryProperties);
+        return true;
     }
 
     /// <inheritdoc />

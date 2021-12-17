@@ -12,7 +12,7 @@ public partial class VulkanGraphicsBuffer
     {
         public GraphicsResourceCpuAccess CpuAccess;
 
-        public delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> CreateMemoryAllocator;
+        public delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> CreateMemoryAllocator;
 
         public GraphicsBufferKind Kind;
 

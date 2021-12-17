@@ -45,7 +45,7 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
         _d3d12ResourceGpuVirtualAddress = d3d12Resource->GetGPUVirtualAddress();
         _d3d12ResourceState = createInfo.D3D12ResourceState;
         _mapMutex = new ValueMutex();
-        _memoryAllocator = createInfo.CreateMemoryAllocator(this, createInfo.MemoryRegion.Size);
+        _memoryAllocator = createInfo.CreateMemoryAllocator(this, null, createInfo.MemoryRegion.Size, false);
         _memoryHeap = createInfo.MemoryRegion.Allocator.DeviceObject.As<D3D12GraphicsMemoryHeap>();
 
         _ = _state.Transition(to: Initialized);

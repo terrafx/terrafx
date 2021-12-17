@@ -67,8 +67,17 @@ public abstract class GraphicsMemoryManager : GraphicsDeviceObject, IReadOnlyCol
     /// <summary>Gets the minimum size, in bytes, of the manager.</summary>
     public abstract nuint MinimumSize { get; }
 
+    /// <summary>Gets the total number of operations performed by the manager.</summary>
+    public abstract ulong OperationCount { get; }
+
     /// <summary>Gets the size, in bytes, of the manager.</summary>
     public abstract ulong Size { get; }
+
+    /// <summary>Gets the total size, in bytes, of allocated memory regions.</summary>
+    public ulong TotalAllocatedMemoryRegionSize => Size - TotalFreeMemoryRegionSize;
+
+    /// <summary>Gets the total size, in bytes, of free memory regions.</summary>
+    public abstract ulong TotalFreeMemoryRegionSize { get; }
 
     /// <summary>Allocate a memory region in the manager.</summary>
     /// <param name="size">The size, in bytes, of the memory region to allocate.</param>
@@ -80,12 +89,6 @@ public abstract class GraphicsMemoryManager : GraphicsDeviceObject, IReadOnlyCol
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="memoryAllocationFlags" /> has an invalid combination.</exception>
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
     public abstract GraphicsMemoryRegion Allocate(nuint size, nuint alignment = 0, GraphicsMemoryAllocationFlags memoryAllocationFlags = GraphicsMemoryAllocationFlags.None);
-
-    /// <summary>Frees a memory region from the manager.</summary>
-    /// <param name="memoryRegion">The memory region to be freed.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="memoryRegion" />.<see cref="GraphicsMemoryRegion.Allocator" /> is <c>null</c>.</exception>
-    /// <exception cref="KeyNotFoundException"><paramref name="memoryRegion" /> was not found in the collection.</exception>
-    public abstract void Free(in GraphicsMemoryRegion memoryRegion);
 
     /// <summary>Gets an enumerator that can iterate through the memory allocators in the manager.</summary>
     /// <returns>An enumerator that can iterate through the memory allocators in the manager.</returns>

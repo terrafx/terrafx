@@ -21,7 +21,7 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
 {
-    private readonly delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> _createMemoryAllocator;
+    private readonly delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> _createMemoryAllocator;
     private readonly ValueMutex _mutex;
     private readonly uint _vkMemoryTypeIndex;
 
@@ -30,11 +30,13 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
 
     private nuint _minimumSize;
     private string _name = null!;
+    private ulong _operationCount;
     private ulong _size;
+    private ulong _totalFreeMemoryRegionSize;
 
     private VolatileState _state;
 
-    internal VulkanGraphicsMemoryManager(VulkanGraphicsDevice device, delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> createMemoryAllocator, uint vkMemoryTypeIndex)
+    internal VulkanGraphicsMemoryManager(VulkanGraphicsDevice device, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator, uint vkMemoryTypeIndex)
         : base(device)
     {
         if (createMemoryAllocator is null)
@@ -49,33 +51,33 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         _emptyMemoryAllocator = null;
         _memoryAllocators = new ValueList<GraphicsMemoryAllocator>();
 
-        _minimumSize = 0;
-        _size = 0;
-
         _ = _state.Transition(to: Initialized);
         Name = nameof(VulkanGraphicsMemoryManager);
 
         for (var i = 0; i < MinimumMemoryAllocatorCount; ++i)
         {
             var memoryAllocatorSize = GetAdjustedMemoryAllocatorSize(MaximumSharedMemoryAllocatorSize);
-            _ = AddMemoryAllocator(memoryAllocatorSize);
+            _ = AddMemoryAllocator(memoryAllocatorSize, isDedicated: false);
         }
     }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
-    /// <summary>Gets the number of memory allocators in the memory manager.</summary>
+    /// <inheritdoc />
     public override int Count => _memoryAllocators.Count;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
-    /// <summary>Gets <c>true</c> if the manager is empty; otherwise, <c>false</c>.</summary>
+    /// <inheritdoc />
     public override bool IsEmpty => _memoryAllocators.Count == 0;
 
-    /// <summary>Gets the minimum size, in bytes, of the manager.</summary>
+    /// <inheritdoc />
     public override nuint MinimumSize => _minimumSize;
+
+    /// <inheritdoc />
+    public override ulong OperationCount => _operationCount;
 
     /// <inheritdoc />
     public override string Name
@@ -94,11 +96,27 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
-    /// <summary>Gets the size, in bytes, of the manager.</summary>
+    /// <inheritdoc />
     public override ulong Size => _size;
+
+
+    /// <inheritdoc />
+    public override ulong TotalFreeMemoryRegionSize => _totalFreeMemoryRegionSize;
 
     /// <summary>Gets the memory type index used when creating the <see cref="VkDeviceMemory" /> instance for a memory heap.</summary>
     public uint VkMemoryTypeIndex => _vkMemoryTypeIndex;
+
+    private static void OnAllocatorFree(in GraphicsMemoryRegion memoryRegion)
+    {
+        var memoryAllocator = memoryRegion.Allocator;
+        ThrowIfNull(memoryAllocator);
+
+        if (memoryAllocator.DeviceObject is VulkanGraphicsMemoryHeap memoryHeap)
+        {
+            var memoryManager = memoryHeap.MemoryManager;
+            memoryManager.Free(memoryAllocator, in memoryRegion);
+        }
+    }
 
     /// <summary>Allocate a memory region in the manager.</summary>
     /// <param name="size">The size, in bytes, of the memory region to allocate</param>
@@ -117,16 +135,6 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         }
 
         return memoryRegion;
-    }
-
-    /// <summary>Frees a memory region from the manager.</summary>
-    /// <param name="memoryRegion">The memory region to be freed.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="memoryRegion" />.<see cref="GraphicsMemoryRegion.Allocator" /> is <c>null</c>.</exception>
-    /// <exception cref="KeyNotFoundException"><paramref name="memoryRegion" /> was not found in the collection.</exception>
-    public override void Free(in GraphicsMemoryRegion memoryRegion)
-    {
-        using var mutex = new DisposableMutex(_mutex, IsExternallySynchronized);
-        FreeInternal(in memoryRegion);
     }
 
     /// <inheritdoc />
@@ -192,23 +200,29 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         _state.EndDispose();
     }
 
-    private GraphicsMemoryAllocator AddMemoryAllocator(nuint size)
+    private GraphicsMemoryAllocator AddMemoryAllocator(nuint size, bool isDedicated)
     {
-        var memoryHeap = new VulkanGraphicsMemoryHeap(Device, size, VkMemoryTypeIndex);
-        var memoryAllocator = _createMemoryAllocator(memoryHeap, size);
+        var memoryHeap = new VulkanGraphicsMemoryHeap(this, size, VkMemoryTypeIndex);
+        var memoryAllocator = _createMemoryAllocator(memoryHeap, &OnAllocatorFree, size, isDedicated);
 
+        _operationCount++;
         _memoryAllocators.Add(memoryAllocator);
+
         _size += size;
+        _totalFreeMemoryRegionSize += size;
 
         return memoryAllocator;
     }
 
-    private void FreeInternal(in GraphicsMemoryRegion memoryRegion)
+    private void Free(GraphicsMemoryAllocator memoryAllocator, in GraphicsMemoryRegion memoryRegion)
+    {
+        using var mutex = new DisposableMutex(_mutex, IsExternallySynchronized);
+        FreeInternal(memoryAllocator, in memoryRegion);
+    }
+
+    private void FreeInternal(GraphicsMemoryAllocator memoryAllocator, in GraphicsMemoryRegion memoryRegion)
     {
         // This method should only be called under the mutex
-
-        var memoryAllocator = memoryRegion.Allocator;
-        ThrowIfNull(memoryAllocator);
 
         var memoryAllocatorIndex = _memoryAllocators.IndexOf(memoryAllocator);
 
@@ -217,7 +231,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
             ThrowKeyNotFoundException(memoryRegion, nameof(_memoryAllocators));
         }
 
-        memoryAllocator.Free(in memoryRegion);
+        TrackFree(in memoryRegion);
 
         if (memoryAllocator.IsEmpty)
         {
@@ -271,7 +285,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
 
                 var memoryBudget = Device.GetMemoryBudget(this);
 
-                if ((memoryBudget.EstimatedUsage >= memoryBudget.EstimatedBudget) && (_memoryAllocators.Count > MinimumMemoryAllocatorCount) && ((_size - memoryAllocator.Size) >= _minimumSize))
+                if ((memoryBudget.EstimatedMemoryUsage >= memoryBudget.EstimatedMemoryBudget) && (_memoryAllocators.Count > MinimumMemoryAllocatorCount) && ((_size - memoryAllocator.Size) >= _minimumSize))
                 {
                     RemoveMemoryAllocatorAt(memoryAllocatorIndex);
                 }
@@ -388,8 +402,33 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         var memoryAllocator = _memoryAllocators[index];
         memoryAllocator.DeviceObject.Dispose();
 
+        _operationCount++;
         _memoryAllocators.RemoveAt(index);
-        _size -= memoryAllocator.Size;
+
+        var size = memoryAllocator.Size;
+        _size -= size;
+
+        Assert(AssertionsEnabled && (size == memoryAllocator.TotalFreeMemoryRegionSize));
+        _totalFreeMemoryRegionSize -= size;
+    }
+
+    private bool TrackAllocation(GraphicsMemoryAllocator memoryAllocator, nuint size, nuint alignment, out GraphicsMemoryRegion memoryRegion)
+    {
+        var succeeded = memoryAllocator.TryAllocate(size, alignment, out memoryRegion);
+
+        if (succeeded)
+        {
+            _operationCount++;
+            _totalFreeMemoryRegionSize -= memoryRegion.Size;
+        }
+
+        return succeeded;
+    }
+
+    private void TrackFree(in GraphicsMemoryRegion memoryRegion)
+    {
+        _operationCount++;
+        _totalFreeMemoryRegionSize += memoryRegion.Size;
     }
 
     private bool TryAllocateInternal(nuint size, nuint alignment, GraphicsMemoryAllocationFlags allocationFlags, out GraphicsMemoryRegion memoryRegion)
@@ -410,8 +449,8 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
 
         var memoryAllocators = _memoryAllocators.AsSpanUnsafe(0, _memoryAllocators.Count);
 
-        var availableMemory = (budget.EstimatedUsage < budget.EstimatedBudget) ? (budget.EstimatedBudget - budget.EstimatedUsage) : 0;
-        var canCreateNewMemoryAllocator = !useExistingMemoryAllocator && (memoryAllocators.Length < MaximumMemoryAllocatorCount) && (availableMemory >= sizeWithMargins);
+        var availableMemory = (budget.EstimatedMemoryUsage < budget.EstimatedMemoryBudget) ? (budget.EstimatedMemoryBudget - budget.EstimatedMemoryUsage) : 0;
+        var canCreateNewMemoryAllocator = !useExistingMemoryAllocator && (memoryAllocators.Length < MaximumMemoryAllocatorCount) && (allocationFlags.HasFlag(GraphicsMemoryAllocationFlags.CanExceedBudget) || (availableMemory >= sizeWithMargins));
 
         // 1. Search existing memory allocators
 
@@ -422,7 +461,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
                 var currentMemoryAllocator = memoryAllocators[memoryAllocatorIndex];
                 AssertNotNull(currentMemoryAllocator);
 
-                if (currentMemoryAllocator.TryAllocate(size, alignment, out memoryRegion))
+                if (TrackAllocation(currentMemoryAllocator, size, alignment, out memoryRegion))
                 {
                     if (currentMemoryAllocator == _emptyMemoryAllocator)
                     {
@@ -449,8 +488,8 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
             return false;
         }
 
-        var allocator = AddMemoryAllocator(memoryAllocatorSize);
-        return allocator.TryAllocate(size, alignment, out memoryRegion);
+        var memoryAllocator = AddMemoryAllocator(memoryAllocatorSize, isDedicated: useDedicatedMemoryAllocator);
+        return TrackAllocation(memoryAllocator, size, alignment, out memoryRegion);
     }
 
     private bool TryAllocateInternal(nuint size, nuint alignment, GraphicsMemoryAllocationFlags flags, Span<GraphicsMemoryRegion> memoryRegions)
@@ -469,7 +508,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
 
                 while (index-- != 0)
                 {
-                    FreeInternal(in memoryRegions[index]);
+                    FreeInternal(memoryRegions[index].Allocator, in memoryRegions[index]);
                     memoryRegions[index] = default;
                 }
 
@@ -550,7 +589,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
                         memoryAllocatorSize = Clamp(remainingSize, MinimumMemoryAllocatorSize, memoryAllocatorSize);
                     }
 
-                    emptyMemoryAllocator ??= AddMemoryAllocator(memoryAllocatorSize);
+                    emptyMemoryAllocator ??= AddMemoryAllocator(memoryAllocatorSize, isDedicated: false);
                     size += memoryAllocatorSize;
 
                     ++memoryAllocatorCount;

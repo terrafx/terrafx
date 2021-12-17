@@ -16,7 +16,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics;
 
 /// <summary>An allocator for graphics memory.</summary>
-public abstract partial class GraphicsMemoryAllocator : IReadOnlyCollection<GraphicsMemoryRegion>
+public abstract unsafe partial class GraphicsMemoryAllocator : IReadOnlyCollection<GraphicsMemoryRegion>
 {
     /// <summary>The minimum size, in bytes, of free memory regions to keep on either side of an allocated region.</summary>
     /// <remarks>This defaults to <c>0</c> so that no free regions are preserved around allocations.</remarks>
@@ -33,27 +33,35 @@ public abstract partial class GraphicsMemoryAllocator : IReadOnlyCollection<Grap
     );
 
     private readonly GraphicsDeviceObject _deviceObject;
+    private readonly delegate*<in GraphicsMemoryRegion, void> _onFree;
+    private readonly bool _isDedicated;
     private readonly nuint _size;
 
     /// <summary>Creates a new instance of a memory allocator that uses a system provided default algorithm.</summary>
     /// <param name="deviceObject">The device object for which the allocator is managing memory.</param>
+    /// <param name="onFree">A pointer to the function that should be invoked when <see cref="Free(in GraphicsMemoryRegion)" /> completes.</param>
     /// <param name="size">The size, in bytes, of the memory that is to be managed.</param>
+    /// <param name="isDedicated"><c>true</c> if the allocator is dedicated to a single allocation; otherwise, <c>false</c>.</param>
     /// <returns>A new memory allocator that uses a system provided default algorithm.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="deviceObject" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
-    public static GraphicsMemoryAllocator CreateDefault(GraphicsDeviceObject deviceObject, nuint size) => new DefaultMemoryAllocator(deviceObject, size);
+    public static GraphicsMemoryAllocator CreateDefault(GraphicsDeviceObject deviceObject, delegate*<in GraphicsMemoryRegion, void> onFree, nuint size, bool isDedicated)
+        => new DefaultMemoryAllocator(deviceObject, onFree, size, isDedicated);
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryAllocator" /> class.</summary>
     /// <param name="deviceObject">The device object for which the allocator is managing memory.</param>
+    /// <param name="onFree">A pointer to the function that should be invoked when <see cref="Free(in GraphicsMemoryRegion)" /> completes.</param>
     /// <param name="size">The size, in bytes, of the memory that is to be managed.</param>
+    /// <param name="isDedicated"><c>true</c> if the allocator is dedicated to a single allocation; otherwise, <c>false</c>.</param>
     /// <exception cref="ArgumentNullException"><paramref name="deviceObject" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
-    protected GraphicsMemoryAllocator(GraphicsDeviceObject deviceObject, nuint size)
+    protected GraphicsMemoryAllocator(GraphicsDeviceObject deviceObject, delegate*<in GraphicsMemoryRegion, void> onFree, nuint size, bool isDedicated)
     {
         ThrowIfNull(deviceObject);
         ThrowIfZero(size);
 
         _deviceObject = deviceObject;
+        _isDedicated = isDedicated;
         _size = size;
     }
 
@@ -66,6 +74,9 @@ public abstract partial class GraphicsMemoryAllocator : IReadOnlyCollection<Grap
     /// <summary>Gets the device object for which the allocator is managing memory.</summary>
     public GraphicsDeviceObject DeviceObject => _deviceObject;
 
+    /// <summary>Gets <c>true</c> if the allocator is dedicated to a single allocation; otherwise, <c>false</c>.</summary>
+    public bool IsDedicated => _isDedicated;
+
     /// <summary>Gets <c>true</c> if there are no allocated memory regions; otherwise, <c>false</c>.</summary>
     public abstract bool IsEmpty { get; }
 
@@ -75,8 +86,14 @@ public abstract partial class GraphicsMemoryAllocator : IReadOnlyCollection<Grap
     /// <summary>Gets the size, in bytes, of the memory being managed.</summary>
     public nuint Size => _size;
 
+    /// <summary>Gets the total size, in bytes, of allocated memory regions.</summary>
+    public nuint TotalAllocatedMemoryRegionSize => Size - TotalFreeMemoryRegionSize;
+
     /// <summary>Gets the total size, in bytes, of free memory regions.</summary>
     public abstract nuint TotalFreeMemoryRegionSize { get; }
+
+    /// <summary>Gets a pointer to the function that should be invoked when <see cref="Free(in GraphicsMemoryRegion)" /> completes.</summary>
+    protected delegate*<in GraphicsMemoryRegion, void> OnFree => _onFree;
 
     /// <summary>Allocates a memory region of the specified size and alignment.</summary>
     /// <param name="size">The size, in bytes, of the memory region to allocate.</param>
@@ -102,7 +119,20 @@ public abstract partial class GraphicsMemoryAllocator : IReadOnlyCollection<Grap
     /// <summary>Frees a memory region of memory.</summary>
     /// <param name="memoryRegion">The memory region to be freed.</param>
     /// <exception cref="KeyNotFoundException"><paramref name="memoryRegion" /> was not found in the allocator.</exception>
-    public abstract void Free(in GraphicsMemoryRegion memoryRegion);
+    public void Free(in GraphicsMemoryRegion memoryRegion)
+    {
+        if (!TryFree(in memoryRegion))
+        {
+            ThrowKeyNotFoundException(memoryRegion, nameof(GraphicsMemoryAllocator));
+        }
+
+        var onFree = OnFree;
+
+        if (onFree is not null)
+        {
+            onFree(in memoryRegion);
+        }
+    }
 
     /// <summary>Gets an enumerator that can be used to iterate through the memory regions of the allocator.</summary>
     /// <returns>An enumerator that can be used to iterate through the memory regions of the allocator.</returns>
@@ -118,4 +148,9 @@ public abstract partial class GraphicsMemoryAllocator : IReadOnlyCollection<Grap
     public abstract bool TryAllocate(nuint size, [Optional] nuint alignment, out GraphicsMemoryRegion memoryRegion);
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    /// <summary>Tries to free a memory region.</summary>
+    /// <param name="memoryRegion">The memory region to be freed.</param>
+    /// <returns><c>true</c> if <paramref name="memoryRegion" /> was succesfully freed; otherwise, <c>false</c>.</returns>
+    protected abstract bool TryFree(in GraphicsMemoryRegion memoryRegion);
 }

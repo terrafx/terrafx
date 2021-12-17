@@ -20,18 +20,18 @@ public sealed unsafe class D3D12GraphicsMemoryHeap : GraphicsDeviceObject
 {
     private readonly ID3D12Heap* _d3d12Heap;
     private readonly D3D12_HEAP_DESC _d3d12HeapDesc;
+    private readonly D3D12GraphicsMemoryManager _memoryManager;
     private readonly nuint _size;
 
     private string _name = null!;
     private VolatileState _state;
 
-    internal D3D12GraphicsMemoryHeap(D3D12GraphicsDevice device, nuint size, D3D12_HEAP_TYPE d3d12HeapType, D3D12_HEAP_FLAGS d3d12HeapFlags)
-        : base(device)
+    internal D3D12GraphicsMemoryHeap(D3D12GraphicsMemoryManager memoryManager, nuint size, D3D12_HEAP_TYPE d3d12HeapType, D3D12_HEAP_FLAGS d3d12HeapFlags)
+        : base(memoryManager.Device)
     {
-        var d3d12Heap = CreateD3D12Heap(device, size, d3d12HeapType, d3d12HeapFlags);
-        _d3d12Heap = d3d12Heap;
-
-        _d3d12HeapDesc = d3d12Heap->GetDesc();
+        _d3d12Heap = CreateD3D12Heap(memoryManager.Device, size, d3d12HeapType, d3d12HeapFlags);
+        _d3d12HeapDesc = _d3d12Heap->GetDesc();
+        _memoryManager = memoryManager;
         _size = size;
 
         _ = _state.Transition(to: Initialized);
@@ -85,6 +85,8 @@ public sealed unsafe class D3D12GraphicsMemoryHeap : GraphicsDeviceObject
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
 
+    /// <summary>Gets the memory manager which created the memory heap.</summary>
+    public D3D12GraphicsMemoryManager MemoryManager => _memoryManager;
 
     /// <summary>Gets or sets the name for the device object.</summary>
     public override string Name

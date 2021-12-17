@@ -3,6 +3,7 @@
 using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
 using TerraFX.Utilities;
+using static TerraFX.Interop.DirectX.DXGI_MEMORY_SEGMENT_GROUP;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -14,33 +15,33 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
 {
-    private readonly IDXGIAdapter1* _dxgiAdapter;
+    private readonly IDXGIAdapter3* _dxgiAdapter;
 
-    private readonly DXGI_ADAPTER_DESC1 _dxgiAdapterDesc;
+    private readonly DXGI_ADAPTER_DESC2 _dxgiAdapterDesc;
     private readonly string _name;
 
     private VolatileState _state;
 
-    internal D3D12GraphicsAdapter(D3D12GraphicsService service, IDXGIAdapter1* dxgiAdapter)
+    internal D3D12GraphicsAdapter(D3D12GraphicsService service, IDXGIAdapter3* dxgiAdapter)
         : base(service)
     {
         ThrowIfNull(dxgiAdapter);
 
         _dxgiAdapter = dxgiAdapter;
-
         _dxgiAdapterDesc = GetDxgiAdapterDesc(dxgiAdapter);
+
         _name = GetName(in _dxgiAdapterDesc);
 
         _ = _state.Transition(to: Initialized);
 
-        static DXGI_ADAPTER_DESC1 GetDxgiAdapterDesc(IDXGIAdapter1* dxgiAdapter)
+        static DXGI_ADAPTER_DESC2 GetDxgiAdapterDesc(IDXGIAdapter3* dxgiAdapter)
         {
-            DXGI_ADAPTER_DESC1 dxgiAdapterDesc;
-            ThrowExternalExceptionIfFailed(dxgiAdapter->GetDesc1(&dxgiAdapterDesc));
+            DXGI_ADAPTER_DESC2 dxgiAdapterDesc;
+            ThrowExternalExceptionIfFailed(dxgiAdapter->GetDesc2(&dxgiAdapterDesc));
             return dxgiAdapterDesc;
         }
 
-        static string GetName(in DXGI_ADAPTER_DESC1 dxgiAdapterDesc)
+        static string GetName(in DXGI_ADAPTER_DESC2 dxgiAdapterDesc)
         {
             var name = GetUtf16Span(in dxgiAdapterDesc.Description[0], 128).GetString();
             return name ?? string.Empty;
@@ -53,8 +54,8 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
     /// <inheritdoc />
     public override uint DeviceId => DxgiAdapterDesc.DeviceId;
 
-    /// <summary>Gets the the underlying <see cref="IDXGIAdapter1" /> for the adapter.</summary>
-    public IDXGIAdapter1* DxgiAdapter
+    /// <summary>Gets the the underlying <see cref="IDXGIAdapter3" /> for the adapter.</summary>
+    public IDXGIAdapter3* DxgiAdapter
     {
         get
         {
@@ -63,8 +64,8 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
         }
     }
 
-    /// <summary>Gets the <see cref="DXGI_ADAPTER_DESC1" /> for <see cref="DxgiAdapter" />.</summary>
-    public ref readonly DXGI_ADAPTER_DESC1 DxgiAdapterDesc => ref _dxgiAdapterDesc;
+    /// <summary>Gets the <see cref="DXGI_ADAPTER_DESC2" /> for <see cref="DxgiAdapter" />.</summary>
+    public ref readonly DXGI_ADAPTER_DESC2 DxgiAdapterDesc => ref _dxgiAdapterDesc;
 
     /// <inheritdoc />
     public override string Name => _name;
@@ -76,7 +77,7 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
     public override uint VendorId => DxgiAdapterDesc.VendorId;
 
     /// <inheritdoc />
-    public override D3D12GraphicsDevice CreateDevice(delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> createMemoryAllocator)
+    public override D3D12GraphicsDevice CreateDevice(delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator)
     {
         ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsAdapter));
         return new D3D12GraphicsDevice(this, createMemoryAllocator);
@@ -93,5 +94,23 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
         }
 
         _state.EndDispose();
+    }
+
+    /// <summary>Tries to query the <see cref="DXGI_QUERY_VIDEO_MEMORY_INFO" /> for <see cref="DXGI_MEMORY_SEGMENT_GROUP_LOCAL" />.</summary>
+    /// <param name="dxgiLocalVideoMemoryInfo">The video memory info that will be filled.</param>
+    /// <returns><c>true</c> if the query succeeded; otherwise, <c>false</c>.</returns>
+    public bool TryGetDxgiQueryLocalVideoMemoryInfo(DXGI_QUERY_VIDEO_MEMORY_INFO* dxgiLocalVideoMemoryInfo)
+    {
+        var result = DxgiAdapter->QueryVideoMemoryInfo(NodeIndex: 0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, dxgiLocalVideoMemoryInfo);
+        return result.SUCCEEDED;
+    }
+
+    /// <summary>Tries to query the <see cref="DXGI_QUERY_VIDEO_MEMORY_INFO" /> for <see cref="DXGI_MEMORY_SEGMENT_GROUP_NON_LOCAL" />.</summary>
+    /// <param name="dxgiNonLocalVideoMemoryInfo">The video memory info that will be filled.</param>
+    /// <returns><c>true</c> if the query succeeded; otherwise, <c>false</c>.</returns>
+    public bool TryGetDxgiQueryNonLocalVideoMemoryInfo(DXGI_QUERY_VIDEO_MEMORY_INFO* dxgiNonLocalVideoMemoryInfo)
+    {
+        var result = DxgiAdapter->QueryVideoMemoryInfo(NodeIndex: 0, DXGI_MEMORY_SEGMENT_GROUP_NON_LOCAL, dxgiNonLocalVideoMemoryInfo);
+        return result.SUCCEEDED;
     }
 }

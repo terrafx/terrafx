@@ -20,6 +20,7 @@ using static TerraFX.Interop.Vulkan.VkQueueFlags;
 using static TerraFX.Interop.Vulkan.VkSampleCountFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -30,7 +31,7 @@ using static TerraFX.Utilities.VulkanUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
+public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
 {
     private readonly VulkanGraphicsMemoryManager[] _memoryManagers;
     private readonly VkQueue _vkCommandQueue;
@@ -42,12 +43,13 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
 
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsComputeContext> _computeContextPool;
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsCopyContext> _copyContextPool;
+    private MemoryBudgetInfo _memoryBudgetInfo;
     private string _name = null!;
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext> _renderContextPool;
 
     private VolatileState _state;
 
-    internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter, delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> createMemoryAllocator)
+    internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator)
         : base(adapter)
     {
         _vkComputeCommandQueueFamilyIndex = GetVkCommandQueueFamilyIndex(adapter, VK_QUEUE_COMPUTE_BIT);
@@ -71,10 +73,13 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
         _copyContextPool = new ContextPool<VulkanGraphicsDevice, VulkanGraphicsCopyContext>();
         _renderContextPool = new ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext>();
 
+        _memoryBudgetInfo = new MemoryBudgetInfo();
+        UpdateMemoryBudgetInfo(ref _memoryBudgetInfo, totalOperationCount: 0);
+
         _ = _state.Transition(to: Initialized);
         Name = nameof(VulkanGraphicsDevice);
 
-        static VulkanGraphicsMemoryManager[] CreateMemoryManagers(VulkanGraphicsDevice device, delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> createMemoryAllocator, uint vkMemoryTypeCount)
+        static VulkanGraphicsMemoryManager[] CreateMemoryManagers(VulkanGraphicsDevice device, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator, uint vkMemoryTypeCount)
         {
             var memoryManagers = new VulkanGraphicsMemoryManager[vkMemoryTypeCount];
 
@@ -99,9 +104,10 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
                 pQueuePriorities = &vkQueuePriority,
             };
 
-            const int EnabledExtensionNamesCount = 1;
+            const int EnabledExtensionNamesCount = 2;
 
             var enabledVkExtensionNames = stackalloc sbyte*[EnabledExtensionNamesCount] {
+                (sbyte*)VK_EXT_MEMORY_BUDGET_EXTENSION_NAME.GetPointer(),
                 (sbyte*)VK_KHR_SWAPCHAIN_EXTENSION_NAME.GetPointer(),
             };
 
@@ -433,12 +439,19 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
         => GetMemoryBudget((VulkanGraphicsMemoryManager)memoryManager);
 
     /// <inheritdoc cref="GetMemoryBudget(GraphicsMemoryManager)" />
-    public GraphicsMemoryBudget GetMemoryBudget(VulkanGraphicsMemoryManager memoryManager) => new GraphicsMemoryBudget {
-        EstimatedBudget = ulong.MaxValue,
-        EstimatedUsage = 0,
-        TotalAllocatedMemoryRegionSize = 0,
-        TotalAllocatorSize = 0,
-    };
+    public GraphicsMemoryBudget GetMemoryBudget(VulkanGraphicsMemoryManager memoryManager)
+    {
+        ref var memoryBudgetInfo = ref _memoryBudgetInfo;
+        var totalOperationCount = GetTotalOperationCount(memoryManager.VkMemoryTypeIndex);
+
+        if ((totalOperationCount - memoryBudgetInfo.TotalOperationCountAtLastUpdate) >= 30)
+        {
+            UpdateMemoryBudgetInfo(ref memoryBudgetInfo, totalOperationCount);
+        }
+
+        using var readerLock = new DisposableReaderLock(memoryBudgetInfo.RWLock, isExternallySynchronized: false);
+        return GetMemoryBudgetInternal(memoryManager.VkMemoryTypeIndex, ref memoryBudgetInfo);
+    }
 
     /// <inheritdoc />
     public override VulkanGraphicsComputeContext RentComputeContext()
@@ -607,6 +620,40 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     internal string UpdateName(VkObjectType objectType, void* objectHandle, string name, [CallerArgumentExpression("objectHandle")] string component = "")
         => UpdateName(objectType, (ulong)objectHandle, name, component);
 
+    private GraphicsMemoryBudget GetMemoryBudgetInternal(uint vkMemoryTypeIndex, ref MemoryBudgetInfo memoryBudgetInfo)
+    {
+        // This method should only be called under the reader lock
+
+        var estimatedMemoryBudget = 0UL;
+        var estimatedMemoryUsage = 0UL;
+        var totalFreeMemoryRegionSize = 0UL;
+        var totalSize = 0UL;
+        var totalSizeAtLastUpdate = 0UL;
+
+        estimatedMemoryBudget = memoryBudgetInfo.VkPhysicalDeviceMemoryBudgetProperties.heapBudget[vkMemoryTypeIndex];
+        estimatedMemoryUsage = memoryBudgetInfo.VkPhysicalDeviceMemoryBudgetProperties.heapUsage[vkMemoryTypeIndex];
+
+        totalFreeMemoryRegionSize = GetTotalFreeMemoryRegionSize(vkMemoryTypeIndex);
+        totalSize = GetTotalSize(vkMemoryTypeIndex);
+        totalSizeAtLastUpdate = memoryBudgetInfo.GetTotalSizeAtLastUpdate(vkMemoryTypeIndex);
+
+        if ((estimatedMemoryUsage + totalSize) > totalSizeAtLastUpdate)
+        {
+            estimatedMemoryUsage = estimatedMemoryUsage + totalSize - totalSizeAtLastUpdate;
+        }
+        else
+        {
+            estimatedMemoryUsage = 0;
+        }
+
+        return new GraphicsMemoryBudget {
+            EstimatedMemoryBudget = estimatedMemoryBudget,
+            EstimatedMemoryUsage = estimatedMemoryUsage,
+            TotalFreeMemoryRegionSize = totalFreeMemoryRegionSize,
+            TotalSize = totalSize,
+        };
+    }
+
     private int GetMemoryManagerIndex(GraphicsResourceCpuAccess cpuAccess, uint vkMemoryTypeBits)
     {
         var isVkPhysicalDeviceTypeIntegratedGpu = Adapter.VkPhysicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU;
@@ -690,5 +737,51 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
         }
 
         return index;
+    }
+
+    private void UpdateMemoryBudgetInfo(ref MemoryBudgetInfo memoryBudgetInfo, ulong totalOperationCount)
+    {
+        using var writerLock = new DisposableWriterLock(memoryBudgetInfo.RWLock, isExternallySynchronized: false);
+        UpdateMemoryBudgetInfoInternal(ref memoryBudgetInfo, totalOperationCount);
+    }
+
+    private void UpdateMemoryBudgetInfoInternal(ref MemoryBudgetInfo memoryBudgetInfo, ulong totalOperationCount)
+    {
+        // This method should only be called under the writer lock
+
+        var vkPhysicalDeviceMemoryBudgetProperties = new VkPhysicalDeviceMemoryBudgetPropertiesEXT {
+            sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT,
+        };
+
+        if (Adapter.TryGetVkPhysicalDeviceMemoryBudgetProperties(&vkPhysicalDeviceMemoryBudgetProperties))
+        {
+            memoryBudgetInfo.VkPhysicalDeviceMemoryBudgetProperties = vkPhysicalDeviceMemoryBudgetProperties;
+        }
+
+        memoryBudgetInfo.TotalOperationCountAtLastUpdate = totalOperationCount;
+
+        for (var memoryManagerIndex = 0u; memoryManagerIndex < _memoryManagers.Length; memoryManagerIndex++)
+        {
+            memoryBudgetInfo.SetTotalFreeMemoryRegionSizeAtLastUpdate(memoryManagerIndex, GetTotalFreeMemoryRegionSize(memoryManagerIndex));
+            memoryBudgetInfo.SetTotalSizeAtLastUpdate(memoryManagerIndex, GetTotalSize(memoryManagerIndex));
+        }
+    }
+
+    private ulong GetTotalOperationCount(uint vkMemoryTypeIndex)
+    {
+        Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
+        return _memoryManagers[vkMemoryTypeIndex].OperationCount;
+    }
+
+    private ulong GetTotalFreeMemoryRegionSize(uint vkMemoryTypeIndex)
+    {
+        Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
+        return _memoryManagers[vkMemoryTypeIndex].TotalFreeMemoryRegionSize;
+    }
+
+    private ulong GetTotalSize(uint vkMemoryTypeIndex)
+    {
+        Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
+        return _memoryManagers[vkMemoryTypeIndex].Size;
     }
 }

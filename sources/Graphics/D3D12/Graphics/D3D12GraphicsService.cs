@@ -20,7 +20,7 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsService : GraphicsService
 {
-    private readonly IDXGIFactory2* _dxgiFactory;
+    private readonly IDXGIFactory4* _dxgiFactory;
     private readonly ImmutableArray<D3D12GraphicsAdapter> _adapters;
 
     private VolatileState _state;
@@ -35,17 +35,17 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
 
         _ = _state.Transition(to: Initialized);
 
-        static IDXGIFactory2* CreateDxgiFactory(bool enableDebugMode)
+        static IDXGIFactory4* CreateDxgiFactory(bool enableDebugMode)
         {
-            IDXGIFactory2* dxgiFactory;
+            IDXGIFactory4* dxgiFactory;
 
             var createFlags = (enableDebugMode && TryEnableDebugMode()) ? DXGI_CREATE_FACTORY_DEBUG : 0u;
-            ThrowExternalExceptionIfFailed(CreateDXGIFactory2(createFlags, __uuidof<IDXGIFactory2>(), (void**)&dxgiFactory));
+            ThrowExternalExceptionIfFailed(CreateDXGIFactory2(createFlags, __uuidof<IDXGIFactory4>(), (void**)&dxgiFactory));
 
             return dxgiFactory;
         }
 
-        static ImmutableArray<D3D12GraphicsAdapter> GetAdapters(D3D12GraphicsService service, IDXGIFactory2* dxgiFactory)
+        static ImmutableArray<D3D12GraphicsAdapter> GetAdapters(D3D12GraphicsService service, IDXGIFactory4* dxgiFactory)
         {
             IDXGIAdapter1* dxgiAdapter = null;
 
@@ -62,7 +62,7 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
             }
         }
 
-        static ImmutableArray<D3D12GraphicsAdapter> GetAdaptersInternal(D3D12GraphicsService service, IDXGIFactory2* dxgiFactory, IDXGIAdapter1** pDxgiAdapter)
+        static ImmutableArray<D3D12GraphicsAdapter> GetAdaptersInternal(D3D12GraphicsService service, IDXGIFactory4* dxgiFactory, IDXGIAdapter1** pDxgiAdapter)
         {
             var adaptersBuilder = ImmutableArray.CreateBuilder<D3D12GraphicsAdapter>();
             uint index = 0;
@@ -81,10 +81,17 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
                 }
                 else
                 {
-                    var adapter = new D3D12GraphicsAdapter(service, pDxgiAdapter[0]);
-                    adaptersBuilder.Add(adapter);
+                    IDXGIAdapter3* dxgiAdapter3;
 
+                    if (SUCCEEDED(pDxgiAdapter[0]->QueryInterface(__uuidof<IDXGIAdapter3>(), (void**)&dxgiAdapter3)))
+                    {
+                        var adapter = new D3D12GraphicsAdapter(service, dxgiAdapter3);
+                        adaptersBuilder.Add(adapter);
+                    }
+
+                    _ = pDxgiAdapter[0]->Release();
                     pDxgiAdapter[0] = null;
+
                     index++;
                 }
             }
@@ -138,10 +145,10 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
     /// <exception cref="ExternalException">The call to <see cref="IDXGIFactory1.EnumAdapters1(uint, IDXGIAdapter1**)" /> failed.</exception>
     public override IEnumerable<D3D12GraphicsAdapter> Adapters => _adapters;
 
-    /// <summary>Gets the underlying <see cref="IDXGIFactory2" /> for the service.</summary>
+    /// <summary>Gets the underlying <see cref="IDXGIFactory4" /> for the service.</summary>
     /// <exception cref="ExternalException">The call to <see cref="CreateDXGIFactory2" /> failed.</exception>
     /// <exception cref="ObjectDisposedException">The service has been disposed.</exception>
-    public IDXGIFactory2* DxgiFactory
+    public IDXGIFactory4* DxgiFactory
     {
         get
         {
