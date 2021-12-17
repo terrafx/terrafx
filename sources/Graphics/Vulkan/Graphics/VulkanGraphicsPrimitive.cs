@@ -13,8 +13,8 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
     private string _name = null!;
     private VolatileState _state;
 
-    internal VulkanGraphicsPrimitive(VulkanGraphicsDevice device, VulkanGraphicsPipeline pipeline, in GraphicsResourceView vertexBufferView, in GraphicsResourceView indexBufferView, ReadOnlySpan<GraphicsResourceView> inputResourceViews)
-        : base(device, pipeline, in vertexBufferView, in indexBufferView, inputResourceViews)
+    internal VulkanGraphicsPrimitive(VulkanGraphicsDevice device, VulkanGraphicsPipeline pipeline, VulkanGraphicsBufferView vertexBufferView, VulkanGraphicsBufferView? indexBufferView, ReadOnlySpan<GraphicsResourceView> inputResourceViews)
+        : base(device, pipeline, vertexBufferView, indexBufferView, inputResourceViews)
     {
         _ = _state.Transition(to: Initialized);
         Name = nameof(VulkanGraphicsPrimitive);
@@ -28,6 +28,9 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <inheritdoc cref="GraphicsPrimitive.IndexBufferView" />
+    public new VulkanGraphicsBufferView? IndexBufferView => base.IndexBufferView.As<VulkanGraphicsBufferView>();
 
     /// <inheritdoc />
     public override string Name
@@ -49,6 +52,9 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
+    /// <inheritdoc cref="GraphicsPrimitive.VertexBufferView" />
+    public new VulkanGraphicsBufferView VertexBufferView => base.VertexBufferView.As<VulkanGraphicsBufferView>();
+
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
@@ -59,18 +65,14 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
             if (isDisposing)
             {
                 Pipeline?.Dispose();
-
-                // TODO: The primitive shouldn't dispose the collections, it
-                // should be freeing the region and something else should control
-                // resource disposal.
+                IndexBufferView?.Dispose();
 
                 foreach (var inputResourceView in InputResourceViews)
                 {
-                    inputResourceView.Resource?.Dispose();
+                    inputResourceView?.Dispose();
                 }
 
-                VertexBufferView.Resource?.Dispose();
-                IndexBufferView.Resource?.Dispose();
+                VertexBufferView?.Dispose();
             }
         }
 

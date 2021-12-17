@@ -3,6 +3,8 @@
 // This file includes code based on the VmaDeviceMemoryBlock class from https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
+using System;
+using System.Threading;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkObjectType;
@@ -10,6 +12,7 @@ using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
@@ -18,22 +21,27 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
 {
+    private readonly ValueMutex _mapMutex;
+    private readonly nuint _size;
     private readonly VkDeviceMemory _vkDeviceMemory;
-    private readonly ulong _size;
+
+    private volatile void* _mappedAddress;
+    private volatile uint _mappedCount;
 
     private string _name = null!;
     private VolatileState _state;
 
-    internal VulkanGraphicsMemoryHeap(VulkanGraphicsDevice device, ulong size, uint vkMemoryTypeIndex)
+    internal VulkanGraphicsMemoryHeap(VulkanGraphicsDevice device, nuint size, uint vkMemoryTypeIndex)
         : base(device)
     {
-        _vkDeviceMemory = CreateVkDeviceMemory(device, size, vkMemoryTypeIndex);
+        _mapMutex = new ValueMutex();
         _size = size;
+        _vkDeviceMemory = CreateVkDeviceMemory(device, size, vkMemoryTypeIndex);
 
         _ = _state.Transition(to: Initialized);
         Name = nameof(VulkanGraphicsMemoryHeap);
 
-        static VkDeviceMemory CreateVkDeviceMemory(VulkanGraphicsDevice device, ulong size, uint vkMemoryTypeIndex)
+        static VkDeviceMemory CreateVkDeviceMemory(VulkanGraphicsDevice device, nuint size, uint vkMemoryTypeIndex)
         {
             VkDeviceMemory vkDeviceMemory;
 
@@ -56,6 +64,12 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
+
+    /// <inheritdoc cref="GraphicsResource.IsMapped" />
+    public bool IsMapped => _mappedCount != 0;
+
+    /// <inheritdoc cref="GraphicsResource.MappedAddress" />
+    public unsafe void* MappedAddress => _mappedAddress;
 
     /// <inheritdoc />
     public override string Name
@@ -84,6 +98,23 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
         }
     }
 
+    /// <summary>Maps the memory heap into CPU memory.</summary>
+    /// <returns>A pointer to the mapped memory heap.</returns>
+    public byte* Map()
+    {
+        using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
+        return MapInternal();
+    }
+
+    /// <summary>Unmaps the memory heap from CPU memory.</summary>
+    /// <remarks>This overload should be used when no memory was written.</remarks>
+    /// <exception cref="InvalidOperationException">The memory heap is not already mapped.</exception>
+    public void Unmap()
+    {
+        using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
+        UnmapInternal();
+    }
+
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
@@ -102,6 +133,40 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
             {
                 vkFreeMemory(vkDevice, vkDeviceMemory, pAllocator: null);
             }
+        }
+    }
+
+    private byte* MapInternal()
+    {
+        // This method should only be called under a mutex
+        void* mappedAddress;
+
+        if (Interlocked.Increment(ref _mappedCount) == 1)
+        {
+            ThrowExternalExceptionIfNotSuccess(vkMapMemory(Device.VkDevice, VkDeviceMemory, offset: 0, size: VK_WHOLE_SIZE, flags: 0, &mappedAddress));
+            _mappedAddress = mappedAddress;
+        }
+        else
+        {
+            mappedAddress = _mappedAddress;
+        }
+
+        return (byte*)mappedAddress;
+    }
+
+    private void UnmapInternal()
+    {
+        // This method should only be called under a mutex
+
+        var mappedCount = Interlocked.Decrement(ref _mappedCount);
+
+        if (mappedCount == uint.MaxValue)
+        {
+            ThrowForInvalidState(nameof(IsMapped));
+        }
+        else if (mappedCount == 0)
+        {
+            vkUnmapMemory(Device.VkDevice, VkDeviceMemory);
         }
     }
 }

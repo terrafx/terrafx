@@ -17,12 +17,13 @@ namespace TerraFX.Samples.Graphics;
 /// </summary>
 public class HelloTexture3D : HelloWindow
 {
-    private GraphicsPrimitive _quadPrimitive = null!;
     private GraphicsBuffer _constantBuffer = null!;
     private GraphicsBuffer _indexBuffer = null!;
+    private GraphicsPrimitive _quadPrimitive = null!;
+    private GraphicsTexture _texture3D = null!;
+    private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
     private float _texturePosition;
-    private const uint TEXTURE3D_SIDE_LENGTH = 64; // this results in a RowPitch of 256, the minimum allowed
 
     public HelloTexture3D(string name, ApplicationServiceProvider serviceProvider)
         : base(name, serviceProvider)
@@ -32,9 +33,13 @@ public class HelloTexture3D : HelloWindow
     public override void Cleanup()
     {
         _quadPrimitive?.Dispose();
+
         _constantBuffer?.Dispose();
         _indexBuffer?.Dispose();
+        _texture3D?.Dispose();
+        _uploadBuffer?.Dispose();
         _vertexBuffer?.Dispose();
+
         base.Cleanup();
     }
 
@@ -50,26 +55,24 @@ public class HelloTexture3D : HelloWindow
         var graphicsDevice = GraphicsDevice;
         var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
-        var textureSize = 4u * TEXTURE3D_SIDE_LENGTH * TEXTURE3D_SIDE_LENGTH * TEXTURE3D_SIDE_LENGTH;
-        using var vertexStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, 64 * 1024);
-        using var indexStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, 64 * 1024);
-        using var textureStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, textureSize);
-
-        _constantBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Constant, 64 * 1024);
-        _indexBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.None, GraphicsBufferKind.Index, 64 * 1024);
-        _vertexBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.None, GraphicsBufferKind.Vertex, 64 * 1024);
+        _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsResourceCpuAccess.Write);
+        _indexBuffer = graphicsDevice.CreateIndexBuffer(64 * 1024);
+        _texture3D = graphicsDevice.CreateTexture3D(GraphicsFormat.R8G8B8A8_UNORM, 64, 64, 64);
+        _uploadBuffer = graphicsDevice.CreateUploadBuffer(2 * 1024 * 1024);
+        _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
         graphicsRenderContext.Reset();
-        _quadPrimitive = CreateQuadPrimitive(graphicsRenderContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
+        _quadPrimitive = CreateQuadPrimitive(graphicsRenderContext);
         graphicsRenderContext.Flush();
 
         graphicsDevice.WaitForIdle();
         graphicsDevice.ReturnRenderContext(graphicsRenderContext);
+
+        _uploadBuffer.DisposeAllViews();
     }
 
     protected override unsafe void Update(TimeSpan delta)
     {
-        var graphicsDevice = GraphicsDevice;
         var graphicsSurface = GraphicsRenderPass.Surface;
         var scale255_256 = 255f / 256f;
         var aspectRatio = graphicsSurface.Width / graphicsSurface.Height;
@@ -87,18 +90,17 @@ public class HelloTexture3D : HelloWindow
         _texturePosition = radians;
         var z = scaleZ * (0.5f + (0.5f * MathF.Cos(radians)));
 
-        var constantBufferView = _quadPrimitive.InputResourceViews[1];
-        var constantBuffer = _constantBuffer;
-        var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
-
-        // Shaders take transposed matrices, so we want to set X.W
-        pConstantBuffer[0] = Matrix4x4.Create(
-            Vector4.Create(scaleX, 0.0f, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
-            Vector4.Create(0.0f, scaleY, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
-            Vector4.Create(0.0f, 0.0f, 1.0f, z),
-            Vector4.UnitW
-        );
-
+        var constantBufferView = _quadPrimitive.InputResourceViews[1].As<GraphicsBufferView>();
+        var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
+        {
+            // Shaders take transposed matrices, so we want to set X.W
+            constantBufferSpan[0] = Matrix4x4.Create(
+                Vector4.Create(scaleX, 0.0f, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
+                Vector4.Create(0.0f, scaleY, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
+                Vector4.Create(0.0f, 0.0f, 1.0f, z),
+                Vector4.UnitW
+            );
+        }
         constantBufferView.UnmapAndWrite();
     }
 
@@ -108,137 +110,130 @@ public class HelloTexture3D : HelloWindow
         base.Draw(graphicsRenderContext);
     }
 
-    private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
+    private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext)
     {
-        var graphicsDevice = GraphicsDevice;
         var graphicsRenderPass = GraphicsRenderPass;
         var graphicsSurface = graphicsRenderPass.Surface;
 
         var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Texture3D", "main", "main");
 
         var constantBuffer = _constantBuffer;
-        var indexBuffer = _indexBuffer;
-        var vertexBuffer = _vertexBuffer;
+        var uploadBuffer = _uploadBuffer;
 
-        var vertexBufferView = CreateVertexBufferView(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
-        graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
+        return GraphicsDevice.CreatePrimitive(
+            graphicsPipeline,
+            CreateVertexBufferView(graphicsContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
+            CreateIndexBufferView(graphicsContext, _indexBuffer, uploadBuffer),
+            new GraphicsResourceView[3] {
+                CreateConstantBufferView(graphicsContext, constantBuffer),
+                CreateConstantBufferView(graphicsContext, constantBuffer),
+                CreateTexture3DView(graphicsContext, _texture3D, uploadBuffer),
+            }
+        );
 
-        var indexBufferView = CreateIndexBufferView(graphicsContext, indexBuffer, indexStagingBuffer);
-        graphicsContext.Copy(indexBuffer, indexStagingBuffer);
-
-        var inputResourceViews = new GraphicsResourceView[3] {
-            CreateConstantBufferView(graphicsContext, constantBuffer, index: 0),
-            CreateConstantBufferView(graphicsContext, constantBuffer, index: 1),
-            CreateTextureView(graphicsContext, textureStagingBuffer),
-        };
-        return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferView, indexBufferView, inputResourceViews);
-
-        static GraphicsResourceView CreateConstantBufferView(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer, uint index)
+        static GraphicsBufferView CreateConstantBufferView(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer)
         {
-            var constantBufferView = new GraphicsResourceView {
-                Offset = 256 * index,
-                Resource = constantBuffer,
-                Size = SizeOf<Matrix4x4>(),
-                Stride = SizeOf<Matrix4x4>(),
-            };
-            var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
-
-            pConstantBuffer[0] = Matrix4x4.Identity;
-
+            var constantBufferView = constantBuffer.CreateView<Matrix4x4>(1);
+            var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
+            {
+                constantBufferSpan[0] = Matrix4x4.Identity;
+            }
             constantBufferView.UnmapAndWrite();
             return constantBufferView;
         }
 
-        static GraphicsResourceView CreateIndexBufferView(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer indexStagingBuffer)
+        static GraphicsBufferView CreateIndexBufferView(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer uploadBuffer)
         {
-            var indexBufferView = new GraphicsResourceView {
-                Offset = 0,
-                Resource = indexBuffer,
-                Size = SizeOf<ushort>() * 6,
-                Stride = SizeOf<ushort>(),
-            };
-            var pIndexBuffer = indexStagingBuffer.Map<ushort>(indexBufferView.Offset, indexBufferView.Size);
+            var uploadBufferView = uploadBuffer.CreateView<ushort>(6);
+            var indexBufferSpan = uploadBufferView.Map<ushort>();
+            {
+                // clockwise when looking at the triangle from the outside
 
-            // clockwise when looking at the triangle from the outside
+                indexBufferSpan[0] = 0;
+                indexBufferSpan[1] = 1;
+                indexBufferSpan[2] = 2;
 
-            pIndexBuffer[0] = 0;
-            pIndexBuffer[1] = 1;
-            pIndexBuffer[2] = 2;
+                indexBufferSpan[3] = 0;
+                indexBufferSpan[4] = 2;
+                indexBufferSpan[5] = 3;
+            }
+            uploadBufferView.UnmapAndWrite();
 
-            pIndexBuffer[3] = 0;
-            pIndexBuffer[4] = 2;
-            pIndexBuffer[5] = 3;
-
-            indexStagingBuffer.UnmapAndWrite(indexBufferView.Offset, indexBufferView.Size);
+            var indexBufferView = indexBuffer.CreateView<ushort>(6);
+            graphicsContext.Copy(indexBufferView, uploadBufferView);
             return indexBufferView;
         }
 
-        static GraphicsResourceView CreateTextureView(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
+        static GraphicsTextureView CreateTexture3DView(GraphicsContext graphicsContext, GraphicsTexture texture3D, GraphicsBuffer uploadBuffer)
         {
-            const uint TextureWidth = TEXTURE3D_SIDE_LENGTH;
-            const uint TextureHeight = TEXTURE3D_SIDE_LENGTH;
-            const uint TextureDepth = TEXTURE3D_SIDE_LENGTH;
-            const uint TextureDz = TextureWidth * TextureHeight;
-            const uint TexturePixels = TextureDz * TextureDepth;
-
-            var texture = graphicsContext.Device.CreateTexture(GraphicsResourceCpuAccess.None, GraphicsTextureKind.ThreeDimensional, GraphicsFormat.R8G8B8A8_UNORM, TextureWidth, TextureHeight, (ushort)TextureDepth);
-            var textureView = new GraphicsResourceView {
-                Offset = 0,
-                Resource = texture,
-                Size = checked((uint)texture.Size),
-                Stride = SizeOf<uint>(),
-            };
-            var pTextureData = textureStagingBuffer.Map<uint>(textureView.Offset, textureView.Size);
-
-            for (uint n = 0; n < TexturePixels; n++)
+            var uploadBufferView = uploadBuffer.CreateView<byte>(checked((uint)texture3D.Size));
+            var textureDataSpan = uploadBufferView.Map<byte>();
             {
-                var x = n % TextureWidth;
-                var y = n % TextureDz / TextureWidth;
-                var z = n / TextureDz;
-                x = x * 256 / TextureWidth;
-                y = y * 256 / TextureHeight;
-                z = z * 256 / TextureDepth;
+                var width = texture3D.Width;
 
-                pTextureData[n] = 0xFF000000 | (z << 16) | (y << 8) | (x << 0);
+                var height = texture3D.Height;
+                var rowPitch = texture3D.RowPitch;
+
+                var depth = texture3D.Depth;
+                var slicePitch = texture3D.SlicePitch;
+
+                for (var z = 0u; z < depth; z++)
+                {
+                    var sliceIndex = z * slicePitch;
+
+                    for (var y = 0u; y < height; y++)
+                    {
+                        var rowIndex = sliceIndex + (y * rowPitch);
+                        var row = (uint*)textureDataSpan.GetPointer(rowIndex);
+
+                        for (var x = 0u; x < width; x++)
+                        {
+                            var red = x * 256u / width;
+                            var blue = y * 256u / height;
+                            var green = z * 256u / depth;
+                            var alpha = 0xFFu;
+
+                            row[x] = (alpha << 24) | (green << 16) | (blue << 8) | (red << 0);
+                        }
+                    }
+                }
             }
+            uploadBufferView.UnmapAndWrite();
 
-            textureStagingBuffer.UnmapAndWrite(textureView.Offset, textureView.Size);
-            graphicsContext.Copy(texture, textureStagingBuffer);
-
-            return textureView;
+            var texture3DView = texture3D.CreateView(0, 1);
+            graphicsContext.Copy(texture3DView, uploadBufferView);
+            return texture3DView;
         }
 
-        static GraphicsResourceView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+        static GraphicsBufferView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
         {
-            var vertexBufferView = new GraphicsResourceView {
-                Offset = 0,
-                Resource = vertexBuffer,
-                Size = SizeOf<Texture3DVertex>() * 4,
-                Stride = SizeOf<Texture3DVertex>(),
-            };
-            var pVertexBuffer = vertexStagingBuffer.Map<Texture3DVertex>(vertexBufferView.Offset, vertexBufferView.Size);
+            var uploadBufferView = uploadBuffer.CreateView<Texture3DVertex>(4);
+            var vertexBufferSpan = uploadBufferView.Map<Texture3DVertex>();
+            {
+                vertexBufferSpan[0] = new Texture3DVertex {                //
+                    Position = Vector3.Create(-0.5f, 0.5f, 0.0f),       //   y          in this setup
+                    UVW = Vector3.Create(0, 1, 0.5f),                   //   ^     z    the origin o
+                };                                                      //   |   /      is in the middle
+                                                                        //   | /        of the rendered scene
+                vertexBufferSpan[1] = new Texture3DVertex {                //   o------>x
+                    Position = Vector3.Create(0.5f, 0.5f, 0.0f),        //
+                    UVW = Vector3.Create(1, 1, 0.5f),                   //   0 ----- 1
+                };                                                      //   | \     |
+                                                                        //   |   \   |
+                vertexBufferSpan[2] = new Texture3DVertex {                //   |     \ |
+                    Position = Vector3.Create(0.5f, -0.5f, 0.0f),       //   3-------2
+                    UVW = Vector3.Create(1, 0, 0.5f),                   //
+                };
 
-            pVertexBuffer[0] = new Texture3DVertex {             //
-                Position = Vector3.Create(-0.5f, 0.5f, 0.0f),       //   y          in this setup
-                UVW = Vector3.Create(0, 1, 0.5f),                   //   ^     z    the origin o
-            };                                                   //   |   /      is in the middle
-                                                                 //   | /        of the rendered scene
-            pVertexBuffer[1] = new Texture3DVertex {             //   o------>x
-                Position = Vector3.Create(0.5f, 0.5f, 0.0f),        //
-                UVW = Vector3.Create(1, 1, 0.5f),                   //   0 ----- 1
-            };                                                   //   | \     |
-                                                                 //   |   \   |
-            pVertexBuffer[2] = new Texture3DVertex {             //   |     \ |
-                Position = Vector3.Create(0.5f, -0.5f, 0.0f),       //   3-------2
-                UVW = Vector3.Create(1, 0, 0.5f),                   //
-            };
+                vertexBufferSpan[3] = new Texture3DVertex {
+                    Position = Vector3.Create(-0.5f, -0.5f, 0.0f),
+                    UVW = Vector3.Create(0, 0, 0.5f),
+                };
+            }
+            uploadBufferView.UnmapAndWrite();
 
-            pVertexBuffer[3] = new Texture3DVertex {
-                Position = Vector3.Create(-0.5f, -0.5f, 0.0f),
-                UVW = Vector3.Create(0, 0, 0.5f),
-            };
-
-            vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);
+            var vertexBufferView = vertexBuffer.CreateView<Texture3DVertex>(4);
+            graphicsContext.Copy(vertexBufferView, uploadBufferView);
             return vertexBufferView;
         }
 

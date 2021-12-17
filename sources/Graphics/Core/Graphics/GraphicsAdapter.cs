@@ -5,7 +5,7 @@ using System;
 namespace TerraFX.Graphics;
 
 /// <summary>A graphics adapter which can be used for computational or graphical operations.</summary>
-public abstract class GraphicsAdapter : GraphicsServiceObject
+public abstract unsafe class GraphicsAdapter : GraphicsServiceObject
 {
     /// <summary>Initializes a new instance of the <see cref="GraphicsAdapter" /> class.</summary>
     /// <param name="service">The service which enumerated the adapter.</param>
@@ -28,7 +28,12 @@ public abstract class GraphicsAdapter : GraphicsServiceObject
 
     /// <summary>Creates a new graphics device which utilizes the adapter.</summary>
     /// <exception cref="ObjectDisposedException">The adapter has been disposed.</exception>
-    public abstract GraphicsDevice CreateDevice();
+    public GraphicsDevice CreateDevice() => CreateDevice(createMemoryAllocator: null);
+
+    /// <summary>Creates a new graphics device which utilizes the adapter.</summary>
+    /// <param name="createMemoryAllocator">A function pointer to a method which creates the backing memory allocators used by the device or <c>null</c> to use the system provided default memory allocator.</param>
+    /// <exception cref="ObjectDisposedException">The adapter has been disposed.</exception>
+    public abstract GraphicsDevice CreateDevice(delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> createMemoryAllocator);
 
     /// <inheritdoc />
     public override string ToString() => Name;

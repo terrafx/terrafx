@@ -30,7 +30,7 @@ public abstract class GraphicsDeviceObject : IGraphicsDeviceObject
     /// <summary>Gets the device for which the object was created.</summary>
     public GraphicsDevice Device => _device;
 
-    /// <summary>Gets the name for the deve object.</summary>
+    /// <summary>Gets the name for the device object.</summary>
     public abstract string Name { get; set; }
 
     /// <summary>Gets the underlying service for <see cref="Adapter" />.</summary>

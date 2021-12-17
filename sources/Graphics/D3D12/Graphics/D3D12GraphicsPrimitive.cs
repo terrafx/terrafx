@@ -7,7 +7,6 @@ using static TerraFX.Interop.DirectX.D3D12;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_FLAGS;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_SRV_DIMENSION;
-using static TerraFX.Interop.DirectX.DXGI_FORMAT;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -24,8 +23,8 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
     private string _name = null!;
     private VolatileState _state;
 
-    internal D3D12GraphicsPrimitive(D3D12GraphicsDevice device, D3D12GraphicsPipeline pipeline, in GraphicsResourceView vertexBufferView, in GraphicsResourceView indexBufferView, ReadOnlySpan<GraphicsResourceView> inputResourceViews)
-        : base(device, pipeline, in vertexBufferView, in indexBufferView, inputResourceViews)
+    internal D3D12GraphicsPrimitive(D3D12GraphicsDevice device, D3D12GraphicsPipeline pipeline, D3D12GraphicsBufferView vertexBufferView, D3D12GraphicsBufferView? indexBufferView, ReadOnlySpan<GraphicsResourceView> inputResourceViews)
+        : base(device, pipeline, vertexBufferView, indexBufferView, inputResourceViews)
     {
         _d3d12CbvSrvUavDescriptorHeap = CreateD3D12CbvSrvUavDescriptorHeap(device, inputResourceViews);
 
@@ -39,9 +38,9 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
 
             for (var index = 0; index < inputResourceViews.Length; index++)
             {
-                var inputResource = inputResourceViews[index];
+                var inputResourceView = inputResourceViews[index];
 
-                if (inputResource.Resource is not D3D12GraphicsTexture)
+                if (inputResourceView is not D3D12GraphicsTextureView)
                 {
                     continue;
                 }
@@ -65,43 +64,46 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
             {
                 var inputResourceView = inputResourceViews[index];
 
-                if (inputResourceView.Resource is not D3D12GraphicsTexture graphicsTexture)
+                if (inputResourceView is not D3D12GraphicsTextureView graphicsTextureView)
                 {
                     continue;
                 }
 
                 var d3d12ShaderResourceViewDesc = new D3D12_SHADER_RESOURCE_VIEW_DESC {
-                    Format = DXGI_FORMAT_R8G8B8A8_UNORM,
+                    Format = graphicsTextureView.Format.AsDxgiFormat(),
                     ViewDimension = D3D12_SRV_DIMENSION_UNKNOWN,
                     Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING,
                 };
 
-                switch (graphicsTexture.Kind)
+                switch (graphicsTextureView.Kind)
                 {
                     case GraphicsTextureKind.OneDimensional:
                     {
                         d3d12ShaderResourceViewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE1D;
-                        d3d12ShaderResourceViewDesc.Texture1D.MipLevels = 1;
+                        d3d12ShaderResourceViewDesc.Texture1D.MostDetailedMip = graphicsTextureView.MipLevelIndex;
+                        d3d12ShaderResourceViewDesc.Texture1D.MipLevels = graphicsTextureView.MipLevelCount;
                         break;
                     }
 
                     case GraphicsTextureKind.TwoDimensional:
                     {
                         d3d12ShaderResourceViewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-                        d3d12ShaderResourceViewDesc.Texture2D.MipLevels = 1;
+                        d3d12ShaderResourceViewDesc.Texture2D.MostDetailedMip = graphicsTextureView.MipLevelIndex;
+                        d3d12ShaderResourceViewDesc.Texture2D.MipLevels = graphicsTextureView.MipLevelCount;
                         break;
                     }
 
                     case GraphicsTextureKind.ThreeDimensional:
                     {
                         d3d12ShaderResourceViewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
-                        d3d12ShaderResourceViewDesc.Texture3D.MipLevels = 1;
+                        d3d12ShaderResourceViewDesc.Texture3D.MostDetailedMip = graphicsTextureView.MipLevelIndex;
+                        d3d12ShaderResourceViewDesc.Texture3D.MipLevels = graphicsTextureView.MipLevelCount;
                         break;
                     }
                 }
 
                 var d3d12CbvSrvUavDescriptorHeapStart = d3d12CbvSrvUavDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-                d3d12Device->CreateShaderResourceView(graphicsTexture.D3D12Resource, &d3d12ShaderResourceViewDesc, d3d12CbvSrvUavDescriptorHeapStart.Offset(d3d12CbvSrvUavDescriptorIndex, d3d12CbvSrvUavDescriptorHandleIncrementSize));
+                d3d12Device->CreateShaderResourceView(graphicsTextureView.Resource.D3D12Resource, &d3d12ShaderResourceViewDesc, d3d12CbvSrvUavDescriptorHeapStart.Offset(d3d12CbvSrvUavDescriptorIndex, d3d12CbvSrvUavDescriptorHandleIncrementSize));
                 d3d12CbvSrvUavDescriptorIndex++;
             }
 
@@ -129,6 +131,9 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
 
+    /// <inheritdoc cref="GraphicsPrimitive.IndexBufferView" />
+    public new D3D12GraphicsBufferView? IndexBufferView => base.IndexBufferView.As<D3D12GraphicsBufferView>();
+
     /// <summary>Gets or sets the name for the pipeline signature.</summary>
     public override string Name
     {
@@ -149,6 +154,9 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
+    /// <inheritdoc cref="GraphicsPrimitive.VertexBufferView" />
+    public new D3D12GraphicsBufferView VertexBufferView => base.VertexBufferView.As<D3D12GraphicsBufferView>();
+
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
@@ -161,18 +169,14 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
             if (isDisposing)
             {
                 Pipeline?.Dispose();
+                IndexBufferView?.Dispose();
 
-                // TODO: The primitive shouldn't dispose the collections, it
-                // should be freeing the region and something else should control
-                // resource disposal.
-
-                foreach (var inputResourceRegion in InputResourceViews)
+                foreach (var inputResourceView in InputResourceViews)
                 {
-                    inputResourceRegion.Resource?.Dispose();
+                    inputResourceView?.Dispose();
                 }
 
-                VertexBufferView.Resource?.Dispose();
-                IndexBufferView.Resource?.Dispose();
+                VertexBufferView?.Dispose();
             }
         }
 

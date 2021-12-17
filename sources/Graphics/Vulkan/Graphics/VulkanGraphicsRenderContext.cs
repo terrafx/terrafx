@@ -16,7 +16,6 @@ using static TerraFX.Interop.Vulkan.VkPipelineStageFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.VkSubpassContents;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -165,65 +164,72 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
-    public override void Copy(GraphicsBuffer destination, GraphicsBuffer source)
-        => Copy((VulkanGraphicsBuffer)destination, (VulkanGraphicsBuffer)source);
+    public override void Copy(GraphicsBufferView destination, GraphicsBufferView source)
+        => Copy((VulkanGraphicsBufferView)destination, (VulkanGraphicsBufferView)source);
 
     /// <inheritdoc />
-    public override void Copy(GraphicsTexture destination, GraphicsBuffer source)
-        => Copy((VulkanGraphicsTexture)destination, (VulkanGraphicsBuffer)source);
+    public override void Copy(GraphicsTextureView destination, GraphicsBufferView source)
+        => Copy((VulkanGraphicsTextureView)destination, (VulkanGraphicsBufferView)source);
 
-    /// <inheritdoc cref="Copy(GraphicsBuffer, GraphicsBuffer)" />
-    public void Copy(VulkanGraphicsBuffer destination, VulkanGraphicsBuffer source)
+    /// <inheritdoc cref="Copy(GraphicsBufferView, GraphicsBufferView)" />
+    public void Copy(VulkanGraphicsBufferView destination, VulkanGraphicsBufferView source)
     {
         ThrowIfNull(destination);
         ThrowIfNull(source);
+        ThrowIfNotInInsertBounds(source.Size, destination.Size);
 
         var vkBufferCopy = new VkBufferCopy {
-            srcOffset = 0,
-            dstOffset = 0,
-            size = Math.Min(destination.Size, source.Size),
+            srcOffset = source.Offset,
+            dstOffset = destination.Offset,
+            size = source.Size,
         };
-        vkCmdCopyBuffer(VkCommandBuffer, source.VkBuffer, destination.VkBuffer, 1, &vkBufferCopy);
+        vkCmdCopyBuffer(VkCommandBuffer, source.Resource.VkBuffer, destination.Resource.VkBuffer, 1, &vkBufferCopy);
     }
 
-    /// <inheritdoc cref="Copy(GraphicsTexture, GraphicsBuffer)" />
-    public void Copy(VulkanGraphicsTexture destination, VulkanGraphicsBuffer source)
+    /// <inheritdoc cref="Copy(GraphicsTextureView, GraphicsBufferView)" />
+    public void Copy(VulkanGraphicsTextureView destination, VulkanGraphicsBufferView source)
     {
         ThrowIfNull(destination);
         ThrowIfNull(source);
 
         var vkCommandBuffer = VkCommandBuffer;
-        var vkImage = destination.VkImage;
 
-        BeginCopy();
+        BeginCopy(vkCommandBuffer, destination);
+        {
+            var vkBufferImageCopy = new VkBufferImageCopy {
+                bufferOffset = source.Offset,
+                bufferRowLength = 0,
+                bufferImageHeight = 0,
+                imageSubresource = new VkImageSubresourceLayers {
+                    aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+                    mipLevel = destination.MipLevelIndex,
+                    baseArrayLayer = 0,
+                    layerCount = 1,
+                },
+                imageExtent = new VkExtent3D {
+                    width = destination.Width,
+                    height = destination.Height,
+                    depth = destination.Depth,
+                },
+            };
 
-        var vkBufferImageCopy = new VkBufferImageCopy {
-            imageSubresource = new VkImageSubresourceLayers {
-                aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-                layerCount = 1,
-            },
-            imageExtent = new VkExtent3D {
-                width = destination.Width,
-                height = destination.Height,
-                depth = destination.Depth,
-            },
-        };
+            vkCmdCopyBufferToImage(vkCommandBuffer, source.Resource.VkBuffer, destination.Resource.VkImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &vkBufferImageCopy);
+        }
+        EndCopy(vkCommandBuffer, destination);
 
-        vkCmdCopyBufferToImage(vkCommandBuffer, source.VkBuffer, vkImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &vkBufferImageCopy);
-
-        EndCopy();
-
-        void BeginCopy()
+        static void BeginCopy(VkCommandBuffer vkCommandBuffer, VulkanGraphicsTextureView destination)
         {
             var vkImageMemoryBarrier = new VkImageMemoryBarrier {
                 sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
                 dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
                 oldLayout = VK_IMAGE_LAYOUT_UNDEFINED,
                 newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                image = vkImage,
+                image = destination.Resource.VkImage,
                 subresourceRange = new VkImageSubresourceRange {
                     aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-                    levelCount = 1,
+                    baseMipLevel = destination.MipLevelIndex,
+                    levelCount = destination.MipLevelCount,
+                    baseArrayLayer = 0,
                     layerCount = 1,
                 },
             };
@@ -231,7 +237,7 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
             vkCmdPipelineBarrier(vkCommandBuffer, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, dependencyFlags: 0, memoryBarrierCount: 0, pMemoryBarriers: null, bufferMemoryBarrierCount: 0, pBufferMemoryBarriers: null, imageMemoryBarrierCount: 1, &vkImageMemoryBarrier);
         }
 
-        void EndCopy()
+        static void EndCopy(VkCommandBuffer vkCommandBuffer, VulkanGraphicsTextureView destination)
         {
             var vkImageMemoryBarrier = new VkImageMemoryBarrier {
                 sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
@@ -239,10 +245,12 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
                 dstAccessMask = VK_ACCESS_SHADER_READ_BIT,
                 oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                 newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-                image = vkImage,
+                image = destination.Resource.VkImage,
                 subresourceRange = new VkImageSubresourceRange {
                     aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-                    levelCount = 1,
+                    baseMipLevel = destination.MipLevelIndex,
+                    levelCount = destination.MipLevelCount,
+                    baseArrayLayer = 0,
                     layerCount = 1,
                 },
             };
@@ -274,11 +282,9 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
 
         vkCmdBindPipeline(vkCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vkPipeline);
 
-        ref readonly var vertexBufferView = ref primitive.VertexBufferView;
-        var vertexBuffer = vertexBufferView.Resource.As<VulkanGraphicsBuffer>();
-        AssertNotNull(vertexBuffer);
+        var vertexBufferView = primitive.VertexBufferView;
 
-        var vkVertexBuffer = vertexBuffer.VkBuffer;
+        var vkVertexBuffer = vertexBufferView.Resource.VkBuffer;
         var vkVertexBufferOffset = (ulong)vertexBufferView.Offset;
 
         vkCmdBindVertexBuffers(vkCommandBuffer, firstBinding: 0, bindingCount: 1, &vkVertexBuffer, &vkVertexBufferOffset);
@@ -291,16 +297,16 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
 
             for (var index = 0; index < inputResourceViews.Length; index++)
             {
-                ref readonly var inputResourceView = ref inputResourceViews[index];
+                var inputResourceView = inputResourceViews[index];
 
                 VkWriteDescriptorSet vkWriteDescriptorSet;
 
-                if (inputResourceView.Resource is VulkanGraphicsBuffer vulkanGraphicsBuffer)
+                if (inputResourceView is VulkanGraphicsBufferView vulkanGraphicsBufferView)
                 {
                     var vkDescriptorBufferInfo = new VkDescriptorBufferInfo {
-                        buffer = vulkanGraphicsBuffer.VkBuffer,
-                        offset = inputResourceView.Offset,
-                        range = inputResourceView.Size,
+                        buffer = vulkanGraphicsBufferView.Resource.VkBuffer,
+                        offset = vulkanGraphicsBufferView.Offset,
+                        range = vulkanGraphicsBufferView.Size,
                     };
 
                     vkWriteDescriptorSet = new VkWriteDescriptorSet {
@@ -312,11 +318,11 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
                         pBufferInfo = &vkDescriptorBufferInfo,
                     };
                 }
-                else if (inputResourceView.Resource is VulkanGraphicsTexture vulkanGraphicsTexture)
+                else if (inputResourceView is VulkanGraphicsTextureView vulkanGraphicsTextureView)
                 {
                     var vkDescriptorImageInfo = new VkDescriptorImageInfo {
-                        sampler = vulkanGraphicsTexture.VkSampler,
-                        imageView = vulkanGraphicsTexture.VkImageView,
+                        sampler = vulkanGraphicsTextureView.Resource.VkSampler,
+                        imageView = vulkanGraphicsTextureView.VkImageView,
                         imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                     };
 
@@ -336,25 +342,18 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
             vkCmdBindDescriptorSets(vkCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineSignature.VkPipelineLayout, firstSet: 0, 1, &vkDescriptorSet, dynamicOffsetCount: 0, pDynamicOffsets: null);
         }
 
-        ref readonly var indexBufferView = ref primitive.IndexBufferView;
+        var indexBufferView = primitive.IndexBufferView;
 
-        if (indexBufferView.Resource is VulkanGraphicsBuffer indexBuffer)
+        if (indexBufferView is not null)
         {
-            var indexBufferStride = indexBufferView.Stride;
-            var indexType = VK_INDEX_TYPE_UINT16;
+            var indexType = (indexBufferView.Stride == 2) ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32;
+            vkCmdBindIndexBuffer(vkCommandBuffer, indexBufferView.Resource.VkBuffer, indexBufferView.Offset, indexType);
 
-            if (indexBufferStride != 2)
-            {
-                Assert(AssertionsEnabled && (indexBufferStride == 4));
-                indexType = VK_INDEX_TYPE_UINT32;
-            }
-            vkCmdBindIndexBuffer(vkCommandBuffer, indexBuffer.VkBuffer, indexBufferView.Offset, indexType);
-
-            vkCmdDrawIndexed(vkCommandBuffer, indexCount: indexBufferView.Size / indexBufferStride, instanceCount: 1, firstIndex: 0, vertexOffset: 0, firstInstance: 0);
+            vkCmdDrawIndexed(vkCommandBuffer, indexCount: checked((uint)indexBufferView.Size / indexBufferView.Stride), instanceCount: 1, firstIndex: 0, vertexOffset: 0, firstInstance: 0);
         }
         else
         {
-            vkCmdDraw(vkCommandBuffer, vertexCount: vertexBufferView.Size / vertexBufferView.Stride, instanceCount: 1, firstVertex: 0, firstInstance: 0);
+            vkCmdDraw(vkCommandBuffer, vertexCount: checked((uint)vertexBufferView.Size / vertexBufferView.Stride), instanceCount: 1, firstVertex: 0, firstInstance: 0);
         }
     }
 

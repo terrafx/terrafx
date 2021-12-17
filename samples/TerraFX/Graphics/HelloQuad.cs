@@ -4,14 +4,14 @@ using System;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
-using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
 public sealed class HelloQuad : HelloWindow
 {
-    private GraphicsPrimitive _quadPrimitive = null!;
     private GraphicsBuffer _indexBuffer = null!;
+    private GraphicsPrimitive _quadPrimitive = null!;
+    private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
 
     public HelloQuad(string name, ApplicationServiceProvider serviceProvider)
@@ -22,8 +22,11 @@ public sealed class HelloQuad : HelloWindow
     public override void Cleanup()
     {
         _quadPrimitive?.Dispose();
+
         _indexBuffer?.Dispose();
+        _uploadBuffer?.Dispose();
         _vertexBuffer?.Dispose();
+
         base.Cleanup();
     }
 
@@ -39,18 +42,18 @@ public sealed class HelloQuad : HelloWindow
         var graphicsDevice = GraphicsDevice;
         var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
-        using var vertexStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, 64 * 1024);
-        _vertexBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.None, GraphicsBufferKind.Vertex, 64 * 1024);
-
-        using var indexStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, 64 * 1024);
-        _indexBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.None, GraphicsBufferKind.Index, 64 * 1024);
+        _indexBuffer = graphicsDevice.CreateIndexBuffer(64 * 1024);
+        _uploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024);
+        _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
         graphicsRenderContext.Reset();
-        _quadPrimitive = CreateQuadPrimitive(graphicsRenderContext, vertexStagingBuffer, indexStagingBuffer);
+        _quadPrimitive = CreateQuadPrimitive(graphicsRenderContext);
         graphicsRenderContext.Flush();
 
         graphicsDevice.WaitForIdle();
         graphicsDevice.ReturnRenderContext(graphicsRenderContext);
+
+        // _uploadBuffer.DisposeAllViews();
     }
 
     protected override void Draw(GraphicsRenderContext graphicsRenderContext)
@@ -59,80 +62,71 @@ public sealed class HelloQuad : HelloWindow
         base.Draw(graphicsRenderContext);
     }
 
-    private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer)
+    private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext)
     {
-        var graphicsDevice = GraphicsDevice;
         var graphicsRenderPass = GraphicsRenderPass;
         var graphicsSurface = graphicsRenderPass.Surface;
 
         var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Identity", "main", "main");
+        var uploadBuffer = _uploadBuffer;
 
-        var indexBuffer = _indexBuffer;
-        var vertexBuffer = _vertexBuffer;
+        return GraphicsDevice.CreatePrimitive(
+            graphicsPipeline,
+            CreateVertexBufferView(graphicsContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
+            CreateIndexBufferView(graphicsContext, _indexBuffer, uploadBuffer)
+        );
 
-        var vertexBufferView = CreateVertexBufferView(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
-        graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
-
-        var indexBufferView = CreateIndexBufferView(graphicsContext, indexBuffer, indexStagingBuffer);
-        graphicsContext.Copy(indexBuffer, indexStagingBuffer);
-
-        return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferView, indexBufferView);
-
-        static GraphicsResourceView CreateIndexBufferView(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer indexStagingBuffer)
+        static GraphicsBufferView CreateIndexBufferView(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer uploadBuffer)
         {
-            var indexBufferView = new GraphicsResourceView {
-                Offset = 0,
-                Resource = indexBuffer,
-                Size = SizeOf<ushort>() * 6,
-                Stride = SizeOf<ushort>(),
-            };
-            var pIndexBuffer = indexStagingBuffer.Map<ushort>(indexBufferView.Offset, indexBufferView.Size);
+            var uploadBufferView = uploadBuffer.CreateView<ushort>(6);
+            var indexBufferSpan = uploadBufferView.Map<ushort>();
+            {
+                // clockwise when looking at the triangle from the outside
 
-            // clockwise when looking at the triangle from the outside
+                indexBufferSpan[0] = 0;
+                indexBufferSpan[1] = 1;
+                indexBufferSpan[2] = 2;
 
-            pIndexBuffer[0] = 0;
-            pIndexBuffer[1] = 1;
-            pIndexBuffer[2] = 2;
+                indexBufferSpan[3] = 0;
+                indexBufferSpan[4] = 2;
+                indexBufferSpan[5] = 3;
+            }
+            uploadBufferView.UnmapAndWrite();
 
-            pIndexBuffer[3] = 0;
-            pIndexBuffer[4] = 2;
-            pIndexBuffer[5] = 3;
-
-            indexStagingBuffer.UnmapAndWrite(indexBufferView.Offset, indexBufferView.Size);
+            var indexBufferView = indexBuffer.CreateView<ushort>(6);
+            graphicsContext.Copy(indexBufferView, uploadBufferView);
             return indexBufferView;
         }
 
-        static GraphicsResourceView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+        static GraphicsBufferView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
         {
-            var vertexBufferView = new GraphicsResourceView {
-                Offset = 0,
-                Resource = vertexBuffer,
-                Size = SizeOf<IdentityVertex>() * 4,
-                Stride = SizeOf<IdentityVertex>(),
-            };
-            var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>(vertexBufferView.Offset, vertexBufferView.Size);
+            var uploadBufferView = uploadBuffer.CreateView<IdentityVertex>(4);
+            var vertexBufferSpan = uploadBufferView.Map<IdentityVertex>();
+            {
+                vertexBufferSpan[0] = new IdentityVertex {                             //
+                    Color = Colors.Red,                                             //   y          in this setup
+                    Position = Vector3.Create(-0.25f, 0.25f * aspectRatio, 0.0f),   //   ^     z    the origin o
+                };                                                                  //   |   /      is in the middle
+                                                                                    //   | /        of the rendered scene
+                vertexBufferSpan[1] = new IdentityVertex {                             //   o------>x
+                    Color = Colors.Blue,                                            //
+                    Position = Vector3.Create(0.25f, 0.25f * aspectRatio, 0.0f),    //   0 ----- 1
+                };                                                                  //   | \     |
+                                                                                    //   |   \   |
+                vertexBufferSpan[2] = new IdentityVertex {                             //   |     \ |
+                    Color = Colors.Lime,                                            //   3-------2
+                    Position = Vector3.Create(0.25f, -0.25f * aspectRatio, 0.0f),   //
+                };
 
-            pVertexBuffer[0] = new IdentityVertex {                         //
-                Color = Colors.Red,                                         //   y          in this setup
-                Position = Vector3.Create(-0.25f, 0.25f * aspectRatio, 0.0f),  //   ^     z    the origin o
-            };                                                              //   |   /      is in the middle
-                                                                            //   | /        of the rendered scene
-            pVertexBuffer[1] = new IdentityVertex {                         //   o------>x
-                Color = Colors.Lime,                                        //
-                Position = Vector3.Create(0.25f, 0.25f * aspectRatio, 0.0f),   //   0 ----- 1
-            };                                                              //   | \     |
-                                                                            //   |   \   |
-            pVertexBuffer[2] = new IdentityVertex {                         //   |     \ |
-                Color = Colors.Blue,                                        //   3-------2
-                Position = Vector3.Create(0.25f, -0.25f * aspectRatio, 0.0f),  //
-            };
+                vertexBufferSpan[3] = new IdentityVertex {
+                    Color = Colors.Blue,
+                    Position = Vector3.Create(-0.25f, -0.25f * aspectRatio, 0.0f),
+                };
+            }
+            uploadBufferView.UnmapAndWrite();
 
-            pVertexBuffer[3] = new IdentityVertex {
-                Color = Colors.Lime,
-                Position = Vector3.Create(-0.25f, -0.25f * aspectRatio, 0.0f),
-            };
-
-            vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);
+            var vertexBufferView = vertexBuffer.CreateView<IdentityVertex>(4);
+            graphicsContext.Copy(vertexBufferView, uploadBufferView);
             return vertexBufferView;
         }
 

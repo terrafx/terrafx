@@ -12,9 +12,11 @@ public sealed class HelloSmoke : HelloWindow
 {
     private readonly bool _isQuickAndDirty;
 
-    private GraphicsPrimitive _quadPrimitive = null!;
     private GraphicsBuffer _constantBuffer = null!;
     private GraphicsBuffer _indexBuffer = null!;
+    private GraphicsPrimitive _quadPrimitive = null!;
+    private GraphicsTexture _texture3D = null!;
+    private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
     private float _texturePosition;
 
@@ -27,9 +29,13 @@ public sealed class HelloSmoke : HelloWindow
     public override void Cleanup()
     {
         _quadPrimitive?.Dispose();
+
         _constantBuffer?.Dispose();
         _indexBuffer?.Dispose();
+        _texture3D?.Dispose();
+        _uploadBuffer?.Dispose();
         _vertexBuffer?.Dispose();
+
         base.Cleanup();
     }
 
@@ -45,22 +51,29 @@ public sealed class HelloSmoke : HelloWindow
         var graphicsDevice = GraphicsDevice;
         var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
-        var textureSize = 64 * 1024 * 16 * (_isQuickAndDirty ? 1 : 64);
+        _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsResourceCpuAccess.Write);
+        _indexBuffer = graphicsDevice.CreateIndexBuffer(64 * 1024);
 
-        using var vertexStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, 64 * 1024);
-        using var indexStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, 64 * 1024);
-        using var textureStagingBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Default, (ulong)textureSize);
+        if (_isQuickAndDirty)
+        {
+            _texture3D = graphicsDevice.CreateTexture3D(GraphicsFormat.R8G8B8A8_UNORM, 64, 64, 64);
+        }
+        else
+        {
+            _texture3D = graphicsDevice.CreateTexture3D(GraphicsFormat.R8G8B8A8_UNORM, 256, 256, 256);
+        }
 
-        _constantBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.Write, GraphicsBufferKind.Constant, 64 * 1024);
-        _indexBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.None, GraphicsBufferKind.Index, 64 * 1024);
-        _vertexBuffer = graphicsDevice.CreateBuffer(GraphicsResourceCpuAccess.None, GraphicsBufferKind.Vertex, 64 * 1024);
+        _uploadBuffer = graphicsDevice.CreateUploadBuffer(128 * 1024 * 1024);
+        _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
         graphicsRenderContext.Reset();
-        _quadPrimitive = CreateQuadPrimitive(graphicsRenderContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
+        _quadPrimitive = CreateQuadPrimitive(graphicsRenderContext);
         graphicsRenderContext.Flush();
 
         graphicsDevice.WaitForIdle();
         graphicsDevice.ReturnRenderContext(graphicsRenderContext);
+
+        _uploadBuffer.DisposeAllViews();
     }
 
     protected override unsafe void Update(TimeSpan delta)
@@ -74,18 +87,17 @@ public sealed class HelloSmoke : HelloWindow
         }
         _texturePosition = dydz;
 
-        var constantBufferView = _quadPrimitive.InputResourceViews[1];
-        var constantBuffer = _constantBuffer;
-        var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
-
-        // Shaders take transposed matrices, so we want to set X.W
-        pConstantBuffer[0] = Matrix4x4.Create(
-            Vector4.Create(0.5f, 0.0f, 0.0f, 0.5f),      // *0.5f and +0.5f since the input vertex coordinates are in range [-1, 1]  but output texture coordinates needs to be [0, 1]
-            Vector4.Create(0.0f, 0.5f, 0.0f, 0.5f - dydz), // *0.5f and +0.5f as above, -dydz to slide the view of the texture vertically each frame
-            Vector4.Create(0.0f, 0.0f, 0.5f, dydz / 5.0f), // +dydz to slide the start of the compositing ray in depth each frame
-            Vector4.UnitW
-        );
-
+        var constantBufferView = _quadPrimitive.InputResourceViews[1].As<GraphicsBufferView>();
+        var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
+        {
+            // Shaders take transposed matrices, so we want to set X.W
+            constantBufferSpan[0] = Matrix4x4.Create(
+                Vector4.Create(0.5f, 0.0f, 0.0f, 0.5f),      // *0.5f and +0.5f since the input vertex coordinates are in range [-1, 1]  but output texture coordinates needs to be [0, 1]
+                Vector4.Create(0.0f, 0.5f, 0.0f, 0.5f - dydz), // *0.5f and +0.5f as above, -dydz to slide the view of the texture vertically each frame
+                Vector4.Create(0.0f, 0.0f, 0.5f, dydz / 5.0f), // +dydz to slide the start of the compositing ray in depth each frame
+                Vector4.UnitW
+            );
+        }
         constantBufferView.UnmapAndWrite();
     }
 
@@ -95,293 +107,336 @@ public sealed class HelloSmoke : HelloWindow
         base.Draw(graphicsRenderContext);
     }
 
-    private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
+    private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext)
     {
-        var graphicsDevice = GraphicsDevice;
         var graphicsRenderPass = GraphicsRenderPass;
         var graphicsSurface = graphicsRenderPass.Surface;
 
         var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Smoke", "main", "main");
 
         var constantBuffer = _constantBuffer;
-        var indexBuffer = _indexBuffer;
-        var vertexBuffer = _vertexBuffer;
+        var uploadBuffer = _uploadBuffer;
 
-        var vertexBufferView = CreateVertexBufferView(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
-        graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
+        return GraphicsDevice.CreatePrimitive(
+            graphicsPipeline,
+            CreateVertexBufferView(graphicsContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
+            CreateIndexBufferView(graphicsContext, _indexBuffer, uploadBuffer),
+            new GraphicsResourceView[3] {
+                CreateConstantBufferView(graphicsContext, constantBuffer),
+                CreateConstantBufferView(graphicsContext, constantBuffer),
+                CreateTexture3DView(graphicsContext, _texture3D, uploadBuffer, _isQuickAndDirty),
+            }
+        );
 
-        var indexBufferView = CreateIndexBufferView(graphicsContext, indexBuffer, indexStagingBuffer);
-        graphicsContext.Copy(indexBuffer, indexStagingBuffer);
-
-        var inputResourceViews = new GraphicsResourceView[3] {
-            CreateConstantBufferView(graphicsContext, constantBuffer, index: 0),
-            CreateConstantBufferView(graphicsContext, constantBuffer, index: 1),
-            CreateTextureView(graphicsContext, textureStagingBuffer, _isQuickAndDirty),
-        };
-        return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferView, indexBufferView, inputResourceViews);
-
-        static GraphicsResourceView CreateConstantBufferView(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer, uint index)
+        static GraphicsBufferView CreateConstantBufferView(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer)
         {
-            var constantBufferView = new GraphicsResourceView {
-                Offset = 256 * index,
-                Resource = constantBuffer,
-                Size = SizeOf<Matrix4x4>(),
-                Stride = SizeOf<Matrix4x4>(),
-            };
-            var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
-
-            pConstantBuffer[0] = Matrix4x4.Identity;
-
+            var constantBufferView = constantBuffer.CreateView<Matrix4x4>(1);
+            var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
+            {
+                constantBufferSpan[0] = Matrix4x4.Identity;
+            }
             constantBufferView.UnmapAndWrite();
             return constantBufferView;
         }
 
-        static GraphicsResourceView CreateIndexBufferView(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer indexStagingBuffer)
+        static GraphicsBufferView CreateIndexBufferView(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer uploadBuffer)
         {
-            var indexBufferView = new GraphicsResourceView {
-                Offset = 0,
-                Resource = indexBuffer,
-                Size = SizeOf<ushort>() * 6,
-                Stride = SizeOf<ushort>(),
-            };
-            var pIndexBuffer = indexStagingBuffer.Map<ushort>(indexBufferView.Offset, indexBufferView.Size);
+            var uploadBufferView = uploadBuffer.CreateView<ushort>(6);
+            var indexBufferSpan = uploadBufferView.Map<ushort>();
+            {
+                // clockwise when looking at the triangle from the outside
 
-            // clockwise when looking at the triangle from the outside
+                indexBufferSpan[0] = 0;
+                indexBufferSpan[1] = 1;
+                indexBufferSpan[2] = 2;
 
-            pIndexBuffer[0] = 0;
-            pIndexBuffer[1] = 1;
-            pIndexBuffer[2] = 2;
+                indexBufferSpan[3] = 0;
+                indexBufferSpan[4] = 2;
+                indexBufferSpan[5] = 3;
+            }
+            uploadBufferView.UnmapAndWrite();
 
-            pIndexBuffer[3] = 0;
-            pIndexBuffer[4] = 2;
-            pIndexBuffer[5] = 3;
-
-            indexStagingBuffer.UnmapAndWrite(indexBufferView.Offset, indexBufferView.Size);
+            var indexBufferView = indexBuffer.CreateView<ushort>(6);
+            graphicsContext.Copy(indexBufferView, uploadBufferView);
             return indexBufferView;
         }
 
-        GraphicsResourceView CreateTextureView(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer, bool isQuickAndDirty)
+        static GraphicsTextureView CreateTexture3DView(GraphicsContext graphicsContext, GraphicsTexture texture3D, GraphicsBuffer uploadBuffer, bool isQuickAndDirty)
         {
-            var textureWidth = isQuickAndDirty ? 64u : 256u;
-            var textureHeight = isQuickAndDirty ? 64u : 256u;
-            var textureDepth = isQuickAndDirty ? (ushort)64 : (ushort)256;
-            var textureDz = textureWidth * textureHeight;
-            var texturePixels = textureDz * textureDepth;
-
-            var texture = graphicsContext.Device.CreateTexture(GraphicsResourceCpuAccess.None, GraphicsTextureKind.ThreeDimensional, GraphicsFormat.R8G8B8A8_UNORM, textureWidth, textureHeight, textureDepth);
-            var textureView = new GraphicsResourceView {
-                Offset = 0,
-                Resource = texture,
-                Size = checked((uint)texture.Size),
-                Stride = SizeOf<uint>(),
-            };
-            var pTextureData = textureStagingBuffer.Map<uint>(textureView.Offset, textureView.Size);
-
-            var random = new Random(Seed: 1);
-
-            var isOnBlurring = true;
-            // start with random speckles
-            for (uint n = 0; n < texturePixels; n++)
+            var uploadBufferView = uploadBuffer.CreateView<byte>(checked((uint)texture3D.Size));
+            var textureDataSpan = uploadBufferView.Map<byte>();
             {
-                // convert n to indices
-                float x = n % textureWidth;
-                float y = n % textureDz / textureWidth;
-                float z = n / textureDz;
+                var random = new Random(Seed: 1);
+                var isOnBlurring = true;
 
-                // convert indices to fractions in the range [0, 1)
-                x /= textureWidth;
-                y /= textureHeight;
-                z /= textureHeight;
+                var width = texture3D.Width;
 
-                // make x,z relative to texture center
-                x -= 0.5f;
-                z -= 0.5f;
+                var height = texture3D.Height;
+                var rowPitch = texture3D.RowPitch;
 
-                // get radius from center, clamped to 0.5
-                var radius = MathF.Abs(x); // MathF.Sqrt(x * x + z * z);
-                if (radius > 0.5f)
+                var depth = texture3D.Depth;
+                var slicePitch = texture3D.SlicePitch;
+
+                // start with random speckles
+                for (var z = 0u; z < depth; z++)
                 {
-                    radius = 0.5f;
+                    var sliceIndex = z * slicePitch;
+
+                    for (var y = 0u; y < height; y++)
+                    {
+                        var rowIndex = sliceIndex + (y * rowPitch);
+                        var row = (uint*)textureDataSpan.GetPointer(rowIndex);
+
+                        for (var x = 0u; x < width; x++)
+                        {
+                            // convert indices to fractions in the range [0, 1)
+                            var fx = (float)x / width;
+                            var fz = (float)z / depth;
+
+                            // make x,z relative to texture center
+                            fx -= 0.5f;
+                            fz -= 0.5f;
+
+                            // get radius from center, clamped to 0.5
+                            var radius = MathF.Abs(fx); // MathF.Sqrt(fx * fx + fz * fz);
+
+                            if (radius > 0.5f)
+                            {
+                                radius = 0.5f;
+                            }
+
+                            // scale as 1 in center, tapering off to the edge
+                            var scale = 2 * MathF.Abs(0.5f - radius);
+
+                            // random value scaled by the above
+                            var rand = random.NextSingle();
+
+                            if (isOnBlurring && (rand < 0.99))
+                            {
+                                rand = 0;
+                            }
+
+                            uint value = (byte)(rand * scale * 255);
+                            row[x] = value | (value << 8) | (value << 16) | (value << 24);
+                        }
+                    }
                 }
 
-                // scale as 1 in center, tapering off to the edge
-                var scale = 2 * MathF.Abs(0.5f - radius);
-
-                // random value scaled by the above
-                var rand = (float)random.NextDouble();
-                if (isOnBlurring && (rand < 0.99))
+                if (isOnBlurring)
                 {
-                    rand = 0;
+                    // now smear them out to smooth smoke splotches
+                    var falloffFactor = isQuickAndDirty ? 0.9f : 0.95f;
+
+                    for (var z = 0u; z < depth; z++)
+                    {
+                        var sliceIndex = z * slicePitch;
+
+                        for (var y = 0u; y < height; y++)
+                        {
+                            var rowIndex = sliceIndex + (y * rowPitch);
+                            var row = (uint*)textureDataSpan.GetPointer(rowIndex);
+
+                            for (var x = 1u; x < width; x++)
+                            {
+                                if ((row[x] & 0xFF) < falloffFactor * (row[x - 1] & 0xFF))
+                                {
+                                    uint value = (byte)(falloffFactor * (row[x - 1] & 0xFF));
+                                    row[x] = value | (value << 8) | (value << 16) | (value << 24);
+                                }
+                            }
+
+                            for (var x = width - 2; x != uint.MaxValue; x = unchecked(x - 1))
+                            {
+                                if ((row[x] & 0xFF) < falloffFactor * (row[x + 1] & 0xFF))
+                                {
+                                    uint value = (byte)(falloffFactor * (row[x + 1] & 0xFF));
+                                    row[x] = value | (value << 8) | (value << 16) | (value << 24);
+                                }
+                            }
+                        }
+                    }
+
+                    for (var z = 0u; z < depth; z++)
+                    {
+                        var sliceIndex = z * slicePitch;
+
+                        for (var x = 0u; x < width; x++)
+                        {
+                            for (var y = 1u; y < height; y++)
+                            {
+                                var rowIndex = sliceIndex + (y * rowPitch);
+                                var row = (uint*)textureDataSpan.GetPointer(rowIndex);
+
+                                var previousRowIndex = rowIndex - rowPitch;
+                                var previousRow = (uint*)textureDataSpan.GetPointer(previousRowIndex);
+
+                                if ((row[x] & 0xFF) < falloffFactor * (previousRow[x] & 0xFF))
+                                {
+                                    uint value = (byte)(falloffFactor * (previousRow[x] & 0xFF));
+                                    row[x] = value | (value << 8) | (value << 16) | (value << 24);
+                                }
+                            }
+
+                            for (var y = 0u; y <= 0; y++)
+                            {
+                                var rowIndex = sliceIndex + (y * rowPitch);
+                                var row = (uint*)textureDataSpan.GetPointer(rowIndex);
+
+                                var previousRowOfNextSliceIndex = rowIndex + slicePitch - rowPitch;
+                                var previousRowOfNextSlice = (uint*)textureDataSpan.GetPointer(previousRowOfNextSliceIndex);
+
+                                if ((row[x] & 0xFF) < falloffFactor * (previousRowOfNextSlice[x] & 0xFF))
+                                {
+                                    uint value = (byte)(falloffFactor * (previousRowOfNextSlice[x] & 0xFF));
+                                    row[x] = value | (value << 8) | (value << 16) | (value << 24);
+                                }
+                            }
+
+                            for (var y = 1u; y < height; y++)
+                            {
+                                var rowIndex = sliceIndex + (y * rowPitch);
+                                var row = (uint*)textureDataSpan.GetPointer(rowIndex);
+
+                                var previousRowIndex = rowIndex - rowPitch;
+                                var previousRow = (uint*)textureDataSpan.GetPointer(previousRowIndex);
+
+                                if ((row[x] & 0xFF) < falloffFactor * (previousRow[x] & 0xFF))
+                                {
+                                    uint value = (byte)(falloffFactor * (previousRow[x] & 0xFF));
+                                    row[x] = value | (value << 8) | (value << 16) | (value << 24);
+                                }
+                            }
+
+                            for (var y = height - 2; y != uint.MaxValue; y = unchecked(y - 1))
+                            {
+                                var rowIndex = sliceIndex + (y * rowPitch);
+                                var row = (uint*)textureDataSpan.GetPointer(rowIndex);
+
+                                var nextRowIndex = rowIndex + rowPitch;
+                                var nextRow = (uint*)textureDataSpan.GetPointer(nextRowIndex);
+
+                                if ((row[x] & 0xFF) < falloffFactor * (nextRow[x] & 0xFF))
+                                {
+                                    uint value = (byte)(falloffFactor * (nextRow[x] & 0xFF));
+                                    row[x] = value | (value << 8) | (value << 16) | (value << 24);
+                                }
+                            }
+
+                            for (var y = height - 1; y >= height - 1; y--)
+                            {
+                                var rowIndex = sliceIndex + (y * rowPitch);
+                                var row = (uint*)textureDataSpan.GetPointer(rowIndex);
+
+                                var nextRowOfPreviousSliceIndex = rowIndex + rowPitch - slicePitch;
+                                var nextRowOfPreviousSlice = (uint*)textureDataSpan.GetPointer(nextRowOfPreviousSliceIndex);
+
+                                if ((row[x] & 0xFF) < falloffFactor * (nextRowOfPreviousSlice[x] & 0xFF))
+                                {
+                                    uint value = (byte)(falloffFactor * (nextRowOfPreviousSlice[x] & 0xFF));
+                                    row[x] = value | (value << 8) | (value << 16) | (value << 24);
+                                }
+                            }
+
+                            for (var y = height - 2; y != uint.MaxValue; y = unchecked(y - 1))
+                            {
+                                var rowIndex = sliceIndex + (y * rowPitch);
+                                var row = (uint*)textureDataSpan.GetPointer(rowIndex);
+
+                                var nextRowIndex = rowIndex + rowPitch;
+                                var nextRow = (uint*)textureDataSpan.GetPointer(nextRowIndex);
+
+                                if ((row[x] & 0xFF) < falloffFactor * (nextRow[x] & 0xFF))
+                                {
+                                    uint value = (byte)(falloffFactor * (nextRow[x] & 0xFF));
+                                    row[x] = value | (value << 8) | (value << 16) | (value << 24);
+                                }
+                            }
+                        }
+                    }
+
+                    for (var y = 0u; y < height; y++)
+                    {
+                        for (var x = 0u; x < width; x++)
+                        {
+                            if (x != 0)
+                            {
+                                for (var z = 1u; z < depth; z++)
+                                {
+                                    var sliceIndex = z * slicePitch;
+
+                                    var rowIndex = sliceIndex + (y * rowPitch);
+                                    var row = (uint*)textureDataSpan.GetPointer(rowIndex);
+
+                                    var sameRowOfPreviousSliceIndex = rowIndex - slicePitch;
+                                    var sameRowOfPreviousSlice = (uint*)textureDataSpan.GetPointer(sameRowOfPreviousSliceIndex);
+
+                                    if ((row[x] & 0xFF) < falloffFactor * (sameRowOfPreviousSlice[x] & 0xFF))
+                                    {
+                                        uint value = (byte)(falloffFactor * (row[x - 1] & 0xFF));
+                                        row[x] = value | (value << 8) | (value << 16) | (value << 24);
+                                    }
+                                }
+                            }
+
+                            if (x != (width - 1))
+                            {
+                                for (var z = depth - 1u; z != uint.MaxValue; z = unchecked(z - 1))
+                                {
+                                    var sliceIndex = z * slicePitch;
+
+                                    var rowIndex = sliceIndex + (y * rowPitch);
+                                    var row = (uint*)textureDataSpan.GetPointer(rowIndex);
+
+                                    if ((row[x] & 0xFF) < falloffFactor * (row[x + slicePitch] & 0xFF))
+                                    {
+                                        uint value = (byte)(falloffFactor * (row[x + 1] & 0xFF));
+                                        row[x] = value | (value << 8) | (value << 16) | (value << 24);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-                uint value = (byte)(rand * scale * 255);
-                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
             }
+            uploadBufferView.UnmapAndWrite();
 
-            if (isOnBlurring)
-            {
-                // now smear them out to smooth smoke splotches
-
-                var dy = textureWidth;
-                var dz = dy * textureHeight;
-                var falloffFactor = _isQuickAndDirty ? 0.9f : 0.95f;
-
-                for (var z = 0; z < textureDepth; z++)
-                {
-                    for (var y = 0; y < textureHeight; y++)
-                    {
-                        for (var x = 1; x < textureWidth; x++)
-                        {
-                            var n = x + (y * dy) + (z * dz);
-                            if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n - 1] & 0xFF))
-                            {
-                                uint value = (byte)(falloffFactor * (pTextureData[n - 1] & 0xFF));
-                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
-                            }
-                        }
-                        for (var x = (int)textureWidth - 2; x >= 0; x--)
-                        {
-                            var n = x + (y * dy) + (z * dz);
-                            if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n + 1] & 0xFF))
-                            {
-                                uint value = (byte)(falloffFactor * (pTextureData[n + 1] & 0xFF));
-                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
-                            }
-                        }
-                    }
-                }
-
-                for (var z = 0; z < textureDepth; z++)
-                {
-                    for (var x = 0; x < textureWidth; x++)
-                    {
-                        for (var y = 1; y < textureHeight; y++)
-                        {
-                            var n = x + (y * dy) + (z * dz);
-                            if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n - dy] & 0xFF))
-                            {
-                                uint value = (byte)(falloffFactor * (pTextureData[n - dy] & 0xFF));
-                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
-                            }
-                        }
-
-                        for (var y = 0; y <= 0; y++)
-                        {
-                            var n = x + (y * dy) + (z * dz);
-                            if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n - dy + dz] & 0xFF))
-                            {
-                                uint value = (byte)(falloffFactor * (pTextureData[n - dy + dz] & 0xFF));
-                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
-                            }
-                        }
-
-                        for (var y = 1; y < textureHeight; y++)
-                        {
-                            var n = x + (y * dy) + (z * dz);
-                            if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n - dy] & 0xFF))
-                            {
-                                uint value = (byte)(falloffFactor * (pTextureData[n - dy] & 0xFF));
-                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
-                            }
-                        }
-
-                        for (var y = (int)textureHeight - 2; y >= 0; y--)
-                        {
-                            var n = x + (y * dy) + (z * dz);
-                            if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n + dy] & 0xFF))
-                            {
-                                uint value = (byte)(falloffFactor * (pTextureData[n + dy] & 0xFF));
-                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
-                            }
-                        }
-
-                        for (var y = (int)textureHeight - 1; y >= (int)textureHeight - 1; y--)
-                        {
-                            var n = x + (y * dy) + (z * dz);
-                            if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n + dy - dz] & 0xFF))
-                            {
-                                uint value = (byte)(falloffFactor * (pTextureData[n + dy - dz] & 0xFF));
-                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
-                            }
-                        }
-
-                        for (var y = (int)textureHeight - 2; y >= 0; y--)
-                        {
-                            var n = x + (y * dy) + (z * dz);
-                            if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n + dy] & 0xFF))
-                            {
-                                uint value = (byte)(falloffFactor * (pTextureData[n + dy] & 0xFF));
-                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
-                            }
-                        }
-                    }
-                }
-
-                for (var y = 0; y < textureHeight; y++)
-                {
-                    for (var x = 0; x < textureWidth; x++)
-                    {
-                        for (var z = 1; z < textureDepth; z++)
-                        {
-                            var n = x + (y * dy) + (z * dz);
-                            if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n - dz] & 0xFF))
-                            {
-                                uint value = (byte)(falloffFactor * (pTextureData[n - 1] & 0xFF));
-                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
-                            }
-                        }
-                        for (var z = textureDepth - 0; z >= 0; z--)
-                        {
-                            var n = x + (y * dy) + (z * dz);
-                            if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n + dz] & 0xFF))
-                            {
-                                uint value = (byte)(falloffFactor * (pTextureData[n + 1] & 0xFF));
-                                pTextureData[n] = value | (value << 8) | (value << 16) | (value << 24);
-                            }
-                        }
-                    }
-                }
-            }
-
-            textureStagingBuffer.UnmapAndWrite(textureView.Offset, textureView.Size);
-            graphicsContext.Copy(texture, textureStagingBuffer);
-
-            return textureView;
+            var texture3DView = texture3D.CreateView(0, 1);
+            graphicsContext.Copy(texture3DView, uploadBufferView);
+            return texture3DView;
         }
 
-        static GraphicsResourceView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+        static GraphicsBufferView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
         {
-            var vertexBufferView = new GraphicsResourceView {
-                Offset = 0,
-                Resource = vertexBuffer,
-                Size = SizeOf<Texture3DVertex>() * 4,
-                Stride = SizeOf<Texture3DVertex>(),
-            };
-            var pVertexBuffer = vertexStagingBuffer.Map<Texture3DVertex>(vertexBufferView.Offset, vertexBufferView.Size);
+            var uploadBufferView = uploadBuffer.CreateView<Texture3DVertex>(4);
+            var vertexBufferSpan = uploadBufferView.Map<Texture3DVertex>();
+            {
+                var y = 1.0f;
+                var x = y / aspectRatio;
 
-            var y = 1.0f;
-            var x = y / aspectRatio;
+                vertexBufferSpan[0] = new Texture3DVertex {                //
+                    Position = Vector3.Create(-x, y, 0.0f),             //   y          in this setup
+                    UVW = Vector3.Create(0, 0, 0),                      //   ^     z    the origin o
+                };                                                      //   |   /      is in the middle
+                                                                        //   | /        of the rendered scene
+                vertexBufferSpan[1] = new Texture3DVertex {                //   o------>x
+                    Position = Vector3.Create(x, y, 0.0f),              //
+                    UVW = Vector3.Create(1, 0, 0),                      //   0 ----- 1
+                };                                                      //   | \     |
+                                                                        //   |   \   |
+                vertexBufferSpan[2] = new Texture3DVertex {                //   |     \ |
+                    Position = Vector3.Create(x, -y, 0.0f),             //   3-------2
+                    UVW = Vector3.Create(1, 1, 0),                      //
+                };
 
-            pVertexBuffer[0] = new Texture3DVertex {             //
-                Position = Vector3.Create(-x, y, 0.0f),             //   y          in this setup
-                UVW = Vector3.Create(0, 0, 0),                      //   ^     z    the origin o
-            };                                                   //   |   /      is in the middle
-                                                                 //   | /        of the rendered scene
-            pVertexBuffer[1] = new Texture3DVertex {             //   o------>x
-                Position = Vector3.Create(x, y, 0.0f),              //
-                UVW = Vector3.Create(1, 0, 0),                      //   0 ----- 1
-            };                                                   //   | \     |
-                                                                 //   |   \   |
-            pVertexBuffer[2] = new Texture3DVertex {             //   |     \ |
-                Position = Vector3.Create(x, -y, 0.0f),             //   3-------2
-                UVW = Vector3.Create(1, 1, 0),                      //
-            };
+                vertexBufferSpan[3] = new Texture3DVertex {
+                    Position = Vector3.Create(-x, -y, 0),
+                    UVW = Vector3.Create(0, 1, 0),
+                };
+            }
+            uploadBufferView.UnmapAndWrite();
 
-            pVertexBuffer[3] = new Texture3DVertex {
-                Position = Vector3.Create(-x, -y, 0),
-                UVW = Vector3.Create(0, 1, 0),
-            };
-
-            vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);
+            var vertexBufferView = vertexBuffer.CreateView<Texture3DVertex>(4);
+            graphicsContext.Copy(vertexBufferView, uploadBufferView);
             return vertexBufferView;
         }
 

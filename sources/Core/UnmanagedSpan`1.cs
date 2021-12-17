@@ -244,7 +244,7 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
     public UnmanagedSpan<T> Slice(nuint start, nuint length)
     {
         ThrowIfNotInBounds(start, Length);
-        ThrowIfNotInBounds(start + length, Length);
+        ThrowIfNotInInsertBounds(length, Length - start);
         return new UnmanagedSpan<T>(_items + start, length);
     }
 

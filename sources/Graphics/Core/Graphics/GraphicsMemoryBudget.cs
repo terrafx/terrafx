@@ -14,15 +14,15 @@ namespace TerraFX.Graphics;
 [StructLayout(LayoutKind.Auto)]
 public readonly struct GraphicsMemoryBudget
 {
-    /// <summary>Gets the estimated budget of memory, in bytes.</summary>
+    /// <summary>Gets the estimated budget, in bytes, of memory.</summary>
     public ulong EstimatedBudget { get; init; }
 
-    /// <summary>Gets the estimated usage of memory, in bytes.</summary>
+    /// <summary>Gets the estimated usage, in bytes, of memory.</summary>
     public ulong EstimatedUsage { get; init; }
 
-    /// <summary>Gets the size of all allocated memory regions for a given set of managers, in bytes.</summary>
+    /// <summary>Gets the size, in bytes, of all allocated memory regions for a given set of managers.</summary>
     public ulong TotalAllocatedMemoryRegionSize { get; init; }
 
-    /// <summary>Gets the size of all allocators for a given set of managers, in bytes.</summary>
+    /// <summary>Gets the size, in bytes, of all allocators for a given set of managers.</summary>
     public ulong TotalAllocatorSize { get; init; }
 }
