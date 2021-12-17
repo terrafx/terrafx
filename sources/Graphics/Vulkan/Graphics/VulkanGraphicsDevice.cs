@@ -67,7 +67,6 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
         _vkMemoryTypeCount = vkMemoryTypeCount;
 
         _memoryManagers = CreateMemoryManagers(this, createMemoryAllocator, vkMemoryTypeCount);
-        // TODO: UpdateBudget
 
         _computeContextPool = new ContextPool<VulkanGraphicsDevice, VulkanGraphicsComputeContext>();
         _copyContextPool = new ContextPool<VulkanGraphicsDevice, VulkanGraphicsCopyContext>();

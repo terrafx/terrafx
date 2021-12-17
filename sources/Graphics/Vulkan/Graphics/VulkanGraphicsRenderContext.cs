@@ -263,7 +263,7 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
         var vkCommandBuffer = VkCommandBuffer;
 
         var pipelineSignature = pipeline.Signature;
-        var vkDescriptorSet = pipelineSignature.VkDescriptorSet;
+        var vkDescriptorSet = primitive.VkDescriptorSet;
 
         if (vkDescriptorSet != VkDescriptorSet.NULL)
         {
