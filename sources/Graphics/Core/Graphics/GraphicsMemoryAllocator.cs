@@ -18,22 +18,22 @@ namespace TerraFX.Graphics;
 /// <summary>An allocator for graphics memory.</summary>
 public abstract partial class GraphicsMemoryAllocator : IReadOnlyCollection<GraphicsMemoryRegion>
 {
-    /// <summary>The minimum size of free memory regions to keep on either side of an allocated region, in bytes.</summary>
+    /// <summary>The minimum size, in bytes, of free memory regions to keep on either side of an allocated region.</summary>
     /// <remarks>This defaults to <c>0</c> so that no free regions are preserved around allocations.</remarks>
-    public static readonly ulong MinimumAllocatedMemoryRegionMarginSize = GetAppContextData(
+    public static readonly uint MinimumAllocatedMemoryRegionMarginSize = GetAppContextData(
         $"{typeof(GraphicsMemoryAllocator).FullName}.{nameof(MinimumAllocatedMemoryRegionMarginSize)}",
-        defaultValue: 0UL
+        defaultValue: 0U
     );
 
-    /// <summary>The minimum size a free memory region should be for it to be registered as available, in bytes.</summary>
+    /// <summary>The minimum size, in bytes, a free memory region should be for it to be registered as available.</summary>
     /// <remarks>This defaults to <c>4096</c> which is the minimum allocation size allowed for small resource textures on DirectX.</remarks>
-    public static readonly ulong MinimumFreeMemoryRegionSizeToRegister = GetAppContextData(
+    public static readonly uint MinimumFreeMemoryRegionSizeToRegister = GetAppContextData(
         $"{typeof(GraphicsMemoryAllocator).FullName}.{nameof(MinimumFreeMemoryRegionSizeToRegister)}",
-        defaultValue: 4096UL
+        defaultValue: 4096U
     );
 
     private readonly GraphicsDeviceObject _deviceObject;
-    private readonly ulong _size;
+    private readonly nuint _size;
 
     /// <summary>Creates a new instance of a memory allocator that uses a system provided default algorithm.</summary>
     /// <param name="deviceObject">The device object for which the allocator is managing memory.</param>
@@ -41,14 +41,14 @@ public abstract partial class GraphicsMemoryAllocator : IReadOnlyCollection<Grap
     /// <returns>A new memory allocator that uses a system provided default algorithm.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="deviceObject" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
-    public static GraphicsMemoryAllocator CreateDefault(GraphicsDeviceObject deviceObject, ulong size) => new DefaultMemoryAllocator(deviceObject, size);
+    public static GraphicsMemoryAllocator CreateDefault(GraphicsDeviceObject deviceObject, nuint size) => new DefaultMemoryAllocator(deviceObject, size);
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryAllocator" /> class.</summary>
     /// <param name="deviceObject">The device object for which the allocator is managing memory.</param>
     /// <param name="size">The size, in bytes, of the memory that is to be managed.</param>
     /// <exception cref="ArgumentNullException"><paramref name="deviceObject" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
-    protected GraphicsMemoryAllocator(GraphicsDeviceObject deviceObject, ulong size)
+    protected GraphicsMemoryAllocator(GraphicsDeviceObject deviceObject, nuint size)
     {
         ThrowIfNull(deviceObject);
         ThrowIfZero(size);
@@ -69,23 +69,23 @@ public abstract partial class GraphicsMemoryAllocator : IReadOnlyCollection<Grap
     /// <summary>Gets <c>true</c> if there are no allocated memory regions; otherwise, <c>false</c>.</summary>
     public abstract bool IsEmpty { get; }
 
-    /// <summary>Gets the size of the largest free memory region, in bytes.</summary>
-    public abstract ulong LargestFreeMemoryRegionSize { get; }
+    /// <summary>Gets the size, in bytes, of the largest free memory region.</summary>
+    public abstract nuint LargestFreeMemoryRegionSize { get; }
 
     /// <summary>Gets the size, in bytes, of the memory being managed.</summary>
-    public ulong Size => _size;
+    public nuint Size => _size;
 
-    /// <summary>Gets the total size of free memory regions, in bytes.</summary>
-    public abstract ulong TotalFreeMemoryRegionSize { get; }
+    /// <summary>Gets the total size, in bytes, of free memory regions.</summary>
+    public abstract nuint TotalFreeMemoryRegionSize { get; }
 
     /// <summary>Allocates a memory region of the specified size and alignment.</summary>
-    /// <param name="size">The size of the memory region to allocate, in bytes.</param>
-    /// <param name="alignment">The alignment of the memory region to allocate, in bytes.</param>
+    /// <param name="size">The size, in bytes, of the memory region to allocate.</param>
+    /// <param name="alignment">The alignment, in bytes, of the memory region to allocate.</param>
     /// <returns>The allocated memory region.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
-    public GraphicsMemoryRegion Allocate(ulong size, ulong alignment = 0)
+    public GraphicsMemoryRegion Allocate(nuint size, nuint alignment = 0)
     {
         var result = TryAllocate(size, alignment, out var memoryRegion);
 
@@ -109,13 +109,13 @@ public abstract partial class GraphicsMemoryAllocator : IReadOnlyCollection<Grap
     public abstract IEnumerator<GraphicsMemoryRegion> GetEnumerator();
 
     /// <summary>Tries to allocate a memory region of the specified size and alignment.</summary>
-    /// <param name="size">The size of the memory region to allocate, in bytes.</param>
-    /// <param name="alignment">The alignment of the memory region to allocate, in bytes.</param>
+    /// <param name="size">The size, in bytes, of the memory region to allocate.</param>
+    /// <param name="alignment">The alignment, in bytes, of the memory region to allocate.</param>
     /// <param name="memoryRegion">On return, contains the allocated memory region or <c>default</c> if the allocation failed.</param>
     /// <returns><c>true</c> if a memory region was sucesfully allocated; otherwise, <c>false</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
-    public abstract bool TryAllocate(ulong size, [Optional] ulong alignment, out GraphicsMemoryRegion memoryRegion);
+    public abstract bool TryAllocate(nuint size, [Optional] nuint alignment, out GraphicsMemoryRegion memoryRegion);
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

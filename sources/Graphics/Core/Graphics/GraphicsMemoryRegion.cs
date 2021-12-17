@@ -15,8 +15,8 @@ namespace TerraFX.Graphics;
 [StructLayout(LayoutKind.Auto)]
 public readonly struct GraphicsMemoryRegion : IDisposable, IEquatable<GraphicsMemoryRegion>
 {
-    /// <summary>Gets the alignment of the memory region, in bytes.</summary>
-    public ulong Alignment { get; init; }
+    /// <summary>Gets the alignment, in bytes, of the memory region.</summary>
+    public nuint Alignment { get; init; }
 
     /// <summary>Gets the allocator which contains the memory region.</summary>
     public GraphicsMemoryAllocator Allocator { get; init; }
@@ -24,11 +24,11 @@ public readonly struct GraphicsMemoryRegion : IDisposable, IEquatable<GraphicsMe
     /// <summary>Gets <c>true</c> if the memory region is allocated; otherwise, <c>false</c>.</summary>
     public bool IsAllocated { get; init; }
 
-    /// <summary>Gets the offset of memory region, in bytes.</summary>
-    public ulong Offset { get; init; }
+    /// <summary>Gets the offset, in bytes, of the memory region.</summary>
+    public nuint Offset { get; init; }
 
-    /// <summary>Gets the size of the memory region, in bytes.</summary>
-    public ulong Size { get; init; }
+    /// <summary>Gets the size, in bytes, of the memory region.</summary>
+    public nuint Size { get; init; }
 
     /// <summary>Compares two memory regions for equality.</summary>
     /// <param name="left">The memory region to compare with <paramref name="right" />.</param>

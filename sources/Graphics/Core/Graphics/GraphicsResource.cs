@@ -1,112 +1,53 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace TerraFX.Graphics;
 
 /// <summary>A graphics resource bound to a graphics device.</summary>
-public abstract unsafe class GraphicsResource : GraphicsDeviceObject
+public abstract unsafe class GraphicsResource : GraphicsDeviceObject, IReadOnlyCollection<GraphicsResourceView>
 {
+    private readonly GraphicsResourceCpuAccess _cpuAccess;
     private readonly GraphicsMemoryRegion _memoryRegion;
-    private readonly GraphicsResourceInfo _resourceInfo;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsResource" /> class.</summary>
     /// <param name="device">The device for which the resource was created.</param>
     /// <param name="memoryRegion">The memory region in which the resource resides.</param>
-    /// <param name="resourceInfo">The resource info that describes the resource.</param>
+    /// <param name="cpuAccess">The CPU access capabilitites of the resource.</param>
     /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c></exception>
-    protected GraphicsResource(GraphicsDevice device, in GraphicsMemoryRegion memoryRegion, in GraphicsResourceInfo resourceInfo)
+    protected GraphicsResource(GraphicsDevice device, in GraphicsMemoryRegion memoryRegion, GraphicsResourceCpuAccess cpuAccess)
         : base(device)
     {
+        _cpuAccess = cpuAccess;
         _memoryRegion = memoryRegion;
-        _resourceInfo = resourceInfo;
     }
 
-    /// <summary>Gets the alignment, in bytes, of the resource.</summary>
-    public ulong Alignment => _resourceInfo.Alignment;
+    /// <summary>Gets the number of resource views in the resource.</summary>
+    public abstract int Count { get; }
 
     /// <summary>Gets the CPU access capabilitites of the resource.</summary>
-    public GraphicsResourceCpuAccess CpuAccess => _resourceInfo.CpuAccess;
+    public GraphicsResourceCpuAccess CpuAccess => _cpuAccess;
+
+    /// <summary>Gets <c>true</c> if the resource is mapped; otherwise, <c>false</c>.</summary>
+    public abstract bool IsMapped { get; }
+
+    /// <summary>Gets the mapped address of the resouce or <c>null</c> if the resource is not currently mapped.</summary>
+    public abstract void* MappedAddress { get; }
 
     /// <summary>Gets the memory region in which the resource exists.</summary>
     public ref readonly GraphicsMemoryRegion MemoryRegion => ref _memoryRegion;
 
     /// <summary>Gets the size, in bytes, of the resource.</summary>
-    public ulong Size => _resourceInfo.Size;
+    public nuint Size => _memoryRegion.Size;
 
-    /// <summary>Maps the resource into CPU memory.</summary>
-    /// <typeparam name="T">The type of data contained by the resource.</typeparam>
-    /// <returns>A pointer to the mapped resource.</returns>
-    /// <remarks>This overload should be used when all memory should be mapped.</remarks>
-    public abstract T* Map<T>()
-        where T : unmanaged;
+    /// <summary>Disposes all resource views in the resource.</summary>
+    public abstract void DisposeAllViews();
 
-    /// <summary>Maps the resource into CPU memory.</summary>
-    /// <typeparam name="T">The type of data contained by the resource.</typeparam>
-    /// <param name="range">The range of memory that will be mapped.</param>
-    /// <returns>A pointer to the mapped resource.</returns>
-    public T* Map<T>(Range range)
-        where T : unmanaged
-    {
-        var size = (Size < int.MaxValue) ? (int)Size : int.MaxValue;
-        var (rangeOffset, rangeLength) = range.GetOffsetAndLength(size);
-        return Map<T>((nuint)rangeOffset, (nuint)rangeLength);
-    }
+    /// <summary>Gets an enumerator that can be used to iterate through the resource views of the buffer.</summary>
+    /// <returns>An enumerator that can be used to iterate through the resource views of the buffer.</returns>
+    public abstract IEnumerator<GraphicsResourceView> GetEnumerator();
 
-    /// <summary>Maps the resource into CPU memory.</summary>
-    /// <typeparam name="T">The type of data contained by the resource.</typeparam>
-    /// <param name="rangeOffset">The offset into the resource at which memory will start being read.</param>
-    /// <param name="rangeLength">The amount of memory which will be read.</param>
-    /// <returns>A pointer to the mapped resource.</returns>
-    public abstract T* Map<T>(nuint rangeOffset, nuint rangeLength)
-        where T : unmanaged;
-
-    /// <summary>Maps the resource into CPU memory.</summary>
-    /// <typeparam name="T">The type of data contained by the resource.</typeparam>
-    /// <returns>A pointer to the mapped resource.</returns>
-    /// <remarks>This overload should be used when all memory will be read.</remarks>
-    public abstract T* MapForRead<T>()
-        where T : unmanaged;
-
-    /// <summary>Maps the resource into CPU memory.</summary>
-    /// <typeparam name="T">The type of data contained by the resource.</typeparam>
-    /// <param name="readRange">The range of memory that will be read.</param>
-    /// <returns>A pointer to the mapped resource.</returns>
-    public T* MapForRead<T>(Range readRange)
-        where T : unmanaged
-    {
-        var size = (Size < int.MaxValue) ? (int)Size : int.MaxValue;
-        var (readRangeOffset, readRangeLength) = readRange.GetOffsetAndLength(size);
-        return MapForRead<T>((nuint)readRangeOffset, (nuint)readRangeLength);
-    }
-
-    /// <summary>Maps the resource into CPU memory.</summary>
-    /// <typeparam name="T">The type of data contained by the resource.</typeparam>
-    /// <param name="readRangeOffset">The offset into the resource at which memory will start being read.</param>
-    /// <param name="readRangeLength">The amount of memory which will be read.</param>
-    /// <returns>A pointer to the mapped resource.</returns>
-    public abstract T* MapForRead<T>(nuint readRangeOffset, nuint readRangeLength)
-        where T : unmanaged;
-
-    /// <summary>Unmaps the resource from CPU memory.</summary>
-    /// <remarks>This overload should be used when no memory was written.</remarks>
-    public abstract void Unmap();
-
-    /// <summary>Unmaps the resource from CPU memory.</summary>
-    /// <remarks>This overload should be used when all memory was written.</remarks>
-    public abstract void UnmapAndWrite();
-
-    /// <summary>Unmaps the resource from CPU memory.</summary>
-    /// <param name="writtenRange">The range of memory which was written.</param>
-    public void UnmapAndWrite(Range writtenRange)
-    {
-        var size = (Size < int.MaxValue) ? (int)Size : int.MaxValue;
-        var (writtenRangeOffset, writtenRangeLength) = writtenRange.GetOffsetAndLength(size);
-        UnmapAndWrite((nuint)writtenRangeOffset, (nuint)writtenRangeLength);
-    }
-
-    /// <summary>Unmaps the resource from CPU memory.</summary>
-    /// <param name="writtenRangeOffset">The offset into the resource at which memory started being written.</param>
-    /// <param name="writtenRangeLength">The amount of memory which was written.</param>
-    public abstract void UnmapAndWrite(nuint writtenRangeOffset, nuint writtenRangeLength);
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

@@ -36,8 +36,8 @@ public abstract partial class GraphicsDevice : GraphicsAdapterObject, IDisposabl
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
-    /// <remarks>This is an alternative name for <see cref="CreateUniformBuffer(ulong, GraphicsResourceCpuAccess)" />.</remarks>
-    public GraphicsBuffer CreateConstantBuffer(ulong size, GraphicsResourceCpuAccess cpuAccess = GraphicsResourceCpuAccess.None)
+    /// <remarks>This is an alternative name for <see cref="CreateUniformBuffer(nuint, GraphicsResourceCpuAccess)" />.</remarks>
+    public GraphicsBuffer CreateConstantBuffer(nuint size, GraphicsResourceCpuAccess cpuAccess = GraphicsResourceCpuAccess.None)
     {
         var bufferCreateInfo = new GraphicsBufferCreateInfo {
             CpuAccess = cpuAccess,
@@ -59,7 +59,7 @@ public abstract partial class GraphicsDevice : GraphicsAdapterObject, IDisposabl
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
-    public GraphicsBuffer CreateIndexBuffer(ulong size, GraphicsResourceCpuAccess cpuAccess = GraphicsResourceCpuAccess.None)
+    public GraphicsBuffer CreateIndexBuffer(nuint size, GraphicsResourceCpuAccess cpuAccess = GraphicsResourceCpuAccess.None)
     {
         var bufferCreateInfo = new GraphicsBufferCreateInfo {
             CpuAccess = cpuAccess,
@@ -86,7 +86,7 @@ public abstract partial class GraphicsDevice : GraphicsAdapterObject, IDisposabl
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBufferView" /> was not created for this device.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBufferView" /> was not created for this device.</exception>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-    public abstract GraphicsPrimitive CreatePrimitive(GraphicsPipeline pipeline, in GraphicsResourceView vertexBufferView, in GraphicsResourceView indexBufferView = default, ReadOnlySpan<GraphicsResourceView> inputResourceViews = default);
+    public abstract GraphicsPrimitive CreatePrimitive(GraphicsPipeline pipeline, GraphicsBufferView vertexBufferView, GraphicsBufferView? indexBufferView = null, ReadOnlySpan<GraphicsResourceView> inputResourceViews = default);
 
     /// <summary>Creates a new graphics shader for the device.</summary>
     /// <param name="kind">The kind of graphics shader to create.</param>
@@ -119,8 +119,8 @@ public abstract partial class GraphicsDevice : GraphicsAdapterObject, IDisposabl
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
-    /// <remarks>This is an alternative name for <see cref="CreateUploadBuffer(ulong)" />.</remarks>
-    public GraphicsBuffer CreateStagingBuffer(ulong size) => CreateUploadBuffer(size);
+    /// <remarks>This is an alternative name for <see cref="CreateUploadBuffer(nuint)" />.</remarks>
+    public GraphicsBuffer CreateStagingBuffer(nuint size) => CreateUploadBuffer(size);
 
     /// <summary>Creates a new one-dimensional graphics texture.</summary>
     /// <param name="format">The format of the texture.</param>
@@ -138,6 +138,7 @@ public abstract partial class GraphicsDevice : GraphicsAdapterObject, IDisposabl
             Format = format,
             Height = 1,
             Kind = GraphicsTextureKind.OneDimensional,
+            MipLevelCount = 1,
             Width = width,
         };
         return CreateTexture(in textureCreateInfo);
@@ -161,6 +162,7 @@ public abstract partial class GraphicsDevice : GraphicsAdapterObject, IDisposabl
             Format = format,
             Height = height,
             Kind = GraphicsTextureKind.TwoDimensional,
+            MipLevelCount = 1,
             Width = width,
         };
         return CreateTexture(in textureCreateInfo);
@@ -186,6 +188,7 @@ public abstract partial class GraphicsDevice : GraphicsAdapterObject, IDisposabl
             Format = format,
             Height = height,
             Kind = GraphicsTextureKind.ThreeDimensional,
+            MipLevelCount = 1,
             Width = width,
         };
         return CreateTexture(in textureCreateInfo);
@@ -208,8 +211,8 @@ public abstract partial class GraphicsDevice : GraphicsAdapterObject, IDisposabl
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
-    /// <remarks>This is an alternative name for <see cref="CreateStagingBuffer(ulong)" />.</remarks>
-    public GraphicsBuffer CreateUploadBuffer(ulong size)
+    /// <remarks>This is an alternative name for <see cref="CreateStagingBuffer(nuint)" />.</remarks>
+    public GraphicsBuffer CreateUploadBuffer(nuint size)
     {
         var bufferCreateInfo = new GraphicsBufferCreateInfo {
             CpuAccess = GraphicsResourceCpuAccess.Write,
@@ -226,8 +229,8 @@ public abstract partial class GraphicsDevice : GraphicsAdapterObject, IDisposabl
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
-    /// <remarks>This is an alternative name for <see cref="CreateConstantBuffer(ulong, GraphicsResourceCpuAccess)" />.</remarks>
-    public GraphicsBuffer CreateUniformBuffer(ulong size, GraphicsResourceCpuAccess cpuAccess = GraphicsResourceCpuAccess.None) => CreateConstantBuffer(size, cpuAccess);
+    /// <remarks>This is an alternative name for <see cref="CreateConstantBuffer(nuint, GraphicsResourceCpuAccess)" />.</remarks>
+    public GraphicsBuffer CreateUniformBuffer(nuint size, GraphicsResourceCpuAccess cpuAccess = GraphicsResourceCpuAccess.None) => CreateConstantBuffer(size, cpuAccess);
 
     /// <summary>Creates a new vertex graphics buffer.</summary>
     /// <param name="size">The size, in bytes, of the graphics buffer.</param>
@@ -236,7 +239,7 @@ public abstract partial class GraphicsDevice : GraphicsAdapterObject, IDisposabl
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
-    public GraphicsBuffer CreateVertexBuffer(ulong size, GraphicsResourceCpuAccess cpuAccess = GraphicsResourceCpuAccess.None)
+    public GraphicsBuffer CreateVertexBuffer(nuint size, GraphicsResourceCpuAccess cpuAccess = GraphicsResourceCpuAccess.None)
     {
         var bufferCreateInfo = new GraphicsBufferCreateInfo {
             CpuAccess = cpuAccess,

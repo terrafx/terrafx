@@ -5,11 +5,15 @@ using TerraFX.Interop.DirectX;
 
 namespace TerraFX.Graphics;
 
-public unsafe partial class D3D12GraphicsBuffer
+public partial class D3D12GraphicsBuffer
 {
     [StructLayout(LayoutKind.Auto)]
-    internal struct CreateInfo
+    internal unsafe struct CreateInfo
     {
+        public GraphicsResourceCpuAccess CpuAccess;
+
+        public delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> CreateMemoryAllocator;
+
         public ID3D12Resource* D3D12Resource;
 
         public D3D12_RESOURCE_STATES D3D12ResourceState;
@@ -17,7 +21,5 @@ public unsafe partial class D3D12GraphicsBuffer
         public GraphicsBufferKind Kind;
 
         public GraphicsMemoryRegion MemoryRegion;
-
-        public GraphicsResourceInfo ResourceInfo;
     }
 }

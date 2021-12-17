@@ -19,21 +19,23 @@ public abstract class GraphicsContext : GraphicsDeviceObject
     /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
     public abstract GraphicsFence Fence { get; }
 
-    /// <summary>Copies the contents of a buffer to a separate buffer.</summary>
-    /// <param name="destination">The destination buffer.</param>
-    /// <param name="source">The source buffer.</param>
+    /// <summary>Copies the contents of a buffer view to a separate buffer view.</summary>
+    /// <param name="destination">The destination buffer view.</param>
+    /// <param name="source">The source buffer view.</param>
     /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="destination" /> is shorter than <paramref name="source" />.</exception>
     /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-    public abstract void Copy(GraphicsBuffer destination, GraphicsBuffer source);
+    public abstract void Copy(GraphicsBufferView destination, GraphicsBufferView source);
 
-    /// <summary>Copies the contents of a buffer to a two-dimensional texture.</summary>
-    /// <param name="destination">The destination two-dimensional texture.</param>
-    /// <param name="source">The source buffer.</param>
+    /// <summary>Copies the contents of a buffer view to a texture view.</summary>
+    /// <param name="destination">The destination dimensional texture view.</param>
+    /// <param name="source">The source buffer view.</param>
     /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="destination" /> is shorter than <paramref name="source" />.</exception>
     /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-    public abstract void Copy(GraphicsTexture destination, GraphicsBuffer source);
+    public abstract void Copy(GraphicsTextureView destination, GraphicsBufferView source);
 
     /// <summary>Flushes the graphics context.</summary>
     public abstract void Flush();

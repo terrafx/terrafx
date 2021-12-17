@@ -8,13 +8,15 @@ namespace TerraFX.Graphics;
 public partial class VulkanGraphicsBuffer
 {
     [StructLayout(LayoutKind.Auto)]
-    internal struct CreateInfo
+    internal unsafe struct CreateInfo
     {
+        public GraphicsResourceCpuAccess CpuAccess;
+
+        public delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> CreateMemoryAllocator;
+
         public GraphicsBufferKind Kind;
 
         public GraphicsMemoryRegion MemoryRegion;
-
-        public GraphicsResourceInfo ResourceInfo;
 
         public VkBuffer VkBuffer;
     }

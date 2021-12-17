@@ -14,9 +14,11 @@ public class HelloSierpinski : HelloWindow
     private readonly int _recursionDepth;
     private readonly SierpinskiShape _sierpinskiShape;
 
-    private GraphicsPrimitive _pyramid = null!;
     private GraphicsBuffer _constantBuffer = null!;
     private GraphicsBuffer _indexBuffer = null!;
+    private GraphicsPrimitive _sierpinskiPrimitive = null!;
+    private GraphicsTexture _texture3D = null!;
+    private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
     private float _texturePosition;
 
@@ -29,10 +31,14 @@ public class HelloSierpinski : HelloWindow
 
     public override void Cleanup()
     {
-        _pyramid?.Dispose();
+        _sierpinskiPrimitive?.Dispose();
+
         _constantBuffer?.Dispose();
         _indexBuffer?.Dispose();
+        _texture3D.Dispose();
+        _uploadBuffer?.Dispose();
         _vertexBuffer?.Dispose();
+
         base.Cleanup();
     }
 
@@ -48,24 +54,22 @@ public class HelloSierpinski : HelloWindow
         var graphicsDevice = GraphicsDevice;
         var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
-        var vertices = 2 * 12 * (ulong)MathF.Pow(4, _recursionDepth);
-        var vertexBufferSize = vertices * SizeOf<PosNormTex3DVertex>();
-        var indexBufferSize = vertices * SizeOf<uint>(); // matches vertices count because vertices are replicated, three unique ones per triangle
-
-        using var vertexUploadBuffer = graphicsDevice.CreateUploadBuffer( vertexBufferSize);
-        using var indexUploadBuffer = graphicsDevice.CreateUploadBuffer(indexBufferSize);
-        using var textureUploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024 * 1024);
+        var verticeCount = 2 * 12 * (nuint)MathF.Pow(4, _recursionDepth);
 
         _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsResourceCpuAccess.Write);
-        _indexBuffer = graphicsDevice.CreateIndexBuffer(indexBufferSize);
-        _vertexBuffer = graphicsDevice.CreateVertexBuffer(vertexBufferSize);
+        _indexBuffer = graphicsDevice.CreateIndexBuffer(verticeCount * SizeOf<uint>());
+        _texture3D = graphicsDevice.CreateTexture3D(GraphicsFormat.R8G8B8A8_UNORM, 256, 256, 256);
+        _uploadBuffer = graphicsDevice.CreateUploadBuffer(128 * 1024 * 1024);
+        _vertexBuffer = graphicsDevice.CreateVertexBuffer(verticeCount * SizeOf<PosNormTex3DVertex>());
 
         graphicsRenderContext.Reset();
-        _pyramid = CreateGraphicsPrimitive(graphicsRenderContext, vertexUploadBuffer, indexUploadBuffer, textureUploadBuffer);
+        _sierpinskiPrimitive = CreateSierpinskiPrimitive(graphicsRenderContext);
         graphicsRenderContext.Flush();
 
         graphicsDevice.WaitForIdle();
         graphicsDevice.ReturnRenderContext(graphicsRenderContext);
+
+        _uploadBuffer.DisposeAllViews();
     }
 
     protected override unsafe void Update(TimeSpan delta)
@@ -82,151 +86,149 @@ public class HelloSierpinski : HelloWindow
         var sin = MathF.Sin(radians);
         var cos = MathF.Cos(radians);
 
-        ref readonly var constantBufferView = ref _pyramid.InputResourceViews[1];
-        var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
-
-        // Shaders take transposed matrices, so we want to mirror along the diagonal
-        pConstantBuffer[0] = Matrix4x4.Create(
-            Vector4.Create(+cos, 0.0f, -sin, 0.0f),
-            Vector4.UnitY,
-            Vector4.Create(+sin, 0.0f, +cos, 0.0f),
-            Vector4.UnitW
-        );
-
+        var constantBufferView = _sierpinskiPrimitive.InputResourceViews[1].As<GraphicsBufferView>();
+        var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
+        {
+            // Shaders take transposed matrices, so we want to mirror along the diagonal
+            constantBufferSpan[0] = Matrix4x4.Create(
+                Vector4.Create(+cos, 0.0f, -sin, 0.0f),
+                Vector4.UnitY,
+                Vector4.Create(+sin, 0.0f, +cos, 0.0f),
+                Vector4.UnitW
+            );
+        }
         constantBufferView.UnmapAndWrite();
     }
 
     protected override void Draw(GraphicsRenderContext graphicsRenderContext)
     {
-        graphicsRenderContext.Draw(_pyramid);
+        graphicsRenderContext.Draw(_sierpinskiPrimitive);
         base.Draw(graphicsRenderContext);
     }
 
-    private unsafe GraphicsPrimitive CreateGraphicsPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
+    private unsafe GraphicsPrimitive CreateSierpinskiPrimitive(GraphicsContext graphicsContext)
     {
-        var graphicsDevice = GraphicsDevice;
         var graphicsRenderPass = GraphicsRenderPass;
         var graphicsSurface = graphicsRenderPass.Surface;
 
         var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Sierpinski", "main", "main");
 
         var constantBuffer = _constantBuffer;
-        var indexBuffer = _indexBuffer;
-        var vertexBuffer = _vertexBuffer;
+        var uploadBuffer = _uploadBuffer;
 
         (var vertices, var indices) = (_sierpinskiShape == SierpinskiShape.Pyramid) ? SierpinskiPyramid.CreateMeshTetrahedron(_recursionDepth) : SierpinskiPyramid.CreateMeshQuad(_recursionDepth);
         var normals = SierpinskiPyramid.MeshNormals(in vertices);
 
-        var vertexBufferView = CreateVertexBufferView(graphicsContext, vertexBuffer, vertexStagingBuffer, in vertices, in normals);
-        graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
-
-        var indexBufferView = CreateIndexBufferView(graphicsContext, indexBuffer, indexStagingBuffer, in indices);
-        graphicsContext.Copy(indexBuffer, indexStagingBuffer);
+        var sierpinskiPrimitive = GraphicsDevice.CreatePrimitive(
+            graphicsPipeline,
+            CreateVertexBufferView(graphicsContext, _vertexBuffer, uploadBuffer, in vertices, in normals),
+            CreateIndexBufferView(graphicsContext, _indexBuffer, uploadBuffer, in indices),
+            new GraphicsResourceView[3] {
+                CreateConstantBufferView(graphicsContext, constantBuffer),
+                CreateConstantBufferView(graphicsContext, constantBuffer),
+                CreateTexture3DView(graphicsContext, _texture3D, uploadBuffer),
+            }
+        );
 
         normals.Dispose();
         indices.Dispose();
         vertices.Dispose();
 
-        var inputResourceViews = new GraphicsResourceView[3] {
-            CreateConstantBufferView(graphicsContext, constantBuffer, index: 0),
-            CreateConstantBufferView(graphicsContext, constantBuffer, index: 1),
-            CreateTextureView(graphicsContext, textureStagingBuffer),
-        };
-        return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferView, indexBufferView, inputResourceViews);
+        return sierpinskiPrimitive;
 
-        static GraphicsResourceView CreateConstantBufferView(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer, uint index)
+        static GraphicsBufferView CreateConstantBufferView(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer)
         {
-            var constantBufferView = new GraphicsResourceView {
-                Offset = 256 * index,
-                Resource = constantBuffer,
-                Size = SizeOf<Matrix4x4>(),
-                Stride = SizeOf<Matrix4x4>(),
-            };
-            var pConstantBuffer = constantBufferView.Map<Matrix4x4>();
-
-            pConstantBuffer[0] = Matrix4x4.Identity;
-
+            var constantBufferView = constantBuffer.CreateView<Matrix4x4>(1);
+            var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
+            {
+                constantBufferSpan[0] = Matrix4x4.Identity;
+            }
             constantBufferView.UnmapAndWrite();
             return constantBufferView;
         }
 
-        static GraphicsResourceView CreateIndexBufferView(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer indexStagingBuffer, in UnmanagedValueList<uint> indices)
+        static GraphicsBufferView CreateIndexBufferView(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer uploadBuffer, in UnmanagedValueList<uint> indices)
         {
-            var indexBufferView = new GraphicsResourceView {
-                Offset = 0,
-                Resource = indexBuffer,
-                Size = SizeOf<uint>() * (uint)indices.Count,
-                Stride = SizeOf<uint>(),
-            };
+            var uploadBufferView = uploadBuffer.CreateView<uint>(checked((uint)indices.Count));
+            var indexBufferSpan = uploadBufferView.Map<uint>();
+            {
+                indices.CopyTo(indexBufferSpan);
+            }
+            uploadBufferView.UnmapAndWrite();
 
-            var pIndexBuffer = indexStagingBuffer.Map<uint>(indexBufferView.Offset, indexBufferView.Size);
-            indices.CopyTo(new UnmanagedSpan<uint>(pIndexBuffer, indices.Count));
-            indexStagingBuffer.UnmapAndWrite(indexBufferView.Offset, indexBufferView.Size);
-
+            var indexBufferView = indexBuffer.CreateView<uint>(checked((uint)indices.Count));
+            graphicsContext.Copy(indexBufferView, uploadBufferView);
             return indexBufferView;
         }
 
-        static GraphicsResourceView CreateTextureView(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
+        static GraphicsTextureView CreateTexture3DView(GraphicsContext graphicsContext, GraphicsTexture texture3D, GraphicsBuffer uploadBuffer)
         {
-            const uint TextureWidth = 256;
-            const uint TextureHeight = 256;
-            const ushort TextureDepth = 256;
-            const uint TextureDz = TextureWidth * TextureHeight;
-            const uint TexturePixels = TextureDz * TextureDepth;
-
-            var texture = graphicsContext.Device.CreateTexture3D(GraphicsFormat.R8G8B8A8_UNORM, TextureWidth, TextureHeight, TextureDepth);
-            var textureView = new GraphicsResourceView {
-                Offset = 0,
-                Resource = texture,
-                Size = checked((uint)texture.Size),
-                Stride = SizeOf<uint>(),
-            };
-            var pTextureData = textureStagingBuffer.Map<uint>(textureView.Offset, textureView.Size);
-
-            for (uint n = 0; n < TexturePixels; n++)
+            var uploadBufferView = uploadBuffer.CreateView<byte>(checked((uint)texture3D.Size));
+            var textureDataSpan = uploadBufferView.Map<byte>();
             {
-                var x = n % TextureWidth;
-                var y = n % TextureDz / TextureWidth;
-                var z = n / TextureDz;
+                var width = texture3D.Width;
 
-                pTextureData[n] = 0xFF000000 | (z << 16) | (y << 8) | (x << 0);
+                var height = texture3D.Height;
+                var rowPitch = texture3D.RowPitch;
+
+                var depth = texture3D.Depth;
+                var slicePitch = texture3D.SlicePitch;
+
+                for (var z = 0u; z < depth; z++)
+                {
+                    var sliceIndex = z * slicePitch;
+
+                    for (var y = 0u; y < height; y++)
+                    {
+                        var rowIndex = sliceIndex + (y * rowPitch);
+                        var row = (uint*)textureDataSpan.GetPointer(rowIndex);
+
+                        for (var x = 0u; x < width; x++)
+                        {
+                            var red = x % 0xFFu;
+                            var blue = y % 0xFFu;
+                            var green = z % 0xFFu;
+                            var alpha = 0xFFu;
+
+                            row[x] = (alpha << 24) | (green << 16) | (blue << 8) | (red << 0);
+                        }
+                    }
+                }
             }
+            uploadBufferView.UnmapAndWrite();
 
-            textureStagingBuffer.UnmapAndWrite(textureView.Offset, textureView.Size);
-            graphicsContext.Copy(texture, textureStagingBuffer);
-
-            return textureView;
+            var texture3DView = texture3D.CreateView(0, 1);
+            graphicsContext.Copy(texture3DView, uploadBufferView);
+            return texture3DView;
         }
 
-        static GraphicsResourceView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, in UnmanagedValueList<Vector3> vertices, in UnmanagedValueList<Vector3> normals)
+        static GraphicsBufferView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, in UnmanagedValueList<Vector3> vertices, in UnmanagedValueList<Vector3> normals)
         {
-            var vertexBufferView = new GraphicsResourceView {
-                Offset = 0,
-                Resource = vertexBuffer,
-                Size = SizeOf<PosNormTex3DVertex>() * (uint)vertices.Count,
-                Stride = SizeOf<PosNormTex3DVertex>(),
-            };
-            var pVertexBuffer = vertexStagingBuffer.Map<PosNormTex3DVertex>(vertexBufferView.Offset, vertexBufferView.Size);
-
-            // assumes the vertices are in a box from (-1,-1,-1) to (1,1,1)
-
-            var offset3D = Vector3.Create(1, 1, 1); // to move lower left corner to (0,0,0)
-            var scale3D = Vector3.Create(0.5f, 0.5f, 0.5f); // to scale to side length 1
-
-            for (nuint i = 0; i < vertices.Count; i++)
+            var uploadBufferView = uploadBuffer.CreateView<PosNormTex3DVertex>(checked((uint)vertices.Count));
+            var vertexBufferSpan = uploadBufferView.Map<PosNormTex3DVertex>();
             {
-                var xyz = vertices[i];                // position
-                var normal = normals[i];              // normal
-                var uvw = (xyz + offset3D) * scale3D; // texture coordinate
+                // assumes the vertices are in a box from (-1,-1,-1) to (1,1,1)
 
-                pVertexBuffer[i] = new PosNormTex3DVertex {
-                    Position = xyz,
-                    Normal = normal,
-                    UVW = uvw
-                };
+                var offset3D = Vector3.Create(1, 1, 1); // to move lower left corner to (0,0,0)
+                var scale3D = Vector3.Create(0.5f, 0.5f, 0.5f); // to scale to side length 1
+
+                for (nuint i = 0; i < vertices.Count; i++)
+                {
+                    var xyz = vertices[i];                // position
+                    var normal = normals[i];              // normal
+                    var uvw = (xyz + offset3D) * scale3D; // texture coordinate
+
+                    vertexBufferSpan[i] = new PosNormTex3DVertex {
+                        Position = xyz,
+                        Normal = normal,
+                        UVW = uvw
+                    };
+                }
             }
+            uploadBufferView.UnmapAndWrite();
 
-            vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);
+            var vertexBufferView = vertexBuffer.CreateView<PosNormTex3DVertex>(checked((uint)vertices.Count));
+            graphicsContext.Copy(vertexBufferView, uploadBufferView);
             return vertexBufferView;
         }
 

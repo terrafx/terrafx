@@ -1,59 +1,65 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System.Runtime.InteropServices;
+using System;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics;
 
-/// <summary>A view into a graphics resource.</summary>
-[StructLayout(LayoutKind.Auto)]
-public readonly unsafe struct GraphicsResourceView
+/// <summary>An view of memory in a graphics resource.</summary>
+public abstract unsafe class GraphicsResourceView : IGraphicsDeviceObject
 {
-    /// <summary>Gets the offset of the view, in bytes.</summary>
-    public nuint Offset { get; init; }
+    private readonly GraphicsAdapter _adapter;
+    private readonly GraphicsDevice _device;
+    private readonly GraphicsResource _resource;
+    private readonly GraphicsService _service;
+    private readonly uint _stride;
 
-    /// <summary>Gets the resource which contains the view.</summary>
-    public GraphicsResource? Resource { get; init; }
-
-    /// <summary>Gets the size of the view, in bytes.</summary>
-    public uint Size { get; init; }
-
-    /// <summary>Gets the stride of the view, in bytes.</summary>
-    public uint Stride { get; init; }
-
-    /// <summary>Maps the resource view into CPU memory.</summary>
-    /// <typeparam name="T">The type of data contained by the resource view.</typeparam>
-    /// <returns>A pointer to the mapped resource view.</returns>
-    public T* Map<T>()
-        where T : unmanaged
+    /// <summary>Initializes a new instance of the <see cref="GraphicsResourceView" /> class.</summary>
+    /// <param name="resource">The resource for which the resource view was created.</param>
+    /// <param name="stride">The stride, in bytes, of the elements in the resource view.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="stride" /> is <c>zero</c>.</exception>
+    protected GraphicsResourceView(GraphicsResource resource, uint stride)
     {
-        ThrowIfNull(Resource);
-        return Resource.Map<T>(Offset, Size);
+        ThrowIfNull(resource);
+        ThrowIfZero(stride);
+
+        _adapter = resource.Adapter;
+        _device = resource.Device;
+        _resource = resource;
+        _service = resource.Service;
+        _stride = stride;
     }
 
-    /// <summary>Maps the resource view into CPU memory.</summary>
-    /// <typeparam name="T">The type of data contained by the resource view .</typeparam>
-    /// <returns>A pointer to the mapped resource view .</returns>
-    public T* MapForRead<T>()
-        where T : unmanaged
+    /// <summary>Gets the underlying adapter for <see cref="Device" />.</summary>
+    public GraphicsAdapter Adapter => _adapter;
+
+    /// <summary>Gets the underlying device for <see cref="Resource" />.</summary>
+    public GraphicsDevice Device => _device;
+
+    /// <summary>Gets or sets the name for the device object.</summary>
+    public abstract string Name { get; set; }
+
+    /// <summary>Gets the resource for which the object was created.</summary>
+    public GraphicsResource Resource => _resource;
+
+    /// <summary>Gets the underlying service for <see cref="Adapter" />.</summary>
+    public GraphicsService Service => _service;
+
+    /// <summary>Gets the stride, in bytes, of the elements in the resource view.</summary>
+    public uint Stride => _stride;
+
+    /// <inheritdoc />
+    public void Dispose()
     {
-        ThrowIfNull(Resource);
-        return Resource.MapForRead<T>(Offset, Size);
+        Dispose(isDisposing: true);
+        GC.SuppressFinalize(this);
     }
 
-    /// <summary>Unmaps the resource view from CPU memory.</summary>
-    /// <remarks>This overload should be used when no memory was written.</remarks>
-    public void Unmap()
-    {
-        ThrowIfNull(Resource);
-        Resource.Unmap();
-    }
+    /// <inheritdoc />
+    public override string ToString() => Name;
 
-    /// <summary>Unmaps the resource view from CPU memory.</summary>
-    public void UnmapAndWrite()
-    {
-
-        ThrowIfNull(Resource);
-        Resource.UnmapAndWrite(Offset, Size);
-    }
+    /// <inheritdoc cref="Dispose()" />
+    /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
+    protected abstract void Dispose(bool isDisposing);
 }

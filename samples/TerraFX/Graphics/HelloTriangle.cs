@@ -4,13 +4,13 @@ using System;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
-using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
 public sealed class HelloTriangle : HelloWindow
 {
     private GraphicsPrimitive _trianglePrimitive = null!;
+    private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
 
     public HelloTriangle(string name, ApplicationServiceProvider serviceProvider)
@@ -21,7 +21,10 @@ public sealed class HelloTriangle : HelloWindow
     public override void Cleanup()
     {
         _trianglePrimitive?.Dispose();
+
+        _uploadBuffer?.Dispose();
         _vertexBuffer?.Dispose();
+
         base.Cleanup();
     }
 
@@ -37,16 +40,17 @@ public sealed class HelloTriangle : HelloWindow
         var graphicsDevice = GraphicsDevice;
         var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
-        using var vertexUploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024);
-
+        _uploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024);
         _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
         graphicsRenderContext.Reset();
-        _trianglePrimitive = CreateTrianglePrimitive(graphicsRenderContext, vertexUploadBuffer);
+        _trianglePrimitive = CreateTrianglePrimitive(graphicsRenderContext);
         graphicsRenderContext.Flush();
 
         graphicsDevice.WaitForIdle();
         graphicsDevice.ReturnRenderContext(graphicsRenderContext);
+
+        _uploadBuffer.DisposeAllViews();
     }
 
     protected override void Draw(GraphicsRenderContext graphicsRenderContext)
@@ -55,46 +59,43 @@ public sealed class HelloTriangle : HelloWindow
         base.Draw(graphicsRenderContext);
     }
 
-    private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer)
+    private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext)
     {
-        var graphicsDevice = GraphicsDevice;
         var graphicsRenderPass = GraphicsRenderPass;
         var graphicsSurface = graphicsRenderPass.Surface;
 
         var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Identity", "main", "main");
-        var vertexBuffer = _vertexBuffer;
+        var uploadBuffer = _uploadBuffer;
 
-        var vertexBufferView = CreateVertexBufferView(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
-        graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
+        return GraphicsDevice.CreatePrimitive(
+            graphicsPipeline,
+            CreateVertexBufferView(graphicsContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height)
+        );
 
-        return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferView);
-
-        static GraphicsResourceView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+        static GraphicsBufferView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
         {
-            var vertexBufferView = new GraphicsResourceView {
-                Offset = 0,
-                Resource = vertexBuffer,
-                Size = SizeOf<IdentityVertex>() * 3,
-                Stride = SizeOf<IdentityVertex>(),
-            };
-            var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>(vertexBufferView.Offset, vertexBufferView.Size);
+            var uploadBufferView = uploadBuffer.CreateView<IdentityVertex>(3);
+            var vertexBufferSpan = uploadBufferView.Map<IdentityVertex>();
+            {
+                vertexBufferSpan[0] = new IdentityVertex {
+                    Color = Colors.Red,
+                    Position = Vector3.Create(0.0f, 0.25f * aspectRatio, 0.0f),
+                };
 
-            pVertexBuffer[0] = new IdentityVertex {
-                Color = Colors.Red,
-                Position = Vector3.Create(0.0f, 0.25f * aspectRatio, 0.0f),
-            };
+                vertexBufferSpan[1] = new IdentityVertex {
+                    Color = Colors.Lime,
+                    Position = Vector3.Create(0.25f, -0.25f * aspectRatio, 0.0f),
+                };
 
-            pVertexBuffer[1] = new IdentityVertex {
-                Color = Colors.Lime,
-                Position = Vector3.Create(0.25f, -0.25f * aspectRatio, 0.0f),
-            };
+                vertexBufferSpan[2] = new IdentityVertex {
+                    Color = Colors.Blue,
+                    Position = Vector3.Create(-0.25f, -0.25f * aspectRatio, 0.0f),
+                };
+            }
+            uploadBufferView.UnmapAndWrite();
 
-            pVertexBuffer[2] = new IdentityVertex {
-                Color = Colors.Blue,
-                Position = Vector3.Create(-0.25f, -0.25f * aspectRatio, 0.0f),
-            };
-
-            vertexStagingBuffer.UnmapAndWrite(vertexBufferView.Offset, vertexBufferView.Size);
+            var vertexBufferView = vertexBuffer.CreateView<IdentityVertex>(3);
+            graphicsContext.Copy(vertexBufferView, uploadBufferView);
             return vertexBufferView;
         }
 

@@ -13,6 +13,7 @@ using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
@@ -20,20 +21,20 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
 {
-    private readonly delegate*<GraphicsDeviceObject, ulong, GraphicsMemoryAllocator> _createMemoryAllocator;
+    private readonly delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> _createMemoryAllocator;
     private readonly ValueMutex _mutex;
     private readonly uint _vkMemoryTypeIndex;
 
     private GraphicsMemoryAllocator? _emptyMemoryAllocator;
     private ValueList<GraphicsMemoryAllocator> _memoryAllocators;
 
-    private ulong _minimumSize;
+    private nuint _minimumSize;
     private string _name = null!;
     private ulong _size;
 
     private VolatileState _state;
 
-    internal VulkanGraphicsMemoryManager(VulkanGraphicsDevice device, delegate*<GraphicsDeviceObject, ulong, GraphicsMemoryAllocator> createMemoryAllocator, uint vkMemoryTypeIndex)
+    internal VulkanGraphicsMemoryManager(VulkanGraphicsDevice device, delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> createMemoryAllocator, uint vkMemoryTypeIndex)
         : base(device)
     {
         if (createMemoryAllocator is null)
@@ -73,8 +74,8 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
     /// <summary>Gets <c>true</c> if the manager is empty; otherwise, <c>false</c>.</summary>
     public override bool IsEmpty => _memoryAllocators.Count == 0;
 
-    /// <summary>Gets the minimum size of the manager, in bytes.</summary>
-    public override ulong MinimumSize => _minimumSize;
+    /// <summary>Gets the minimum size, in bytes, of the manager.</summary>
+    public override nuint MinimumSize => _minimumSize;
 
     /// <inheritdoc />
     public override string Name
@@ -93,22 +94,22 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
-    /// <summary>Gets the size of the manager, in bytes.</summary>
+    /// <summary>Gets the size, in bytes, of the manager.</summary>
     public override ulong Size => _size;
 
     /// <summary>Gets the memory type index used when creating the <see cref="VkDeviceMemory" /> instance for a memory heap.</summary>
     public uint VkMemoryTypeIndex => _vkMemoryTypeIndex;
 
     /// <summary>Allocate a memory region in the manager.</summary>
-    /// <param name="size">The size of the memory region to allocate, in bytes.</param>
-    /// <param name="alignment">The alignment of the memory region to allocate, in bytes.</param>
+    /// <param name="size">The size, in bytes, of the memory region to allocate</param>
+    /// <param name="alignment">The alignment, in bytes, of the memory region to allocate.</param>
     /// <param name="memoryAllocationFlags">The flags that modify how the memory region is allocated.</param>
     /// <returns>The allocated memory region.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="memoryAllocationFlags" /> has an invalid combination.</exception>
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
-    public override GraphicsMemoryRegion Allocate(ulong size, ulong alignment = 0, GraphicsMemoryAllocationFlags memoryAllocationFlags = GraphicsMemoryAllocationFlags.None)
+    public override GraphicsMemoryRegion Allocate(nuint size, nuint alignment = 0, GraphicsMemoryAllocationFlags memoryAllocationFlags = GraphicsMemoryAllocationFlags.None)
     {
         if (!TryAllocate(size, alignment, memoryAllocationFlags, out var memoryRegion))
         {
@@ -132,39 +133,39 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
     public override IEnumerator<GraphicsMemoryAllocator> GetEnumerator() => _memoryAllocators.GetEnumerator();
 
     /// <summary>Tries to allocation a memory region in the manager.</summary>
-    /// <param name="size">The size of the memory region to allocate, in bytes.</param>
-    /// <param name="alignment">The alignment of the memory region to allocate, in bytes.</param>
+    /// <param name="size">The size, in bytes, of the memory region to allocate</param>
+    /// <param name="alignment">The alignment, in bytes, of the memory region to allocate.</param>
     /// <param name="memoryAllocationFlags">The flags that modify how the memory region is allocated.</param>
     /// <param name="memoryRegion">On return, contains the allocated memory region or <c>default</c> if the allocation failed.</param>
     /// <returns><c>true</c> if a region was sucesfully allocated; otherwise, <c>false</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="memoryAllocationFlags" /> has an invalid combination.</exception>
-    public override bool TryAllocate(ulong size, [Optional] ulong alignment, [Optional] GraphicsMemoryAllocationFlags memoryAllocationFlags, out GraphicsMemoryRegion memoryRegion)
+    public override bool TryAllocate(nuint size, [Optional] nuint alignment, [Optional] GraphicsMemoryAllocationFlags memoryAllocationFlags, out GraphicsMemoryRegion memoryRegion)
     {
         using var mutex = new DisposableMutex(_mutex, IsExternallySynchronized);
         return TryAllocateInternal(size, alignment, memoryAllocationFlags, out memoryRegion);
     }
 
     /// <summary>Tries to allocate a set of memory regions in the manager.</summary>
-    /// <param name="size">The size of the memory regions to allocate, in bytes.</param>
-    /// <param name="alignment">The alignment of the memory regions to allocate, in bytes.</param>
+    /// <param name="size">The size, in bytes, of the memory regions to allocate</param>
+    /// <param name="alignment">The alignment, in bytes, of the memory regions to allocate.</param>
     /// <param name="memoryAllocationFlags">The flags that modify how the memory regions are allocated.</param>
     /// <param name="memoryRegions">On return, will be filled with the allocated memory regions.</param>
     /// <returns><c>true</c> if the regions were sucesfully allocated; otherwise, <c>false</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="memoryAllocationFlags" /> has an invalid combination.</exception>
-    public override bool TryAllocate(ulong size, [Optional] ulong alignment, [Optional] GraphicsMemoryAllocationFlags memoryAllocationFlags, Span<GraphicsMemoryRegion> memoryRegions)
+    public override bool TryAllocate(nuint size, [Optional] nuint alignment, [Optional] GraphicsMemoryAllocationFlags memoryAllocationFlags, Span<GraphicsMemoryRegion> memoryRegions)
     {
         using var mutex = new DisposableMutex(_mutex, IsExternallySynchronized);
         return TryAllocateInternal(size, alignment, memoryAllocationFlags, memoryRegions);
     }
 
-    /// <summary>Tries to set the minimum size of the manager, in bytes.</summary>
-    /// <param name="minimumSize">The minimum size of the manager, in bytes.</param>
+    /// <summary>Tries to set the minimum size, in bytes, of the manager.</summary>
+    /// <param name="minimumSize">The minimum size, in bytes, of the manager.</param>
     /// <returns><c>true</c> if the minimum size was succesfully set; otherwise, <c>false</c>.</returns>
-    public override bool TrySetMinimumSize(ulong minimumSize)
+    public override bool TrySetMinimumSize(nuint minimumSize)
     {
         using var mutex = new DisposableMutex(_mutex, IsExternallySynchronized);
         return TrySetMinimumSizeInternal(minimumSize);
@@ -191,7 +192,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         _state.EndDispose();
     }
 
-    private GraphicsMemoryAllocator AddMemoryAllocator(ulong size)
+    private GraphicsMemoryAllocator AddMemoryAllocator(nuint size)
     {
         var memoryHeap = new VulkanGraphicsMemoryHeap(Device, size, VkMemoryTypeIndex);
         var memoryAllocator = _createMemoryAllocator(memoryHeap, size);
@@ -313,7 +314,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         }
     }
 
-    private ulong GetAdjustedMemoryAllocatorSize(ulong size)
+    private nuint GetAdjustedMemoryAllocatorSize(nuint size)
     {
         // This method should only be called under the mutex
         var memoryAllocatorSize = size;
@@ -351,9 +352,9 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
 
         return memoryAllocatorSize;
 
-        static ulong GetLargestSharedMemoryAllocatorSize(Span<GraphicsMemoryAllocator> memoryAllocators)
+        static nuint GetLargestSharedMemoryAllocatorSize(Span<GraphicsMemoryAllocator> memoryAllocators)
         {
-            var result = 0UL;
+            nuint result = 0;
 
             for (var i = memoryAllocators.Length; i-- != 0;)
             {
@@ -391,7 +392,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         _size -= memoryAllocator.Size;
     }
 
-    private bool TryAllocateInternal(ulong size, ulong alignment, GraphicsMemoryAllocationFlags allocationFlags, out GraphicsMemoryRegion memoryRegion)
+    private bool TryAllocateInternal(nuint size, nuint alignment, GraphicsMemoryAllocationFlags allocationFlags, out GraphicsMemoryRegion memoryRegion)
     {
         // This method should only be called under the mutex
 
@@ -452,7 +453,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         return allocator.TryAllocate(size, alignment, out memoryRegion);
     }
 
-    private bool TryAllocateInternal(ulong size, ulong alignment, GraphicsMemoryAllocationFlags flags, Span<GraphicsMemoryRegion> memoryRegions)
+    private bool TryAllocateInternal(nuint size, nuint alignment, GraphicsMemoryAllocationFlags flags, Span<GraphicsMemoryRegion> memoryRegions)
     {
         // This method should only be called under the mutex
 
@@ -479,7 +480,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         return succeeded;
     }
 
-    private bool TrySetMinimumSizeInternal(ulong minimumSize)
+    private bool TrySetMinimumSizeInternal(nuint minimumSize)
     {
         // This method should only be called under the mutex
 
@@ -544,7 +545,9 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
                     {
                         // The current size plus the new memroy allocator will exceed the
                         // minimum size requested, so adjust it to be just large enough.
-                        memoryAllocatorSize = minimumSize - size;
+
+                        var remainingSize = (nuint)(minimumSize - size);
+                        memoryAllocatorSize = Clamp(remainingSize, MinimumMemoryAllocatorSize, memoryAllocatorSize);
                     }
 
                     emptyMemoryAllocator ??= AddMemoryAllocator(memoryAllocatorSize);

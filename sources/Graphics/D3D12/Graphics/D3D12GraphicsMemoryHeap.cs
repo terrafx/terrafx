@@ -20,12 +20,12 @@ public sealed unsafe class D3D12GraphicsMemoryHeap : GraphicsDeviceObject
 {
     private readonly ID3D12Heap* _d3d12Heap;
     private readonly D3D12_HEAP_DESC _d3d12HeapDesc;
-    private readonly ulong _size;
+    private readonly nuint _size;
 
     private string _name = null!;
     private VolatileState _state;
 
-    internal D3D12GraphicsMemoryHeap(D3D12GraphicsDevice device, ulong size, D3D12_HEAP_TYPE d3d12HeapType, D3D12_HEAP_FLAGS d3d12HeapFlags)
+    internal D3D12GraphicsMemoryHeap(D3D12GraphicsDevice device, nuint size, D3D12_HEAP_TYPE d3d12HeapType, D3D12_HEAP_FLAGS d3d12HeapFlags)
         : base(device)
     {
         var d3d12Heap = CreateD3D12Heap(device, size, d3d12HeapType, d3d12HeapFlags);
@@ -37,7 +37,7 @@ public sealed unsafe class D3D12GraphicsMemoryHeap : GraphicsDeviceObject
         _ = _state.Transition(to: Initialized);
         Name = nameof(D3D12GraphicsMemoryHeap);
 
-        static ID3D12Heap* CreateD3D12Heap(D3D12GraphicsDevice device, ulong size, D3D12_HEAP_TYPE d3d12HeapType, D3D12_HEAP_FLAGS d3d12HeapFlags)
+        static ID3D12Heap* CreateD3D12Heap(D3D12GraphicsDevice device, nuint size, D3D12_HEAP_TYPE d3d12HeapType, D3D12_HEAP_FLAGS d3d12HeapFlags)
         {
             ID3D12Heap* d3d12Heap;
 
@@ -47,13 +47,19 @@ public sealed unsafe class D3D12GraphicsMemoryHeap : GraphicsDeviceObject
             return d3d12Heap;
         }
 
-        static ulong GetAlignment(D3D12_HEAP_FLAGS heapFlags)
+        static nuint GetAlignment(D3D12_HEAP_FLAGS heapFlags)
         {
             const D3D12_HEAP_FLAGS DenyAllTexturesFlags = D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES;
             var canContainAnyTextures = (heapFlags & DenyAllTexturesFlags) != DenyAllTexturesFlags;
 
-            var alignment = canContainAnyTextures ? D3D12_DEFAULT_MSAA_RESOURCE_PLACEMENT_ALIGNMENT : D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
-            return (ulong)alignment;
+            if (canContainAnyTextures)
+            {
+                return D3D12_DEFAULT_MSAA_RESOURCE_PLACEMENT_ALIGNMENT;
+            }
+            else
+            {
+                return D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
+            }
         }
     }
 

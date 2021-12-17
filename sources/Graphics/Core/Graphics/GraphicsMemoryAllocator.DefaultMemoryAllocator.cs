@@ -25,9 +25,9 @@ public partial class GraphicsMemoryAllocator
         private ValueLinkedList<GraphicsMemoryRegion> _memoryRegions;
         private ValueList<ValueLinkedList<GraphicsMemoryRegion>.Node> _freeMemoryRegionsBySize;
         private int _freeMemoryRegionCount;
-        private ulong _totalFreeMemoryRegionSize;
+        private nuint _totalFreeMemoryRegionSize;
 
-        public DefaultMemoryAllocator(GraphicsDeviceObject deviceObject, ulong size)
+        public DefaultMemoryAllocator(GraphicsDeviceObject deviceObject, nuint size)
             : base(deviceObject, size)
         {
             _memoryRegions = new ValueLinkedList<GraphicsMemoryRegion>();
@@ -42,9 +42,9 @@ public partial class GraphicsMemoryAllocator
 
         public override bool IsEmpty => (_memoryRegions.Count == 1) && (_freeMemoryRegionCount == 1);
 
-        public override ulong LargestFreeMemoryRegionSize => (_freeMemoryRegionsBySize.Count != 0) ? _freeMemoryRegionsBySize[^1].ValueRef.Size : 0;
+        public override nuint LargestFreeMemoryRegionSize => (_freeMemoryRegionsBySize.Count != 0) ? _freeMemoryRegionsBySize[^1].ValueRef.Size : 0;
 
-        public override ulong TotalFreeMemoryRegionSize => _totalFreeMemoryRegionSize;
+        public override nuint TotalFreeMemoryRegionSize => _totalFreeMemoryRegionSize;
 
         public override void Clear()
         {
@@ -95,7 +95,7 @@ public partial class GraphicsMemoryAllocator
 
         public override IEnumerator<GraphicsMemoryRegion> GetEnumerator() => _memoryRegions.GetEnumerator();
 
-        public override bool TryAllocate(ulong size, [Optional] ulong alignment, out GraphicsMemoryRegion memoryRegion)
+        public override bool TryAllocate(nuint size, [Optional] nuint alignment, out GraphicsMemoryRegion memoryRegion)
         {
             ThrowIfZero(size);
 
@@ -139,7 +139,7 @@ public partial class GraphicsMemoryAllocator
             return wasMemoryRegionAllocated;
         }
 
-        private int BinarySearchFirstMemoryRegionNodeWithSizeNotLessThan(ulong size)
+        private int BinarySearchFirstMemoryRegionNodeWithSizeNotLessThan(nuint size)
         {
             var freeMemoryRegionsBySize = _freeMemoryRegionsBySize.AsSpanUnsafe(0, _freeMemoryRegionsBySize.Count);
 
@@ -273,7 +273,7 @@ public partial class GraphicsMemoryAllocator
             ValidateFreeMemoryRegionsBySizeList();
         }
 
-        private bool TryAllocate(ulong size, ulong alignment, ValueLinkedList<GraphicsMemoryRegion>.Node memoryRegionNode)
+        private bool TryAllocate(nuint size, nuint alignment, ValueLinkedList<GraphicsMemoryRegion>.Node memoryRegionNode)
         {
             Assert(AssertionsEnabled && (size > 0));
             AssertNotNull(memoryRegionNode);
@@ -402,8 +402,8 @@ public partial class GraphicsMemoryAllocator
         {
             Assert(AssertionsEnabled && (_memoryRegions.Count != 0));
 
-            var calculatedSize = 0UL;
-            var calculatedTotalFreeRegionSize = 0UL;
+            nuint calculatedSize = 0;
+            nuint calculatedTotalFreeRegionSize = 0;
 
             var calculatedFreeRegionCount = 0;
             var calculatedFreeRegionsToRegisterCount = 0;
@@ -458,7 +458,7 @@ public partial class GraphicsMemoryAllocator
         [Conditional("DEBUG")]
         private void ValidateFreeMemoryRegionsBySizeList()
         {
-            var lastMemoryRegionSize = 0UL;
+            nuint lastMemoryRegionSize = 0;
             var freeMemoryRegionsBySize = _freeMemoryRegionsBySize.AsSpanUnsafe(0, _freeMemoryRegionsBySize.Count);
 
             for (var i = 0; i < freeMemoryRegionsBySize.Length; ++i)

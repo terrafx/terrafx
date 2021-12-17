@@ -8,11 +8,11 @@ namespace TerraFX.Graphics;
 public partial class VulkanGraphicsTexture
 {
     [StructLayout(LayoutKind.Auto)]
-    internal struct CreateInfo
+    internal unsafe struct CreateInfo
     {
-        public GraphicsMemoryRegion MemoryRegion;
+        public GraphicsResourceCpuAccess CpuAccess;
 
-        public GraphicsResourceInfo ResourceInfo;
+        public GraphicsMemoryRegion MemoryRegion;
 
         public GraphicsTextureInfo TextureInfo;
 

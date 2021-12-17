@@ -11,7 +11,7 @@ public readonly struct GraphicsTextureInfo
     /// <summary>The depth, in pixels, of the texture.</summary>
     public ushort Depth { get; init; }
 
-    /// <summary>the format of the texture.</summary>
+    /// <summary>The format of the texture.</summary>
     public GraphicsFormat Format { get; init; }
 
     /// <summary>The height, in pixels, of the texture.</summary>
@@ -19,6 +19,15 @@ public readonly struct GraphicsTextureInfo
 
     /// <summary>The texture kind.</summary>
     public GraphicsTextureKind Kind { get; init; }
+
+    /// <summary>The number of mip levels in the graphics texture.</summary>
+    public ushort MipLevelCount { get; init; }
+
+    /// <summary>The row pitch, in bytes, of the texture.</summary>
+    public uint RowPitch { get; init; }
+
+    /// <summary>The slice pitch, in bytes, of the texture.</summary>
+    public uint SlicePitch { get; init; }
 
     /// <summary>The width, in pixels, of the texture.</summary>
     public uint Width { get; init; }

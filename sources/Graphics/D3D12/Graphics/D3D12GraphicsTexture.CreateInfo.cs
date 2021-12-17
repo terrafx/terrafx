@@ -5,18 +5,20 @@ using TerraFX.Interop.DirectX;
 
 namespace TerraFX.Graphics;
 
-public unsafe partial class D3D12GraphicsTexture
+public partial class D3D12GraphicsTexture
 {
     [StructLayout(LayoutKind.Auto)]
-    internal struct CreateInfo
+    internal unsafe struct CreateInfo
     {
+        public GraphicsResourceCpuAccess CpuAccess;
+
+        public UnmanagedArray<D3D12_PLACED_SUBRESOURCE_FOOTPRINT> D3D12PlacedSubresourceFootprints;
+
         public ID3D12Resource* D3D12Resource;
 
         public D3D12_RESOURCE_STATES D3D12ResourceState;
 
         public GraphicsMemoryRegion MemoryRegion;
-
-        public GraphicsResourceInfo ResourceInfo;
 
         public GraphicsTextureInfo TextureInfo;
     }

@@ -5,7 +5,6 @@ using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Interop.DirectX.D3D12_PRIMITIVE_TOPOLOGY_TYPE;
-using static TerraFX.Interop.DirectX.DXGI_FORMAT;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -61,7 +60,7 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
                 SampleDesc = new DXGI_SAMPLE_DESC(count: 1, quality: 0),
             };
             d3d12GraphicsPipelineStateDesc.DepthStencilState.DepthEnable = FALSE;
-            d3d12GraphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+            d3d12GraphicsPipelineStateDesc.RTVFormats[0] = renderPass.RenderTargetFormat.AsDxgiFormat();
 
             if (vertexShader is not null)
             {

@@ -33,9 +33,9 @@ public abstract class GraphicsMemoryManager : GraphicsDeviceObject, IReadOnlyCol
 
     /// <summary>The maximum size, in bytes, of a shared allocator allowed in a memory manager.</summary>
     /// <remarks>This defaults to <c>256MB</c> which allows ~64k small textures, 4k buffers, or 64 MSAA textures per shared allocator.</remarks>
-    public static readonly ulong MaximumSharedMemoryAllocatorSize = GetAppContextData(
+    public static readonly uint MaximumSharedMemoryAllocatorSize = GetAppContextData(
         $"{typeof(GraphicsMemoryManager).FullName}.{nameof(MaximumSharedMemoryAllocatorSize)}",
-        defaultValue: 256UL * 1024UL * 1024UL
+        defaultValue: 256U * 1024U * 1024U
     );
 
     /// <summary>The minimum number of allocators allowed in the memory manager.</summary>
@@ -47,9 +47,9 @@ public abstract class GraphicsMemoryManager : GraphicsDeviceObject, IReadOnlyCol
 
     /// <summary>The minimum size, in bytes, of an allocator allowed in a memory manager.</summary>
     /// <remarks>This defaults to <c>32MB</c> which is approx 1/8th the size of the default <see cref="MaximumSharedMemoryAllocatorSize" />.</remarks>
-    public static readonly ulong MinimumMemoryAllocatorSize = GetAppContextData(
+    public static readonly uint MinimumMemoryAllocatorSize = GetAppContextData(
         $"{typeof(GraphicsMemoryManager).FullName}.{nameof(MinimumMemoryAllocatorSize)}",
-        defaultValue: 32UL * 1024UL * 1024UL
+        defaultValue: 32U * 1024U * 1024U
     );
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryManager" /> class.</summary>
@@ -64,22 +64,22 @@ public abstract class GraphicsMemoryManager : GraphicsDeviceObject, IReadOnlyCol
     /// <summary>Gets <c>true</c> if the manager is empty; otherwise, <c>false</c>.</summary>
     public abstract bool IsEmpty { get; }
 
-    /// <summary>Gets the minimum size of the manager, in bytes.</summary>
-    public abstract ulong MinimumSize { get; }
+    /// <summary>Gets the minimum size, in bytes, of the manager.</summary>
+    public abstract nuint MinimumSize { get; }
 
-    /// <summary>Gets the size of the manager, in bytes.</summary>
+    /// <summary>Gets the size, in bytes, of the manager.</summary>
     public abstract ulong Size { get; }
 
     /// <summary>Allocate a memory region in the manager.</summary>
-    /// <param name="size">The size of the memory region to allocate, in bytes.</param>
-    /// <param name="alignment">The alignment of the memory region to allocate, in bytes.</param>
+    /// <param name="size">The size, in bytes, of the memory region to allocate.</param>
+    /// <param name="alignment">The alignment, in bytes, of the memory region to allocate.</param>
     /// <param name="memoryAllocationFlags">The flags that modify how the memory region is allocated.</param>
     /// <returns>The allocated memory region.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="memoryAllocationFlags" /> has an invalid combination.</exception>
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
-    public abstract GraphicsMemoryRegion Allocate(ulong size, ulong alignment = 0, GraphicsMemoryAllocationFlags memoryAllocationFlags = GraphicsMemoryAllocationFlags.None);
+    public abstract GraphicsMemoryRegion Allocate(nuint size, nuint alignment = 0, GraphicsMemoryAllocationFlags memoryAllocationFlags = GraphicsMemoryAllocationFlags.None);
 
     /// <summary>Frees a memory region from the manager.</summary>
     /// <param name="memoryRegion">The memory region to be freed.</param>
@@ -92,31 +92,31 @@ public abstract class GraphicsMemoryManager : GraphicsDeviceObject, IReadOnlyCol
     public abstract IEnumerator<GraphicsMemoryAllocator> GetEnumerator();
 
     /// <summary>Tries to allocate a memory region in the manager.</summary>
-    /// <param name="size">The size of the memory region to allocate, in bytes.</param>
-    /// <param name="alignment">The alignment of the memory region to allocate, in bytes.</param>
+    /// <param name="size">The size, in bytes, of the memory region to allocate.</param>
+    /// <param name="alignment">The alignment, in bytes, of the memory region to allocate.</param>
     /// <param name="memoryAllocationFlags">The flags that modify how the memory region is allocated.</param>
     /// <param name="memoryRegion">On return, contains the allocated memory region or <c>default</c> if the allocation failed.</param>
     /// <returns><c>true</c> if a region was sucesfully allocated; otherwise, <c>false</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="memoryAllocationFlags" /> has an invalid combination.</exception>
-    public abstract bool TryAllocate(ulong size, [Optional] ulong alignment, [Optional] GraphicsMemoryAllocationFlags memoryAllocationFlags, out GraphicsMemoryRegion memoryRegion);
+    public abstract bool TryAllocate(nuint size, [Optional] nuint alignment, [Optional] GraphicsMemoryAllocationFlags memoryAllocationFlags, out GraphicsMemoryRegion memoryRegion);
 
     /// <summary>Tries to allocate a set of memory regions in the manager.</summary>
-    /// <param name="size">The size of the memory regions to allocate, in bytes.</param>
-    /// <param name="alignment">The alignment of the memory regions to allocate, in bytes.</param>
+    /// <param name="size">The size, in bytes, of the memory regions to allocate.</param>
+    /// <param name="alignment">The alignment, in bytes, of the memory regions to allocate.</param>
     /// <param name="memoryAllocationFlags">The flags that modify how the memory regions are allocated.</param>
     /// <param name="memoryRegions">On return, will be filled with the allocated memory regions.</param>
     /// <returns><c>true</c> if the regions were sucesfully allocated; otherwise, <c>false</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="memoryAllocationFlags" /> has an invalid combination.</exception>
-    public abstract bool TryAllocate(ulong size, [Optional] ulong alignment, [Optional] GraphicsMemoryAllocationFlags memoryAllocationFlags, Span<GraphicsMemoryRegion> memoryRegions);
+    public abstract bool TryAllocate(nuint size, [Optional] nuint alignment, [Optional] GraphicsMemoryAllocationFlags memoryAllocationFlags, Span<GraphicsMemoryRegion> memoryRegions);
 
-    /// <summary>Tries to set the minimum size of the manager, in bytes.</summary>
-    /// <param name="minimumSize">The minimum size of the manager, in bytes.</param>
+    /// <summary>Tries to set the minimum size, in bytes, of the manager.</summary>
+    /// <param name="minimumSize">The minimum size, in bytes, of the manager.</param>
     /// <returns><c>true</c> if the minimum size was succesfully set; otherwise, <c>false</c>.</returns>
-    public abstract bool TrySetMinimumSize(ulong minimumSize);
+    public abstract bool TrySetMinimumSize(nuint minimumSize);
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
