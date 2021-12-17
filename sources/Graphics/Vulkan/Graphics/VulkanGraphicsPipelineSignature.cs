@@ -24,7 +24,7 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
     private string _name = null!;
     private VolatileState _state;
 
-    internal VulkanGraphicsPipelineSignature(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResource> resources)
+    internal VulkanGraphicsPipelineSignature(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResourceInfo> resources)
         : base(device, inputs, resources)
     {
         var vkDescriptorSetLayout = CreateVkDescriptorSetLayout(device, resources);
@@ -35,7 +35,7 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
         _ = _state.Transition(to: Initialized);
         Name = nameof(VulkanGraphicsPipelineSignature);
 
-        static VkDescriptorSetLayout CreateVkDescriptorSetLayout(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineResource> resources)
+        static VkDescriptorSetLayout CreateVkDescriptorSetLayout(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineResourceInfo> resources)
         {
             var vkDescriptorSetLayoutBindings = UnmanagedArray<VkDescriptorSetLayoutBinding>.Empty;
 
@@ -50,7 +50,7 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
             }
         }
 
-        static VkDescriptorSetLayout CreateVkDescriptorSetLayoutInternal(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineResource> resources, ref UnmanagedArray<VkDescriptorSetLayoutBinding> vkDescriptorSetLayoutBindings)
+        static VkDescriptorSetLayout CreateVkDescriptorSetLayoutInternal(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineResourceInfo> resources, ref UnmanagedArray<VkDescriptorSetLayoutBinding> vkDescriptorSetLayoutBindings)
         {
             var vkDescriptorSetLayout = VkDescriptorSetLayout.NULL;
 

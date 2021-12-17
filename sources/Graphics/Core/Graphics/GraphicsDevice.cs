@@ -71,10 +71,10 @@ public abstract partial class GraphicsDevice : GraphicsAdapterObject, IDisposabl
 
     /// <summary>Creates a new graphics pipeline signature for the device.</summary>
     /// <param name="inputs">The inputs given to the graphics pipeline or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</param>
-    /// <param name="resources">The resources available to the graphics pipeline or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</param>
+    /// <param name="resources">The info about resources available to the graphics pipeline or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</param>
     /// <returns>A new graphics pipeline signature created for the device.</returns>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-    public abstract GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResource> resources = default);
+    public abstract GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResourceInfo> resources = default);
 
     /// <summary>Creates a new graphics primitive for the device.</summary>
     /// <param name="pipeline">The pipeline used for rendering the graphics primitive.</param>

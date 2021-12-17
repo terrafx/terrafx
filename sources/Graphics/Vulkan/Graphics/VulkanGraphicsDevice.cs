@@ -296,7 +296,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
-    public override GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResource> resources = default)
+    public override GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResourceInfo> resources = default)
     {
         ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
         return new VulkanGraphicsPipelineSignature(this, inputs, resources);

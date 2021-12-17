@@ -285,7 +285,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
-    public override D3D12GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResource> resources = default)
+    public override D3D12GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResourceInfo> resources = default)
     {
         ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
         return new D3D12GraphicsPipelineSignature(this, inputs, resources);

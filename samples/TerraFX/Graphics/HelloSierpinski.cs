@@ -257,10 +257,10 @@ public class HelloSierpinski : HelloWindow
                 ),
             };
 
-            var resources = new GraphicsPipelineResource[3] {
-                new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                new GraphicsPipelineResource(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
+            var resources = new GraphicsPipelineResourceInfo[3] {
+                new GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
+                new GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
+                new GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
             };
 
             return graphicsDevice.CreatePipelineSignature(inputs, resources);

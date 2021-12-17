@@ -35,7 +35,7 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
         _ = _state.Transition(to: Initialized);
         Name = nameof(VulkanGraphicsPrimitive);
 
-        static VkDescriptorPool CreateVkDescriptorPool(VulkanGraphicsDevice device, UnmanagedReadOnlySpan<GraphicsPipelineResource> resources)
+        static VkDescriptorPool CreateVkDescriptorPool(VulkanGraphicsDevice device, UnmanagedReadOnlySpan<GraphicsPipelineResourceInfo> resources)
         {
             var vkDescriptorPoolSizes = UnmanagedArray<VkDescriptorPoolSize>.Empty;
 
@@ -50,7 +50,7 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
             }
         }
 
-        static VkDescriptorPool CreateVkDescriptorPoolInternal(VulkanGraphicsDevice device, UnmanagedReadOnlySpan<GraphicsPipelineResource> resources, ref UnmanagedArray<VkDescriptorPoolSize> vkDescriptorPoolSizes)
+        static VkDescriptorPool CreateVkDescriptorPoolInternal(VulkanGraphicsDevice device, UnmanagedReadOnlySpan<GraphicsPipelineResourceInfo> resources, ref UnmanagedArray<VkDescriptorPoolSize> vkDescriptorPoolSizes)
         {
             var vkDescriptorPool = VkDescriptorPool.NULL;
 

@@ -171,9 +171,9 @@ public sealed class HelloTransform : HelloWindow
                 ),
             };
 
-            var resources = new GraphicsPipelineResource[2] {
-                new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
+            var resources = new GraphicsPipelineResourceInfo[2] {
+                new GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
+                new GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
             };
 
             return graphicsDevice.CreatePipelineSignature(inputs, resources);

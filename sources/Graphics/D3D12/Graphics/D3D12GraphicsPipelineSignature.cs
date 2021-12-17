@@ -24,7 +24,7 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
     private string _name = null!;
     private VolatileState _state;
 
-    internal D3D12GraphicsPipelineSignature(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResource> resources)
+    internal D3D12GraphicsPipelineSignature(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResourceInfo> resources)
         : base(device, inputs, resources)
     {
         _d3d12RootSignature = CreateD3D12RootSignature(device, resources);
@@ -32,7 +32,7 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
         _ = _state.Transition(to: Initialized);
         Name = nameof(D3D12GraphicsPipelineSignature);
 
-        static ID3D12RootSignature* CreateD3D12RootSignature(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsPipelineResource> resources)
+        static ID3D12RootSignature* CreateD3D12RootSignature(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsPipelineResourceInfo> resources)
         {
             ID3DBlob* d3dRootSignatureBlob = null;
             ID3DBlob* d3dRootSignatureErrorBlob = null;
@@ -49,7 +49,7 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
             }
         }
 
-        static ID3D12RootSignature* CreateD3D12RootSignatureInternal(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsPipelineResource> resources, ID3DBlob** pD3DRootSignatureBlob, ID3DBlob** pD3DRootSignatureErrorBlob)
+        static ID3D12RootSignature* CreateD3D12RootSignatureInternal(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsPipelineResourceInfo> resources, ID3DBlob** pD3DRootSignatureBlob, ID3DBlob** pD3DRootSignatureErrorBlob)
         {
             ID3D12RootSignature* d3d12RootSignature;
 

@@ -167,8 +167,8 @@ public sealed class HelloTexture : HelloWindow
                 ),
             };
 
-            var resources = new GraphicsPipelineResource[1] {
-                new GraphicsPipelineResource(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
+            var resources = new GraphicsPipelineResourceInfo[1] {
+                new GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
             };
 
             return graphicsDevice.CreatePipelineSignature(inputs, resources);

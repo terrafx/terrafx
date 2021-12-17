@@ -2,8 +2,8 @@
 
 namespace TerraFX.Graphics;
 
-/// <summary>A graphics pipeline resource which is a graphics resource available to one or more stages of a graphics pipeline.</summary>
-public readonly struct GraphicsPipelineResource
+/// <summary>Contains information about a graphics pipeline resource which is available to one or more stages of a graphics pipeline.</summary>
+public readonly struct GraphicsPipelineResourceInfo
 {
     private readonly GraphicsPipelineResourceKind _kind;
     private readonly GraphicsShaderVisibility _shaderVisibility;
@@ -11,7 +11,7 @@ public readonly struct GraphicsPipelineResource
     /// <summary>Initializes a new instance of the <see cref="GraphicsPipelineInput" /> struct.</summary>
     /// <param name="kind">The kind of the pipeline input.</param>
     /// <param name="shaderVisibility">The graphics shader kind(s) for which the pipeline resource is visible.</param>
-    public GraphicsPipelineResource(GraphicsPipelineResourceKind kind, GraphicsShaderVisibility shaderVisibility)
+    public GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind kind, GraphicsShaderVisibility shaderVisibility)
     {
         _kind = kind;
         _shaderVisibility = shaderVisibility;
