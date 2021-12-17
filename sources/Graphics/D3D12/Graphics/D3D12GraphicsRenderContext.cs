@@ -181,6 +181,41 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
+    public override void BindPipelineResourceViews(GraphicsPipelineResourceViewSet pipelineResourceViews)
+        => BindPipeline((D3D12GraphicsPipelineResourceViewSet)pipelineResourceViews);
+
+    /// <inheritdoc cref="BindPipelineResourceViews(GraphicsPipelineResourceViewSet)" />
+    public void BindPipeline(D3D12GraphicsPipelineResourceViewSet pipelineResourceViews)
+    {
+        ThrowIfNull(pipelineResourceViews);
+        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
+
+        var d3d12CbvSrvUavDescriptorHeap = pipelineResourceViews.D3D12CbvSrvUavDescriptorHeap;
+        d3d12GraphicsCommandList->SetDescriptorHeaps(1, &d3d12CbvSrvUavDescriptorHeap);
+
+        var resourceViews = pipelineResourceViews.ResourceViews;
+
+        var rootDescriptorTableIndex = 0;
+        var cbvSrvUavDescriptorHandleIncrementSize = Device.D3D12CbvSrvUavDescriptorHandleIncrementSize;
+
+        for (var index = 0; index < resourceViews.Length; index++)
+        {
+            var resourceView = resourceViews[index];
+
+            if (resourceView is D3D12GraphicsBufferView d3d12GraphicsBufferView)
+            {
+                d3d12GraphicsCommandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), d3d12GraphicsBufferView.D3D12ResourceGpuVirtualAddress);
+            }
+            else if (resourceView is D3D12GraphicsTextureView d3d12GraphicsTextureView)
+            {
+                var gpuDescriptorHandleForHeapStart = d3d12CbvSrvUavDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+                d3d12GraphicsCommandList->SetGraphicsRootDescriptorTable(unchecked((uint)index), gpuDescriptorHandleForHeapStart.Offset(rootDescriptorTableIndex, cbvSrvUavDescriptorHandleIncrementSize));
+                rootDescriptorTableIndex++;
+            }
+        }
+    }
+
+    /// <inheritdoc />
     public override void BindVertexBufferView(GraphicsBufferView vertexBufferView, uint bindingSlot = 0)
         => BindVertexBufferView((D3D12GraphicsBufferView)vertexBufferView, bindingSlot);
 
@@ -219,67 +254,6 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
         }
 
         D3D12GraphicsCommandList->IASetVertexBuffers(firstBindingSlot, NumViews: (uint)vertexBufferViews.Length, d3d12VertexBufferViews);
-    }
-
-    /// <inheritdoc />
-    public override void Draw(GraphicsPrimitive primitive)
-        => Draw((D3D12GraphicsPrimitive)primitive);
-
-    /// <inheritdoc cref="Draw(GraphicsPrimitive)" />
-    public void Draw(D3D12GraphicsPrimitive primitive)
-    {
-        ThrowIfNull(primitive);
-
-        var renderPass = RenderPass;
-
-        if (renderPass is null)
-        {
-            ThrowForInvalidState(nameof(RenderPass));
-        }
-
-        var pipeline = primitive.Pipeline;
-        BindPipeline(pipeline);
-
-        var vertexBufferView = primitive.VertexBufferView;
-        BindVertexBufferView(vertexBufferView);
-
-        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
-
-        var d3d12CbvSrvUavDescriptorHeap = primitive.D3D12CbvSrvUavDescriptorHeap;
-        d3d12GraphicsCommandList->SetDescriptorHeaps(1, &d3d12CbvSrvUavDescriptorHeap);
-
-        var inputResourceViews = primitive.InputResourceViews;
-
-        var rootDescriptorTableIndex = 0;
-        var cbvSrvUavDescriptorHandleIncrementSize = Device.D3D12CbvSrvUavDescriptorHandleIncrementSize;
-
-        for (var index = 0; index < inputResourceViews.Length; index++)
-        {
-            var inputResourceView = inputResourceViews[index];
-
-            if (inputResourceView is D3D12GraphicsBufferView d3d12GraphicsBufferView)
-            {
-                d3d12GraphicsCommandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), d3d12GraphicsBufferView.D3D12ResourceGpuVirtualAddress);
-            }
-            else if (inputResourceView is D3D12GraphicsTextureView d3d12GraphicsTextureView)
-            {
-                var gpuDescriptorHandleForHeapStart = primitive.D3D12CbvSrvUavDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
-                d3d12GraphicsCommandList->SetGraphicsRootDescriptorTable(unchecked((uint)index), gpuDescriptorHandleForHeapStart.Offset(rootDescriptorTableIndex, cbvSrvUavDescriptorHandleIncrementSize));
-                rootDescriptorTableIndex++;
-            }
-        }
-
-        var indexBufferView = primitive.IndexBufferView;
-
-        if (indexBufferView is not null)
-        {
-            BindIndexBufferView(indexBufferView);
-            DrawIndexed(indicesPerInstance: (uint)(indexBufferView.Size / indexBufferView.Stride));
-        }
-        else
-        {
-            Draw(verticesPerInstance: (uint)(vertexBufferView.Size / vertexBufferView.Stride));
-        }
     }
 
     /// <inheritdoc />

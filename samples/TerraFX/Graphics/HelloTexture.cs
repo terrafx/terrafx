@@ -60,7 +60,7 @@ public sealed class HelloTexture : HelloWindow
 
     protected override void Draw(GraphicsRenderContext graphicsRenderContext)
     {
-        graphicsRenderContext.Draw(_trianglePrimitive);
+        _trianglePrimitive.Draw(graphicsRenderContext);
         base.Draw(graphicsRenderContext);
     }
 
@@ -72,10 +72,10 @@ public sealed class HelloTexture : HelloWindow
         var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Texture", "main", "main");
         var uploadBuffer = _uploadBuffer;
 
-        return GraphicsDevice.CreatePrimitive(
+        return new GraphicsPrimitive(
             graphicsPipeline,
             CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
-            inputResourceViews: new GraphicsResourceView[1] {
+            resourceViews: new GraphicsResourceView[1] {
                 CreateTexture2DView(graphicsCopyContext, _texture2D, uploadBuffer)
             }
         );

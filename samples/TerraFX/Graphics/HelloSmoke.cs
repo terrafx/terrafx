@@ -89,7 +89,7 @@ public sealed class HelloSmoke : HelloWindow
         }
         _texturePosition = dydz;
 
-        var constantBufferView = _quadPrimitive.InputResourceViews[1].As<GraphicsBufferView>();
+        var constantBufferView = _quadPrimitive.PipelineResourceViews![1].As<GraphicsBufferView>();
         var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
         {
             // Shaders take transposed matrices, so we want to set X.W
@@ -105,7 +105,7 @@ public sealed class HelloSmoke : HelloWindow
 
     protected override void Draw(GraphicsRenderContext graphicsRenderContext)
     {
-        graphicsRenderContext.Draw(_quadPrimitive);
+        _quadPrimitive.Draw(graphicsRenderContext);
         base.Draw(graphicsRenderContext);
     }
 
@@ -119,7 +119,7 @@ public sealed class HelloSmoke : HelloWindow
         var constantBuffer = _constantBuffer;
         var uploadBuffer = _uploadBuffer;
 
-        return GraphicsDevice.CreatePrimitive(
+        return new GraphicsPrimitive(
             graphicsPipeline,
             CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
             CreateIndexBufferView(graphicsCopyContext, _indexBuffer, uploadBuffer),

@@ -60,7 +60,7 @@ public sealed class HelloQuad : HelloWindow
 
     protected override void Draw(GraphicsRenderContext graphicsRenderContext)
     {
-        graphicsRenderContext.Draw(_quadPrimitive);
+        _quadPrimitive.Draw(graphicsRenderContext);
         base.Draw(graphicsRenderContext);
     }
 
@@ -72,7 +72,7 @@ public sealed class HelloQuad : HelloWindow
         var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Identity", "main", "main");
         var uploadBuffer = _uploadBuffer;
 
-        return GraphicsDevice.CreatePrimitive(
+        return new GraphicsPrimitive(
             graphicsPipeline,
             CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
             CreateIndexBufferView(graphicsCopyContext, _indexBuffer, uploadBuffer)
@@ -105,17 +105,17 @@ public sealed class HelloQuad : HelloWindow
             var uploadBufferView = uploadBuffer.CreateView<IdentityVertex>(4);
             var vertexBufferSpan = uploadBufferView.Map<IdentityVertex>();
             {
-                vertexBufferSpan[0] = new IdentityVertex {                             //
+                vertexBufferSpan[0] = new IdentityVertex {                          //
                     Color = Colors.Red,                                             //   y          in this setup
                     Position = Vector3.Create(-0.25f, 0.25f * aspectRatio, 0.0f),   //   ^     z    the origin o
                 };                                                                  //   |   /      is in the middle
                                                                                     //   | /        of the rendered scene
-                vertexBufferSpan[1] = new IdentityVertex {                             //   o------>x
+                vertexBufferSpan[1] = new IdentityVertex {                          //   o------>x
                     Color = Colors.Blue,                                            //
                     Position = Vector3.Create(0.25f, 0.25f * aspectRatio, 0.0f),    //   0 ----- 1
                 };                                                                  //   | \     |
                                                                                     //   |   \   |
-                vertexBufferSpan[2] = new IdentityVertex {                             //   |     \ |
+                vertexBufferSpan[2] = new IdentityVertex {                          //   |     \ |
                     Color = Colors.Lime,                                            //   3-------2
                     Position = Vector3.Create(0.25f, -0.25f * aspectRatio, 0.0f),   //
                 };

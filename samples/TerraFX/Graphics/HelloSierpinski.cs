@@ -88,7 +88,7 @@ public class HelloSierpinski : HelloWindow
         var sin = MathF.Sin(radians);
         var cos = MathF.Cos(radians);
 
-        var constantBufferView = _sierpinskiPrimitive.InputResourceViews[1].As<GraphicsBufferView>();
+        var constantBufferView = _sierpinskiPrimitive.PipelineResourceViews![1].As<GraphicsBufferView>();
         var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
         {
             // Shaders take transposed matrices, so we want to mirror along the diagonal
@@ -104,7 +104,7 @@ public class HelloSierpinski : HelloWindow
 
     protected override void Draw(GraphicsRenderContext graphicsRenderContext)
     {
-        graphicsRenderContext.Draw(_sierpinskiPrimitive);
+        _sierpinskiPrimitive.Draw(graphicsRenderContext);
         base.Draw(graphicsRenderContext);
     }
 
@@ -121,7 +121,7 @@ public class HelloSierpinski : HelloWindow
         (var vertices, var indices) = (_sierpinskiShape == SierpinskiShape.Pyramid) ? SierpinskiPyramid.CreateMeshTetrahedron(_recursionDepth) : SierpinskiPyramid.CreateMeshQuad(_recursionDepth);
         var normals = SierpinskiPyramid.MeshNormals(in vertices);
 
-        var sierpinskiPrimitive = GraphicsDevice.CreatePrimitive(
+        var sierpinskiPrimitive = new GraphicsPrimitive(
             graphicsPipeline,
             CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, in vertices, in normals),
             CreateIndexBufferView(graphicsCopyContext, _indexBuffer, uploadBuffer, in indices),

@@ -76,18 +76,6 @@ public abstract partial class GraphicsDevice : GraphicsAdapterObject, IDisposabl
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public abstract GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResourceInfo> resources = default);
 
-    /// <summary>Creates a new graphics primitive for the device.</summary>
-    /// <param name="pipeline">The pipeline used for rendering the graphics primitive.</param>
-    /// <param name="vertexBufferView">The vertex buffer view which holds the vertices for the graphics primitive.</param>
-    /// <param name="indexBufferView">The index buffer view which holds the indices for the graphics primitive or <c>default</c> if none exists.</param>
-    /// <param name="inputResourceViews">The resource views which hold the input data for the graphics primitive or an empty span if none exist.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="pipeline" /> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="pipeline" /> was not created for this device.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBufferView" /> was not created for this device.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBufferView" /> was not created for this device.</exception>
-    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-    public abstract GraphicsPrimitive CreatePrimitive(GraphicsPipeline pipeline, GraphicsBufferView vertexBufferView, GraphicsBufferView? indexBufferView = null, ReadOnlySpan<GraphicsResourceView> inputResourceViews = default);
-
     /// <summary>Creates a new graphics shader for the device.</summary>
     /// <param name="kind">The kind of graphics shader to create.</param>
     /// <param name="bytecode">The underlying bytecode for the graphics shader.</param>

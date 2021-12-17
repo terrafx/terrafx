@@ -9,6 +9,7 @@ using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
@@ -234,6 +235,15 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
 
     /// <inheritdoc cref="GraphicsPipeline.VertexShader" />
     public new D3D12GraphicsShader? VertexShader => base.VertexShader.As<D3D12GraphicsShader>();
+
+    /// <inheritdoc />
+    public override D3D12GraphicsPipelineResourceViewSet CreateResourceViews(ReadOnlySpan<GraphicsResourceView> resourceViews)
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsPipeline));
+        ThrowIfZero(resourceViews.Length);
+
+        return new D3D12GraphicsPipelineResourceViewSet(this, resourceViews);
+    }
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)

@@ -292,17 +292,6 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
-    public override D3D12GraphicsPrimitive CreatePrimitive(GraphicsPipeline pipeline, GraphicsBufferView vertexBufferView, GraphicsBufferView? indexBufferView = null, ReadOnlySpan<GraphicsResourceView> inputResourceViews = default)
-        => CreatePrimitive((D3D12GraphicsPipeline)pipeline, (D3D12GraphicsBufferView)vertexBufferView, (D3D12GraphicsBufferView?)indexBufferView, inputResourceViews);
-
-    /// <inheritdoc cref="CreatePrimitive(GraphicsPipeline, GraphicsBufferView, GraphicsBufferView, ReadOnlySpan{GraphicsResourceView})" />
-    private D3D12GraphicsPrimitive CreatePrimitive(D3D12GraphicsPipeline pipeline, D3D12GraphicsBufferView vertexBufferView, D3D12GraphicsBufferView? indexBufferView = null, ReadOnlySpan<GraphicsResourceView> inputResourceViews = default)
-    {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
-        return new D3D12GraphicsPrimitive(this, pipeline, vertexBufferView, indexBufferView, inputResourceViews);
-    }
-
-    /// <inheritdoc />
     public override D3D12GraphicsShader CreateShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
     {
         ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));

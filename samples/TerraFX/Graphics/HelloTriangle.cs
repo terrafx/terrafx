@@ -57,7 +57,7 @@ public sealed class HelloTriangle : HelloWindow
 
     protected override void Draw(GraphicsRenderContext graphicsRenderContext)
     {
-        graphicsRenderContext.Draw(_trianglePrimitive);
+        _trianglePrimitive.Draw(graphicsRenderContext);
         base.Draw(graphicsRenderContext);
     }
 
@@ -69,7 +69,7 @@ public sealed class HelloTriangle : HelloWindow
         var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Identity", "main", "main");
         var uploadBuffer = _uploadBuffer;
 
-        return GraphicsDevice.CreatePrimitive(
+        return new GraphicsPrimitive(
             graphicsPipeline,
             CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height)
         );

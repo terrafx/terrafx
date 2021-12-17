@@ -92,7 +92,7 @@ public class HelloTexture3D : HelloWindow
         _texturePosition = radians;
         var z = scaleZ * (0.5f + (0.5f * MathF.Cos(radians)));
 
-        var constantBufferView = _quadPrimitive.InputResourceViews[1].As<GraphicsBufferView>();
+        var constantBufferView = _quadPrimitive.PipelineResourceViews![1].As<GraphicsBufferView>();
         var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
         {
             // Shaders take transposed matrices, so we want to set X.W
@@ -108,7 +108,7 @@ public class HelloTexture3D : HelloWindow
 
     protected override void Draw(GraphicsRenderContext graphicsRenderContext)
     {
-        graphicsRenderContext.Draw(_quadPrimitive);
+        _quadPrimitive.Draw(graphicsRenderContext);
         base.Draw(graphicsRenderContext);
     }
 
@@ -122,7 +122,7 @@ public class HelloTexture3D : HelloWindow
         var constantBuffer = _constantBuffer;
         var uploadBuffer = _uploadBuffer;
 
-        return GraphicsDevice.CreatePrimitive(
+        return new GraphicsPrimitive(
             graphicsPipeline,
             CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
             CreateIndexBufferView(graphicsCopyContext, _indexBuffer, uploadBuffer),

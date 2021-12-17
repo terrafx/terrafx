@@ -191,6 +191,66 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
+    public override void BindPipelineResourceViews(GraphicsPipelineResourceViewSet pipelineResourceViews)
+        => BindPipeline((VulkanGraphicsPipelineResourceViewSet)pipelineResourceViews);
+
+    /// <inheritdoc cref="BindPipelineResourceViews(GraphicsPipelineResourceViewSet)" />
+    public void BindPipeline(VulkanGraphicsPipelineResourceViewSet pipelineResourceViews)
+    {
+        ThrowIfNull(pipelineResourceViews);
+        var pipeline = pipelineResourceViews.Pipeline;
+
+        var vkDescriptorSet = pipelineResourceViews.VkDescriptorSet;
+        var resourceViews = pipelineResourceViews.ResourceViews;
+
+        for (var index = 0; index < resourceViews.Length; index++)
+        {
+            var resourceView = resourceViews[index];
+
+            VkWriteDescriptorSet vkWriteDescriptorSet;
+
+            if (resourceView is VulkanGraphicsBufferView vulkanGraphicsBufferView)
+            {
+                var vkDescriptorBufferInfo = new VkDescriptorBufferInfo {
+                    buffer = vulkanGraphicsBufferView.Resource.VkBuffer,
+                    offset = vulkanGraphicsBufferView.Offset,
+                    range = vulkanGraphicsBufferView.Size,
+                };
+
+                vkWriteDescriptorSet = new VkWriteDescriptorSet {
+                    sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+                    dstSet = vkDescriptorSet,
+                    dstBinding = unchecked((uint)index),
+                    descriptorCount = 1,
+                    descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                    pBufferInfo = &vkDescriptorBufferInfo,
+                };
+            }
+            else if (resourceView is VulkanGraphicsTextureView vulkanGraphicsTextureView)
+            {
+                var vkDescriptorImageInfo = new VkDescriptorImageInfo {
+                    sampler = vulkanGraphicsTextureView.Resource.VkSampler,
+                    imageView = vulkanGraphicsTextureView.VkImageView,
+                    imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                };
+
+                vkWriteDescriptorSet = new VkWriteDescriptorSet {
+                    sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+                    dstSet = vkDescriptorSet,
+                    dstBinding = unchecked((uint)index),
+                    descriptorCount = 1,
+                    descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+                    pImageInfo = &vkDescriptorImageInfo,
+                };
+            }
+
+            vkUpdateDescriptorSets(Device.VkDevice, 1, &vkWriteDescriptorSet, 0, pDescriptorCopies: null);
+        }
+
+        vkCmdBindDescriptorSets(VkCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.Signature.VkPipelineLayout, firstSet: 0, descriptorSetCount: 1, &vkDescriptorSet, dynamicOffsetCount: 0, pDynamicOffsets: null);
+    }
+
+    /// <inheritdoc />
     public override void BindVertexBufferView(GraphicsBufferView vertexBufferView, uint bindingSlot = 0)
         => BindVertexBufferView((VulkanGraphicsBufferView)vertexBufferView, bindingSlot);
 
@@ -235,97 +295,6 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
                 vkVertexBuffers.Dispose();
                 vkVertexBufferOffsets.Dispose();
             }
-        }
-    }
-
-    /// <inheritdoc />
-    public override void Draw(GraphicsPrimitive primitive)
-        => Draw((VulkanGraphicsPrimitive)primitive);
-
-    /// <inheritdoc cref="Draw(GraphicsPrimitive)" />
-    public void Draw(VulkanGraphicsPrimitive primitive)
-    {
-        ThrowIfNull(primitive);
-
-        var renderPass = RenderPass;
-
-        if (renderPass is null)
-        {
-            ThrowForInvalidState(nameof(RenderPass));
-        }
-
-        var pipeline = primitive.Pipeline;
-        BindPipeline(pipeline);
-
-        var vertexBufferView = primitive.VertexBufferView;
-        BindVertexBufferView((GraphicsBufferView)vertexBufferView);
-
-        var vkCommandBuffer = VkCommandBuffer;
-
-        var pipelineSignature = pipeline.Signature;
-        var vkDescriptorSet = primitive.VkDescriptorSet;
-
-        if (vkDescriptorSet != VkDescriptorSet.NULL)
-        {
-            var inputResourceViews = primitive.InputResourceViews;
-
-            for (var index = 0; index < inputResourceViews.Length; index++)
-            {
-                var inputResourceView = inputResourceViews[index];
-
-                VkWriteDescriptorSet vkWriteDescriptorSet;
-
-                if (inputResourceView is VulkanGraphicsBufferView vulkanGraphicsBufferView)
-                {
-                    var vkDescriptorBufferInfo = new VkDescriptorBufferInfo {
-                        buffer = vulkanGraphicsBufferView.Resource.VkBuffer,
-                        offset = vulkanGraphicsBufferView.Offset,
-                        range = vulkanGraphicsBufferView.Size,
-                    };
-
-                    vkWriteDescriptorSet = new VkWriteDescriptorSet {
-                        sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-                        dstSet = vkDescriptorSet,
-                        dstBinding = unchecked((uint)index),
-                        descriptorCount = 1,
-                        descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-                        pBufferInfo = &vkDescriptorBufferInfo,
-                    };
-                }
-                else if (inputResourceView is VulkanGraphicsTextureView vulkanGraphicsTextureView)
-                {
-                    var vkDescriptorImageInfo = new VkDescriptorImageInfo {
-                        sampler = vulkanGraphicsTextureView.Resource.VkSampler,
-                        imageView = vulkanGraphicsTextureView.VkImageView,
-                        imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-                    };
-
-                    vkWriteDescriptorSet = new VkWriteDescriptorSet {
-                        sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-                        dstSet = vkDescriptorSet,
-                        dstBinding = unchecked((uint)index),
-                        descriptorCount = 1,
-                        descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-                        pImageInfo = &vkDescriptorImageInfo,
-                    };
-                }
-
-                vkUpdateDescriptorSets(Device.VkDevice, 1, &vkWriteDescriptorSet, 0, pDescriptorCopies: null);
-            }
-
-            vkCmdBindDescriptorSets(vkCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineSignature.VkPipelineLayout, firstSet: 0, 1, &vkDescriptorSet, dynamicOffsetCount: 0, pDynamicOffsets: null);
-        }
-
-        var indexBufferView = primitive.IndexBufferView;
-
-        if (indexBufferView is not null)
-        {
-            BindIndexBufferView(indexBufferView);
-            DrawIndexed(indicesPerInstance: (uint)(indexBufferView.Size / indexBufferView.Stride));
-        }
-        else
-        {
-            Draw(verticesPerInstance: (uint)(vertexBufferView.Size / vertexBufferView.Stride));
         }
     }
 

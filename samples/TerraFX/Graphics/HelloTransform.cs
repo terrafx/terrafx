@@ -62,7 +62,7 @@ public sealed class HelloTransform : HelloWindow
 
     protected override void Draw(GraphicsRenderContext graphicsRenderContext)
     {
-        graphicsRenderContext.Draw(_trianglePrimitive);
+        _trianglePrimitive.Draw(graphicsRenderContext);
         base.Draw(graphicsRenderContext);
     }
 
@@ -82,7 +82,7 @@ public sealed class HelloTransform : HelloWindow
         }
         _trianglePrimitiveTranslationX = trianglePrimitiveTranslationX;
 
-        var constantBufferView = _trianglePrimitive.InputResourceViews[1].As<GraphicsBufferView>();
+        var constantBufferView = _trianglePrimitive.PipelineResourceViews![1].As<GraphicsBufferView>();
         var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
         {
             // Shaders take transposed matrices, so we want to set X.W
@@ -102,10 +102,10 @@ public sealed class HelloTransform : HelloWindow
         var constantBuffer = _constantBuffer;
         var uploadBuffer = _uploadBuffer;
 
-        return GraphicsDevice.CreatePrimitive(
+        return new GraphicsPrimitive(
             graphicsPipeline,
             CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
-            inputResourceViews: new GraphicsResourceView[2] {
+            resourceViews: new GraphicsResourceView[2] {
                 CreateConstantBufferView(graphicsCopyContext, constantBuffer),
                 CreateConstantBufferView(graphicsCopyContext, constantBuffer),
             }

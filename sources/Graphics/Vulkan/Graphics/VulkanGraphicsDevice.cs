@@ -303,17 +303,6 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
-    public override VulkanGraphicsPrimitive CreatePrimitive(GraphicsPipeline pipeline, GraphicsBufferView vertexBufferView, GraphicsBufferView? indexBufferView = null, ReadOnlySpan<GraphicsResourceView> inputResourceViews = default)
-        => CreatePrimitive((VulkanGraphicsPipeline)pipeline, (VulkanGraphicsBufferView)vertexBufferView, (VulkanGraphicsBufferView?)indexBufferView, inputResourceViews);
-
-    /// <inheritdoc cref="CreatePrimitive(GraphicsPipeline, GraphicsBufferView, GraphicsBufferView?, ReadOnlySpan{GraphicsResourceView})" />
-    public VulkanGraphicsPrimitive CreatePrimitive(VulkanGraphicsPipeline pipeline, VulkanGraphicsBufferView vertexBufferView, VulkanGraphicsBufferView? indexBufferView = null, ReadOnlySpan<GraphicsResourceView> inputResourceViews = default)
-    {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
-        return new VulkanGraphicsPrimitive(this, pipeline, vertexBufferView, indexBufferView, inputResourceViews);
-    }
-
-    /// <inheritdoc />
     public override VulkanGraphicsShader CreateShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
     {
         ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));

@@ -17,6 +17,7 @@ using static TerraFX.Interop.Vulkan.VkVertexInputRate;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -299,6 +300,15 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
             AssertNotDisposedOrDisposing(_state);
             return _vkPipeline;
         }
+    }
+
+    /// <inheritdoc />
+    public override VulkanGraphicsPipelineResourceViewSet CreateResourceViews(ReadOnlySpan<GraphicsResourceView> resourceViews)
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsPipeline));
+        ThrowIfZero(resourceViews.Length);
+
+        return new VulkanGraphicsPipelineResourceViewSet(this, resourceViews);
     }
 
     /// <inheritdoc />

@@ -83,7 +83,7 @@ public sealed class HelloTextureTransform : HelloWindow
         var x = 0.5f * MathF.Cos(radians);
         var y = 0.5f * MathF.Sin(radians);
 
-        var constantBufferView = _trianglePrimitive.InputResourceViews[1].As<GraphicsBufferView>();
+        var constantBufferView = _trianglePrimitive.PipelineResourceViews![1].As<GraphicsBufferView>();
         var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
         {
             // Shaders take transposed matrices, so we want to set X.W
@@ -99,7 +99,7 @@ public sealed class HelloTextureTransform : HelloWindow
 
     protected override void Draw(GraphicsRenderContext graphicsRenderContext)
     {
-        graphicsRenderContext.Draw(_trianglePrimitive);
+        _trianglePrimitive.Draw(graphicsRenderContext);
         base.Draw(graphicsRenderContext);
     }
 
@@ -113,10 +113,10 @@ public sealed class HelloTextureTransform : HelloWindow
         var constantBuffer = _constantBuffer;
         var uploadBuffer = _uploadBuffer;
 
-        return GraphicsDevice.CreatePrimitive(
+        return new GraphicsPrimitive(
             graphicsPipeline,
             CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
-            inputResourceViews: new GraphicsResourceView[3] {
+            resourceViews: new GraphicsResourceView[3] {
                 CreateConstantBufferView(graphicsCopyContext, constantBuffer),
                 CreateConstantBufferView(graphicsCopyContext, constantBuffer),
                 CreateTexture2DView(graphicsCopyContext, _texture2D, uploadBuffer),

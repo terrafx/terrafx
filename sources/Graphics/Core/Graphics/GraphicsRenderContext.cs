@@ -40,6 +40,11 @@ public abstract unsafe class GraphicsRenderContext : GraphicsContext
     /// <exception cref="ArgumentNullException"><paramref name="pipeline" /> is <c>null</c>.</exception>
     public abstract void BindPipeline(GraphicsPipeline pipeline);
 
+    /// <summary>Binds a pipeline resource view set to the context.</summary>
+    /// <param name="pipelineResourceViewSet">The pipeline resource view set to bind.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="pipelineResourceViewSet" /> is <c>null</c>.</exception>
+    public abstract void BindPipelineResourceViews(GraphicsPipelineResourceViewSet pipelineResourceViewSet);
+
     /// <summary>Binds a vertex buffer view to the context.</summary>
     /// <param name="vertexBufferView">The vertex buffer view to bind.</param>
     /// <param name="bindingSlot">The binding slot to which <paramref name="vertexBufferView" /> should be bound.</param>
@@ -52,13 +57,6 @@ public abstract unsafe class GraphicsRenderContext : GraphicsContext
     /// <exception cref="ArgumentNullException">One of the items in <paramref name="vertexBufferViews" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBufferViews" /> is <c>empty</c> or greater than <see cref="MaxBoundVertexBufferViewCount" />.</exception>
     public abstract void BindVertexBufferViews(ReadOnlySpan<GraphicsBufferView> vertexBufferViews, uint firstBindingSlot = 0);
-
-    /// <summary>Draws a primitive to the render surface.</summary>
-    /// <param name="primitive">The primitive to draw.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="primitive" /> is <c>null</c>.</exception>
-    /// <exception cref="InvalidOperationException">A render pass is not active.</exception>
-    /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-    public abstract void Draw(GraphicsPrimitive primitive);
 
     /// <summary>Draws a non-indexed primitive.</summary>
     /// <param name="verticesPerInstance">The number of vertices per instance.</param>

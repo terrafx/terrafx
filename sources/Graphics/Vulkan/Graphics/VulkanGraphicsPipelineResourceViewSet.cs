@@ -16,7 +16,7 @@ using static TerraFX.Utilities.VulkanUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
+public sealed unsafe class VulkanGraphicsPipelineResourceViewSet : GraphicsPipelineResourceViewSet
 {
     private readonly VkDescriptorPool _vkDescriptorPool;
     private readonly VkDescriptorSet _vkDescriptorSet;
@@ -24,25 +24,25 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
     private string _name = null!;
     private VolatileState _state;
 
-    internal VulkanGraphicsPrimitive(VulkanGraphicsDevice device, VulkanGraphicsPipeline pipeline, VulkanGraphicsBufferView vertexBufferView, VulkanGraphicsBufferView? indexBufferView, ReadOnlySpan<GraphicsResourceView> inputResourceViews)
-        : base(device, pipeline, vertexBufferView, indexBufferView, inputResourceViews)
+    internal VulkanGraphicsPipelineResourceViewSet(VulkanGraphicsPipeline pipeline, ReadOnlySpan<GraphicsResourceView> resourceViews)
+        : base(pipeline, resourceViews)
     {
-        var vkDescriptorPool = CreateVkDescriptorPool(device, pipeline.Signature.Resources);
+        var vkDescriptorPool = CreateVkDescriptorPool(pipeline, pipeline.Signature.Resources);
         _vkDescriptorPool = vkDescriptorPool;
 
-        _vkDescriptorSet = CreateVkDescriptorSet(device, vkDescriptorPool, pipeline.Signature.VkDescriptorSetLayout);
+        _vkDescriptorSet = CreateVkDescriptorSet(pipeline, vkDescriptorPool, pipeline.Signature.VkDescriptorSetLayout);
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsPrimitive);
+        Name = nameof(GraphicsPipelineResourceViewSet);
 
-        static VkDescriptorPool CreateVkDescriptorPool(VulkanGraphicsDevice device, UnmanagedReadOnlySpan<GraphicsPipelineResourceInfo> resources)
+        static VkDescriptorPool CreateVkDescriptorPool(VulkanGraphicsPipeline pipeline, UnmanagedReadOnlySpan<GraphicsPipelineResourceInfo> resources)
         {
             var vkDescriptorPoolSizes = UnmanagedArray<VkDescriptorPoolSize>.Empty;
 
             try
             {
                 // We split this into two methods so the JIT can still optimize the "core" part
-                return CreateVkDescriptorPoolInternal(device, resources, ref vkDescriptorPoolSizes);
+                return CreateVkDescriptorPoolInternal(pipeline, resources, ref vkDescriptorPoolSizes);
             }
             finally
             {
@@ -50,7 +50,7 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
             }
         }
 
-        static VkDescriptorPool CreateVkDescriptorPoolInternal(VulkanGraphicsDevice device, UnmanagedReadOnlySpan<GraphicsPipelineResourceInfo> resources, ref UnmanagedArray<VkDescriptorPoolSize> vkDescriptorPoolSizes)
+        static VkDescriptorPool CreateVkDescriptorPoolInternal(VulkanGraphicsPipeline pipeline, UnmanagedReadOnlySpan<GraphicsPipelineResourceInfo> resources, ref UnmanagedArray<VkDescriptorPoolSize> vkDescriptorPoolSizes)
         {
             var vkDescriptorPool = VkDescriptorPool.NULL;
 
@@ -123,13 +123,13 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
                 vkDescriptorPoolCreateInfo.poolSizeCount = (uint)vkDescriptorPoolSizes.Length;
                 vkDescriptorPoolCreateInfo.pPoolSizes = vkDescriptorPoolSizes.GetPointerUnsafe(0);
 
-                ThrowExternalExceptionIfNotSuccess(vkCreateDescriptorPool(device.VkDevice, &vkDescriptorPoolCreateInfo, pAllocator: null, &vkDescriptorPool));
+                ThrowExternalExceptionIfNotSuccess(vkCreateDescriptorPool(pipeline.Device.VkDevice, &vkDescriptorPoolCreateInfo, pAllocator: null, &vkDescriptorPool));
             }
 
             return vkDescriptorPool;
         }
 
-        static VkDescriptorSet CreateVkDescriptorSet(VulkanGraphicsDevice device, VkDescriptorPool vkDescriptorPool, VkDescriptorSetLayout vkDescriptorSetLayout)
+        static VkDescriptorSet CreateVkDescriptorSet(VulkanGraphicsPipeline pipeline, VkDescriptorPool vkDescriptorPool, VkDescriptorSetLayout vkDescriptorSetLayout)
         {
             var vkDescriptorSet = VkDescriptorSet.NULL;
 
@@ -141,24 +141,21 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
                     descriptorSetCount = 1,
                     pSetLayouts = &vkDescriptorSetLayout,
                 };
-                ThrowExternalExceptionIfNotSuccess(vkAllocateDescriptorSets(device.VkDevice, &descriptorSetAllocateInfo, &vkDescriptorSet));
+                ThrowExternalExceptionIfNotSuccess(vkAllocateDescriptorSets(pipeline.Device.VkDevice, &descriptorSetAllocateInfo, &vkDescriptorSet));
             }
 
             return vkDescriptorSet;
         }
     }
 
-    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPrimitive" /> class.</summary>
-    ~VulkanGraphicsPrimitive() => Dispose(isDisposing: true);
+    /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPipelineResourceViewSet" /> class.</summary>
+    ~VulkanGraphicsPipelineResourceViewSet() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsPipelineObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
+    /// <inheritdoc cref="GraphicsPipelineObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
-
-    /// <inheritdoc cref="GraphicsPrimitive.IndexBufferView" />
-    public new VulkanGraphicsBufferView? IndexBufferView => base.IndexBufferView.As<VulkanGraphicsBufferView>();
 
     /// <inheritdoc />
     public override string Name
@@ -175,16 +172,13 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
         }
     }
 
-    /// <inheritdoc cref="GraphicsPrimitive.Pipeline" />
+    /// <inheritdoc cref="GraphicsPipelineObject.Pipeline" />
     public new VulkanGraphicsPipeline Pipeline => base.Pipeline.As<VulkanGraphicsPipeline>();
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsPipelineObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
-    /// <inheritdoc cref="GraphicsPrimitive.VertexBufferView" />
-    public new VulkanGraphicsBufferView VertexBufferView => base.VertexBufferView.As<VulkanGraphicsBufferView>();
-
-    /// <summary>Gets the <see cref="Interop.Vulkan.VkDescriptorPool" /> for the pipeline.</summary>
+    /// <summary>Gets the <see cref="Interop.Vulkan.VkDescriptorPool" /> for the resource view set.</summary>
     public VkDescriptorPool VkDescriptorPool
     {
         get
@@ -194,7 +188,7 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
         }
     }
 
-    /// <summary>Gets the <see cref="Interop.Vulkan.VkDescriptorSet" /> for the pipeline.</summary>
+    /// <summary>Gets the <see cref="Interop.Vulkan.VkDescriptorSet" /> for the resource view set.</summary>
     public VkDescriptorSet VkDescriptorSet
     {
         get
@@ -218,16 +212,6 @@ public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
 
                 DisposeVkDescriptorSet(vkDevice, vkDescriptorPool, _vkDescriptorSet);
                 DisposeVkDescriptorPool(vkDevice, _vkDescriptorPool);
-
-                Pipeline?.Dispose();
-                IndexBufferView?.Dispose();
-
-                foreach (var inputResourceView in InputResourceViews)
-                {
-                    inputResourceView?.Dispose();
-                }
-
-                VertexBufferView?.Dispose();
             }
         }
 
