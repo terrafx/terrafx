@@ -28,6 +28,7 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     private readonly VulkanGraphicsFence _fence;
     private readonly VkCommandBuffer _vkCommandBuffer;
     private readonly VkCommandPool _vkCommandPool;
+    private readonly uint _vkMaxVertexInputBindings;
 
     private string _name = null!;
     private VulkanGraphicsRenderPass? _renderPass;
@@ -37,11 +38,13 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     internal VulkanGraphicsRenderContext(VulkanGraphicsDevice device)
         : base(device)
     {
+        _fence = device.CreateFence(isSignalled: true);
+
         var vkCommandPool = CreateVkCommandPool(device);
         _vkCommandPool = vkCommandPool;
 
         _vkCommandBuffer = CreateVkCommandBuffer(device, vkCommandPool);
-        _fence = device.CreateFence(isSignalled: true);
+        _vkMaxVertexInputBindings = Adapter.VkPhysicalDeviceProperties.limits.maxVertexInputBindings;
 
         _ = _state.Transition(to: Initialized);
         Name = nameof(VulkanGraphicsRenderContext);
@@ -85,6 +88,9 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
 
     /// <inheritdoc />
     public override VulkanGraphicsFence Fence => _fence;
+
+    /// <inheritdoc />
+    public override uint MaxBoundVertexBufferViewCount => _vkMaxVertexInputBindings;
 
     /// <inheritdoc />
     public override string Name
@@ -161,6 +167,78 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
+    public override void BindIndexBufferView(GraphicsBufferView indexBufferView)
+        => BindIndexBufferView((VulkanGraphicsBufferView)indexBufferView);
+
+    /// <inheritdoc cref="BindIndexBufferView(GraphicsBufferView)" />
+    public void BindIndexBufferView(VulkanGraphicsBufferView indexBufferView)
+    {
+        ThrowIfNull(indexBufferView);
+
+        var indexType = (indexBufferView.Stride == 2) ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32;
+        vkCmdBindIndexBuffer(VkCommandBuffer, indexBufferView.Resource.VkBuffer, indexBufferView.Offset, indexType);
+    }
+
+    /// <inheritdoc />
+    public override void BindPipeline(GraphicsPipeline pipeline)
+        => BindPipeline((VulkanGraphicsPipeline)pipeline);
+
+    /// <inheritdoc cref="BindPipeline(GraphicsPipeline)" />
+    public void BindPipeline(VulkanGraphicsPipeline pipeline)
+    {
+        ThrowIfNull(pipeline);
+        vkCmdBindPipeline(VkCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.VkPipeline);
+    }
+
+    /// <inheritdoc />
+    public override void BindVertexBufferView(GraphicsBufferView vertexBufferView, uint bindingSlot = 0)
+        => BindVertexBufferView((VulkanGraphicsBufferView)vertexBufferView, bindingSlot);
+
+    /// <inheritdoc cref="BindVertexBufferView(GraphicsBufferView, uint)" />
+    public void BindVertexBufferView(VulkanGraphicsBufferView vertexBufferView, uint bindingSlot = 0)
+    {
+        ThrowIfNull(vertexBufferView);
+
+        var vkVertexBuffer = vertexBufferView.Resource.VkBuffer;
+        var vkVertexBufferOffset = (ulong)vertexBufferView.Offset;
+
+        vkCmdBindVertexBuffers(VkCommandBuffer, firstBinding: bindingSlot, bindingCount: 1, &vkVertexBuffer, &vkVertexBufferOffset);
+    }
+
+    /// <inheritdoc />
+    public override void BindVertexBufferViews(ReadOnlySpan<GraphicsBufferView> vertexBufferViews, uint firstBindingSlot = 0)
+    {
+        ThrowIfZero(vertexBufferViews.Length);
+        ThrowIfNotInInsertBounds(vertexBufferViews.Length, MaxBoundVertexBufferViewCount);
+
+        if (vertexBufferViews.Length <= 32)
+        {
+            var vkVertexBuffers = stackalloc VkBuffer[32];
+            var vkVertexBufferOffsets = stackalloc ulong[32];
+
+            BindVertexBufferViewsInternal(vertexBufferViews, firstBindingSlot, vkVertexBuffers, vkVertexBufferOffsets);
+        }
+        else
+        {
+            var vkVertexBuffers = UnmanagedArray<VkBuffer>.Empty;
+            var vkVertexBufferOffsets = UnmanagedArray<ulong>.Empty;
+
+            try
+            {
+                vkVertexBuffers = new UnmanagedArray<VkBuffer>((uint)vertexBufferViews.Length);
+                vkVertexBufferOffsets = new UnmanagedArray<ulong>((uint)vertexBufferViews.Length);
+
+                BindVertexBufferViewsInternal(vertexBufferViews, firstBindingSlot, vkVertexBuffers.GetPointerUnsafe(0), vkVertexBufferOffsets.GetPointerUnsafe(0));
+            }
+            finally
+            {
+                vkVertexBuffers.Dispose();
+                vkVertexBufferOffsets.Dispose();
+            }
+        }
+    }
+
+    /// <inheritdoc />
     public override void Draw(GraphicsPrimitive primitive)
         => Draw((VulkanGraphicsPrimitive)primitive);
 
@@ -176,20 +254,15 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
             ThrowForInvalidState(nameof(RenderPass));
         }
 
-        var vkCommandBuffer = VkCommandBuffer;
         var pipeline = primitive.Pipeline;
-        var pipelineSignature = pipeline.Signature;
-        var vkPipeline = pipeline.VkPipeline;
-
-        vkCmdBindPipeline(vkCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vkPipeline);
+        BindPipeline(pipeline);
 
         var vertexBufferView = primitive.VertexBufferView;
+        BindVertexBufferView((GraphicsBufferView)vertexBufferView);
 
-        var vkVertexBuffer = vertexBufferView.Resource.VkBuffer;
-        var vkVertexBufferOffset = (ulong)vertexBufferView.Offset;
+        var vkCommandBuffer = VkCommandBuffer;
 
-        vkCmdBindVertexBuffers(vkCommandBuffer, firstBinding: 0, bindingCount: 1, &vkVertexBuffer, &vkVertexBufferOffset);
-
+        var pipelineSignature = pipeline.Signature;
         var vkDescriptorSet = pipelineSignature.VkDescriptorSet;
 
         if (vkDescriptorSet != VkDescriptorSet.NULL)
@@ -247,15 +320,31 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
 
         if (indexBufferView is not null)
         {
-            var indexType = (indexBufferView.Stride == 2) ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32;
-            vkCmdBindIndexBuffer(vkCommandBuffer, indexBufferView.Resource.VkBuffer, indexBufferView.Offset, indexType);
-
-            vkCmdDrawIndexed(vkCommandBuffer, indexCount: checked((uint)indexBufferView.Size / indexBufferView.Stride), instanceCount: 1, firstIndex: 0, vertexOffset: 0, firstInstance: 0);
+            BindIndexBufferView(indexBufferView);
+            DrawIndexed(indicesPerInstance: (uint)(indexBufferView.Size / indexBufferView.Stride));
         }
         else
         {
-            vkCmdDraw(vkCommandBuffer, vertexCount: checked((uint)vertexBufferView.Size / vertexBufferView.Stride), instanceCount: 1, firstVertex: 0, firstInstance: 0);
+            Draw(verticesPerInstance: (uint)(vertexBufferView.Size / vertexBufferView.Stride));
         }
+    }
+
+    /// <inheritdoc />
+    public override void Draw(uint verticesPerInstance, uint instanceCount = 1, uint vertexStart = 0, uint instanceStart = 0)
+    {
+        ThrowIfZero(verticesPerInstance);
+        ThrowIfZero(instanceCount);
+
+        vkCmdDraw(VkCommandBuffer, verticesPerInstance, instanceCount, vertexStart, instanceStart);
+    }
+
+    /// <inheritdoc />
+    public override void DrawIndexed(uint indicesPerInstance, uint instanceCount = 1, uint indexStart = 0, int vertexStart = 0, uint instanceStart = 0)
+    {
+        ThrowIfZero(indicesPerInstance);
+        ThrowIfZero(instanceCount);
+
+        vkCmdDrawIndexed(VkCommandBuffer, indicesPerInstance, instanceCount, indexStart, vertexStart, instanceStart);
     }
 
     /// <inheritdoc />
@@ -425,5 +514,17 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
                 vkDestroyCommandPool(vkDevice, vkCommandPool, pAllocator: null);
             }
         }
+    }
+
+    private void BindVertexBufferViewsInternal(ReadOnlySpan<GraphicsBufferView> vertexBufferViews, uint firstBindingSlot, VkBuffer* vkVertexBuffers, ulong* vkVertexBufferOffsets)
+    {
+        for (var index = 0; index < vertexBufferViews.Length; index++)
+        {
+            var vertexBufferView = (VulkanGraphicsBufferView)vertexBufferViews[index];
+            vkVertexBuffers[index] = vertexBufferView.Resource.VkBuffer;
+            vkVertexBufferOffsets[index] = vertexBufferView.Offset;
+        }
+
+        vkCmdBindVertexBuffers(VkCommandBuffer, firstBindingSlot, bindingCount: (uint)vertexBufferViews.Length, vkVertexBuffers, vkVertexBufferOffsets);
     }
 }

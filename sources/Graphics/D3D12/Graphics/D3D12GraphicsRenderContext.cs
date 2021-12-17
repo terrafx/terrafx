@@ -7,6 +7,7 @@ using TerraFX.Interop.Windows;
 using TerraFX.Numerics;
 using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D_PRIMITIVE_TOPOLOGY;
+using static TerraFX.Interop.DirectX.D3D12;
 using static TerraFX.Interop.DirectX.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_RESOURCE_STATES;
 using static TerraFX.Interop.DirectX.DXGI_FORMAT;
@@ -96,6 +97,9 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     /// <inheritdoc />
     public override D3D12GraphicsFence Fence => _fence;
 
+    /// <inheritdoc />
+    public override uint MaxBoundVertexBufferViewCount => D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT;
+
     /// <summary>Gets or sets the name for the pipeline signature.</summary>
     public override string Name
     {
@@ -145,6 +149,79 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
+    public override void BindIndexBufferView(GraphicsBufferView indexBufferView)
+        => BindIndexBufferView((D3D12GraphicsBufferView)indexBufferView);
+
+    /// <inheritdoc cref="BindIndexBufferView(GraphicsBufferView)" />
+    public void BindIndexBufferView(D3D12GraphicsBufferView indexBufferView)
+    {
+        ThrowIfNull(indexBufferView);
+
+        var d3d12IndexBufferView = new D3D12_INDEX_BUFFER_VIEW {
+            BufferLocation = indexBufferView.D3D12ResourceGpuVirtualAddress,
+            SizeInBytes = checked((uint)indexBufferView.Size),
+            Format = indexBufferView.Stride == 2 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT,
+        };
+
+        D3D12GraphicsCommandList->IASetIndexBuffer(&d3d12IndexBufferView);
+    }
+
+    /// <inheritdoc />
+    public override void BindPipeline(GraphicsPipeline pipeline)
+        => BindPipeline((D3D12GraphicsPipeline)pipeline);
+
+    /// <inheritdoc cref="BindPipeline(GraphicsPipeline)" />
+    public void BindPipeline(D3D12GraphicsPipeline pipeline)
+    {
+        ThrowIfNull(pipeline);
+        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
+
+        d3d12GraphicsCommandList->SetPipelineState(pipeline.D3D12PipelineState);
+        d3d12GraphicsCommandList->SetGraphicsRootSignature(pipeline.Signature.D3D12RootSignature);
+    }
+
+    /// <inheritdoc />
+    public override void BindVertexBufferView(GraphicsBufferView vertexBufferView, uint bindingSlot = 0)
+        => BindVertexBufferView((D3D12GraphicsBufferView)vertexBufferView, bindingSlot);
+
+    /// <inheritdoc cref="BindVertexBufferView(GraphicsBufferView, uint)" />
+    public void BindVertexBufferView(D3D12GraphicsBufferView vertexBufferView, uint bindingSlot = 0)
+    {
+        ThrowIfNull(vertexBufferView);
+
+        var d3d12VertexBufferView = new D3D12_VERTEX_BUFFER_VIEW {
+            BufferLocation = vertexBufferView.D3D12ResourceGpuVirtualAddress,
+            StrideInBytes = vertexBufferView.Stride,
+            SizeInBytes = checked((uint)vertexBufferView.Size),
+        };
+
+        D3D12GraphicsCommandList->IASetVertexBuffers(bindingSlot, NumViews: 1, &d3d12VertexBufferView);
+    }
+
+    /// <inheritdoc />
+    public override void BindVertexBufferViews(ReadOnlySpan<GraphicsBufferView> vertexBufferViews, uint firstBindingSlot)
+    {
+        ThrowIfZero(vertexBufferViews.Length);
+        ThrowIfNotInInsertBounds(vertexBufferViews.Length, D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT);
+
+        var d3d12VertexBufferViews = stackalloc D3D12_VERTEX_BUFFER_VIEW[D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT];
+
+        for (var index = 0; index < vertexBufferViews.Length; index++)
+        {
+            var vertexBufferView = (D3D12GraphicsBufferView)vertexBufferViews[index];
+            ThrowIfNull(vertexBufferView);
+
+            d3d12VertexBufferViews[index] = new D3D12_VERTEX_BUFFER_VIEW {
+                BufferLocation = vertexBufferView.D3D12ResourceGpuVirtualAddress,
+                StrideInBytes = vertexBufferView.Stride,
+                SizeInBytes = checked((uint)vertexBufferView.Size),
+            };
+        }
+
+        D3D12GraphicsCommandList->IASetVertexBuffers(firstBindingSlot, NumViews: (uint)vertexBufferViews.Length, d3d12VertexBufferViews);
+    }
+
+    /// <inheritdoc />
     public override void Draw(GraphicsPrimitive primitive)
         => Draw((D3D12GraphicsPrimitive)primitive);
 
@@ -160,25 +237,16 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
             ThrowForInvalidState(nameof(RenderPass));
         }
 
-        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
         var pipeline = primitive.Pipeline;
-
-        d3d12GraphicsCommandList->SetGraphicsRootSignature(pipeline.Signature.D3D12RootSignature);
-        d3d12GraphicsCommandList->SetPipelineState(pipeline.D3D12PipelineState);
-
-        var d3d12DescriptorHeaps = stackalloc ID3D12DescriptorHeap*[1] {
-            primitive.D3D12CbvSrvUavDescriptorHeap,
-        };
-        d3d12GraphicsCommandList->SetDescriptorHeaps(1, d3d12DescriptorHeaps);
+        BindPipeline(pipeline);
 
         var vertexBufferView = primitive.VertexBufferView;
+        BindVertexBufferView(vertexBufferView);
 
-        var d3d12VertexBufferView = new D3D12_VERTEX_BUFFER_VIEW {
-            BufferLocation = vertexBufferView.D3D12ResourceGpuVirtualAddress,
-            StrideInBytes = vertexBufferView.Stride,
-            SizeInBytes = checked((uint)vertexBufferView.Size),
-        };
-        d3d12GraphicsCommandList->IASetVertexBuffers(StartSlot: 0, NumViews: 1, &d3d12VertexBufferView);
+        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
+
+        var d3d12CbvSrvUavDescriptorHeap = primitive.D3D12CbvSrvUavDescriptorHeap;
+        d3d12GraphicsCommandList->SetDescriptorHeaps(1, &d3d12CbvSrvUavDescriptorHeap);
 
         var inputResourceViews = primitive.InputResourceViews;
 
@@ -205,19 +273,31 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
 
         if (indexBufferView is not null)
         {
-            var d3d12IndexBufferView = new D3D12_INDEX_BUFFER_VIEW {
-                BufferLocation = indexBufferView.D3D12ResourceGpuVirtualAddress,
-                SizeInBytes = checked((uint)indexBufferView.Size),
-                Format = indexBufferView.Stride == 2 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT,
-            };
-            d3d12GraphicsCommandList->IASetIndexBuffer(&d3d12IndexBufferView);
-
-            d3d12GraphicsCommandList->DrawIndexedInstanced(IndexCountPerInstance: (uint)(indexBufferView.Size / indexBufferView.Stride), InstanceCount: 1, StartIndexLocation: 0, BaseVertexLocation: 0, StartInstanceLocation: 0);
+            BindIndexBufferView(indexBufferView);
+            DrawIndexed(indicesPerInstance: (uint)(indexBufferView.Size / indexBufferView.Stride));
         }
         else
         {
-            d3d12GraphicsCommandList->DrawInstanced(VertexCountPerInstance: (uint)(vertexBufferView.Size /  vertexBufferView.Stride), InstanceCount: 1, StartVertexLocation: 0, StartInstanceLocation: 0);
+            Draw(verticesPerInstance: (uint)(vertexBufferView.Size / vertexBufferView.Stride));
         }
+    }
+
+    /// <inheritdoc />
+    public override void Draw(uint verticesPerInstance, uint instanceCount = 1, uint vertexStart = 0, uint instanceStart = 0)
+    {
+        ThrowIfZero(verticesPerInstance);
+        ThrowIfZero(instanceCount);
+
+        D3D12GraphicsCommandList->DrawInstanced(verticesPerInstance, instanceCount, vertexStart, instanceStart);
+    }
+
+    /// <inheritdoc />
+    public override void DrawIndexed(uint indicesPerInstance, uint instanceCount = 1, uint indexStart = 0, int vertexStart = 0, uint instanceStart = 0)
+    {
+        ThrowIfZero(indicesPerInstance);
+        ThrowIfZero(instanceCount);
+
+        D3D12GraphicsCommandList->DrawIndexedInstanced(indicesPerInstance, instanceCount, indexStart, vertexStart, instanceStart);
     }
 
     /// <inheritdoc />

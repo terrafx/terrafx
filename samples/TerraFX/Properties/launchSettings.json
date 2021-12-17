@@ -2,7 +2,7 @@
   "profiles": {
     "TerraFX.Samples": {
       "commandName": "Project",
-      "commandLineArgs": "Vulkan.HelloTriangle",
+      "commandLineArgs": "all",
       "nativeDebugging": true
     }
   }
