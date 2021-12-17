@@ -52,7 +52,6 @@ public class HelloSierpinski : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
         var verticeCount = 2 * 12 * (nuint)MathF.Pow(4, _recursionDepth);
 
@@ -62,12 +61,15 @@ public class HelloSierpinski : HelloWindow
         _uploadBuffer = graphicsDevice.CreateUploadBuffer(128 * 1024 * 1024);
         _vertexBuffer = graphicsDevice.CreateVertexBuffer(verticeCount * SizeOf<PosNormTex3DVertex>());
 
-        graphicsRenderContext.Reset();
-        _sierpinskiPrimitive = CreateSierpinskiPrimitive(graphicsRenderContext);
-        graphicsRenderContext.Flush();
+        var graphicsCopyContext = graphicsDevice.RentCopyContext();
+        {
+            graphicsCopyContext.Reset();
+            _sierpinskiPrimitive = CreateSierpinskiPrimitive(graphicsCopyContext);
 
-        graphicsDevice.WaitForIdle();
-        graphicsDevice.ReturnRenderContext(graphicsRenderContext);
+            graphicsCopyContext.Flush();
+            graphicsDevice.WaitForIdle();
+        }
+        graphicsDevice.ReturnContext(graphicsCopyContext);
 
         _uploadBuffer.DisposeAllViews();
     }
@@ -106,7 +108,7 @@ public class HelloSierpinski : HelloWindow
         base.Draw(graphicsRenderContext);
     }
 
-    private unsafe GraphicsPrimitive CreateSierpinskiPrimitive(GraphicsContext graphicsContext)
+    private unsafe GraphicsPrimitive CreateSierpinskiPrimitive(GraphicsCopyContext graphicsCopyContext)
     {
         var graphicsRenderPass = GraphicsRenderPass;
         var graphicsSurface = graphicsRenderPass.Surface;
@@ -121,12 +123,12 @@ public class HelloSierpinski : HelloWindow
 
         var sierpinskiPrimitive = GraphicsDevice.CreatePrimitive(
             graphicsPipeline,
-            CreateVertexBufferView(graphicsContext, _vertexBuffer, uploadBuffer, in vertices, in normals),
-            CreateIndexBufferView(graphicsContext, _indexBuffer, uploadBuffer, in indices),
+            CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, in vertices, in normals),
+            CreateIndexBufferView(graphicsCopyContext, _indexBuffer, uploadBuffer, in indices),
             new GraphicsResourceView[3] {
-                CreateConstantBufferView(graphicsContext, constantBuffer),
-                CreateConstantBufferView(graphicsContext, constantBuffer),
-                CreateTexture3DView(graphicsContext, _texture3D, uploadBuffer),
+                CreateConstantBufferView(graphicsCopyContext, constantBuffer),
+                CreateConstantBufferView(graphicsCopyContext, constantBuffer),
+                CreateTexture3DView(graphicsCopyContext, _texture3D, uploadBuffer),
             }
         );
 
@@ -136,7 +138,7 @@ public class HelloSierpinski : HelloWindow
 
         return sierpinskiPrimitive;
 
-        static GraphicsBufferView CreateConstantBufferView(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer)
+        static GraphicsBufferView CreateConstantBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer constantBuffer)
         {
             var constantBufferView = constantBuffer.CreateView<Matrix4x4>(1);
             var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
@@ -147,7 +149,7 @@ public class HelloSierpinski : HelloWindow
             return constantBufferView;
         }
 
-        static GraphicsBufferView CreateIndexBufferView(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer uploadBuffer, in UnmanagedValueList<uint> indices)
+        static GraphicsBufferView CreateIndexBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer indexBuffer, GraphicsBuffer uploadBuffer, in UnmanagedValueList<uint> indices)
         {
             var uploadBufferView = uploadBuffer.CreateView<uint>(checked((uint)indices.Count));
             var indexBufferSpan = uploadBufferView.Map<uint>();
@@ -157,11 +159,11 @@ public class HelloSierpinski : HelloWindow
             uploadBufferView.UnmapAndWrite();
 
             var indexBufferView = indexBuffer.CreateView<uint>(checked((uint)indices.Count));
-            graphicsContext.Copy(indexBufferView, uploadBufferView);
+            graphicsCopyContext.Copy(indexBufferView, uploadBufferView);
             return indexBufferView;
         }
 
-        static GraphicsTextureView CreateTexture3DView(GraphicsContext graphicsContext, GraphicsTexture texture3D, GraphicsBuffer uploadBuffer)
+        static GraphicsTextureView CreateTexture3DView(GraphicsCopyContext graphicsCopyContext, GraphicsTexture texture3D, GraphicsBuffer uploadBuffer)
         {
             var uploadBufferView = uploadBuffer.CreateView<byte>(checked((uint)texture3D.Size));
             var textureDataSpan = uploadBufferView.Map<byte>();
@@ -198,11 +200,11 @@ public class HelloSierpinski : HelloWindow
             uploadBufferView.UnmapAndWrite();
 
             var texture3DView = texture3D.CreateView(0, 1);
-            graphicsContext.Copy(texture3DView, uploadBufferView);
+            graphicsCopyContext.Copy(texture3DView, uploadBufferView);
             return texture3DView;
         }
 
-        static GraphicsBufferView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, in UnmanagedValueList<Vector3> vertices, in UnmanagedValueList<Vector3> normals)
+        static GraphicsBufferView CreateVertexBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, in UnmanagedValueList<Vector3> vertices, in UnmanagedValueList<Vector3> normals)
         {
             var uploadBufferView = uploadBuffer.CreateView<PosNormTex3DVertex>(checked((uint)vertices.Count));
             var vertexBufferSpan = uploadBufferView.Map<PosNormTex3DVertex>();
@@ -228,7 +230,7 @@ public class HelloSierpinski : HelloWindow
             uploadBufferView.UnmapAndWrite();
 
             var vertexBufferView = vertexBuffer.CreateView<PosNormTex3DVertex>(checked((uint)vertices.Count));
-            graphicsContext.Copy(vertexBufferView, uploadBufferView);
+            graphicsCopyContext.Copy(vertexBufferView, uploadBufferView);
             return vertexBufferView;
         }
 

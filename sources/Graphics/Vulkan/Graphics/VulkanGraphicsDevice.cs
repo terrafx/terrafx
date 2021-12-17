@@ -9,7 +9,6 @@ using System.Runtime.CompilerServices;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkBufferUsageFlags;
-using static TerraFX.Interop.Vulkan.VkImageAspectFlags;
 using static TerraFX.Interop.Vulkan.VkImageTiling;
 using static TerraFX.Interop.Vulkan.VkImageType;
 using static TerraFX.Interop.Vulkan.VkImageUsageFlags;
@@ -35,24 +34,32 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
 {
     private readonly VulkanGraphicsMemoryManager[] _memoryManagers;
     private readonly VkQueue _vkCommandQueue;
-    private readonly uint _vkCommandQueueFamilyIndex;
+    private readonly uint _vkComputeCommandQueueFamilyIndex;
     private readonly VkDevice _vkDevice;
+    private readonly uint _vkGraphicsCommandQueueFamilyIndex;
     private readonly uint _vkMemoryTypeCount;
+    private readonly uint _vkTransferCommandQueueFamilyIndex;
 
+    private ContextPool<VulkanGraphicsDevice, VulkanGraphicsComputeContext> _computeContextPool;
+    private ContextPool<VulkanGraphicsDevice, VulkanGraphicsCopyContext> _copyContextPool;
     private string _name = null!;
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext> _renderContextPool;
+
     private VolatileState _state;
 
     internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter, delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> createMemoryAllocator)
         : base(adapter)
     {
-        var vkCommandQueueFamilyIndex = GetVkCommandQueueFamilyIndex(adapter);
-        _vkCommandQueueFamilyIndex = vkCommandQueueFamilyIndex;
+        _vkComputeCommandQueueFamilyIndex = GetVkCommandQueueFamilyIndex(adapter, VK_QUEUE_COMPUTE_BIT);
+        _vkTransferCommandQueueFamilyIndex = GetVkCommandQueueFamilyIndex(adapter, VK_QUEUE_TRANSFER_BIT);
 
-        var vkDevice = CreateVkDevice(adapter, vkCommandQueueFamilyIndex);
+        var vkGraphicsCommandQueueFamilyIndex = GetVkCommandQueueFamilyIndex(adapter, VK_QUEUE_GRAPHICS_BIT);
+        _vkGraphicsCommandQueueFamilyIndex = vkGraphicsCommandQueueFamilyIndex;
+
+        var vkDevice = CreateVkDevice(adapter, vkGraphicsCommandQueueFamilyIndex);
         _vkDevice = vkDevice;
 
-        _vkCommandQueue = GetVkCommandQueue(vkDevice, vkCommandQueueFamilyIndex);
+        _vkCommandQueue = GetVkCommandQueue(vkDevice, vkGraphicsCommandQueueFamilyIndex);
 
         var vkMemoryTypeCount = adapter.VkPhysicalDeviceMemoryProperties.memoryTypeCount;
         _vkMemoryTypeCount = vkMemoryTypeCount;
@@ -60,6 +67,8 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
         _memoryManagers = CreateMemoryManagers(this, createMemoryAllocator, vkMemoryTypeCount);
         // TODO: UpdateBudget
 
+        _computeContextPool = new ContextPool<VulkanGraphicsDevice, VulkanGraphicsComputeContext>();
+        _copyContextPool = new ContextPool<VulkanGraphicsDevice, VulkanGraphicsCopyContext>();
         _renderContextPool = new ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext>();
 
         _ = _state.Transition(to: Initialized);
@@ -129,7 +138,7 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
             return vkCommandQueue;
         }
 
-        static uint GetVkCommandQueueFamilyIndex(VulkanGraphicsAdapter adapter)
+        static uint GetVkCommandQueueFamilyIndex(VulkanGraphicsAdapter adapter, VkQueueFlags vkQueueFlags)
         {
             var vkCommandQueueFamilyIndex = uint.MaxValue;
             var vkPhysicalDevice = adapter.VkPhysicalDevice;
@@ -142,7 +151,7 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
 
             for (uint i = 0; i < vkQueueFamilyPropertyCount; i++)
             {
-                if ((vkQueueFamilyProperties[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0)
+                if ((vkQueueFamilyProperties[i].queueFlags & vkQueueFlags) == vkQueueFlags)
                 {
                     vkCommandQueueFamilyIndex = i;
                     break;
@@ -191,21 +200,41 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
         }
     }
 
-    /// <summary>Gets the index of the queue family for <see cref="VkCommandQueue" />.</summary>
-    public uint VkCommandQueueFamilyIndex
+    /// <summary>Gets the index of the queue family that supports compute operations for <see cref="VkCommandQueue" />.</summary>
+    public uint VkComputeCommandQueueFamilyIndex
     {
         get
         {
             AssertNotDisposedOrDisposing(_state);
-            return _vkCommandQueueFamilyIndex;
+            return _vkComputeCommandQueueFamilyIndex;
         }
     }
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkDevice"/> for the device.</summary>
     public VkDevice VkDevice => _vkDevice;
 
+    /// <summary>Gets the index of the queue family that supports graphics operations for <see cref="VkCommandQueue" />.</summary>
+    public uint VkGraphicsCommandQueueFamilyIndex
+    {
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _vkGraphicsCommandQueueFamilyIndex;
+        }
+    }
+
     /// <summary>Gets the <see cref="VkPhysicalDeviceMemoryProperties.memoryTypeCount"/> for the <see cref="VulkanGraphicsAdapter.VkPhysicalDevice" />.</summary>
     public uint VkMemoryTypeCount => _vkMemoryTypeCount;
+
+    /// <summary>Gets the index of the queue family that supports transfer operations for <see cref="VkCommandQueue" />.</summary>
+    public uint VkTransferCommandQueueFamilyIndex
+    {
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _vkTransferCommandQueueFamilyIndex;
+        }
+    }
 
     // VK_LAYER_KHRONOS_validation
     private static ReadOnlySpan<sbyte> VK_LAYER_KHRONOS_VALIDATION_NAME => new sbyte[] { 0x56, 0x4B, 0x5F, 0x4C, 0x41, 0x59, 0x45, 0x52, 0x5F, 0x4B, 0x48, 0x52, 0x4F, 0x4E, 0x4F, 0x53, 0x5F, 0x76, 0x61, 0x6C, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x00 };
@@ -412,6 +441,32 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     };
 
     /// <inheritdoc />
+    public override VulkanGraphicsComputeContext RentComputeContext()
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        return _computeContextPool.Rent(this, &CreateComputeContext);
+
+        static VulkanGraphicsComputeContext CreateComputeContext(VulkanGraphicsDevice device)
+        {
+            AssertNotNull(device);
+            return new VulkanGraphicsComputeContext(device);
+        }
+    }
+
+    /// <inheritdoc />
+    public override VulkanGraphicsCopyContext RentCopyContext()
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        return _copyContextPool.Rent(this, &CreateCopyContext);
+
+        static VulkanGraphicsCopyContext CreateCopyContext(VulkanGraphicsDevice device)
+        {
+            AssertNotNull(device);
+            return new VulkanGraphicsCopyContext(device);
+        }
+    }
+
+    /// <inheritdoc />
     public override VulkanGraphicsRenderContext RentRenderContext()
     {
         ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
@@ -425,11 +480,45 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
-    public override void ReturnRenderContext(GraphicsRenderContext renderContext)
-        => ReturnRenderContext((VulkanGraphicsRenderContext)renderContext);
+    public override void ReturnContext(GraphicsComputeContext renderContext)
+        => ReturnContext((VulkanGraphicsComputeContext)renderContext);
 
-    /// <inheritdoc cref="ReturnRenderContext(GraphicsRenderContext)" />
-    public void ReturnRenderContext(VulkanGraphicsRenderContext renderContext)
+    /// <inheritdoc />
+    public override void ReturnContext(GraphicsCopyContext renderContext)
+        => ReturnContext((VulkanGraphicsCopyContext)renderContext);
+
+    /// <inheritdoc />
+    public override void ReturnContext(GraphicsRenderContext renderContext)
+        => ReturnContext((VulkanGraphicsRenderContext)renderContext);
+
+    /// <inheritdoc cref="ReturnContext(GraphicsComputeContext)" />
+    public void ReturnContext(VulkanGraphicsComputeContext computeContext)
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfNull(computeContext);
+
+        if (computeContext.Device != this)
+        {
+            ThrowForInvalidParent(computeContext.Device);
+        }
+        _computeContextPool.Return(computeContext);
+    }
+
+    /// <inheritdoc cref="ReturnContext(GraphicsCopyContext)" />
+    public void ReturnContext(VulkanGraphicsCopyContext copyContext)
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfNull(copyContext);
+
+        if (copyContext.Device != this)
+        {
+            ThrowForInvalidParent(copyContext.Device);
+        }
+        _copyContextPool.Return(copyContext);
+    }
+
+    /// <inheritdoc cref="ReturnContext(GraphicsRenderContext)" />
+    public void ReturnContext(VulkanGraphicsRenderContext renderContext)
     {
         ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
         ThrowIfNull(renderContext);
@@ -466,6 +555,8 @@ public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
 
             if (isDisposing)
             {
+                _computeContextPool.Dispose();
+                _copyContextPool.Dispose();
                 _renderContextPool.Dispose();
             }
 

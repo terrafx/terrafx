@@ -1,7 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
@@ -146,184 +145,6 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
-    public override void Copy(GraphicsBufferView destination, GraphicsBufferView source)
-        => Copy((D3D12GraphicsBufferView)destination, (D3D12GraphicsBufferView)source);
-
-    /// <inheritdoc />
-    public override void Copy(GraphicsTextureView destination, GraphicsBufferView source)
-        => Copy((D3D12GraphicsTextureView)destination, (D3D12GraphicsBufferView)source);
-
-    /// <inheritdoc cref="Copy(GraphicsBufferView, GraphicsBufferView)" />
-    public void Copy(D3D12GraphicsBufferView destination, D3D12GraphicsBufferView source)
-    {
-        ThrowIfNull(destination);
-        ThrowIfNull(source);
-        ThrowIfNotInInsertBounds(source.Size, destination.Size);
-
-        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
-
-        var destinationResource = destination.Resource;
-        var sourceResource = source.Resource;
-
-        BeginCopy(d3d12GraphicsCommandList, destinationResource, sourceResource);
-        {
-            d3d12GraphicsCommandList->CopyBufferRegion(destinationResource.D3D12Resource, destination.Offset, sourceResource.D3D12Resource, source.Offset, source.Size);
-        }
-        EndCopy(d3d12GraphicsCommandList, destinationResource, sourceResource);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static void BeginCopy(ID3D12GraphicsCommandList* d3d12GraphicsCommandList, D3D12GraphicsBuffer destination, D3D12GraphicsBuffer source)
-        {
-            var d3d12ResourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
-            var numD3D12ResourceBarriers = 0u;
-
-            if (destination.CpuAccess == GraphicsResourceCpuAccess.None)
-            {
-                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
-                    destination.D3D12Resource,
-                    stateBefore: destination.D3D12ResourceState,
-                    stateAfter: D3D12_RESOURCE_STATE_COPY_DEST
-                );
-                numD3D12ResourceBarriers++;
-            }
-
-            if (source.CpuAccess == GraphicsResourceCpuAccess.None)
-            {
-                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
-                    source.D3D12Resource,
-                    stateBefore: source.D3D12ResourceState,
-                    stateAfter: D3D12_RESOURCE_STATE_COPY_SOURCE
-                );
-                numD3D12ResourceBarriers++;
-            }
-
-            if (numD3D12ResourceBarriers != 0)
-            {
-                d3d12GraphicsCommandList->ResourceBarrier(numD3D12ResourceBarriers, d3d12ResourceBarriers);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static void EndCopy(ID3D12GraphicsCommandList* d3d12GraphicsCommandList, D3D12GraphicsBuffer destination, D3D12GraphicsBuffer source)
-        {
-            var d3d12ResourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
-            var numD3D12ResourceBarriers = 0u;
-
-            if (source.CpuAccess == GraphicsResourceCpuAccess.None)
-            {
-                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
-                    source.D3D12Resource,
-                    stateBefore: D3D12_RESOURCE_STATE_COPY_SOURCE,
-                    stateAfter: source.D3D12ResourceState
-                );
-                numD3D12ResourceBarriers++;
-            }
-
-            if (destination.CpuAccess == GraphicsResourceCpuAccess.None)
-            {
-                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
-                    destination.D3D12Resource,
-                    stateBefore: D3D12_RESOURCE_STATE_COPY_DEST,
-                    stateAfter: destination.D3D12ResourceState
-                );
-                numD3D12ResourceBarriers++;
-            }
-
-            if (numD3D12ResourceBarriers != 0)
-            {
-                d3d12GraphicsCommandList->ResourceBarrier(numD3D12ResourceBarriers, d3d12ResourceBarriers);
-            }
-        }
-    }
-
-    /// <inheritdoc cref="Copy(GraphicsTextureView, GraphicsBufferView)" />
-    public void Copy(D3D12GraphicsTextureView destination, D3D12GraphicsBufferView source)
-    {
-        ThrowIfNull(destination);
-        ThrowIfNull(source);
-
-        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
-
-        var destinationResource = destination.Resource;
-        var sourceResource = source.Resource;
-
-        BeginCopy(d3d12GraphicsCommandList, destinationResource, sourceResource);
-        {
-            var d3d12DestinationTextureCopyLocation = new D3D12_TEXTURE_COPY_LOCATION(destinationResource.D3D12Resource, Sub: destination.D3D12SubresourceIndex);
-
-            var d3d12SourceTextureCopyLocation = new D3D12_TEXTURE_COPY_LOCATION(sourceResource.D3D12Resource, in destination.D3D12PlacedSubresourceFootprints[0]);
-            d3d12SourceTextureCopyLocation.PlacedFootprint.Offset = source.Offset;
-
-            d3d12GraphicsCommandList->CopyTextureRegion(&d3d12DestinationTextureCopyLocation, DstX: 0, DstY: 0, DstZ: 0, &d3d12SourceTextureCopyLocation, pSrcBox: null);
-        }
-        EndCopy(d3d12GraphicsCommandList, destinationResource, sourceResource);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static void BeginCopy(ID3D12GraphicsCommandList* d3d12GraphicsCommandList, D3D12GraphicsTexture destination, D3D12GraphicsBuffer source)
-        {
-            var d3d12ResourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
-            var numD3D12ResourceBarriers = 0u;
-
-            if (destination.CpuAccess == GraphicsResourceCpuAccess.None)
-            {
-                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
-                    destination.D3D12Resource,
-                    stateBefore: destination.D3D12ResourceState,
-                    stateAfter: D3D12_RESOURCE_STATE_COPY_DEST
-                );
-                numD3D12ResourceBarriers++;
-            }
-
-            if (source.CpuAccess == GraphicsResourceCpuAccess.None)
-            {
-                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
-                    source.D3D12Resource,
-                    stateBefore: source.D3D12ResourceState,
-                    stateAfter: D3D12_RESOURCE_STATE_COPY_SOURCE
-                );
-                numD3D12ResourceBarriers++;
-            }
-
-            if (numD3D12ResourceBarriers != 0)
-            {
-                d3d12GraphicsCommandList->ResourceBarrier(numD3D12ResourceBarriers, d3d12ResourceBarriers);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static void EndCopy(ID3D12GraphicsCommandList* d3d12GraphicsCommandList, D3D12GraphicsTexture destination, D3D12GraphicsBuffer source)
-        {
-            var d3d12ResourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
-            var numD3D12ResourceBarriers = 0u;
-
-            if (source.CpuAccess == GraphicsResourceCpuAccess.None)
-            {
-                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
-                    source.D3D12Resource,
-                    stateBefore: D3D12_RESOURCE_STATE_COPY_SOURCE,
-                    stateAfter: source.D3D12ResourceState
-                );
-                numD3D12ResourceBarriers++;
-            }
-
-            if (destination.CpuAccess == GraphicsResourceCpuAccess.None)
-            {
-                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
-                    destination.D3D12Resource,
-                    stateBefore: D3D12_RESOURCE_STATE_COPY_DEST,
-                    stateAfter: destination.D3D12ResourceState
-                );
-                numD3D12ResourceBarriers++;
-            }
-
-            if (numD3D12ResourceBarriers != 0)
-            {
-                d3d12GraphicsCommandList->ResourceBarrier(numD3D12ResourceBarriers, d3d12ResourceBarriers);
-            }
-        }
-    }
-
-    /// <inheritdoc />
     public override void Draw(GraphicsPrimitive primitive)
         => Draw((D3D12GraphicsPrimitive)primitive);
 
@@ -418,7 +239,7 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     {
         var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
 
-        var d3d12CommandQueue = Device.D3D12CommandQueue;
+        var d3d12CommandQueue = Device.D3D12DirectCommandQueue;
         ThrowExternalExceptionIfFailed(d3d12GraphicsCommandList->Close());
         d3d12CommandQueue->ExecuteCommandLists(1, (ID3D12CommandList**)&d3d12GraphicsCommandList);
 

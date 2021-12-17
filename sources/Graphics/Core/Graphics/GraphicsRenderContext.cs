@@ -8,11 +8,11 @@ namespace TerraFX.Graphics;
 /// <summary>Represents a graphics context, which can be used for executing render commands.</summary>
 public abstract unsafe class GraphicsRenderContext : GraphicsContext
 {
-    /// <summary>Initializes a new instance of the <see cref="GraphicsContext" /> class.</summary>
-    /// <param name="device">The device for which the context is being created.</param>
+    /// <summary>Initializes a new instance of the <see cref="GraphicsRenderContext" /> class.</summary>
+    /// <param name="device">The device for which the render context is being created.</param>
     /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
     protected GraphicsRenderContext(GraphicsDevice device)
-        : base(device)
+        : base(device, GraphicsContextKind.Render)
     {
     }
 

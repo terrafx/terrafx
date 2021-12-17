@@ -112,7 +112,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
     /// <summary>Removes all items from the stack.</summary>
     public void Clear()
     {
-        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>() && (_items is not null))
         {
             Array.Clear(_items, 0, Count);
         }

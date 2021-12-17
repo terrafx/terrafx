@@ -49,7 +49,6 @@ public sealed class HelloSmoke : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
         _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsResourceCpuAccess.Write);
         _indexBuffer = graphicsDevice.CreateIndexBuffer(64 * 1024);
@@ -66,12 +65,15 @@ public sealed class HelloSmoke : HelloWindow
         _uploadBuffer = graphicsDevice.CreateUploadBuffer(128 * 1024 * 1024);
         _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
-        graphicsRenderContext.Reset();
-        _quadPrimitive = CreateQuadPrimitive(graphicsRenderContext);
-        graphicsRenderContext.Flush();
+        var graphicsCopyContext = graphicsDevice.RentCopyContext();
+        {
+            graphicsCopyContext.Reset();
+            _quadPrimitive = CreateQuadPrimitive(graphicsCopyContext);
 
-        graphicsDevice.WaitForIdle();
-        graphicsDevice.ReturnRenderContext(graphicsRenderContext);
+            graphicsCopyContext.Flush();
+            graphicsDevice.WaitForIdle();
+        }
+        graphicsDevice.ReturnContext(graphicsCopyContext);
 
         _uploadBuffer.DisposeAllViews();
     }
@@ -107,7 +109,7 @@ public sealed class HelloSmoke : HelloWindow
         base.Draw(graphicsRenderContext);
     }
 
-    private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext)
+    private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsCopyContext graphicsCopyContext)
     {
         var graphicsRenderPass = GraphicsRenderPass;
         var graphicsSurface = graphicsRenderPass.Surface;
@@ -119,16 +121,16 @@ public sealed class HelloSmoke : HelloWindow
 
         return GraphicsDevice.CreatePrimitive(
             graphicsPipeline,
-            CreateVertexBufferView(graphicsContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
-            CreateIndexBufferView(graphicsContext, _indexBuffer, uploadBuffer),
+            CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
+            CreateIndexBufferView(graphicsCopyContext, _indexBuffer, uploadBuffer),
             new GraphicsResourceView[3] {
-                CreateConstantBufferView(graphicsContext, constantBuffer),
-                CreateConstantBufferView(graphicsContext, constantBuffer),
-                CreateTexture3DView(graphicsContext, _texture3D, uploadBuffer, _isQuickAndDirty),
+                CreateConstantBufferView(graphicsCopyContext, constantBuffer),
+                CreateConstantBufferView(graphicsCopyContext, constantBuffer),
+                CreateTexture3DView(graphicsCopyContext, _texture3D, uploadBuffer, _isQuickAndDirty),
             }
         );
 
-        static GraphicsBufferView CreateConstantBufferView(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer)
+        static GraphicsBufferView CreateConstantBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer constantBuffer)
         {
             var constantBufferView = constantBuffer.CreateView<Matrix4x4>(1);
             var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
@@ -139,7 +141,7 @@ public sealed class HelloSmoke : HelloWindow
             return constantBufferView;
         }
 
-        static GraphicsBufferView CreateIndexBufferView(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer uploadBuffer)
+        static GraphicsBufferView CreateIndexBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer indexBuffer, GraphicsBuffer uploadBuffer)
         {
             var uploadBufferView = uploadBuffer.CreateView<ushort>(6);
             var indexBufferSpan = uploadBufferView.Map<ushort>();
@@ -157,11 +159,11 @@ public sealed class HelloSmoke : HelloWindow
             uploadBufferView.UnmapAndWrite();
 
             var indexBufferView = indexBuffer.CreateView<ushort>(6);
-            graphicsContext.Copy(indexBufferView, uploadBufferView);
+            graphicsCopyContext.Copy(indexBufferView, uploadBufferView);
             return indexBufferView;
         }
 
-        static GraphicsTextureView CreateTexture3DView(GraphicsContext graphicsContext, GraphicsTexture texture3D, GraphicsBuffer uploadBuffer, bool isQuickAndDirty)
+        static GraphicsTextureView CreateTexture3DView(GraphicsCopyContext graphicsCopyContext, GraphicsTexture texture3D, GraphicsBuffer uploadBuffer, bool isQuickAndDirty)
         {
             var uploadBufferView = uploadBuffer.CreateView<byte>(checked((uint)texture3D.Size));
             var textureDataSpan = uploadBufferView.Map<byte>();
@@ -401,11 +403,11 @@ public sealed class HelloSmoke : HelloWindow
             uploadBufferView.UnmapAndWrite();
 
             var texture3DView = texture3D.CreateView(0, 1);
-            graphicsContext.Copy(texture3DView, uploadBufferView);
+            graphicsCopyContext.Copy(texture3DView, uploadBufferView);
             return texture3DView;
         }
 
-        static GraphicsBufferView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
+        static GraphicsBufferView CreateVertexBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
         {
             var uploadBufferView = uploadBuffer.CreateView<Texture3DVertex>(4);
             var vertexBufferSpan = uploadBufferView.Map<Texture3DVertex>();
@@ -436,7 +438,7 @@ public sealed class HelloSmoke : HelloWindow
             uploadBufferView.UnmapAndWrite();
 
             var vertexBufferView = vertexBuffer.CreateView<Texture3DVertex>(4);
-            graphicsContext.Copy(vertexBufferView, uploadBufferView);
+            graphicsCopyContext.Copy(vertexBufferView, uploadBufferView);
             return vertexBufferView;
         }
 

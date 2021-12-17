@@ -98,7 +98,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
             }
 
             VkBool32 supported;
-            ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceSupportKHR(device.Adapter.VkPhysicalDevice, device.VkCommandQueueFamilyIndex, vkSurface, &supported));
+            ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceSupportKHR(device.Adapter.VkPhysicalDevice, device.VkGraphicsCommandQueueFamilyIndex, vkSurface, &supported));
 
             if (!supported)
             {

@@ -5,14 +5,11 @@ using System.Threading;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Numerics;
 using TerraFX.Threading;
-using static TerraFX.Interop.Vulkan.VkAccessFlags;
 using static TerraFX.Interop.Vulkan.VkDescriptorType;
-using static TerraFX.Interop.Vulkan.VkImageAspectFlags;
 using static TerraFX.Interop.Vulkan.VkImageLayout;
 using static TerraFX.Interop.Vulkan.VkIndexType;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkPipelineBindPoint;
-using static TerraFX.Interop.Vulkan.VkPipelineStageFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.VkSubpassContents;
 using static TerraFX.Interop.Vulkan.Vulkan;
@@ -69,7 +66,7 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
 
             var commandPoolCreateInfo = new VkCommandPoolCreateInfo {
                 sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-                queueFamilyIndex = device.VkCommandQueueFamilyIndex,
+                queueFamilyIndex = device.VkGraphicsCommandQueueFamilyIndex,
             };
             ThrowExternalExceptionIfNotSuccess(vkCreateCommandPool(device.VkDevice, &commandPoolCreateInfo, pAllocator: null, &vkCommandPool));
 
@@ -161,102 +158,6 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
             pClearValues = (VkClearValue*)&renderTargetClearColor,
         };
         vkCmdBeginRenderPass(VkCommandBuffer, &vkRenderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-    }
-
-    /// <inheritdoc />
-    public override void Copy(GraphicsBufferView destination, GraphicsBufferView source)
-        => Copy((VulkanGraphicsBufferView)destination, (VulkanGraphicsBufferView)source);
-
-    /// <inheritdoc />
-    public override void Copy(GraphicsTextureView destination, GraphicsBufferView source)
-        => Copy((VulkanGraphicsTextureView)destination, (VulkanGraphicsBufferView)source);
-
-    /// <inheritdoc cref="Copy(GraphicsBufferView, GraphicsBufferView)" />
-    public void Copy(VulkanGraphicsBufferView destination, VulkanGraphicsBufferView source)
-    {
-        ThrowIfNull(destination);
-        ThrowIfNull(source);
-        ThrowIfNotInInsertBounds(source.Size, destination.Size);
-
-        var vkBufferCopy = new VkBufferCopy {
-            srcOffset = source.Offset,
-            dstOffset = destination.Offset,
-            size = source.Size,
-        };
-        vkCmdCopyBuffer(VkCommandBuffer, source.Resource.VkBuffer, destination.Resource.VkBuffer, 1, &vkBufferCopy);
-    }
-
-    /// <inheritdoc cref="Copy(GraphicsTextureView, GraphicsBufferView)" />
-    public void Copy(VulkanGraphicsTextureView destination, VulkanGraphicsBufferView source)
-    {
-        ThrowIfNull(destination);
-        ThrowIfNull(source);
-
-        var vkCommandBuffer = VkCommandBuffer;
-
-        BeginCopy(vkCommandBuffer, destination);
-        {
-            var vkBufferImageCopy = new VkBufferImageCopy {
-                bufferOffset = source.Offset,
-                bufferRowLength = 0,
-                bufferImageHeight = 0,
-                imageSubresource = new VkImageSubresourceLayers {
-                    aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-                    mipLevel = destination.MipLevelIndex,
-                    baseArrayLayer = 0,
-                    layerCount = 1,
-                },
-                imageExtent = new VkExtent3D {
-                    width = destination.Width,
-                    height = destination.Height,
-                    depth = destination.Depth,
-                },
-            };
-
-            vkCmdCopyBufferToImage(vkCommandBuffer, source.Resource.VkBuffer, destination.Resource.VkImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &vkBufferImageCopy);
-        }
-        EndCopy(vkCommandBuffer, destination);
-
-        static void BeginCopy(VkCommandBuffer vkCommandBuffer, VulkanGraphicsTextureView destination)
-        {
-            var vkImageMemoryBarrier = new VkImageMemoryBarrier {
-                sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-                dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
-                oldLayout = VK_IMAGE_LAYOUT_UNDEFINED,
-                newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                image = destination.Resource.VkImage,
-                subresourceRange = new VkImageSubresourceRange {
-                    aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-                    baseMipLevel = destination.MipLevelIndex,
-                    levelCount = destination.MipLevelCount,
-                    baseArrayLayer = 0,
-                    layerCount = 1,
-                },
-            };
-
-            vkCmdPipelineBarrier(vkCommandBuffer, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, dependencyFlags: 0, memoryBarrierCount: 0, pMemoryBarriers: null, bufferMemoryBarrierCount: 0, pBufferMemoryBarriers: null, imageMemoryBarrierCount: 1, &vkImageMemoryBarrier);
-        }
-
-        static void EndCopy(VkCommandBuffer vkCommandBuffer, VulkanGraphicsTextureView destination)
-        {
-            var vkImageMemoryBarrier = new VkImageMemoryBarrier {
-                sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-                srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
-                dstAccessMask = VK_ACCESS_SHADER_READ_BIT,
-                oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-                image = destination.Resource.VkImage,
-                subresourceRange = new VkImageSubresourceRange {
-                    aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-                    baseMipLevel = destination.MipLevelIndex,
-                    levelCount = destination.MipLevelCount,
-                    baseArrayLayer = 0,
-                    layerCount = 1,
-                },
-            };
-
-            vkCmdPipelineBarrier(vkCommandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, dependencyFlags: 0, memoryBarrierCount: 0, pMemoryBarriers: null, bufferMemoryBarrierCount: 0, pBufferMemoryBarriers: null, imageMemoryBarrierCount: 1, &vkImageMemoryBarrier);
-        }
     }
 
     /// <inheritdoc />

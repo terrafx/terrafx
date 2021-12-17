@@ -98,11 +98,6 @@ public abstract partial class GraphicsDevice : GraphicsAdapterObject, IDisposabl
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public abstract GraphicsShader CreateShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName);
 
-    /// <summary>Rents a graphics render context from the device.</summary>
-    /// <returns>A graphics render context for the device.</returns>
-    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-    public abstract GraphicsRenderContext RentRenderContext();
-
     /// <summary>Creates a new graphics render pass for the device.</summary>
     /// <param name="surface">The surface used by the render pass.</param>
     /// <param name="renderTargetFormat">The format of render targets used by the render pass.</param>
@@ -254,12 +249,41 @@ public abstract partial class GraphicsDevice : GraphicsAdapterObject, IDisposabl
     /// <returns>The memory budget for <paramref name="memoryManager" />.</returns>
     public abstract GraphicsMemoryBudget GetMemoryBudget(GraphicsMemoryManager memoryManager);
 
-    /// <summary>Returns a graphics render context to the device for further use.</summary>
-    /// <param name="renderContext">The graphics render context that should be returned.</param>
+    /// <summary>Rents a compute context from the device.</summary>
+    /// <returns>A compute context for the device.</returns>
+    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+    public abstract GraphicsComputeContext RentComputeContext();
+
+    /// <summary>Rents a copy context from the device.</summary>
+    /// <returns>A copy context for the device.</returns>
+    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+    public abstract GraphicsCopyContext RentCopyContext();
+
+    /// <summary>Rents a render context from the device.</summary>
+    /// <returns>A render context for the device.</returns>
+    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+    public abstract GraphicsRenderContext RentRenderContext();
+
+    /// <summary>Returns a compute context to the device for further use.</summary>
+    /// <param name="computeContext">The compute context that should be returned.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="computeContext" /> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="computeContext" /> is not owned by the device.</exception>
+    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+    public abstract void ReturnContext(GraphicsComputeContext computeContext);
+
+    /// <summary>Returns a copy context to the device for further use.</summary>
+    /// <param name="copyContext">The copy context that should be returned.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="copyContext" /> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="copyContext" /> is not owned by the device.</exception>
+    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+    public abstract void ReturnContext(GraphicsCopyContext copyContext);
+
+    /// <summary>Returns a render context to the device for further use.</summary>
+    /// <param name="renderContext">The render context that should be returned.</param>
     /// <exception cref="ArgumentNullException"><paramref name="renderContext" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="renderContext" /> is not owned by the device.</exception>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-    public abstract void ReturnRenderContext(GraphicsRenderContext renderContext);
+    public abstract void ReturnContext(GraphicsRenderContext renderContext);
 
     /// <summary>Signals a graphics fence.</summary>
     /// <param name="fence">The fence to be signalled</param>

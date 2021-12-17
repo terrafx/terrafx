@@ -40,20 +40,22 @@ public sealed class HelloQuad : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
         _indexBuffer = graphicsDevice.CreateIndexBuffer(64 * 1024);
         _uploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024);
         _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
-        graphicsRenderContext.Reset();
-        _quadPrimitive = CreateQuadPrimitive(graphicsRenderContext);
-        graphicsRenderContext.Flush();
+        var graphicsCopyContext = graphicsDevice.RentCopyContext();
+        {
+            graphicsCopyContext.Reset();
+            _quadPrimitive = CreateQuadPrimitive(graphicsCopyContext);
 
-        graphicsDevice.WaitForIdle();
-        graphicsDevice.ReturnRenderContext(graphicsRenderContext);
+            graphicsCopyContext.Flush();
+            graphicsDevice.WaitForIdle();
+        }
+        graphicsDevice.ReturnContext(graphicsCopyContext);
 
-        // _uploadBuffer.DisposeAllViews();
+        _uploadBuffer.DisposeAllViews();
     }
 
     protected override void Draw(GraphicsRenderContext graphicsRenderContext)
@@ -62,7 +64,7 @@ public sealed class HelloQuad : HelloWindow
         base.Draw(graphicsRenderContext);
     }
 
-    private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext)
+    private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsCopyContext graphicsCopyContext)
     {
         var graphicsRenderPass = GraphicsRenderPass;
         var graphicsSurface = graphicsRenderPass.Surface;
@@ -72,11 +74,11 @@ public sealed class HelloQuad : HelloWindow
 
         return GraphicsDevice.CreatePrimitive(
             graphicsPipeline,
-            CreateVertexBufferView(graphicsContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
-            CreateIndexBufferView(graphicsContext, _indexBuffer, uploadBuffer)
+            CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
+            CreateIndexBufferView(graphicsCopyContext, _indexBuffer, uploadBuffer)
         );
 
-        static GraphicsBufferView CreateIndexBufferView(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer uploadBuffer)
+        static GraphicsBufferView CreateIndexBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer indexBuffer, GraphicsBuffer uploadBuffer)
         {
             var uploadBufferView = uploadBuffer.CreateView<ushort>(6);
             var indexBufferSpan = uploadBufferView.Map<ushort>();
@@ -94,11 +96,11 @@ public sealed class HelloQuad : HelloWindow
             uploadBufferView.UnmapAndWrite();
 
             var indexBufferView = indexBuffer.CreateView<ushort>(6);
-            graphicsContext.Copy(indexBufferView, uploadBufferView);
+            graphicsCopyContext.Copy(indexBufferView, uploadBufferView);
             return indexBufferView;
         }
 
-        static GraphicsBufferView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
+        static GraphicsBufferView CreateVertexBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
         {
             var uploadBufferView = uploadBuffer.CreateView<IdentityVertex>(4);
             var vertexBufferSpan = uploadBufferView.Map<IdentityVertex>();
@@ -126,7 +128,7 @@ public sealed class HelloQuad : HelloWindow
             uploadBufferView.UnmapAndWrite();
 
             var vertexBufferView = vertexBuffer.CreateView<IdentityVertex>(4);
-            graphicsContext.Copy(vertexBufferView, uploadBufferView);
+            graphicsCopyContext.Copy(vertexBufferView, uploadBufferView);
             return vertexBufferView;
         }
 

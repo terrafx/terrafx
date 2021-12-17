@@ -42,18 +42,20 @@ public sealed class HelloTransform : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
         _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsResourceCpuAccess.Write);
         _uploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024);
         _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
-        graphicsRenderContext.Reset();
-        _trianglePrimitive = CreateTrianglePrimitive(graphicsRenderContext);
-        graphicsRenderContext.Flush();
+        var graphicsCopyContext = graphicsDevice.RentCopyContext();
+        {
+            graphicsCopyContext.Reset();
+            _trianglePrimitive = CreateTrianglePrimitive(graphicsCopyContext);
 
-        graphicsDevice.WaitForIdle();
-        graphicsDevice.ReturnRenderContext(graphicsRenderContext);
+            graphicsCopyContext.Flush();
+            graphicsDevice.WaitForIdle();
+        }
+        graphicsDevice.ReturnContext(graphicsCopyContext);
 
         _uploadBuffer.DisposeAllViews();
     }
@@ -90,7 +92,7 @@ public sealed class HelloTransform : HelloWindow
         constantBufferView.UnmapAndWrite();
     }
 
-    private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext)
+    private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsCopyContext graphicsCopyContext)
     {
         var graphicsRenderPass = GraphicsRenderPass;
         var graphicsSurface = graphicsRenderPass.Surface;
@@ -102,14 +104,14 @@ public sealed class HelloTransform : HelloWindow
 
         return GraphicsDevice.CreatePrimitive(
             graphicsPipeline,
-            CreateVertexBufferView(graphicsContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
+            CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
             inputResourceViews: new GraphicsResourceView[2] {
-                CreateConstantBufferView(graphicsContext, constantBuffer),
-                CreateConstantBufferView(graphicsContext, constantBuffer),
+                CreateConstantBufferView(graphicsCopyContext, constantBuffer),
+                CreateConstantBufferView(graphicsCopyContext, constantBuffer),
             }
         );
 
-        static GraphicsBufferView CreateConstantBufferView(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer)
+        static GraphicsBufferView CreateConstantBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer constantBuffer)
         {
             var constantBufferView = constantBuffer.CreateView<Matrix4x4>(1);
             var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
@@ -120,7 +122,7 @@ public sealed class HelloTransform : HelloWindow
             return constantBufferView;
         }
 
-        static GraphicsBufferView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
+        static GraphicsBufferView CreateVertexBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
         {
             var uploadBufferView = uploadBuffer.CreateView<IdentityVertex>(3);
             var vertexBufferSpan = uploadBufferView.Map<IdentityVertex>();
@@ -143,7 +145,7 @@ public sealed class HelloTransform : HelloWindow
             uploadBufferView.UnmapAndWrite();
 
             var vertexBufferView = vertexBuffer.CreateView<IdentityVertex>(3);
-            graphicsContext.Copy(vertexBufferView, uploadBufferView);
+            graphicsCopyContext.Copy(vertexBufferView, uploadBufferView);
             return vertexBufferView;
         }
 

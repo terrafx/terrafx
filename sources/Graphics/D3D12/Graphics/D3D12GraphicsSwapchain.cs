@@ -77,7 +77,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
                 case GraphicsSurfaceKind.Win32:
                 {
                     ThrowExternalExceptionIfFailed(dxgiFactory->CreateSwapChainForHwnd(
-                        (IUnknown*)renderPass.Device.D3D12CommandQueue,
+                        (IUnknown*)renderPass.Device.D3D12DirectCommandQueue,
                         surfaceHandle,
                         &dxgiSwapchainDesc,
                         pFullscreenDesc: null,
@@ -262,7 +262,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
 
         var dxgiSwapchain = DxgiSwapchain;
         ThrowExternalExceptionIfFailed(dxgiSwapchain->ResizeBuffers((uint)renderTargets.Length, (uint)eventArgs.CurrentValue.X, (uint)eventArgs.CurrentValue.Y, _renderTargetFormat.AsDxgiFormat(), SwapChainFlags: 0));
-        _renderTargetIndex = dxgiSwapchain->GetCurrentBackBufferIndex();
+        _renderTargetIndex = GetRenderTargetIndex(dxgiSwapchain, fence);
 
         InitializeRenderTargets(this, renderTargets);
     }
