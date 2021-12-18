@@ -7,6 +7,7 @@ using static TerraFX.Interop.Vulkan.VkCompositeAlphaFlagsKHR;
 using static TerraFX.Interop.Vulkan.VkImageUsageFlags;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkPresentModeKHR;
+using static TerraFX.Interop.Vulkan.VkResult;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.VkSurfaceTransformFlagsKHR;
 using static TerraFX.Interop.Vulkan.Vulkan;
@@ -42,7 +43,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         var vkSurface = CreateVkSurface(device, surface);
         _vkSurface = vkSurface;
 
-        var vkSwapchain = CreateVkSwapchain(device, vkSurface, surface, ref renderTargetCount, renderTargetFormat);
+        var vkSwapchain = CreateVkSwapchain(device, vkSurface, surface.Size, ref renderTargetCount, renderTargetFormat);
         _vkSwapchain = vkSwapchain;
 
         var vkSwapchainImages = GetVkSwapchainImages(device, vkSwapchain, ref renderTargetCount);
@@ -200,7 +201,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         }
     }
 
-    private static VkSwapchainKHR CreateVkSwapchain(VulkanGraphicsDevice device, VkSurfaceKHR vkSurface, IGraphicsSurface surface, ref uint renderTargetCount, GraphicsFormat renderTargetFormat)
+    private static VkSwapchainKHR CreateVkSwapchain(VulkanGraphicsDevice device, VkSurfaceKHR vkSurface, Vector2 surfaceSize, ref uint renderTargetCount, GraphicsFormat renderTargetFormat)
     {
         VkSwapchainKHR vkSwapchain;
         var vkPhysicalDevice = device.Adapter.VkPhysicalDevice;
@@ -229,8 +230,8 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
             surface = vkSurface,
             minImageCount = renderTargetCount,
             imageExtent = new VkExtent2D {
-                width = (uint)surface.Width,
-                height = (uint)surface.Height,
+                width = (uint)surfaceSize.X,
+                height = (uint)surfaceSize.Y,
             },
             imageArrayLayers = 1,
             imageUsage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
@@ -325,8 +326,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         };
         ThrowExternalExceptionIfNotSuccess(vkQueuePresentKHR(device.VkCommandQueue, &vkPresentInfo));
 
-        ThrowExternalExceptionIfNotSuccess(vkAcquireNextImageKHR(device.VkDevice, vkSwapchain, timeout: ulong.MaxValue, VkSemaphore.NULL, fence.VkFence, &renderTargetIndex));
-        _renderTargetIndex = renderTargetIndex;
+        _renderTargetIndex = GetRenderTargetIndex(device, vkSwapchain, fence);
     }
 
     /// <inheritdoc />
@@ -376,12 +376,10 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
 
         CleanupVkSwapchain(vkDevice, _vkSwapchain);
 
-        var surface = Surface;
-
         var renderTargetCount = (uint)_renderTargets.Length;
         var renderTargetFormat = _renderTargetFormat;
 
-        var vkSwapchain = CreateVkSwapchain(device, VkSurface, surface, ref renderTargetCount, renderTargetFormat);
+        var vkSwapchain = CreateVkSwapchain(device, VkSurface, eventArgs.CurrentValue, ref renderTargetCount, renderTargetFormat);
         _vkSwapchain = vkSwapchain;
 
         var vkSwapchainImages = GetVkSwapchainImages(device, vkSwapchain, ref renderTargetCount);
@@ -391,8 +389,8 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         {
             _renderTargets = new VulkanGraphicsRenderTarget[renderTargetCount];
         }
-        _renderTargetIndex = GetRenderTargetIndex(device, vkSwapchain, Fence);
-
         InitializeRenderTargets(this, _renderTargets);
+
+        _renderTargetIndex = GetRenderTargetIndex(device, vkSwapchain, fence);
     }
 }

@@ -2,26 +2,17 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using TerraFX.ApplicationModel;
 using TerraFX.Audio;
 
 namespace TerraFX.Samples.ServiceProviders;
 
-public sealed class PulseAudioServiceProvider : ApplicationServiceProvider
+public sealed class PulseAudioServiceProvider : XlibWindowServiceProvider
 {
     private ValueLazy<PulseAudioService> _audioService;
 
     public PulseAudioServiceProvider()
     {
         _audioService = new ValueLazy<PulseAudioService>(() => new PulseAudioService());
-    }
-
-    protected override void DisposeCore(bool isDisposing)
-    {
-        if (isDisposing)
-        {
-            _audioService.Dispose(DisposeAudioService);
-        }
     }
 
     public override bool TryGetService(Type serviceType, [NotNullWhen(true)] out object? service)
@@ -32,8 +23,13 @@ public sealed class PulseAudioServiceProvider : ApplicationServiceProvider
             return true;
         }
 
-        service = null;
-        return false;
+        return base.TryGetService(serviceType, out service);
+    }
+
+    protected override void DisposeCore(bool isDisposing)
+    {
+        _audioService.Dispose(DisposeAudioService);
+        base.DisposeCore(isDisposing);
     }
 
     private void DisposeAudioService(IAudioService audioService)
