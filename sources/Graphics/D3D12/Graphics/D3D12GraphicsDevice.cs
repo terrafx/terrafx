@@ -10,6 +10,7 @@ using TerraFX.Interop.Windows;
 using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D_FEATURE_LEVEL;
 using static TerraFX.Interop.DirectX.D3D12;
+using static TerraFX.Interop.DirectX.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_FEATURE;
 using static TerraFX.Interop.DirectX.D3D12_HEAP_FLAGS;
@@ -33,7 +34,9 @@ namespace TerraFX.Graphics;
 public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
 {
     private readonly uint _d3d12CbvSrvUavDescriptorHandleIncrementSize;
-    private readonly ID3D12CommandQueue* _d3d12CommandQueue;
+    private readonly ID3D12CommandQueue* _d3d12ComputeCommandQueue;
+    private readonly ID3D12CommandQueue* _d3d12CopyCommandQueue;
+    private readonly ID3D12CommandQueue* _d3d12DirectCommandQueue;
     private readonly ID3D12Device* _d3d12Device;
     private readonly D3D12_FEATURE_DATA_D3D12_OPTIONS _d3d12Options;
     private readonly uint _d3d12RtvDescriptorHandleIncrementSize;
@@ -41,16 +44,22 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     private readonly D3D12GraphicsMemoryManager[] _memoryManagers;
     private readonly D3D12GraphicsFence _waitForIdleFence;
 
+    private ContextPool<D3D12GraphicsDevice, D3D12GraphicsComputeContext> _computeContextPool;
+    private ContextPool<D3D12GraphicsDevice, D3D12GraphicsCopyContext> _copyContextPool;
+    private MemoryBudgetInfo _memoryBudgetInfo;
     private string _name = null!;
     private ContextPool<D3D12GraphicsDevice, D3D12GraphicsRenderContext> _renderContextPool;
+
     private VolatileState _state;
 
-    internal D3D12GraphicsDevice(D3D12GraphicsAdapter adapter, delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> createMemoryAllocator)
+    internal D3D12GraphicsDevice(D3D12GraphicsAdapter adapter, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator)
         : base(adapter)
     {
         var d3d12Device = CreateD3D12Device(adapter);
 
-        _d3d12CommandQueue = CreateD3D12CommandQueue(d3d12Device);
+        _d3d12ComputeCommandQueue = CreateD3D12CommandQueue(d3d12Device, D3D12_COMMAND_LIST_TYPE_COMPUTE);
+        _d3d12CopyCommandQueue = CreateD3D12CommandQueue(d3d12Device, D3D12_COMMAND_LIST_TYPE_COPY);
+        _d3d12DirectCommandQueue = CreateD3D12CommandQueue(d3d12Device, D3D12_COMMAND_LIST_TYPE_DIRECT);
         _d3d12Device = d3d12Device;
         _d3d12Options = GetD3D12Options(d3d12Device);
 
@@ -61,18 +70,24 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
         _d3d12SupportsResourceHeapTier2 = d3d12SupportsResourceHeapTier2;
 
         _memoryManagers = CreateMemoryManagers(this, createMemoryAllocator, d3d12SupportsResourceHeapTier2);
-        // TODO: UpdateBudget
-  
         _waitForIdleFence = CreateFence(isSignalled: false);
+
+        _computeContextPool = new ContextPool<D3D12GraphicsDevice, D3D12GraphicsComputeContext>();
+        _copyContextPool = new ContextPool<D3D12GraphicsDevice, D3D12GraphicsCopyContext>();
         _renderContextPool = new ContextPool<D3D12GraphicsDevice, D3D12GraphicsRenderContext>();
+
+        _memoryBudgetInfo = new MemoryBudgetInfo();
+        UpdateMemoryBudgetInfo(ref _memoryBudgetInfo, totalOperationCount: 0);
 
         _ = _state.Transition(to: Initialized);
         Name = nameof(D3D12GraphicsDevice);
 
-        static ID3D12CommandQueue* CreateD3D12CommandQueue(ID3D12Device* d3d12Device)
+        static ID3D12CommandQueue* CreateD3D12CommandQueue(ID3D12Device* d3d12Device, D3D12_COMMAND_LIST_TYPE d3d12CommandListType)
         {
             ID3D12CommandQueue* d3d12CommandQueue;
-            var commandQueueDesc = new D3D12_COMMAND_QUEUE_DESC();
+            var commandQueueDesc = new D3D12_COMMAND_QUEUE_DESC {
+                Type = d3d12CommandListType,
+            };
 
             ThrowExternalExceptionIfFailed(d3d12Device->CreateCommandQueue(&commandQueueDesc, __uuidof<ID3D12CommandQueue>(), (void**)&d3d12CommandQueue));
             return d3d12CommandQueue;
@@ -92,13 +107,13 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
             return d3d12Options;
         }
 
-        static D3D12GraphicsMemoryManager[] CreateMemoryManagers(D3D12GraphicsDevice device, delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> createMemoryAllocator, bool d3d12SupportsResourceHeapTier2)
+        static D3D12GraphicsMemoryManager[] CreateMemoryManagers(D3D12GraphicsDevice device, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator, bool d3d12SupportsResourceHeapTier2)
         {
             D3D12GraphicsMemoryManager[] memoryManagers;
 
             if (d3d12SupportsResourceHeapTier2)
             {
-                memoryManagers = new D3D12GraphicsMemoryManager[3] {
+                memoryManagers = new D3D12GraphicsMemoryManager[MaxMemoryManagerKinds] {
                     new D3D12GraphicsMemoryManager(device, createMemoryAllocator, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_DEFAULT),
                     new D3D12GraphicsMemoryManager(device, createMemoryAllocator, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_UPLOAD),
                     new D3D12GraphicsMemoryManager(device, createMemoryAllocator, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_READBACK),
@@ -106,7 +121,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
             }
             else
             {
-                memoryManagers = new D3D12GraphicsMemoryManager[9] {
+                memoryManagers = new D3D12GraphicsMemoryManager[MaxMemoryManagerCount] {
                     new D3D12GraphicsMemoryManager(device, createMemoryAllocator, D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS, D3D12_HEAP_TYPE_DEFAULT),
                     new D3D12GraphicsMemoryManager(device, createMemoryAllocator, D3D12_HEAP_FLAG_ALLOW_ONLY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
                     new D3D12GraphicsMemoryManager(device, createMemoryAllocator, D3D12_HEAP_FLAG_ALLOW_ONLY_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
@@ -134,13 +149,33 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     /// <summary>Gets the descriptor handle increment size for <see cref="D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV" />.</summary>
     public uint D3D12CbvSrvUavDescriptorHandleIncrementSize => _d3d12CbvSrvUavDescriptorHandleIncrementSize;
 
-    /// <summary>Gets the <see cref="ID3D12CommandQueue" /> used by the device.</summary>
-    public ID3D12CommandQueue* D3D12CommandQueue
+    /// <summary>Gets the <see cref="ID3D12CommandQueue" /> used by the device for compute commands.</summary>
+    public ID3D12CommandQueue* D3D12ComputeCommandQueue
     {
         get
         {
             AssertNotDisposedOrDisposing(_state);
-            return _d3d12CommandQueue;
+            return _d3d12ComputeCommandQueue;
+        }
+    }
+
+    /// <summary>Gets the <see cref="ID3D12CommandQueue" /> used by the device for copy commands.</summary>
+    public ID3D12CommandQueue* D3D12CopyCommandQueue
+    {
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _d3d12CopyCommandQueue;
+        }
+    }
+
+    /// <summary>Gets the <see cref="ID3D12CommandQueue" /> used by the device for rendering commands.</summary>
+    public ID3D12CommandQueue* D3D12DirectCommandQueue
+    {
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _d3d12DirectCommandQueue;
         }
     }
 
@@ -174,7 +209,9 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
         set
         {
             _name = D3D12Device->UpdateD3D12Name(value);
-            _ = D3D12CommandQueue->UpdateD3D12Name(value);
+            _ = D3D12ComputeCommandQueue->UpdateD3D12Name(value);
+            _ = D3D12CopyCommandQueue->UpdateD3D12Name(value);
+            _ = D3D12DirectCommandQueue->UpdateD3D12Name(value);
         }
     }
 
@@ -235,12 +272,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
             return cpuAccess switch {
                 GraphicsResourceCpuAccess.Read => D3D12_RESOURCE_STATE_COPY_DEST,
                 GraphicsResourceCpuAccess.Write => D3D12_RESOURCE_STATE_GENERIC_READ,
-                _ => kind switch {
-                    GraphicsBufferKind.Vertex => D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-                    GraphicsBufferKind.Index => D3D12_RESOURCE_STATE_INDEX_BUFFER | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-                    GraphicsBufferKind.Constant => D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-                    _ => default,
-                },
+                _ => D3D12_RESOURCE_STATE_COMMON,
             };
         }
     }
@@ -253,21 +285,10 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
-    public override D3D12GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResource> resources = default)
+    public override D3D12GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResourceInfo> resources = default)
     {
         ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
         return new D3D12GraphicsPipelineSignature(this, inputs, resources);
-    }
-
-    /// <inheritdoc />
-    public override D3D12GraphicsPrimitive CreatePrimitive(GraphicsPipeline pipeline, GraphicsBufferView vertexBufferView, GraphicsBufferView? indexBufferView = null, ReadOnlySpan<GraphicsResourceView> inputResourceViews = default)
-        => CreatePrimitive((D3D12GraphicsPipeline)pipeline, (D3D12GraphicsBufferView)vertexBufferView, (D3D12GraphicsBufferView?)indexBufferView, inputResourceViews);
-
-    /// <inheritdoc cref="CreatePrimitive(GraphicsPipeline, GraphicsBufferView, GraphicsBufferView, ReadOnlySpan{GraphicsResourceView})" />
-    private D3D12GraphicsPrimitive CreatePrimitive(D3D12GraphicsPipeline pipeline, D3D12GraphicsBufferView vertexBufferView, D3D12GraphicsBufferView? indexBufferView = null, ReadOnlySpan<GraphicsResourceView> inputResourceViews = default)
-    {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
-        return new D3D12GraphicsPrimitive(this, pipeline, vertexBufferView, indexBufferView, inputResourceViews);
     }
 
     /// <inheritdoc />
@@ -432,7 +453,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
             return cpuAccess switch {
                 GraphicsResourceCpuAccess.Read => D3D12_RESOURCE_STATE_COPY_DEST,
                 GraphicsResourceCpuAccess.Write => D3D12_RESOURCE_STATE_GENERIC_READ,
-                _ => D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+                _ => D3D12_RESOURCE_STATE_COMMON,
             };
         }
     }
@@ -442,12 +463,60 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
         => GetMemoryBudget((D3D12GraphicsMemoryManager)memoryManager);
 
     /// <inheritdoc cref="GetMemoryBudget(GraphicsMemoryManager)" />
-    public GraphicsMemoryBudget GetMemoryBudget(D3D12GraphicsMemoryManager memoryManager) => new GraphicsMemoryBudget {
-        EstimatedBudget = nuint.MaxValue,
-        EstimatedUsage = 0,
-        TotalAllocatedMemoryRegionSize = 0,
-        TotalAllocatorSize = 0,
-    };
+    public GraphicsMemoryBudget GetMemoryBudget(D3D12GraphicsMemoryManager memoryManager)
+    {
+        ulong totalOperationCount;
+
+        if (memoryManager.D3D12HeapType == D3D12_HEAP_TYPE_DEFAULT)
+        {
+            var memoryManagerKindIndex = (int)(D3D12_HEAP_TYPE_DEFAULT - 1);
+            totalOperationCount = GetTotalOperationCount(memoryManagerKindIndex);
+        }
+        else
+        {
+            var memoryManagerKindIndex = (int)(D3D12_HEAP_TYPE_UPLOAD - 1);
+            totalOperationCount = GetTotalOperationCount(memoryManagerKindIndex);
+
+            memoryManagerKindIndex = (int)(D3D12_HEAP_TYPE_READBACK - 1);
+            totalOperationCount += GetTotalOperationCount(memoryManagerKindIndex);
+        }
+
+        ref var memoryBudgetInfo = ref _memoryBudgetInfo;
+
+        if ((totalOperationCount - memoryBudgetInfo.TotalOperationCountAtLastUpdate) >= 30)
+        {
+            UpdateMemoryBudgetInfo(ref memoryBudgetInfo, totalOperationCount);
+        }
+
+        using var readerLock = new DisposableReaderLock(memoryBudgetInfo.RWLock, isExternallySynchronized: false);
+        return GetMemoryBudgetInternal(memoryManager.D3D12HeapType, ref memoryBudgetInfo);
+    }
+
+    /// <inheritdoc />
+    public override D3D12GraphicsComputeContext RentComputeContext()
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        return _computeContextPool.Rent(this, &CreateComputeContext);
+
+        static D3D12GraphicsComputeContext CreateComputeContext(D3D12GraphicsDevice device)
+        {
+            AssertNotNull(device);
+            return new D3D12GraphicsComputeContext(device);
+        }
+    }
+
+    /// <inheritdoc />
+    public override D3D12GraphicsCopyContext RentCopyContext()
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        return _copyContextPool.Rent(this, &CreateCopyContext);
+
+        static D3D12GraphicsCopyContext CreateCopyContext(D3D12GraphicsDevice device)
+        {
+            AssertNotNull(device);
+            return new D3D12GraphicsCopyContext(device);
+        }
+    }
 
     /// <inheritdoc />
     public override D3D12GraphicsRenderContext RentRenderContext()
@@ -463,11 +532,45 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
-    public override void ReturnRenderContext(GraphicsRenderContext renderContext)
-        => ReturnRenderContext((D3D12GraphicsRenderContext)renderContext);
+    public override void ReturnContext(GraphicsComputeContext computeContext)
+        => ReturnContext((D3D12GraphicsComputeContext)computeContext);
 
-    /// <inheritdoc cref="ReturnRenderContext(GraphicsRenderContext)" />
-    public void ReturnRenderContext(D3D12GraphicsRenderContext renderContext)
+    /// <inheritdoc />
+    public override void ReturnContext(GraphicsCopyContext copyContext)
+        => ReturnContext((D3D12GraphicsCopyContext)copyContext);
+
+    /// <inheritdoc />
+    public override void ReturnContext(GraphicsRenderContext renderContext)
+        => ReturnContext((D3D12GraphicsRenderContext)renderContext);
+
+    /// <inheritdoc cref="ReturnContext(GraphicsComputeContext)" />
+    public void ReturnContext(D3D12GraphicsComputeContext computeContext)
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        ThrowIfNull(computeContext);
+
+        if (computeContext.Device != this)
+        {
+            ThrowForInvalidParent(computeContext.Device);
+        }
+        _computeContextPool.Return(computeContext);
+    }
+
+    /// <inheritdoc cref="ReturnContext(GraphicsCopyContext)" />
+    public void ReturnContext(D3D12GraphicsCopyContext copyContext)
+    {
+        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        ThrowIfNull(copyContext);
+
+        if (copyContext.Device != this)
+        {
+            ThrowForInvalidParent(copyContext.Device);
+        }
+        _copyContextPool.Return(copyContext);
+    }
+
+    /// <inheritdoc cref="ReturnContext(GraphicsRenderContext)" />
+    public void ReturnContext(D3D12GraphicsRenderContext renderContext)
     {
         ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
         ThrowIfNull(renderContext);
@@ -485,14 +588,14 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
 
     /// <inheritdoc cref="Signal(GraphicsFence)" />
     public void Signal(D3D12GraphicsFence fence)
-        => ThrowExternalExceptionIfFailed(D3D12CommandQueue->Signal(fence.D3D12Fence, fence.D3D12FenceSignalValue));
+        => ThrowExternalExceptionIfFailed(D3D12DirectCommandQueue->Signal(fence.D3D12Fence, fence.D3D12FenceSignalValue));
 
     /// <inheritdoc />
     public override void WaitForIdle()
     {
         var waitForIdleFence = WaitForIdleFence;
 
-        ThrowExternalExceptionIfFailed(_d3d12CommandQueue->Signal(waitForIdleFence.D3D12Fence, waitForIdleFence.D3D12FenceSignalValue));
+        ThrowExternalExceptionIfFailed(_d3d12DirectCommandQueue->Signal(waitForIdleFence.D3D12Fence, waitForIdleFence.D3D12FenceSignalValue));
 
         waitForIdleFence.Wait();
         waitForIdleFence.Reset();
@@ -509,6 +612,8 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
 
             if (isDisposing)
             {
+                _computeContextPool.Dispose();
+                _copyContextPool.Dispose();
                 _renderContextPool.Dispose();
                 _waitForIdleFence?.Dispose();
             }
@@ -518,11 +623,82 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
                 memoryManager.Dispose();
             }
 
-            ReleaseIfNotNull(_d3d12CommandQueue);
+            ReleaseIfNotNull(_d3d12ComputeCommandQueue);
+            ReleaseIfNotNull(_d3d12CopyCommandQueue);
+            ReleaseIfNotNull(_d3d12DirectCommandQueue);
             ReleaseIfNotNull(_d3d12Device);
         }
 
         _state.EndDispose();
+    }
+
+    private GraphicsMemoryBudget GetMemoryBudgetInternal(D3D12_HEAP_TYPE d3d12HeapType, ref MemoryBudgetInfo memoryBudgetInfo)
+    {
+        // This method should only be called under the reader lock
+
+        var estimatedMemoryBudget = 0UL;
+        var estimatedMemoryUsage = 0UL;
+        var totalFreeMemoryRegionSize = 0UL;
+        var totalSize = 0UL;
+        var totalSizeAtLastUpdate = 0UL;
+
+        switch (d3d12HeapType)
+        {
+            case D3D12_HEAP_TYPE_DEFAULT:
+            {
+                estimatedMemoryBudget = memoryBudgetInfo.DxgiQueryLocalVideoMemoryInfo.Budget;
+                estimatedMemoryUsage = memoryBudgetInfo.DxgiQueryLocalVideoMemoryInfo.CurrentUsage;
+
+                var memoryManagerKindIndex = (int)(D3D12_HEAP_TYPE_DEFAULT - 1);
+
+                totalFreeMemoryRegionSize = GetTotalFreeMemoryRegionSize(memoryManagerKindIndex);
+                totalSize = GetTotalSize(memoryManagerKindIndex);
+                totalSizeAtLastUpdate = memoryBudgetInfo.GetTotalSizeAtLastUpdate(memoryManagerKindIndex);
+                break;
+            }
+
+            case D3D12_HEAP_TYPE_UPLOAD:
+            case D3D12_HEAP_TYPE_READBACK:
+            {
+                estimatedMemoryBudget = memoryBudgetInfo.DxgiQueryNonLocalVideoMemoryInfo.Budget;
+                estimatedMemoryUsage = memoryBudgetInfo.DxgiQueryNonLocalVideoMemoryInfo.CurrentUsage;
+
+                var memoryManagerKindIndex = (int)(D3D12_HEAP_TYPE_UPLOAD - 1);
+
+                totalFreeMemoryRegionSize = GetTotalFreeMemoryRegionSize(memoryManagerKindIndex);
+                totalSize = GetTotalSize(memoryManagerKindIndex);
+                totalSizeAtLastUpdate = memoryBudgetInfo.GetTotalSizeAtLastUpdate(memoryManagerKindIndex);
+
+                memoryManagerKindIndex = (int)(D3D12_HEAP_TYPE_READBACK - 1);
+
+                totalFreeMemoryRegionSize += GetTotalFreeMemoryRegionSize(memoryManagerKindIndex);
+                totalSize += GetTotalSize(memoryManagerKindIndex);
+                totalSizeAtLastUpdate += memoryBudgetInfo.GetTotalSizeAtLastUpdate(memoryManagerKindIndex);
+                break;
+            }
+
+            default:
+            {
+                ThrowForInvalidKind(d3d12HeapType);
+                break;
+            }
+        }
+
+        if ((estimatedMemoryUsage + totalSize) > totalSizeAtLastUpdate)
+        {
+            estimatedMemoryUsage = estimatedMemoryUsage + totalSize - totalSizeAtLastUpdate;
+        }
+        else
+        {
+            estimatedMemoryUsage = 0;
+        }
+
+        return new GraphicsMemoryBudget {
+            EstimatedMemoryBudget = estimatedMemoryBudget,
+            EstimatedMemoryUsage = estimatedMemoryUsage,
+            TotalFreeMemoryRegionSize = totalFreeMemoryRegionSize,
+            TotalSize = totalSize,
+        };
     }
 
     private int GetMemoryManagerIndex(GraphicsResourceCpuAccess cpuAccess, int kind)
@@ -544,5 +720,93 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
         }
 
         return memoryManagerIndex;
+    }
+
+    private void UpdateMemoryBudgetInfo(ref MemoryBudgetInfo memoryBudgetInfo, ulong totalOperationCount)
+    {
+        using var writerLock = new DisposableWriterLock(memoryBudgetInfo.RWLock, isExternallySynchronized: false);
+        UpdateMemoryBudgetInfoInternal(ref memoryBudgetInfo, totalOperationCount);
+    }
+
+    private void UpdateMemoryBudgetInfoInternal(ref MemoryBudgetInfo memoryBudgetInfo, ulong totalOperationCount)
+    {
+        // This method should only be called under the writer lock
+
+        DXGI_QUERY_VIDEO_MEMORY_INFO dxgiQueryLocalVideoMemoryInfo;
+
+        if (Adapter.TryGetDxgiQueryLocalVideoMemoryInfo(&dxgiQueryLocalVideoMemoryInfo))
+        {
+            memoryBudgetInfo.DxgiQueryLocalVideoMemoryInfo = dxgiQueryLocalVideoMemoryInfo;
+        }
+
+        DXGI_QUERY_VIDEO_MEMORY_INFO dxgiQueryNonLocalVideoMemoryInfo;
+
+        if (Adapter.TryGetDxgiQueryNonLocalVideoMemoryInfo(&dxgiQueryNonLocalVideoMemoryInfo))
+        {
+            memoryBudgetInfo.DxgiQueryNonLocalVideoMemoryInfo = dxgiQueryNonLocalVideoMemoryInfo;
+        }
+
+        memoryBudgetInfo.TotalOperationCountAtLastUpdate = totalOperationCount;
+
+        for (var memoryManagerKindIndex = 0; memoryManagerKindIndex < MaxMemoryManagerKinds; memoryManagerKindIndex++)
+        {
+            memoryBudgetInfo.SetTotalFreeMemoryRegionSizeAtLastUpdate(memoryManagerKindIndex, GetTotalFreeMemoryRegionSize(memoryManagerKindIndex));
+            memoryBudgetInfo.SetTotalSizeAtLastUpdate(memoryManagerKindIndex, GetTotalSize(memoryManagerKindIndex));
+        }
+    }
+
+    private ulong GetTotalOperationCount(int memoryManagerKindIndex)
+    {
+        Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
+
+        if (D3D12SupportsResourceHeapTier2)
+        {
+            return _memoryManagers[memoryManagerKindIndex].OperationCount;
+        }
+        else
+        {
+            memoryManagerKindIndex *= 3;
+
+            return _memoryManagers[memoryManagerKindIndex + 0].OperationCount
+                 + _memoryManagers[memoryManagerKindIndex + 1].OperationCount
+                 + _memoryManagers[memoryManagerKindIndex + 2].OperationCount;
+        }
+    }
+
+    private ulong GetTotalFreeMemoryRegionSize(int memoryManagerKindIndex)
+    {
+        Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
+
+
+        if (D3D12SupportsResourceHeapTier2)
+        {
+            return _memoryManagers[memoryManagerKindIndex].TotalFreeMemoryRegionSize;
+        }
+        else
+        {
+            memoryManagerKindIndex *= 3;
+
+            return _memoryManagers[memoryManagerKindIndex + 0].TotalFreeMemoryRegionSize
+                 + _memoryManagers[memoryManagerKindIndex + 1].TotalFreeMemoryRegionSize
+                 + _memoryManagers[memoryManagerKindIndex + 2].TotalFreeMemoryRegionSize;
+        }
+    }
+
+    private ulong GetTotalSize(int memoryManagerKindIndex)
+    {
+        Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
+
+        if (D3D12SupportsResourceHeapTier2)
+        {
+            return _memoryManagers[memoryManagerKindIndex].Size;
+        }
+        else
+        {
+            memoryManagerKindIndex *= 3;
+
+            return _memoryManagers[memoryManagerKindIndex + 0].Size
+                 + _memoryManagers[memoryManagerKindIndex + 1].Size
+                 + _memoryManagers[memoryManagerKindIndex + 2].Size;
+        }
     }
 }

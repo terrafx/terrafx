@@ -1,13 +1,13 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 using TerraFX.Numerics;
 using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D_PRIMITIVE_TOPOLOGY;
+using static TerraFX.Interop.DirectX.D3D12;
 using static TerraFX.Interop.DirectX.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_RESOURCE_STATES;
 using static TerraFX.Interop.DirectX.DXGI_FORMAT;
@@ -97,6 +97,9 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     /// <inheritdoc />
     public override D3D12GraphicsFence Fence => _fence;
 
+    /// <inheritdoc />
+    public override uint MaxBoundVertexBufferViewCount => D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT;
+
     /// <summary>Gets or sets the name for the pipeline signature.</summary>
     public override string Name
     {
@@ -146,257 +149,129 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
-    public override void Copy(GraphicsBufferView destination, GraphicsBufferView source)
-        => Copy((D3D12GraphicsBufferView)destination, (D3D12GraphicsBufferView)source);
+    public override void BindIndexBufferView(GraphicsBufferView indexBufferView)
+        => BindIndexBufferView((D3D12GraphicsBufferView)indexBufferView);
 
-    /// <inheritdoc />
-    public override void Copy(GraphicsTextureView destination, GraphicsBufferView source)
-        => Copy((D3D12GraphicsTextureView)destination, (D3D12GraphicsBufferView)source);
-
-    /// <inheritdoc cref="Copy(GraphicsBufferView, GraphicsBufferView)" />
-    public void Copy(D3D12GraphicsBufferView destination, D3D12GraphicsBufferView source)
+    /// <inheritdoc cref="BindIndexBufferView(GraphicsBufferView)" />
+    public void BindIndexBufferView(D3D12GraphicsBufferView indexBufferView)
     {
-        ThrowIfNull(destination);
-        ThrowIfNull(source);
-        ThrowIfNotInInsertBounds(source.Size, destination.Size);
+        ThrowIfNull(indexBufferView);
 
-        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
-
-        var destinationResource = destination.Resource;
-        var sourceResource = source.Resource;
-
-        BeginCopy(d3d12GraphicsCommandList, destinationResource, sourceResource);
-        {
-            d3d12GraphicsCommandList->CopyBufferRegion(destinationResource.D3D12Resource, destination.Offset, sourceResource.D3D12Resource, source.Offset, source.Size);
-        }
-        EndCopy(d3d12GraphicsCommandList, destinationResource, sourceResource);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static void BeginCopy(ID3D12GraphicsCommandList* d3d12GraphicsCommandList, D3D12GraphicsBuffer destination, D3D12GraphicsBuffer source)
-        {
-            var d3d12ResourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
-            var numD3D12ResourceBarriers = 0u;
-
-            if (destination.CpuAccess == GraphicsResourceCpuAccess.None)
-            {
-                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
-                    destination.D3D12Resource,
-                    stateBefore: destination.D3D12ResourceState,
-                    stateAfter: D3D12_RESOURCE_STATE_COPY_DEST
-                );
-                numD3D12ResourceBarriers++;
-            }
-
-            if (source.CpuAccess == GraphicsResourceCpuAccess.None)
-            {
-                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
-                    source.D3D12Resource,
-                    stateBefore: source.D3D12ResourceState,
-                    stateAfter: D3D12_RESOURCE_STATE_COPY_SOURCE
-                );
-                numD3D12ResourceBarriers++;
-            }
-
-            if (numD3D12ResourceBarriers != 0)
-            {
-                d3d12GraphicsCommandList->ResourceBarrier(numD3D12ResourceBarriers, d3d12ResourceBarriers);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static void EndCopy(ID3D12GraphicsCommandList* d3d12GraphicsCommandList, D3D12GraphicsBuffer destination, D3D12GraphicsBuffer source)
-        {
-            var d3d12ResourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
-            var numD3D12ResourceBarriers = 0u;
-
-            if (source.CpuAccess == GraphicsResourceCpuAccess.None)
-            {
-                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
-                    source.D3D12Resource,
-                    stateBefore: D3D12_RESOURCE_STATE_COPY_SOURCE,
-                    stateAfter: source.D3D12ResourceState
-                );
-                numD3D12ResourceBarriers++;
-            }
-
-            if (destination.CpuAccess == GraphicsResourceCpuAccess.None)
-            {
-                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
-                    destination.D3D12Resource,
-                    stateBefore: D3D12_RESOURCE_STATE_COPY_DEST,
-                    stateAfter: destination.D3D12ResourceState
-                );
-                numD3D12ResourceBarriers++;
-            }
-
-            if (numD3D12ResourceBarriers != 0)
-            {
-                d3d12GraphicsCommandList->ResourceBarrier(numD3D12ResourceBarriers, d3d12ResourceBarriers);
-            }
-        }
-    }
-
-    /// <inheritdoc cref="Copy(GraphicsTextureView, GraphicsBufferView)" />
-    public void Copy(D3D12GraphicsTextureView destination, D3D12GraphicsBufferView source)
-    {
-        ThrowIfNull(destination);
-        ThrowIfNull(source);
-
-        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
-
-        var destinationResource = destination.Resource;
-        var sourceResource = source.Resource;
-
-        BeginCopy(d3d12GraphicsCommandList, destinationResource, sourceResource);
-        {
-            var d3d12DestinationTextureCopyLocation = new D3D12_TEXTURE_COPY_LOCATION(destinationResource.D3D12Resource, Sub: destination.D3D12SubresourceIndex);
-
-            var d3d12SourceTextureCopyLocation = new D3D12_TEXTURE_COPY_LOCATION(sourceResource.D3D12Resource, in destination.D3D12PlacedSubresourceFootprints[0]);
-            d3d12SourceTextureCopyLocation.PlacedFootprint.Offset = source.Offset;
-
-            d3d12GraphicsCommandList->CopyTextureRegion(&d3d12DestinationTextureCopyLocation, DstX: 0, DstY: 0, DstZ: 0, &d3d12SourceTextureCopyLocation, pSrcBox: null);
-        }
-        EndCopy(d3d12GraphicsCommandList, destinationResource, sourceResource);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static void BeginCopy(ID3D12GraphicsCommandList* d3d12GraphicsCommandList, D3D12GraphicsTexture destination, D3D12GraphicsBuffer source)
-        {
-            var d3d12ResourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
-            var numD3D12ResourceBarriers = 0u;
-
-            if (destination.CpuAccess == GraphicsResourceCpuAccess.None)
-            {
-                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
-                    destination.D3D12Resource,
-                    stateBefore: destination.D3D12ResourceState,
-                    stateAfter: D3D12_RESOURCE_STATE_COPY_DEST
-                );
-                numD3D12ResourceBarriers++;
-            }
-
-            if (source.CpuAccess == GraphicsResourceCpuAccess.None)
-            {
-                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
-                    source.D3D12Resource,
-                    stateBefore: source.D3D12ResourceState,
-                    stateAfter: D3D12_RESOURCE_STATE_COPY_SOURCE
-                );
-                numD3D12ResourceBarriers++;
-            }
-
-            if (numD3D12ResourceBarriers != 0)
-            {
-                d3d12GraphicsCommandList->ResourceBarrier(numD3D12ResourceBarriers, d3d12ResourceBarriers);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static void EndCopy(ID3D12GraphicsCommandList* d3d12GraphicsCommandList, D3D12GraphicsTexture destination, D3D12GraphicsBuffer source)
-        {
-            var d3d12ResourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
-            var numD3D12ResourceBarriers = 0u;
-
-            if (source.CpuAccess == GraphicsResourceCpuAccess.None)
-            {
-                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
-                    source.D3D12Resource,
-                    stateBefore: D3D12_RESOURCE_STATE_COPY_SOURCE,
-                    stateAfter: source.D3D12ResourceState
-                );
-                numD3D12ResourceBarriers++;
-            }
-
-            if (destination.CpuAccess == GraphicsResourceCpuAccess.None)
-            {
-                d3d12ResourceBarriers[numD3D12ResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
-                    destination.D3D12Resource,
-                    stateBefore: D3D12_RESOURCE_STATE_COPY_DEST,
-                    stateAfter: destination.D3D12ResourceState
-                );
-                numD3D12ResourceBarriers++;
-            }
-
-            if (numD3D12ResourceBarriers != 0)
-            {
-                d3d12GraphicsCommandList->ResourceBarrier(numD3D12ResourceBarriers, d3d12ResourceBarriers);
-            }
-        }
-    }
-
-    /// <inheritdoc />
-    public override void Draw(GraphicsPrimitive primitive)
-        => Draw((D3D12GraphicsPrimitive)primitive);
-
-    /// <inheritdoc cref="Draw(GraphicsPrimitive)" />
-    public void Draw(D3D12GraphicsPrimitive primitive)
-    {
-        ThrowIfNull(primitive);
-
-        var renderPass = RenderPass;
-
-        if (renderPass is null)
-        {
-            ThrowForInvalidState(nameof(RenderPass));
-        }
-
-        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
-        var pipeline = primitive.Pipeline;
-
-        d3d12GraphicsCommandList->SetGraphicsRootSignature(pipeline.Signature.D3D12RootSignature);
-        d3d12GraphicsCommandList->SetPipelineState(pipeline.D3D12PipelineState);
-
-        var d3d12DescriptorHeaps = stackalloc ID3D12DescriptorHeap*[1] {
-            primitive.D3D12CbvSrvUavDescriptorHeap,
+        var d3d12IndexBufferView = new D3D12_INDEX_BUFFER_VIEW {
+            BufferLocation = indexBufferView.D3D12ResourceGpuVirtualAddress,
+            SizeInBytes = checked((uint)indexBufferView.Size),
+            Format = indexBufferView.Stride == 2 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT,
         };
-        d3d12GraphicsCommandList->SetDescriptorHeaps(1, d3d12DescriptorHeaps);
 
-        var vertexBufferView = primitive.VertexBufferView;
+        D3D12GraphicsCommandList->IASetIndexBuffer(&d3d12IndexBufferView);
+    }
+
+    /// <inheritdoc />
+    public override void BindPipeline(GraphicsPipeline pipeline)
+        => BindPipeline((D3D12GraphicsPipeline)pipeline);
+
+    /// <inheritdoc cref="BindPipeline(GraphicsPipeline)" />
+    public void BindPipeline(D3D12GraphicsPipeline pipeline)
+    {
+        ThrowIfNull(pipeline);
+        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
+
+        d3d12GraphicsCommandList->SetPipelineState(pipeline.D3D12PipelineState);
+        d3d12GraphicsCommandList->SetGraphicsRootSignature(pipeline.Signature.D3D12RootSignature);
+    }
+
+    /// <inheritdoc />
+    public override void BindPipelineResourceViews(GraphicsPipelineResourceViewSet pipelineResourceViews)
+        => BindPipeline((D3D12GraphicsPipelineResourceViewSet)pipelineResourceViews);
+
+    /// <inheritdoc cref="BindPipelineResourceViews(GraphicsPipelineResourceViewSet)" />
+    public void BindPipeline(D3D12GraphicsPipelineResourceViewSet pipelineResourceViews)
+    {
+        ThrowIfNull(pipelineResourceViews);
+        var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
+
+        var d3d12CbvSrvUavDescriptorHeap = pipelineResourceViews.D3D12CbvSrvUavDescriptorHeap;
+        d3d12GraphicsCommandList->SetDescriptorHeaps(1, &d3d12CbvSrvUavDescriptorHeap);
+
+        var resourceViews = pipelineResourceViews.ResourceViews;
+
+        var rootDescriptorTableIndex = 0;
+        var cbvSrvUavDescriptorHandleIncrementSize = Device.D3D12CbvSrvUavDescriptorHandleIncrementSize;
+
+        for (var index = 0; index < resourceViews.Length; index++)
+        {
+            var resourceView = resourceViews[index];
+
+            if (resourceView is D3D12GraphicsBufferView d3d12GraphicsBufferView)
+            {
+                d3d12GraphicsCommandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), d3d12GraphicsBufferView.D3D12ResourceGpuVirtualAddress);
+            }
+            else if (resourceView is D3D12GraphicsTextureView d3d12GraphicsTextureView)
+            {
+                var gpuDescriptorHandleForHeapStart = d3d12CbvSrvUavDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+                d3d12GraphicsCommandList->SetGraphicsRootDescriptorTable(unchecked((uint)index), gpuDescriptorHandleForHeapStart.Offset(rootDescriptorTableIndex, cbvSrvUavDescriptorHandleIncrementSize));
+                rootDescriptorTableIndex++;
+            }
+        }
+    }
+
+    /// <inheritdoc />
+    public override void BindVertexBufferView(GraphicsBufferView vertexBufferView, uint bindingSlot = 0)
+        => BindVertexBufferView((D3D12GraphicsBufferView)vertexBufferView, bindingSlot);
+
+    /// <inheritdoc cref="BindVertexBufferView(GraphicsBufferView, uint)" />
+    public void BindVertexBufferView(D3D12GraphicsBufferView vertexBufferView, uint bindingSlot = 0)
+    {
+        ThrowIfNull(vertexBufferView);
 
         var d3d12VertexBufferView = new D3D12_VERTEX_BUFFER_VIEW {
             BufferLocation = vertexBufferView.D3D12ResourceGpuVirtualAddress,
             StrideInBytes = vertexBufferView.Stride,
             SizeInBytes = checked((uint)vertexBufferView.Size),
         };
-        d3d12GraphicsCommandList->IASetVertexBuffers(StartSlot: 0, NumViews: 1, &d3d12VertexBufferView);
 
-        var inputResourceViews = primitive.InputResourceViews;
+        D3D12GraphicsCommandList->IASetVertexBuffers(bindingSlot, NumViews: 1, &d3d12VertexBufferView);
+    }
 
-        var rootDescriptorTableIndex = 0;
-        var cbvSrvUavDescriptorHandleIncrementSize = Device.D3D12CbvSrvUavDescriptorHandleIncrementSize;
+    /// <inheritdoc />
+    public override void BindVertexBufferViews(ReadOnlySpan<GraphicsBufferView> vertexBufferViews, uint firstBindingSlot)
+    {
+        ThrowIfZero(vertexBufferViews.Length);
+        ThrowIfNotInInsertBounds(vertexBufferViews.Length, D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT);
 
-        for (var index = 0; index < inputResourceViews.Length; index++)
+        var d3d12VertexBufferViews = stackalloc D3D12_VERTEX_BUFFER_VIEW[D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT];
+
+        for (var index = 0; index < vertexBufferViews.Length; index++)
         {
-            var inputResourceView = inputResourceViews[index];
+            var vertexBufferView = (D3D12GraphicsBufferView)vertexBufferViews[index];
+            ThrowIfNull(vertexBufferView);
 
-            if (inputResourceView is D3D12GraphicsBufferView d3d12GraphicsBufferView)
-            {
-                d3d12GraphicsCommandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), d3d12GraphicsBufferView.D3D12ResourceGpuVirtualAddress);
-            }
-            else if (inputResourceView is D3D12GraphicsTextureView d3d12GraphicsTextureView)
-            {
-                var gpuDescriptorHandleForHeapStart = primitive.D3D12CbvSrvUavDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
-                d3d12GraphicsCommandList->SetGraphicsRootDescriptorTable(unchecked((uint)index), gpuDescriptorHandleForHeapStart.Offset(rootDescriptorTableIndex, cbvSrvUavDescriptorHandleIncrementSize));
-                rootDescriptorTableIndex++;
-            }
-        }
-
-        var indexBufferView = primitive.IndexBufferView;
-
-        if (indexBufferView is not null)
-        {
-            var d3d12IndexBufferView = new D3D12_INDEX_BUFFER_VIEW {
-                BufferLocation = indexBufferView.D3D12ResourceGpuVirtualAddress,
-                SizeInBytes = checked((uint)indexBufferView.Size),
-                Format = indexBufferView.Stride == 2 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT,
+            d3d12VertexBufferViews[index] = new D3D12_VERTEX_BUFFER_VIEW {
+                BufferLocation = vertexBufferView.D3D12ResourceGpuVirtualAddress,
+                StrideInBytes = vertexBufferView.Stride,
+                SizeInBytes = checked((uint)vertexBufferView.Size),
             };
-            d3d12GraphicsCommandList->IASetIndexBuffer(&d3d12IndexBufferView);
+        }
 
-            d3d12GraphicsCommandList->DrawIndexedInstanced(IndexCountPerInstance: (uint)(indexBufferView.Size / indexBufferView.Stride), InstanceCount: 1, StartIndexLocation: 0, BaseVertexLocation: 0, StartInstanceLocation: 0);
-        }
-        else
-        {
-            d3d12GraphicsCommandList->DrawInstanced(VertexCountPerInstance: (uint)(vertexBufferView.Size /  vertexBufferView.Stride), InstanceCount: 1, StartVertexLocation: 0, StartInstanceLocation: 0);
-        }
+        D3D12GraphicsCommandList->IASetVertexBuffers(firstBindingSlot, NumViews: (uint)vertexBufferViews.Length, d3d12VertexBufferViews);
+    }
+
+    /// <inheritdoc />
+    public override void Draw(uint verticesPerInstance, uint instanceCount = 1, uint vertexStart = 0, uint instanceStart = 0)
+    {
+        ThrowIfZero(verticesPerInstance);
+        ThrowIfZero(instanceCount);
+
+        D3D12GraphicsCommandList->DrawInstanced(verticesPerInstance, instanceCount, vertexStart, instanceStart);
+    }
+
+    /// <inheritdoc />
+    public override void DrawIndexed(uint indicesPerInstance, uint instanceCount = 1, uint indexStart = 0, int vertexStart = 0, uint instanceStart = 0)
+    {
+        ThrowIfZero(indicesPerInstance);
+        ThrowIfZero(instanceCount);
+
+        D3D12GraphicsCommandList->DrawIndexedInstanced(indicesPerInstance, instanceCount, indexStart, vertexStart, instanceStart);
     }
 
     /// <inheritdoc />
@@ -418,7 +293,7 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     {
         var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
 
-        var d3d12CommandQueue = Device.D3D12CommandQueue;
+        var d3d12CommandQueue = Device.D3D12DirectCommandQueue;
         ThrowExternalExceptionIfFailed(d3d12GraphicsCommandList->Close());
         d3d12CommandQueue->ExecuteCommandLists(1, (ID3D12CommandList**)&d3d12GraphicsCommandList);
 

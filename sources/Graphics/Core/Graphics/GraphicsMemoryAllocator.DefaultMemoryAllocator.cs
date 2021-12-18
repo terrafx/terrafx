@@ -20,15 +20,15 @@ namespace TerraFX.Graphics;
 
 public partial class GraphicsMemoryAllocator
 {
-    private sealed class DefaultMemoryAllocator : GraphicsMemoryAllocator
+    private sealed unsafe class DefaultMemoryAllocator : GraphicsMemoryAllocator
     {
         private ValueLinkedList<GraphicsMemoryRegion> _memoryRegions;
         private ValueList<ValueLinkedList<GraphicsMemoryRegion>.Node> _freeMemoryRegionsBySize;
         private int _freeMemoryRegionCount;
         private nuint _totalFreeMemoryRegionSize;
 
-        public DefaultMemoryAllocator(GraphicsDeviceObject deviceObject, nuint size)
-            : base(deviceObject, size)
+        public DefaultMemoryAllocator(GraphicsDeviceObject deviceObject, delegate*<in GraphicsMemoryRegion, void> onFree, nuint size, bool isDedicated)
+            : base(deviceObject, onFree, size, isDedicated)
         {
             _memoryRegions = new ValueLinkedList<GraphicsMemoryRegion>();
             _freeMemoryRegionsBySize = new ValueList<ValueLinkedList<GraphicsMemoryRegion>.Node>();
@@ -68,28 +68,6 @@ public partial class GraphicsMemoryAllocator
             _freeMemoryRegionsBySize.Clear();
             _freeMemoryRegionsBySize.Add(memoryRegionNode);
 
-            Validate();
-        }
-
-        public override void Free(in GraphicsMemoryRegion memoryRegion)
-        {
-            var freedRegion = false;
-
-            for (var memoryRegionNode = _memoryRegions.First; memoryRegionNode is not null; memoryRegionNode = memoryRegionNode.Next)
-            {
-                if (memoryRegionNode.ValueRef != memoryRegion)
-                {
-                    continue;
-                }
-
-                _ = FreeRegion(memoryRegionNode);
-                freedRegion = true;
-            }
-
-            if (!freedRegion)
-            {
-                ThrowKeyNotFoundException(memoryRegion, nameof(_memoryRegions));
-            }
             Validate();
         }
 
@@ -137,6 +115,25 @@ public partial class GraphicsMemoryAllocator
             Validate();
 
             return wasMemoryRegionAllocated;
+        }
+
+        protected override bool TryFree(in GraphicsMemoryRegion memoryRegion)
+        {
+            var freedRegion = false;
+
+            for (var memoryRegionNode = _memoryRegions.First; memoryRegionNode is not null; memoryRegionNode = memoryRegionNode.Next)
+            {
+                if (memoryRegionNode.ValueRef != memoryRegion)
+                {
+                    continue;
+                }
+
+                _ = FreeRegion(memoryRegionNode);
+                freedRegion = true;
+            }
+
+            Validate();
+            return freedRegion;
         }
 
         private int BinarySearchFirstMemoryRegionNodeWithSizeNotLessThan(nuint size)

@@ -21,7 +21,7 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
 {
-    private readonly delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> _createMemoryAllocator;
+    private readonly delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> _createMemoryAllocator;
     private readonly D3D12_HEAP_FLAGS _d3d12HeapFlags;
     private readonly D3D12_HEAP_TYPE _d3d12HeapType;
     private readonly ValueMutex _mutex;
@@ -30,11 +30,13 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
     private ValueList<GraphicsMemoryAllocator> _memoryAllocators;
     private nuint _minimumSize;
     private string _name = null!;
+    private ulong _operationCount;
     private ulong _size;
+    private ulong _totalFreeMemoryRegionSize;
 
     private VolatileState _state;
 
-    internal D3D12GraphicsMemoryManager(D3D12GraphicsDevice device, delegate*<GraphicsDeviceObject, nuint, GraphicsMemoryAllocator> createMemoryAllocator, D3D12_HEAP_FLAGS d3d12HeapFlags, D3D12_HEAP_TYPE d3d12HeapType)
+    internal D3D12GraphicsMemoryManager(D3D12GraphicsDevice device, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator, D3D12_HEAP_FLAGS d3d12HeapFlags, D3D12_HEAP_TYPE d3d12HeapType)
         : base(device)
     {
         if (createMemoryAllocator is null)
@@ -49,8 +51,6 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
 
         _emptyMemoryAllocator = null;
         _memoryAllocators = new ValueList<GraphicsMemoryAllocator>();
-        _minimumSize = 0;
-        _size = 0;
 
         _ = _state.Transition(to: Initialized);
         Name = nameof(D3D12GraphicsMemoryManager);
@@ -58,14 +58,14 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
         for (var i = 0; i < MinimumMemoryAllocatorCount; ++i)
         {
             var memoryAllocatorSize = GetAdjustedMemoryAllocatorSize(MaximumSharedMemoryAllocatorSize);
-            _ = AddMemoryAllocator(memoryAllocatorSize);
+            _ = AddMemoryAllocator(memoryAllocatorSize, isDedicated: false);
         }
     }
 
     /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
-    /// <summary>Gets the number of memory allocators in the memory manager.</summary>
+    /// <inheritdoc />
     public override int Count => _memoryAllocators.Count;
 
     /// <summary>Gets the <see cref="D3D12_HEAP_FLAGS" /> used when creating the <see cref="ID3D12Heap" /> for the memory manager.</summary>
@@ -77,10 +77,10 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
 
-    /// <summary>Gets <c>true</c> if the manager is empty; otherwise, <c>false</c>.</summary>
+    /// <inheritdoc />
     public override bool IsEmpty => _memoryAllocators.Count == 0;
 
-    /// <summary>Gets the minimum size, in bytes, of the manager.</summary>
+    /// <inheritdoc />
     public override nuint MinimumSize => _minimumSize;
 
     /// <summary>Gets or sets the name for the manager.</summary>
@@ -97,11 +97,29 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
         }
     }
 
+    /// <inheritdoc />
+    public override ulong OperationCount => _operationCount;
+
     /// <inheritdoc cref="GraphicsDeviceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
-    /// <summary>Gets the size, in bytes, of the manager.</summary>
+    /// <inheritdoc />
     public override ulong Size => _size;
+
+    /// <inheritdoc />
+    public override ulong TotalFreeMemoryRegionSize => _totalFreeMemoryRegionSize;
+
+    private static void OnAllocatorFree(in GraphicsMemoryRegion memoryRegion)
+    {
+        var memoryAllocator = memoryRegion.Allocator;
+        ThrowIfNull(memoryAllocator);
+
+        if (memoryAllocator.DeviceObject is D3D12GraphicsMemoryHeap memoryHeap)
+        {
+            var memoryManager = memoryHeap.MemoryManager;
+            memoryManager.Free(memoryAllocator, in memoryRegion);
+        }
+    }
 
     /// <summary>Allocate a memory region in the manager.</summary>
     /// <param name="size">The size, in bytes, of the memory region to allocate.</param>
@@ -118,18 +136,7 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
         {
             ThrowOutOfMemoryException(size);
         }
-
         return memoryRegion;
-    }
-
-    /// <summary>Frees a memory region from the manager.</summary>
-    /// <param name="memoryRegion">The memory region to be freed.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="memoryRegion" />.<see cref="GraphicsMemoryRegion.Allocator" /> is <c>null</c>.</exception>
-    /// <exception cref="KeyNotFoundException"><paramref name="memoryRegion" /> was not found in the collection.</exception>
-    public override void Free(in GraphicsMemoryRegion memoryRegion)
-    {
-        using var mutex = new DisposableMutex(_mutex, IsExternallySynchronized);
-        FreeInternal(in memoryRegion);
     }
 
     /// <inheritdoc />
@@ -195,23 +202,29 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
         _state.EndDispose();
     }
 
-    private GraphicsMemoryAllocator AddMemoryAllocator(nuint size)
+    private GraphicsMemoryAllocator AddMemoryAllocator(nuint size, bool isDedicated)
     {
-        var memoryHeap = new D3D12GraphicsMemoryHeap(Device, size, D3D12HeapType, D3D12HeapFlags);
-        var memoryAllocator = _createMemoryAllocator(memoryHeap, size);
+        var memoryHeap = new D3D12GraphicsMemoryHeap(this, size, D3D12HeapType, D3D12HeapFlags);
+        var memoryAllocator = _createMemoryAllocator(memoryHeap, &OnAllocatorFree, size, isDedicated);
 
+        _operationCount++;
         _memoryAllocators.Add(memoryAllocator);
+
         _size += size;
+        _totalFreeMemoryRegionSize += size;
 
         return memoryAllocator;
     }
 
-    private void FreeInternal(in GraphicsMemoryRegion memoryRegion)
+    private void Free(GraphicsMemoryAllocator memoryAllocator, in GraphicsMemoryRegion memoryRegion)
+    {
+        using var mutex = new DisposableMutex(_mutex, IsExternallySynchronized);
+        FreeInternal(memoryAllocator, in memoryRegion);
+    }
+
+    private void FreeInternal(GraphicsMemoryAllocator memoryAllocator, in GraphicsMemoryRegion memoryRegion)
     {
         // This method should only be called under the mutex
-
-        var memoryAllocator = memoryRegion.Allocator;
-        ThrowIfNull(memoryAllocator);
 
         var memoryAllocatorIndex = _memoryAllocators.IndexOf(memoryAllocator);
 
@@ -220,7 +233,7 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
             ThrowKeyNotFoundException(memoryRegion, nameof(_memoryAllocators));
         }
 
-        memoryAllocator.Free(in memoryRegion);
+        TrackFree(in memoryRegion);
 
         if (memoryAllocator.IsEmpty)
         {
@@ -274,7 +287,7 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
 
                 var memoryBudget = Device.GetMemoryBudget(this);
 
-                if ((memoryBudget.EstimatedUsage >= memoryBudget.EstimatedBudget) && (_memoryAllocators.Count > MinimumMemoryAllocatorCount) && ((_size - memoryAllocator.Size) >= _minimumSize))
+                if ((memoryBudget.EstimatedMemoryUsage >= memoryBudget.EstimatedMemoryBudget) && (_memoryAllocators.Count > MinimumMemoryAllocatorCount) && ((_size - memoryAllocator.Size) >= _minimumSize))
                 {
                     RemoveMemoryAllocatorAt(memoryAllocatorIndex);
                 }
@@ -391,8 +404,33 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
         var memoryAllocator = _memoryAllocators[index];
         memoryAllocator.DeviceObject.Dispose();
 
+        _operationCount++;
         _memoryAllocators.RemoveAt(index);
-        _size -= memoryAllocator.Size;
+
+        var size = memoryAllocator.Size;
+        _size -= size;
+
+        Assert(AssertionsEnabled && (size == memoryAllocator.TotalFreeMemoryRegionSize));
+        _totalFreeMemoryRegionSize -= size;
+    }
+
+    private bool TrackAllocation(GraphicsMemoryAllocator memoryAllocator, nuint size, nuint alignment, out GraphicsMemoryRegion memoryRegion)
+    {
+        var succeeded = memoryAllocator.TryAllocate(size, alignment, out memoryRegion);
+
+        if (succeeded)
+        {
+            _operationCount++;
+            _totalFreeMemoryRegionSize -= memoryRegion.Size;
+        }
+
+        return succeeded;
+    }
+
+    private void TrackFree(in GraphicsMemoryRegion memoryRegion)
+    {
+        _operationCount++;
+        _totalFreeMemoryRegionSize += memoryRegion.Size;
     }
 
     private bool TryAllocateInternal(nuint size, nuint alignment, GraphicsMemoryAllocationFlags allocationFlags, out GraphicsMemoryRegion memoryRegion)
@@ -413,8 +451,8 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
 
         var memoryAllocators = _memoryAllocators.AsSpanUnsafe(0, _memoryAllocators.Count);
 
-        var availableMemory = (budget.EstimatedUsage < budget.EstimatedBudget) ? (budget.EstimatedBudget - budget.EstimatedUsage) : 0;
-        var canCreateNewMemoryAllocator = !useExistingMemoryAllocator && (memoryAllocators.Length < MaximumMemoryAllocatorCount) && (availableMemory >= sizeWithMargins);
+        var availableMemory = (budget.EstimatedMemoryUsage < budget.EstimatedMemoryBudget) ? (budget.EstimatedMemoryBudget - budget.EstimatedMemoryUsage) : 0;
+        var canCreateNewMemoryAllocator = !useExistingMemoryAllocator && (memoryAllocators.Length < MaximumMemoryAllocatorCount) && (allocationFlags.HasFlag(GraphicsMemoryAllocationFlags.CanExceedBudget) || (availableMemory >= sizeWithMargins));
 
         // 1. Search existing memory allocators
 
@@ -425,7 +463,7 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
                 var currentMemoryAllocator = memoryAllocators[memoryAllocatorIndex];
                 AssertNotNull(currentMemoryAllocator);
 
-                if (currentMemoryAllocator.TryAllocate(size, alignment, out memoryRegion))
+                if (TrackAllocation(currentMemoryAllocator, size, alignment, out memoryRegion))
                 {
                     if (currentMemoryAllocator == _emptyMemoryAllocator)
                     {
@@ -452,8 +490,8 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
             return false;
         }
 
-        var allocator = AddMemoryAllocator(memoryAllocatorSize);
-        return allocator.TryAllocate(size, alignment, out memoryRegion);
+        var memoryAllocator = AddMemoryAllocator(memoryAllocatorSize, isDedicated: useDedicatedMemoryAllocator);
+        return TrackAllocation(memoryAllocator, size, alignment, out memoryRegion);
     }
 
     private bool TryAllocateInternal(nuint size, nuint alignment, GraphicsMemoryAllocationFlags flags, Span<GraphicsMemoryRegion> memoryRegions)
@@ -472,7 +510,7 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
 
                 while (index-- != 0)
                 {
-                    FreeInternal(in memoryRegions[index]);
+                    FreeInternal(memoryRegions[index].Allocator, in memoryRegions[index]);
                     memoryRegions[index] = default;
                 }
 
@@ -553,7 +591,7 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
                         memoryAllocatorSize = Clamp(remainingSize, MinimumMemoryAllocatorSize, memoryAllocatorSize);
                     }
 
-                    emptyMemoryAllocator ??= AddMemoryAllocator(memoryAllocatorSize);
+                    emptyMemoryAllocator ??= AddMemoryAllocator(memoryAllocatorSize, isDedicated: false);
                     size += memoryAllocatorSize;
 
                     ++memoryAllocatorCount;

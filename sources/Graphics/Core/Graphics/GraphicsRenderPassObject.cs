@@ -5,7 +5,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics;
 
-/// <summary>An object which is created for a graphics device.</summary>
+/// <summary>An object which is created for a graphics render pass.</summary>
 public abstract class GraphicsRenderPassObject : IGraphicsRenderPassObject
 {
     private readonly GraphicsAdapter _adapter;
@@ -32,7 +32,7 @@ public abstract class GraphicsRenderPassObject : IGraphicsRenderPassObject
     /// <summary>Gets the underlying device for <see cref="RenderPass" />.</summary>
     public GraphicsDevice Device => _device;
 
-    /// <summary>Gets the name for the deve object.</summary>
+    /// <summary>Gets the name for the render pass object.</summary>
     public abstract string Name { get; set; }
 
     /// <summary>Gets the render pass for which the object was created.</summary>

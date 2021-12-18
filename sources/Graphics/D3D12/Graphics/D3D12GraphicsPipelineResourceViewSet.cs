@@ -16,29 +16,31 @@ using static TerraFX.Utilities.UnsafeUtilities;
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
-public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
+public sealed unsafe class D3D12GraphicsPipelineResourceViewSet : GraphicsPipelineResourceViewSet
 {
     private readonly ID3D12DescriptorHeap* _d3d12CbvSrvUavDescriptorHeap;
 
     private string _name = null!;
     private VolatileState _state;
 
-    internal D3D12GraphicsPrimitive(D3D12GraphicsDevice device, D3D12GraphicsPipeline pipeline, D3D12GraphicsBufferView vertexBufferView, D3D12GraphicsBufferView? indexBufferView, ReadOnlySpan<GraphicsResourceView> inputResourceViews)
-        : base(device, pipeline, vertexBufferView, indexBufferView, inputResourceViews)
+    internal D3D12GraphicsPipelineResourceViewSet(D3D12GraphicsPipeline pipeline, ReadOnlySpan<GraphicsResourceView> resourceViews)
+        : base(pipeline, resourceViews)
     {
-        _d3d12CbvSrvUavDescriptorHeap = CreateD3D12CbvSrvUavDescriptorHeap(device, inputResourceViews);
+        _d3d12CbvSrvUavDescriptorHeap = CreateD3D12CbvSrvUavDescriptorHeap(pipeline, resourceViews);
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsPrimitive);
+        Name = nameof(D3D12GraphicsPipelineResourceViewSet);
 
-        static ID3D12DescriptorHeap* CreateD3D12CbvSrvUavDescriptorHeap(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsResourceView> inputResourceViews)
+        static ID3D12DescriptorHeap* CreateD3D12CbvSrvUavDescriptorHeap(D3D12GraphicsPipeline pipeline, ReadOnlySpan<GraphicsResourceView> resourceViews)
         {
+            var device = pipeline.Device;
             var d3d12Device = device.D3D12Device;
+
             var d3d12CbvSrvUavDescriptorCount = 0u;
 
-            for (var index = 0; index < inputResourceViews.Length; index++)
+            for (var index = 0; index < resourceViews.Length; index++)
             {
-                var inputResourceView = inputResourceViews[index];
+                var inputResourceView = resourceViews[index];
 
                 if (inputResourceView is not D3D12GraphicsTextureView)
                 {
@@ -60,9 +62,9 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
             var d3d12CbvSrvUavDescriptorHandleIncrementSize = device.D3D12CbvSrvUavDescriptorHandleIncrementSize;
             var d3d12CbvSrvUavDescriptorIndex = 0;
 
-            for (var index = 0; index < inputResourceViews.Length; index++)
+            for (var index = 0; index < resourceViews.Length; index++)
             {
-                var inputResourceView = inputResourceViews[index];
+                var inputResourceView = resourceViews[index];
 
                 if (inputResourceView is not D3D12GraphicsTextureView graphicsTextureView)
                 {
@@ -111,14 +113,13 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
         }
     }
 
-    /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsPrimitive" /> class.</summary>
-    ~D3D12GraphicsPrimitive() => Dispose(isDisposing: false);
+    /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsPipelineResourceViewSet" /> class.</summary>
+    ~D3D12GraphicsPipelineResourceViewSet() => Dispose(isDisposing: false);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsPipelineObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
-    /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> used by the primitive for constant buffer, shader resource, and unordered access views.</summary>
-    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+    /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> used by the resource view set for constant buffer, shader resource, and unordered access views.</summary>
     public ID3D12DescriptorHeap* D3D12CbvSrvUavDescriptorHeap
     {
         get
@@ -128,13 +129,10 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
         }
     }
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
+    /// <inheritdoc cref="GraphicsPipelineObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
 
-    /// <inheritdoc cref="GraphicsPrimitive.IndexBufferView" />
-    public new D3D12GraphicsBufferView? IndexBufferView => base.IndexBufferView.As<D3D12GraphicsBufferView>();
-
-    /// <summary>Gets or sets the name for the pipeline signature.</summary>
+    /// <inheritdoc />
     public override string Name
     {
         get
@@ -144,18 +142,15 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
 
         set
         {
-            _name = D3D12CbvSrvUavDescriptorHeap->UpdateD3D12Name(nameof(D3D12GraphicsPrimitive));
+            _name = D3D12CbvSrvUavDescriptorHeap->UpdateD3D12Name(nameof(D3D12GraphicsPipelineResourceViewSet));
         }
     }
 
-    /// <inheritdoc cref="GraphicsPrimitive.Pipeline" />
+    /// <inheritdoc cref="GraphicsPipelineObject.Pipeline" />
     public new D3D12GraphicsPipeline Pipeline => base.Pipeline.As<D3D12GraphicsPipeline>();
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsPipelineObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
-
-    /// <inheritdoc cref="GraphicsPrimitive.VertexBufferView" />
-    public new D3D12GraphicsBufferView VertexBufferView => base.VertexBufferView.As<D3D12GraphicsBufferView>();
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
@@ -165,19 +160,6 @@ public sealed unsafe class D3D12GraphicsPrimitive : GraphicsPrimitive
         if (priorState < Disposing)
         {
             ReleaseIfNotNull(_d3d12CbvSrvUavDescriptorHeap);
-
-            if (isDisposing)
-            {
-                Pipeline?.Dispose();
-                IndexBufferView?.Dispose();
-
-                foreach (var inputResourceView in InputResourceViews)
-                {
-                    inputResourceView?.Dispose();
-                }
-
-                VertexBufferView?.Dispose();
-            }
         }
 
         _state.EndDispose();

@@ -134,6 +134,6 @@ public class HelloWindow : Sample
             graphicsRenderContext.EndRenderPass();
             graphicsRenderContext.Flush();
         }
-        GraphicsDevice.ReturnRenderContext(graphicsRenderContext);
+        GraphicsDevice.ReturnContext(graphicsRenderContext);
     }
 }

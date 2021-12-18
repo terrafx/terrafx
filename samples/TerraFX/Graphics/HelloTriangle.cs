@@ -38,28 +38,30 @@ public sealed class HelloTriangle : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
-
+        
         _uploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024);
         _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
-        graphicsRenderContext.Reset();
-        _trianglePrimitive = CreateTrianglePrimitive(graphicsRenderContext);
-        graphicsRenderContext.Flush();
+        var graphicsCopyContext = graphicsDevice.RentCopyContext();
+        {
+            graphicsCopyContext.Reset();
+            _trianglePrimitive = CreateTrianglePrimitive(graphicsCopyContext);
 
-        graphicsDevice.WaitForIdle();
-        graphicsDevice.ReturnRenderContext(graphicsRenderContext);
+            graphicsCopyContext.Flush();
+            graphicsDevice.WaitForIdle();
+        }
+        graphicsDevice.ReturnContext(graphicsCopyContext);
 
         _uploadBuffer.DisposeAllViews();
     }
 
     protected override void Draw(GraphicsRenderContext graphicsRenderContext)
     {
-        graphicsRenderContext.Draw(_trianglePrimitive);
+        _trianglePrimitive.Draw(graphicsRenderContext);
         base.Draw(graphicsRenderContext);
     }
 
-    private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext)
+    private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsCopyContext graphicsCopyContext)
     {
         var graphicsRenderPass = GraphicsRenderPass;
         var graphicsSurface = graphicsRenderPass.Surface;
@@ -67,12 +69,12 @@ public sealed class HelloTriangle : HelloWindow
         var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Identity", "main", "main");
         var uploadBuffer = _uploadBuffer;
 
-        return GraphicsDevice.CreatePrimitive(
+        return new GraphicsPrimitive(
             graphicsPipeline,
-            CreateVertexBufferView(graphicsContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height)
+            CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height)
         );
 
-        static GraphicsBufferView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
+        static GraphicsBufferView CreateVertexBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
         {
             var uploadBufferView = uploadBuffer.CreateView<IdentityVertex>(3);
             var vertexBufferSpan = uploadBufferView.Map<IdentityVertex>();
@@ -95,7 +97,7 @@ public sealed class HelloTriangle : HelloWindow
             uploadBufferView.UnmapAndWrite();
 
             var vertexBufferView = vertexBuffer.CreateView<IdentityVertex>(3);
-            graphicsContext.Copy(vertexBufferView, uploadBufferView);
+            graphicsCopyContext.Copy(vertexBufferView, uploadBufferView);
             return vertexBufferView;
         }
 

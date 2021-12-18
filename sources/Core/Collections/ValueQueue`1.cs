@@ -123,7 +123,7 @@ public partial struct ValueQueue<T> : IEnumerable<T>
     /// <summary>Removes all items from the queue.</summary>
     public void Clear()
     {
-        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>() && (_items is not null))
         {
             var head = _head;
             var tail = _tail;

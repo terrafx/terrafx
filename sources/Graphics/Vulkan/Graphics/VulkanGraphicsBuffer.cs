@@ -41,7 +41,7 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
     {
         _bufferViewsMutex = new ValueMutex();
         _mapMutex = new ValueMutex();
-        _memoryAllocator = createInfo.CreateMemoryAllocator(this, createInfo.MemoryRegion.Size);
+        _memoryAllocator = createInfo.CreateMemoryAllocator(this, null, createInfo.MemoryRegion.Size, false);
         _memoryHeap = createInfo.MemoryRegion.Allocator.DeviceObject.As<VulkanGraphicsMemoryHeap>();
         _vkBuffer = createInfo.VkBuffer;
 

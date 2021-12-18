@@ -25,6 +25,6 @@ public enum GraphicsMemoryAllocationFlags
     /// <remarks>This flag cannot be combined with <see cref="DedicatedMemoryAllocator" />.</remarks>
     ExistingMemoryAllocator = 1 << 1,
 
-    /// <summary>Indicates the memory region should only be allocated if it doesn't exceed the memory budget.</summary>
-    WithinBudget = 1 << 2,
+    /// <summary>Indicates the memory region can be allocated even if it exceeds the memory budget.</summary>
+    CanExceedBudget = 1 << 2,
 }

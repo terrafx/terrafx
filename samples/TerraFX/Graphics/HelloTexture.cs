@@ -40,29 +40,31 @@ public sealed class HelloTexture : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        var graphicsRenderContext = graphicsDevice.RentRenderContext(); // TODO: This could be a copy only context
 
         _texture2D = graphicsDevice.CreateTexture2D(GraphicsFormat.R8G8B8A8_UNORM, 256, 256);
         _uploadBuffer = graphicsDevice.CreateUploadBuffer(1 * 1024 * 1024);
         _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
-        graphicsRenderContext.Reset();
-        _trianglePrimitive = CreateTrianglePrimitive(graphicsRenderContext);
-        graphicsRenderContext.Flush();
+        var graphicsCopyContext = graphicsDevice.RentCopyContext();
+        {
+            graphicsCopyContext.Reset();
+            _trianglePrimitive = CreateTrianglePrimitive(graphicsCopyContext);
 
-        graphicsDevice.WaitForIdle();
-        graphicsDevice.ReturnRenderContext(graphicsRenderContext);
+            graphicsCopyContext.Flush();
+            graphicsDevice.WaitForIdle();
+        }
+        graphicsDevice.ReturnContext(graphicsCopyContext);
 
         _uploadBuffer.DisposeAllViews();
     }
 
     protected override void Draw(GraphicsRenderContext graphicsRenderContext)
     {
-        graphicsRenderContext.Draw(_trianglePrimitive);
+        _trianglePrimitive.Draw(graphicsRenderContext);
         base.Draw(graphicsRenderContext);
     }
 
-    private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext)
+    private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsCopyContext graphicsCopyContext)
     {
         var graphicsRenderPass = GraphicsRenderPass;
         var graphicsSurface = graphicsRenderPass.Surface;
@@ -70,15 +72,15 @@ public sealed class HelloTexture : HelloWindow
         var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Texture", "main", "main");
         var uploadBuffer = _uploadBuffer;
 
-        return GraphicsDevice.CreatePrimitive(
+        return new GraphicsPrimitive(
             graphicsPipeline,
-            CreateVertexBufferView(graphicsContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
-            inputResourceViews: new GraphicsResourceView[1] {
-                CreateTexture2DView(graphicsContext, _texture2D, uploadBuffer)
+            CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
+            resourceViews: new GraphicsResourceView[1] {
+                CreateTexture2DView(graphicsCopyContext, _texture2D, uploadBuffer)
             }
         );
 
-        static GraphicsTextureView CreateTexture2DView(GraphicsContext graphicsContext, GraphicsTexture texture2D, GraphicsBuffer uploadBuffer)
+        static GraphicsTextureView CreateTexture2DView(GraphicsCopyContext graphicsCopyContext, GraphicsTexture texture2D, GraphicsBuffer uploadBuffer)
         {
             var uploadBufferView = uploadBuffer.CreateView<byte>(checked((uint)texture2D.Size));
             var textureDataSpan = uploadBufferView.Map<byte>();
@@ -112,11 +114,11 @@ public sealed class HelloTexture : HelloWindow
             uploadBufferView.UnmapAndWrite();
 
             var texture2DView = texture2D.CreateView(0, 1);
-            graphicsContext.Copy(texture2DView, uploadBufferView);
+            graphicsCopyContext.Copy(texture2DView, uploadBufferView);
             return texture2DView;
         }
 
-        static GraphicsBufferView CreateVertexBufferView(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
+        static GraphicsBufferView CreateVertexBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
         {
             var uploadBufferView = uploadBuffer.CreateView<TextureVertex>(3);
             var vertexBufferSpan = uploadBufferView.Map<TextureVertex>();
@@ -139,7 +141,7 @@ public sealed class HelloTexture : HelloWindow
             uploadBufferView.UnmapAndWrite();
 
             var vertexBufferView = vertexBuffer.CreateView<TextureVertex>(3);
-            graphicsContext.Copy(vertexBufferView, uploadBufferView);
+            graphicsCopyContext.Copy(vertexBufferView, uploadBufferView);
             return vertexBufferView;
         }
 
@@ -165,8 +167,8 @@ public sealed class HelloTexture : HelloWindow
                 ),
             };
 
-            var resources = new GraphicsPipelineResource[1] {
-                new GraphicsPipelineResource(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
+            var resources = new GraphicsPipelineResourceInfo[1] {
+                new GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
             };
 
             return graphicsDevice.CreatePipelineSignature(inputs, resources);

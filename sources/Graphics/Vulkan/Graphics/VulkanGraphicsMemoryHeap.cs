@@ -22,6 +22,7 @@ namespace TerraFX.Graphics;
 public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
 {
     private readonly ValueMutex _mapMutex;
+    private readonly VulkanGraphicsMemoryManager _memoryManager;
     private readonly nuint _size;
     private readonly VkDeviceMemory _vkDeviceMemory;
 
@@ -31,12 +32,13 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
     private string _name = null!;
     private VolatileState _state;
 
-    internal VulkanGraphicsMemoryHeap(VulkanGraphicsDevice device, nuint size, uint vkMemoryTypeIndex)
-        : base(device)
+    internal VulkanGraphicsMemoryHeap(VulkanGraphicsMemoryManager memoryManager, nuint size, uint vkMemoryTypeIndex)
+        : base(memoryManager.Device)
     {
         _mapMutex = new ValueMutex();
+        _memoryManager = memoryManager;
         _size = size;
-        _vkDeviceMemory = CreateVkDeviceMemory(device, size, vkMemoryTypeIndex);
+        _vkDeviceMemory = CreateVkDeviceMemory(memoryManager.Device, size, vkMemoryTypeIndex);
 
         _ = _state.Transition(to: Initialized);
         Name = nameof(VulkanGraphicsMemoryHeap);
@@ -70,6 +72,9 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
 
     /// <inheritdoc cref="GraphicsResource.MappedAddress" />
     public unsafe void* MappedAddress => _mappedAddress;
+
+    /// <summary>Gets the memory manager which created the memory heap.</summary>
+    public VulkanGraphicsMemoryManager MemoryManager => _memoryManager;
 
     /// <inheritdoc />
     public override string Name

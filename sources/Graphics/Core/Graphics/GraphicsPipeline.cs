@@ -79,4 +79,11 @@ public abstract class GraphicsPipeline : GraphicsRenderPassObject
 
     /// <summary>Gets the vertex shader for the pipeline or <c>null</c> if none exists.</summary>
     public GraphicsShader? VertexShader => _vertexShader;
+
+    /// <summary>Creates a new resource view set for the pipeline.</summary>
+    /// <param name="resourceViews">The resource views in the resource view set.</param>
+    /// <returns>The created resource view set.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="resourceViews" /> is <c>empty</c>.</exception>
+    /// <exception cref="ObjectDisposedException">The pipeline has been disposed.</exception>
+    public abstract GraphicsPipelineResourceViewSet CreateResourceViews(ReadOnlySpan<GraphicsResourceView> resourceViews);
 }

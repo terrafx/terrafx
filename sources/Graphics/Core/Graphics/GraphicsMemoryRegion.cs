@@ -57,7 +57,7 @@ public readonly struct GraphicsMemoryRegion : IDisposable, IEquatable<GraphicsMe
     }
 
     /// <inheritdoc />
-    public void Dispose() => Allocator?.Free(in this);
+    public void Dispose() => Allocator.Free(in this);
 
     /// <inheritdoc />
     public override bool Equals(object? obj) => (obj is GraphicsMemoryRegion other) && Equals(other);
