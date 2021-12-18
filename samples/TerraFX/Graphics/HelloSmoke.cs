@@ -168,7 +168,7 @@ public sealed class HelloSmoke : HelloWindow
             var uploadBufferView = uploadBuffer.CreateView<byte>(checked((uint)texture3D.Size));
             var textureDataSpan = uploadBufferView.Map<byte>();
             {
-                var random = new Random(Seed: 1);
+                var random = new Random(Seed: 20170526);
                 var isOnBlurring = true;
 
                 var width = texture3D.Width;

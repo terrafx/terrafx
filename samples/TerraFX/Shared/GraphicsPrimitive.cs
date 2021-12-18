@@ -55,8 +55,9 @@ public sealed class GraphicsPrimitive : GraphicsPipelineObject
 
     /// <summary>Draws the graphics primitive using a given graphics render context.</summary>
     /// <param name="renderContext">The render context that should be used to draw the graphics primitive.</param>
+    /// <param name="instanceCount">The number of instances that should be drawn.</param>
     /// <exception cref="ArgumentNullException"><paramref name="renderContext" /> is <c>null</c>.</exception>
-    public void Draw(GraphicsRenderContext renderContext)
+    public void Draw(GraphicsRenderContext renderContext, uint instanceCount = 1)
     {
         ThrowIfNull(renderContext);
 
@@ -73,11 +74,11 @@ public sealed class GraphicsPrimitive : GraphicsPipelineObject
         if (IndexBufferView is GraphicsBufferView indexBufferView)
         {
             renderContext.BindIndexBufferView(indexBufferView);
-            renderContext.DrawIndexed(indicesPerInstance: (uint)(indexBufferView.Size / indexBufferView.Stride));
+            renderContext.DrawIndexed(indicesPerInstance: (uint)(indexBufferView.Size / indexBufferView.Stride), instanceCount);
         }
         else
         {
-            renderContext.Draw(verticesPerInstance: (uint)(vertexBufferView.Size / vertexBufferView.Stride));
+            renderContext.Draw(verticesPerInstance: (uint)(vertexBufferView.Size / vertexBufferView.Stride), instanceCount);
         }
     }
 

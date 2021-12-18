@@ -12,6 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Assets\Shaders\Instancing\InstancingPixel.hlsl" />
+    <Content Remove="Assets\Shaders\Instancing\InstancingTypes.hlsl" />
+    <Content Remove="Assets\Shaders\Instancing\InstancingVertex.hlsl" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\sources\ApplicationModel\TerraFX.ApplicationModel.csproj" />
     <ProjectReference Include="..\..\sources\Audio\PulseAudio\TerraFX.Audio.PulseAudio.csproj" />
     <ProjectReference Include="..\..\sources\Graphics\D3D12\TerraFX.Graphics.D3D12.csproj" />
