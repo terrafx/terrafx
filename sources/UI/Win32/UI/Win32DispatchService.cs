@@ -14,7 +14,7 @@ namespace TerraFX.UI;
 /// <summary>Provides access to a Win32 based dispatch subsystem.</summary>
 public sealed unsafe class Win32DispatchService : DispatchService
 {
-    private static ValueLazy<Win32DispatchService> s_instance = new ValueLazy<Win32DispatchService>(CreateDispatchService);
+    private static readonly Win32DispatchService s_instance = new Win32DispatchService();
 
     private readonly double _tickFrequency;
     private readonly ConcurrentDictionary<Thread, Dispatcher> _dispatchers;
@@ -26,7 +26,7 @@ public sealed unsafe class Win32DispatchService : DispatchService
     }
 
     /// <summary>Gets the <see cref="Win32DispatchService" /> instance for the current program.</summary>
-    public static Win32DispatchService Instance => s_instance.Value;
+    public static Win32DispatchService Instance => s_instance;
 
     /// <inheritdoc />
     /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceCounter(LARGE_INTEGER*)" /> failed.</exception>
@@ -61,8 +61,6 @@ public sealed unsafe class Win32DispatchService : DispatchService
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing) { }
-
-    private static Win32DispatchService CreateDispatchService() => new Win32DispatchService();
 
     private static double GetTickFrequency()
     {
