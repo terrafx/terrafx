@@ -29,8 +29,6 @@ public sealed unsafe class XlibWindow : Window
     private ValueLazy<XWindow> _handle;
     private ValueLazy<PropertySet> _properties;
 
-#pragma warning disable CS0649
-
     private string _title;
     private BoundingRectangle _bounds;
     private BoundingRectangle _clientBounds;
@@ -266,14 +264,14 @@ public sealed unsafe class XlibWindow : Window
                     window,
                     dispatchService.GetAtom(_NET_WM_STATE),
                     _NET_WM_STATE_ADD,
-                    (nint)dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_HORZ),
-                    (nint)dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_VERT),
+                    dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_HORZ),
+                    dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_VERT),
                     SourceApplication
                 );
             }
             else
             {
-                throw new NotImplementedException();
+                ThrowNotImplementedException();
             }
         }
     }
@@ -331,7 +329,7 @@ public sealed unsafe class XlibWindow : Window
             }
             else
             {
-                throw new NotImplementedException();
+                ThrowNotImplementedException();
             }
         }
     }
@@ -363,7 +361,7 @@ public sealed unsafe class XlibWindow : Window
             }
             else
             {
-                throw new NotImplementedException();
+                ThrowNotImplementedException();
             }
         }
     }
@@ -395,7 +393,7 @@ public sealed unsafe class XlibWindow : Window
             }
             else
             {
-                throw new NotImplementedException();
+                ThrowNotImplementedException();
             }
         }
     }
@@ -427,7 +425,7 @@ public sealed unsafe class XlibWindow : Window
             }
             else
             {
-                throw new NotImplementedException();
+                ThrowNotImplementedException();
             }
         }
     }
@@ -470,14 +468,14 @@ public sealed unsafe class XlibWindow : Window
                     window,
                     dispatchService.GetAtom(_NET_WM_STATE),
                     _NET_WM_STATE_REMOVE,
-                    (nint)dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_HORZ),
-                    (nint)dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_VERT),
+                    dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_HORZ),
+                    dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_VERT),
                     SourceApplication
                 );
             }
             else
             {
-                throw new NotImplementedException();
+                ThrowNotImplementedException();
             }
         }
     }
@@ -529,7 +527,7 @@ public sealed unsafe class XlibWindow : Window
             }
             else
             {
-                throw new NotImplementedException();
+                ThrowNotImplementedException();
             }
         }
         return true;
@@ -964,7 +962,7 @@ public sealed unsafe class XlibWindow : Window
         }
         else
         {
-            throw new NotImplementedException();
+            ThrowNotImplementedException();
         }
     }
 
@@ -1043,19 +1041,20 @@ public sealed unsafe class XlibWindow : Window
         }
         else
         {
-            throw new NotImplementedException();
+            ThrowNotImplementedException();
         }
     }
 
     private void UpdateWindowTitle(XlibDispatchService dispatchService, Display* display, XWindow window)
     {
+        Atom actualType;
+        int actualFormat;
+        nuint bytesRemaining;
+        nuint itemCount;
+        sbyte* wmName;
+
         if (dispatchService.GetAtomIsSupported(_NET_WM_NAME))
         {
-            Atom actualType;
-            int actualFormat;
-            nuint itemCount;
-            nuint bytesRemaining;
-            sbyte* wmName;
 
             _ = XGetWindowProperty(
                 display,
@@ -1071,19 +1070,26 @@ public sealed unsafe class XlibWindow : Window
                 &bytesRemaining,
                 (byte**)&wmName
             );
-
-            if ((actualType == dispatchService.GetAtom(UTF8_STRING)) && (actualFormat == 8) && (bytesRemaining == 0))
-            {
-                _title = GetUtf8Span(wmName, checked((int)itemCount)).GetString() ?? string.Empty;
-            }
-            else
-            {
-                _title = string.Empty;
-            }
         }
         else
         {
-            throw new NotImplementedException();
+            XTextProperty textProperty;
+            _ = XGetWMName(display, window, &textProperty);
+
+            actualType = textProperty.encoding;
+            actualFormat = textProperty.format;
+            bytesRemaining = 0;
+            itemCount = textProperty.nitems;
+            wmName = (sbyte*)textProperty.value;
+        }
+
+        if ((actualType == dispatchService.GetAtom(UTF8_STRING)) && (actualFormat == 8) && (bytesRemaining == 0))
+        {
+            _title = GetUtf8Span(wmName, checked((int)itemCount)).GetString() ?? string.Empty;
+        }
+        else
+        {
+            _title = string.Empty;
         }
     }
 }

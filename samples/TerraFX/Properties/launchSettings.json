@@ -4,6 +4,9 @@
       "commandName": "Project",
       "commandLineArgs": "all",
       "nativeDebugging": true
+    },
+    "WSL": {
+      "commandName": "WSL"
     }
   }
 }

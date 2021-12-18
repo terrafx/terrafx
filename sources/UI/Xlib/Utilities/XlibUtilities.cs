@@ -69,12 +69,13 @@ internal static unsafe partial class XlibUtilities
 
     public static void SetWindowTitle(XlibDispatchService dispatchService, Display* display, XWindow window, string value)
     {
-        if (dispatchService.GetAtomIsSupported(_NET_WM_NAME))
-        {
-            var utf8Title = value.GetUtf8Span();
+        var utf8Title = value.GetUtf8Span();
 
-            fixed (sbyte* pUtf8Title = utf8Title)
+        fixed (sbyte* pUtf8Title = utf8Title)
+        {
+            if (dispatchService.GetAtomIsSupported(_NET_WM_NAME))
             {
+
                 _ = XChangeProperty(
                     display,
                     window,
@@ -86,10 +87,16 @@ internal static unsafe partial class XlibUtilities
                     utf8Title.Length
                 );
             }
-        }
-        else
-        {
-            throw new NotImplementedException();
+            else
+            {
+                var textProperty = new XTextProperty {
+                    value = (byte*)pUtf8Title,
+                    encoding = dispatchService.GetAtom(UTF8_STRING),
+                    format = 8,
+                    nitems = (uint)utf8Title.Length,
+                };
+                XSetWMName(display, window, &textProperty);
+            }
         }
     }
 
