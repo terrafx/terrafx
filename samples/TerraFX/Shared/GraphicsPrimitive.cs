@@ -85,5 +85,22 @@ public sealed class GraphicsPrimitive : GraphicsPipelineObject
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
+        // In a real app this wouldn't necessarily be responsible for cleaning up the resource
+        // views as they may be shared across multiple primitives or other device objects.
+
+        _indexBufferView?.Dispose();
+
+        if (_pipelineResourceViews is not null)
+        {
+            foreach (var resourceView in _pipelineResourceViews.ResourceViews)
+            {
+                resourceView.Dispose();
+            }
+            _pipelineResourceViews?.Dispose();
+        }
+
+        _vertexBufferView?.Dispose();
+
+        Pipeline?.Dispose();
     }
 }

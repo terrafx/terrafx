@@ -1,5 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using System;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Numerics;
 using TerraFX.Threading;
@@ -7,7 +8,6 @@ using static TerraFX.Interop.Vulkan.VkCompositeAlphaFlagsKHR;
 using static TerraFX.Interop.Vulkan.VkImageUsageFlags;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkPresentModeKHR;
-using static TerraFX.Interop.Vulkan.VkResult;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.VkSurfaceTransformFlagsKHR;
 using static TerraFX.Interop.Vulkan.Vulkan;
@@ -62,7 +62,9 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         static VkSurfaceKHR CreateVkSurface(VulkanGraphicsDevice device, IGraphicsSurface surface)
         {
             VkSurfaceKHR vkSurface;
-            var vkInstance = device.Service.VkInstance;
+
+            var service = device.Service;
+            var vkInstance = service.VkInstance;
 
             switch (surface.Kind)
             {
@@ -74,7 +76,10 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
                         hwnd = surface.Handle,
                     };
 
-                    ThrowExternalExceptionIfNotSuccess(vkCreateWin32SurfaceKHR(vkInstance, &vkSurfaceCreateInfo, pAllocator: null, &vkSurface));
+                    ref readonly var vkInstanceManualImports = ref service.VkInstanceManualImports;
+                    ThrowIfNull(vkInstanceManualImports.vkCreateWin32SurfaceKHR);
+
+                    ThrowExternalExceptionIfNotSuccess(vkInstanceManualImports.vkCreateWin32SurfaceKHR(vkInstance, &vkSurfaceCreateInfo, null, &vkSurface));
                     break;
                 }
 
@@ -86,7 +91,10 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
                         window = (nuint)(nint)surface.Handle,
                     };
 
-                    ThrowExternalExceptionIfNotSuccess(vkCreateXlibSurfaceKHR(vkInstance, &vkSurfaceCreateInfo, pAllocator: null, &vkSurface));
+                    ref readonly var vkInstanceManualImports = ref service.VkInstanceManualImports;
+                    ThrowIfNull(vkInstanceManualImports.vkCreateXlibSurfaceKHR);
+
+                    ThrowExternalExceptionIfNotSuccess(vkInstanceManualImports.vkCreateXlibSurfaceKHR(vkInstance, &vkSurfaceCreateInfo, null, &vkSurface));
                     break;
                 }
 

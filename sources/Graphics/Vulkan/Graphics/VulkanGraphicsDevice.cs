@@ -40,6 +40,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     private readonly uint _vkGraphicsCommandQueueFamilyIndex;
     private readonly uint _vkMemoryTypeCount;
     private readonly uint _vkTransferCommandQueueFamilyIndex;
+    private readonly VkDeviceManualImports _vkDeviceManualImports;
 
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsComputeContext> _computeContextPool;
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsCopyContext> _copyContextPool;
@@ -60,6 +61,8 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
 
         var vkDevice = CreateVkDevice(adapter, vkGraphicsCommandQueueFamilyIndex);
         _vkDevice = vkDevice;
+
+        InitializeVkDeviceManualImports(vkDevice, ref _vkDeviceManualImports);
 
         _vkCommandQueue = GetVkCommandQueue(vkDevice, vkGraphicsCommandQueueFamilyIndex);
 
@@ -169,6 +172,12 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
             }
             return vkCommandQueueFamilyIndex;
         }
+
+        static void InitializeVkDeviceManualImports(VkDevice vkDevice, ref VkDeviceManualImports vkDeviceManualImports)
+        {
+            ReadOnlySpan<sbyte> vkSetDebugUtilsObjectNameEXT = new sbyte[] { 0x76, 0x6B, 0x53, 0x65, 0x74, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4F, 0x62, 0x6A, 0x65, 0x63, 0x74, 0x4E, 0x61, 0x6D, 0x65, 0x45, 0x58, 0x54, 0x00 };
+            vkDeviceManualImports.vkSetDebugUtilsObjectNameEXT = (delegate* unmanaged<VkDevice, VkDebugUtilsObjectNameInfoEXT*, VkResult>)vkGetDeviceProcAddr(vkDevice, vkSetDebugUtilsObjectNameEXT.GetPointer());
+        }
     }
 
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsDevice" /> class.</summary>
@@ -217,6 +226,9 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkDevice"/> for the device.</summary>
     public VkDevice VkDevice => _vkDevice;
+
+    /// <summary>Gets the methods that must be manually imported for <see cref="VkDevice" />.</summary>
+    public ref readonly VkDeviceManualImports VkDeviceManualImports => ref _vkDeviceManualImports;
 
     /// <summary>Gets the index of the queue family that supports graphics operations for <see cref="VkCommandQueue" />.</summary>
     public uint VkGraphicsCommandQueueFamilyIndex
@@ -585,7 +597,9 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     {
         name ??= "";
 
-        if (GraphicsService.EnableDebugMode && (Service.VkSetDebugUtilsObjectName != null) && (objectHandle != 0))
+        ref readonly var vkDeviceManualImports = ref VkDeviceManualImports;
+
+        if (GraphicsService.EnableDebugMode && (vkDeviceManualImports.vkSetDebugUtilsObjectNameEXT is not null) && (objectHandle != 0))
         {
             var componentName = $"{name}: {component}";
 
@@ -597,7 +611,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
                     objectHandle = objectHandle,
                     pObjectName = pName
                 };
-                _ = Service.VkSetDebugUtilsObjectName(VkDevice, &vkDebugUtilsObjectNameInfo);
+                _ = vkDeviceManualImports.vkSetDebugUtilsObjectNameEXT(VkDevice, &vkDebugUtilsObjectNameInfo);
             }
         }
 
