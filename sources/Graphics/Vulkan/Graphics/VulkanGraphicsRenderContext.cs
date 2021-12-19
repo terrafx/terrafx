@@ -147,8 +147,10 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
             ThrowForInvalidState(nameof(RenderPass));
         }
 
-        var surface = renderPass.Surface;
-        var renderTarget = renderPass.Swapchain.RenderTarget;
+        var swapchain = renderPass.Swapchain;
+
+        ref readonly var vkSurfaceCapabilities = ref swapchain.VkSurfaceCapabilities;
+        var renderTarget = swapchain.RenderTarget;
 
         var vkRenderPassBeginInfo = new VkRenderPassBeginInfo {
             sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
@@ -156,8 +158,8 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
             framebuffer = renderTarget.VkFramebuffer,
             renderArea = new VkRect2D {
                 extent = new VkExtent2D {
-                    width = (uint)surface.Width,
-                    height = (uint)surface.Height,
+                    width = vkSurfaceCapabilities.currentExtent.width,
+                    height = vkSurfaceCapabilities.currentExtent.height,
                 },
             },
             clearValueCount = 1,

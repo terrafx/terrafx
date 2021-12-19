@@ -7,20 +7,20 @@ using TerraFX.UI;
 
 namespace TerraFX.Samples.ServiceProviders;
 
-public class Win32WindowServiceProvider : ApplicationServiceProvider
+public class Win32UIServiceProvider : ApplicationServiceProvider
 {
-    private ValueLazy<Win32WindowService> _windowService;
+    private ValueLazy<Win32UIService> _uiService;
 
-    public Win32WindowServiceProvider()
+    public Win32UIServiceProvider()
     {
-        _windowService = new ValueLazy<Win32WindowService>(() => new Win32WindowService());
+        _uiService = new ValueLazy<Win32UIService>(() => Win32UIService.Instance);
     }
 
     public override bool TryGetService(Type serviceType, [NotNullWhen(true)] out object? service)
     {
-        if (serviceType.IsAssignableFrom(typeof(Win32WindowService)))
+        if (serviceType.IsAssignableFrom(typeof(Win32UIService)))
         {
-            service = _windowService.Value;
+            service = _uiService.Value;
             return true;
         }
 
@@ -30,9 +30,8 @@ public class Win32WindowServiceProvider : ApplicationServiceProvider
 
     protected override void DisposeCore(bool isDisposing)
     {
-        _windowService.Dispose(DisposeWindowService);
+        _uiService.Dispose(DisposeUIService);
     }
 
-    private void DisposeWindowService(WindowService windowService)
-        => windowService.Dispose();
+    private void DisposeUIService(UIService uiService) => uiService.Dispose();
 }

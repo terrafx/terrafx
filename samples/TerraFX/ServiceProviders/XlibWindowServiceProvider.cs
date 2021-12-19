@@ -9,18 +9,18 @@ namespace TerraFX.Samples.ServiceProviders;
 
 public class XlibWindowServiceProvider : ApplicationServiceProvider
 {
-    private ValueLazy<XlibWindowService> _windowService;
+    private ValueLazy<XlibUIService> _uiService;
 
     public XlibWindowServiceProvider()
     {
-        _windowService = new ValueLazy<XlibWindowService>(() => new XlibWindowService());
+        _uiService = new ValueLazy<XlibUIService>(() => XlibUIService.Instance);
     }
 
     public override bool TryGetService(Type serviceType, [NotNullWhen(true)] out object? service)
     {
-        if (serviceType.IsAssignableFrom(typeof(XlibWindowService)))
+        if (serviceType.IsAssignableFrom(typeof(XlibUIService)))
         {
-            service = _windowService.Value;
+            service = _uiService.Value;
             return true;
         }
 
@@ -32,10 +32,9 @@ public class XlibWindowServiceProvider : ApplicationServiceProvider
     {
         if (isDisposing)
         {
-            _windowService.Dispose(DisposeWindowService);
+            _uiService.Dispose(DisposeUIService);
         }
     }
 
-    private void DisposeWindowService(WindowService windowService)
-        => windowService.Dispose();
+    private void DisposeUIService(UIService uiService) => uiService.Dispose();
 }

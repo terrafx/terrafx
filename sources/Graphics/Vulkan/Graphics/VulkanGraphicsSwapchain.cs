@@ -27,6 +27,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
 
     private string _name = null!;
     private VulkanGraphicsRenderTarget[] _renderTargets;
+    private VkSurfaceCapabilitiesKHR _vkSurfaceCapabilities;
     private UnmanagedArray<VkImage> _vkSwapchainImages;
     private VkSwapchainKHR _vkSwapchain;
 
@@ -43,7 +44,10 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         var vkSurface = CreateVkSurface(device, surface);
         _vkSurface = vkSurface;
 
-        var vkSwapchain = CreateVkSwapchain(device, vkSurface, surface.Size, ref renderTargetCount, renderTargetFormat);
+        VkSurfaceCapabilitiesKHR vkSurfaceCapabilities;
+        var vkSwapchain = CreateVkSwapchain(device, vkSurface, surface.Size, ref renderTargetCount, renderTargetFormat, &vkSurfaceCapabilities);
+
+        _vkSurfaceCapabilities = vkSurfaceCapabilities;
         _vkSwapchain = vkSwapchain;
 
         var vkSwapchainImages = GetVkSwapchainImages(device, vkSwapchain, ref renderTargetCount);
@@ -52,7 +56,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         _renderTargets = new VulkanGraphicsRenderTarget[renderTargetCount];
         _renderTargetFormat = renderTargetFormat;
         _renderTargetIndex = GetRenderTargetIndex(device, vkSwapchain, Fence);
-
+        
         _ = _state.Transition(to: Initialized);
         Name = nameof(VulkanGraphicsSwapchain);
 
@@ -172,6 +176,9 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         }
     }
 
+    /// <summary>Gets the <see cref="VkSurfaceCapabilitiesKHR" /> for <see cref="VkSurface" /></summary>
+    public ref readonly VkSurfaceCapabilitiesKHR VkSurfaceCapabilities => ref _vkSurfaceCapabilities;
+
     /// <summary>Gets the <see cref="VkSwapchainKHR" /> used by the device.</summary>
     public VkSwapchainKHR VkSwapchain
     {
@@ -209,13 +216,12 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         }
     }
 
-    private static VkSwapchainKHR CreateVkSwapchain(VulkanGraphicsDevice device, VkSurfaceKHR vkSurface, Vector2 surfaceSize, ref uint renderTargetCount, GraphicsFormat renderTargetFormat)
+    private static VkSwapchainKHR CreateVkSwapchain(VulkanGraphicsDevice device, VkSurfaceKHR vkSurface, Vector2 surfaceSize, ref uint renderTargetCount, GraphicsFormat renderTargetFormat, VkSurfaceCapabilitiesKHR* vkSurfaceCapabilities)
     {
         VkSwapchainKHR vkSwapchain;
-        var vkPhysicalDevice = device.Adapter.VkPhysicalDevice;
 
-        VkSurfaceCapabilitiesKHR vkSurfaceCapabilities;
-        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vkPhysicalDevice, vkSurface, &vkSurfaceCapabilities));
+        var vkPhysicalDevice = device.Adapter.VkPhysicalDevice;
+        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vkPhysicalDevice, vkSurface, vkSurfaceCapabilities));
 
         uint vkPresentModeCount;
         ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfacePresentModesKHR(vkPhysicalDevice, vkSurface, &vkPresentModeCount, pPresentModes: null));
@@ -223,24 +229,21 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         var vkPresentModes = stackalloc VkPresentModeKHR[(int)vkPresentModeCount];
         ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfacePresentModesKHR(vkPhysicalDevice, vkSurface, &vkPresentModeCount, vkPresentModes));
 
-        if (renderTargetCount < vkSurfaceCapabilities.minImageCount)
+        if (renderTargetCount < vkSurfaceCapabilities->minImageCount)
         {
-            renderTargetCount = vkSurfaceCapabilities.minImageCount;
+            renderTargetCount = vkSurfaceCapabilities->minImageCount;
         }
 
-        if (vkSurfaceCapabilities.maxImageCount != 0)
+        if (vkSurfaceCapabilities->maxImageCount != 0)
         {
-            ThrowIfNotInInsertBounds(renderTargetCount, vkSurfaceCapabilities.maxImageCount);
+            ThrowIfNotInInsertBounds(renderTargetCount, vkSurfaceCapabilities->maxImageCount);
         }
 
         var vkSwapchainCreateInfo = new VkSwapchainCreateInfoKHR {
             sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
             surface = vkSurface,
             minImageCount = renderTargetCount,
-            imageExtent = new VkExtent2D {
-                width = (uint)surfaceSize.X,
-                height = (uint)surfaceSize.Y,
-            },
+            imageExtent = vkSurfaceCapabilities->currentExtent,
             imageArrayLayers = 1,
             imageUsage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
             preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
@@ -249,9 +252,9 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
             clipped = VK_TRUE,
         };
 
-        if ((vkSurfaceCapabilities.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) == 0)
+        if ((vkSurfaceCapabilities->supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) == 0)
         {
-            vkSwapchainCreateInfo.preTransform = vkSurfaceCapabilities.currentTransform;
+            vkSwapchainCreateInfo.preTransform = vkSurfaceCapabilities->currentTransform;
         }
 
         uint vkSurfaceFormatCount;
@@ -387,8 +390,11 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         var renderTargetCount = (uint)_renderTargets.Length;
         var renderTargetFormat = _renderTargetFormat;
 
-        var vkSwapchain = CreateVkSwapchain(device, VkSurface, eventArgs.CurrentValue, ref renderTargetCount, renderTargetFormat);
+        VkSurfaceCapabilitiesKHR vkSurfaceCapabilities;
+        var vkSwapchain = CreateVkSwapchain(device, VkSurface, eventArgs.CurrentValue, ref renderTargetCount, renderTargetFormat, &vkSurfaceCapabilities);
+
         _vkSwapchain = vkSwapchain;
+        _vkSurfaceCapabilities = vkSurfaceCapabilities;
 
         var vkSwapchainImages = GetVkSwapchainImages(device, vkSwapchain, ref renderTargetCount);
         _vkSwapchainImages = vkSwapchainImages;

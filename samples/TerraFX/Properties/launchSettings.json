@@ -6,7 +6,8 @@
       "nativeDebugging": true
     },
     "WSL": {
-      "commandName": "WSL"
+      "commandName": "WSL",
+      "commandLineArgs": "TerraFX.Samples.dll all"
     }
   }
 }

@@ -20,7 +20,7 @@ public static unsafe class Program
 {
     internal static readonly ApplicationServiceProvider s_pulseAudioServiceProvider = new PulseAudioServiceProvider();
 
-    internal static readonly ApplicationServiceProvider s_uiServiceProvider = OperatingSystem.IsWindows() ? new Win32WindowServiceProvider() : new XlibWindowServiceProvider();
+    internal static readonly ApplicationServiceProvider s_uiServiceProvider = OperatingSystem.IsWindows() ? new Win32UIServiceProvider() : new XlibWindowServiceProvider();
 
     [SupportedOSPlatform("windows10.0")]
     internal static readonly ApplicationServiceProvider s_d3d12GraphicsServiceProvider = new D3D12GraphicsServiceProvider();

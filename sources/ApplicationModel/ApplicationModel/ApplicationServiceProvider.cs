@@ -30,17 +30,13 @@ public abstract class ApplicationServiceProvider : IDisposable, IServiceProvider
     /// <exception cref="ArgumentOutOfRangeException">An audio service is not available for the application.</exception>
     public IAudioService AudioService => GetService<IAudioService>();
 
-    /// <summary>Gets the dispatch service for the application.</summary>
-    /// <exception cref="ArgumentOutOfRangeException">A dispatch service is not available for the application.</exception>
-    public DispatchService DispatchService => WindowService.DispatchService;
-
     /// <summary>Gets the graphics service for the application.</summary>
     /// <exception cref="ArgumentOutOfRangeException">A graphics service is not available for the application.</exception>
     public GraphicsService GraphicsService => GetService<GraphicsService>();
 
-    /// <summary>Gets the window service for the application.</summary>
-    /// <exception cref="ArgumentOutOfRangeException">A window service is not available for the application.</exception>
-    public WindowService WindowService => GetService<WindowService>();
+    /// <summary>Gets the UI service for the application.</summary>
+    /// <exception cref="ArgumentOutOfRangeException">A UI service is not available for the application.</exception>
+    public UIService UIService => GetService<UIService>();
 
     /// <inheritdoc />
     public void Dispose()

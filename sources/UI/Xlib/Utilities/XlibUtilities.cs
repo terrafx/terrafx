@@ -67,20 +67,20 @@ internal static unsafe partial class XlibUtilities
         ));
     }
 
-    public static void SetWindowTitle(XlibDispatchService dispatchService, Display* display, XWindow window, string value)
+    public static void SetWindowTitle(XlibUIService service, Display* display, XWindow window, string value)
     {
         var utf8Title = value.GetUtf8Span();
 
         fixed (sbyte* pUtf8Title = utf8Title)
         {
-            if (dispatchService.GetAtomIsSupported(_NET_WM_NAME))
+            if (service.GetAtomIsSupported(_NET_WM_NAME))
             {
 
                 _ = XChangeProperty(
                     display,
                     window,
-                    dispatchService.GetAtom(_NET_WM_NAME),
-                    dispatchService.GetAtom(UTF8_STRING),
+                    service.GetAtom(_NET_WM_NAME),
+                    service.GetAtom(UTF8_STRING),
                     8,
                     PropModeReplace,
                     (byte*)pUtf8Title,
@@ -91,7 +91,7 @@ internal static unsafe partial class XlibUtilities
             {
                 var textProperty = new XTextProperty {
                     value = (byte*)pUtf8Title,
-                    encoding = dispatchService.GetAtom(UTF8_STRING),
+                    encoding = service.GetAtom(UTF8_STRING),
                     format = 8,
                     nitems = (uint)utf8Title.Length,
                 };

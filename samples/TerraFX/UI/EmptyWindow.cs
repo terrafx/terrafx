@@ -29,9 +29,9 @@ public sealed class EmptyWindow : Sample
     {
         ExceptionUtilities.ThrowIfNull(application);
 
-        var windowService = application.ServiceProvider.WindowService;
+        var uiService = application.ServiceProvider.UIService;
 
-        _window = windowService.CreateWindow();
+        _window = uiService.DispatcherForCurrentThread.CreateWindow();
         _window.SetTitle(Name);
 
         _window.Show();

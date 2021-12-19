@@ -38,15 +38,15 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
 
         static VkFramebuffer CreateVkFramebuffer(VulkanGraphicsSwapchain swapchain, VkImageView vkImageView)
         {
-            var surface = swapchain.Surface;
+            ref readonly var vkSurfaceCapabilities = ref swapchain.VkSurfaceCapabilities;
 
             var vkFramebufferCreateInfo = new VkFramebufferCreateInfo {
                 sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
                 renderPass = swapchain.RenderPass.VkRenderPass,
                 attachmentCount = 1,
                 pAttachments = &vkImageView,
-                width = (uint)surface.Width,
-                height = (uint)surface.Height,
+                width = vkSurfaceCapabilities.currentExtent.width,
+                height = vkSurfaceCapabilities.currentExtent.height,
                 layers = 1,
             };
 
