@@ -6,7 +6,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics;
 
 /// <summary>An object which is created for a graphics swapchain.</summary>
-public abstract class GraphicsSwapchainObject : IGraphicsSwapchainObject
+public abstract class GraphicsSwapchainObject
 {
     private readonly GraphicsAdapter _adapter;
     private readonly GraphicsDevice _device;

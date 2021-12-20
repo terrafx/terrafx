@@ -6,7 +6,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics;
 
 /// <summary>An object which is created for a graphics pipeline.</summary>
-public abstract class GraphicsPipelineObject : IGraphicsPipelineObject
+public abstract class GraphicsPipelineObject
 {
     private readonly GraphicsAdapter _adapter;
     private readonly GraphicsDevice _device;

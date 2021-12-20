@@ -6,7 +6,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics;
 
 /// <summary>An object which is created for a graphics service.</summary>
-public abstract class GraphicsServiceObject : IGraphicsServiceObject
+public abstract class GraphicsServiceObject
 {
     private readonly GraphicsService _service;
 

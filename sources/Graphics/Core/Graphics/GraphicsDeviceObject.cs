@@ -6,7 +6,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics;
 
 /// <summary>An object which is created for a graphics device.</summary>
-public abstract class GraphicsDeviceObject : IGraphicsDeviceObject
+public abstract class GraphicsDeviceObject
 {
     private readonly GraphicsAdapter _adapter;
     private readonly GraphicsDevice _device;

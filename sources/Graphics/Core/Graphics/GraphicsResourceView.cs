@@ -6,7 +6,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics;
 
 /// <summary>An view of memory in a graphics resource.</summary>
-public abstract unsafe class GraphicsResourceView : IGraphicsDeviceObject
+public abstract unsafe class GraphicsResourceView
 {
     private readonly GraphicsAdapter _adapter;
     private readonly GraphicsDevice _device;
