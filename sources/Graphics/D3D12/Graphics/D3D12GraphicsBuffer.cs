@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using TerraFX.Collections;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12;

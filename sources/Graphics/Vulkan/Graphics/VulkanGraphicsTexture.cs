@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using TerraFX.Collections;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkBorderColor;

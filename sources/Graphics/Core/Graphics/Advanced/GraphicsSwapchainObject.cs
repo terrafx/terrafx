@@ -3,29 +3,29 @@
 using System;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-namespace TerraFX.Graphics;
+namespace TerraFX.Graphics.Advanced;
 
-/// <summary>An object which is created for a graphics pipeline.</summary>
-public abstract class GraphicsPipelineObject
+/// <summary>An object which is created for a graphics swapchain.</summary>
+public abstract class GraphicsSwapchainObject
 {
     private readonly GraphicsAdapter _adapter;
     private readonly GraphicsDevice _device;
-    private readonly GraphicsPipeline _pipeline;
     private readonly GraphicsRenderPass _renderPass;
+    private readonly GraphicsSwapchain _swapchain;
     private readonly GraphicsService _service;
 
-    /// <summary>Initializes a new instance of the <see cref="GraphicsPipelineObject" /> class.</summary>
-    /// <param name="pipeline">The pipeline for which the object is being created.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="pipeline" /> is <c>null</c>.</exception>
-    protected GraphicsPipelineObject(GraphicsPipeline pipeline)
+    /// <summary>Initializes a new instance of the <see cref="GraphicsSwapchainObject" /> class.</summary>
+    /// <param name="swapchain">The swapchain for which the object is being created.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="swapchain" /> is <c>null</c>.</exception>
+    protected GraphicsSwapchainObject(GraphicsSwapchain swapchain)
     {
-        ThrowIfNull(pipeline);
+        ThrowIfNull(swapchain);
 
-        _adapter = pipeline.Adapter;
-        _device = pipeline.Device;
-        _pipeline = pipeline;
-        _renderPass = pipeline.RenderPass;
-        _service = pipeline.Service;
+        _adapter = swapchain.Adapter;
+        _device = swapchain.Device;
+        _renderPass = swapchain.RenderPass;
+        _swapchain = swapchain;
+        _service = swapchain.Service;
     }
 
     /// <summary>Gets the underlying adapter for <see cref="Device" />.</summary>
@@ -34,17 +34,17 @@ public abstract class GraphicsPipelineObject
     /// <summary>Gets the underlying device for <see cref="RenderPass" />.</summary>
     public GraphicsDevice Device => _device;
 
-    /// <summary>Gets the name for the pipeline object.</summary>
+    /// <summary>Gets or sets the name for the device object.</summary>
     public abstract string Name { get; set; }
 
-    /// <summary>Gets the pipeline for which the object was created.</summary>
-    public GraphicsPipeline Pipeline => _pipeline;
-
-    /// <summary>Gets the underlying render pass for <see cref="Pipeline" />.</summary>
+    /// <summary>Gets the underlying render pass for <see cref="Swapchain" />.</summary>
     public GraphicsRenderPass RenderPass => _renderPass;
 
     /// <summary>Gets the underlying service for <see cref="Adapter" />.</summary>
     public GraphicsService Service => _service;
+
+    /// <summary>Gets the swapchain for which the object was created.</summary>
+    public GraphicsSwapchain Swapchain => _swapchain;
 
     /// <inheritdoc />
     public void Dispose()

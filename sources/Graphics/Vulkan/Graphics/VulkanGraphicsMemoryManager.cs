@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using TerraFX.Collections;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using static TerraFX.Runtime.Configuration;

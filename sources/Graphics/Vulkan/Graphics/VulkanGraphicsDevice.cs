@@ -6,6 +6,7 @@
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkBufferUsageFlags;

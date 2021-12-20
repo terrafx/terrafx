@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading;
+using TerraFX.Graphics.Advanced;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics;

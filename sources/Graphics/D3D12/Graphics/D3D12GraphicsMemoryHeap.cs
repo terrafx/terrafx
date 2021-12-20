@@ -3,6 +3,7 @@
 // This file includes code based on the MemoryBlock class from https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator/
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12;

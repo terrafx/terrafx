@@ -13,6 +13,7 @@ using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.UnsafeUtilities;
+using TerraFX.Graphics.Advanced;
 
 namespace TerraFX.Graphics;
 

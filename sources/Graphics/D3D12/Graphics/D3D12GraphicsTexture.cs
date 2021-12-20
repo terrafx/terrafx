@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using TerraFX.Collections;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
 using static TerraFX.Threading.VolatileState;

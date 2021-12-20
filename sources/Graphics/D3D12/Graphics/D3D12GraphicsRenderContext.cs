@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 using TerraFX.Numerics;

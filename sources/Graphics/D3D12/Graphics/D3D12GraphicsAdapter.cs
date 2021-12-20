@@ -9,6 +9,7 @@ using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
+using TerraFX.Graphics.Advanced;
 
 namespace TerraFX.Graphics;
 

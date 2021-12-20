@@ -5,6 +5,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 using TerraFX.Threading;

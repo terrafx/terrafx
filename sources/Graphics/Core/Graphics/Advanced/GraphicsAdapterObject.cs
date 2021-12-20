@@ -3,7 +3,7 @@
 using System;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-namespace TerraFX.Graphics;
+namespace TerraFX.Graphics.Advanced;
 
 /// <summary>An object which is created for a graphics adapter.</summary>
 public abstract class GraphicsAdapterObject

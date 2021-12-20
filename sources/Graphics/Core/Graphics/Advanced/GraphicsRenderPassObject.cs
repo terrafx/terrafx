@@ -3,29 +3,27 @@
 using System;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-namespace TerraFX.Graphics;
+namespace TerraFX.Graphics.Advanced;
 
-/// <summary>An object which is created for a graphics swapchain.</summary>
-public abstract class GraphicsSwapchainObject
+/// <summary>An object which is created for a graphics render pass.</summary>
+public abstract class GraphicsRenderPassObject
 {
     private readonly GraphicsAdapter _adapter;
     private readonly GraphicsDevice _device;
     private readonly GraphicsRenderPass _renderPass;
-    private readonly GraphicsSwapchain _swapchain;
     private readonly GraphicsService _service;
 
-    /// <summary>Initializes a new instance of the <see cref="GraphicsSwapchainObject" /> class.</summary>
-    /// <param name="swapchain">The swapchain for which the object is being created.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="swapchain" /> is <c>null</c>.</exception>
-    protected GraphicsSwapchainObject(GraphicsSwapchain swapchain)
+    /// <summary>Initializes a new instance of the <see cref="GraphicsRenderPassObject" /> class.</summary>
+    /// <param name="renderPass">The render pass for which the object is being created.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="renderPass" /> is <c>null</c>.</exception>
+    protected GraphicsRenderPassObject(GraphicsRenderPass renderPass)
     {
-        ThrowIfNull(swapchain);
+        ThrowIfNull(renderPass);
 
-        _adapter = swapchain.Adapter;
-        _device = swapchain.Device;
-        _renderPass = swapchain.RenderPass;
-        _swapchain = swapchain;
-        _service = swapchain.Service;
+        _adapter = renderPass.Adapter;
+        _device = renderPass.Device;
+        _renderPass = renderPass;
+        _service = renderPass.Service;
     }
 
     /// <summary>Gets the underlying adapter for <see cref="Device" />.</summary>
@@ -34,17 +32,14 @@ public abstract class GraphicsSwapchainObject
     /// <summary>Gets the underlying device for <see cref="RenderPass" />.</summary>
     public GraphicsDevice Device => _device;
 
-    /// <summary>Gets or sets the name for the device object.</summary>
+    /// <summary>Gets the name for the render pass object.</summary>
     public abstract string Name { get; set; }
 
-    /// <summary>Gets the underlying render pass for <see cref="Swapchain" />.</summary>
+    /// <summary>Gets the render pass for which the object was created.</summary>
     public GraphicsRenderPass RenderPass => _renderPass;
 
     /// <summary>Gets the underlying service for <see cref="Adapter" />.</summary>
     public GraphicsService Service => _service;
-
-    /// <summary>Gets the swapchain for which the object was created.</summary>
-    public GraphicsSwapchain Swapchain => _swapchain;
 
     /// <inheritdoc />
     public void Dispose()

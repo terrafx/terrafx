@@ -10,6 +10,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using TerraFX.Graphics.Advanced;
 using static TerraFX.Utilities.AppContextUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 

@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Numerics;
 using TerraFX.Threading;

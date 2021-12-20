@@ -5,6 +5,7 @@
 
 using System;
 using System.Threading;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkObjectType;
