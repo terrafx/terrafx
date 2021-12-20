@@ -2,15 +2,13 @@
 
 using System;
 using System.Threading;
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
-using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12_FENCE_FLAGS;
 using static TerraFX.Interop.Windows.WAIT;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Runtime.Configuration;
-using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -26,15 +24,11 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
 
     private ulong _d3d12FenceSignalValue;
 
-    private VolatileState _state;
-
     internal D3D12GraphicsFence(D3D12GraphicsDevice device, bool isSignalled)
         : base(device)
     {
         _d3d12Fence = CreateD3D12Fence(device, isSignalled);
         _d3d12FenceSignalEvent = CreateEventHandle();
-
-        _ = _state.Transition(to: Initialized);
 
         static ID3D12Fence* CreateD3D12Fence(D3D12GraphicsDevice device, bool isSignalled)
         {
@@ -65,7 +59,7 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _d3d12Fence;
         }
     }
@@ -75,7 +69,7 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _d3d12FenceSignalEvent;
         }
     }
@@ -142,15 +136,8 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
-        {
-            ReleaseIfNotNull(_d3d12Fence);
-            DisposeEventHandle(_d3d12FenceSignalEvent);
-        }
-
-        _state.EndDispose();
+        ReleaseIfNotNull(_d3d12Fence);
+        DisposeEventHandle(_d3d12FenceSignalEvent);
 
         static void DisposeEventHandle(HANDLE eventHandle)
         {

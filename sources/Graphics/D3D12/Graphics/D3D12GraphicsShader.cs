@@ -1,10 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.DirectX;
-using TerraFX.Threading;
-using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
@@ -15,8 +13,6 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
 {
     private readonly D3D12_SHADER_BYTECODE _d3d12ShaderBytecode;
 
-    private VolatileState _state;
-
     internal D3D12GraphicsShader(D3D12GraphicsDevice device, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
         : base(device, kind, entryPointName)
     {
@@ -25,8 +21,6 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
 
         var destination = new Span<byte>(_d3d12ShaderBytecode.pShaderBytecode, bytecode.Length);
         bytecode.CopyTo(destination);
-
-        _ = _state.Transition(to: Initialized);
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsShader" /> class.</summary>
@@ -50,13 +44,6 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
-        {
-            Free(_d3d12ShaderBytecode.pShaderBytecode);
-        }
-
-        _state.EndDispose();
+        Free(_d3d12ShaderBytecode.pShaderBytecode);
     }
 }

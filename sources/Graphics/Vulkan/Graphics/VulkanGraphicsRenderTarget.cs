@@ -1,16 +1,13 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkComponentSwizzle;
 using static TerraFX.Interop.Vulkan.VkImageAspectFlags;
 using static TerraFX.Interop.Vulkan.VkImageViewType;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
@@ -22,8 +19,6 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
     private readonly VkFramebuffer _vkFramebuffer;
     private readonly VkImageView _vkFramebufferImageView;
 
-    private VolatileState _state;
-
     internal VulkanGraphicsRenderTarget(VulkanGraphicsSwapchain swapchain, uint index)
         : base(swapchain, index)
     {
@@ -32,8 +27,6 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
 
         var vkFramebuffer = CreateVkFramebuffer(swapchain, vkFramebufferImageView);
         _vkFramebuffer = vkFramebuffer;
-
-        _ = _state.Transition(to: Initialized);
 
         static VkFramebuffer CreateVkFramebuffer(VulkanGraphicsSwapchain swapchain, VkImageView vkImageView)
         {
@@ -103,7 +96,7 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkFramebuffer;
         }
     }
@@ -113,7 +106,7 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkFramebufferImageView;
         }
     }
@@ -129,17 +122,11 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        var vkDevice = Device.VkDevice;
 
-        if (priorState < Disposing)
-        {
-            var vkDevice = Device.VkDevice;
+        CleanupVkFramebuffer(vkDevice, _vkFramebuffer);
+        CleanupVkFramebufferImageView(vkDevice, _vkFramebufferImageView);
 
-            CleanupVkFramebuffer(vkDevice, _vkFramebuffer);
-            CleanupVkFramebufferImageView(vkDevice, _vkFramebufferImageView);
-        }
-
-        _state.EndDispose();
 
         static void CleanupVkFramebuffer(VkDevice vkDevice, VkFramebuffer vkFramebuffer)
         {

@@ -1,16 +1,13 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkDescriptorType;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkShaderStageFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
@@ -22,8 +19,6 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
     private readonly VkDescriptorSetLayout _vkDescriptorSetLayout;
     private readonly VkPipelineLayout _vkPipelineLayout;
 
-    private VolatileState _state;
-
     internal VulkanGraphicsPipelineSignature(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResourceInfo> resources)
         : base(device, inputs, resources)
     {
@@ -31,8 +26,6 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
         _vkDescriptorSetLayout = vkDescriptorSetLayout;
 
         _vkPipelineLayout = CreateVkPipelineLayout(device, vkDescriptorSetLayout);
-
-        _ = _state.Transition(to: Initialized);
 
         static VkDescriptorSetLayout CreateVkDescriptorSetLayout(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineResourceInfo> resources)
         {
@@ -172,7 +165,7 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkDescriptorSetLayout;
         }
     }
@@ -182,7 +175,7 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkPipelineLayout;
         }
     }
@@ -198,17 +191,10 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        var vkDevice = Device.VkDevice;
 
-        if (priorState < Disposing)
-        {
-            var vkDevice = Device.VkDevice;
-
-            DisposeVkDescriptorSetLayout(vkDevice, _vkDescriptorSetLayout);
-            DisposeVkPipelineLayout(vkDevice, _vkPipelineLayout);
-        }
-
-        _state.EndDispose();
+        DisposeVkDescriptorSetLayout(vkDevice, _vkDescriptorSetLayout);
+        DisposeVkPipelineLayout(vkDevice, _vkPipelineLayout);
 
         static void DisposeVkDescriptorSetLayout(VkDevice vkDevice, VkDescriptorSetLayout vulkanDescriptorSetLayout)
         {

@@ -6,7 +6,7 @@
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkBufferUsageFlags;
@@ -22,7 +22,6 @@ using static TerraFX.Interop.Vulkan.VkSampleCountFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Runtime.Configuration;
-using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
@@ -47,8 +46,6 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsCopyContext> _copyContextPool;
     private MemoryBudgetInfo _memoryBudgetInfo;
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext> _renderContextPool;
-
-    private VolatileState _state;
 
     internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator)
         : base(adapter)
@@ -77,8 +74,6 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
 
         _memoryBudgetInfo = new MemoryBudgetInfo();
         UpdateMemoryBudgetInfo(ref _memoryBudgetInfo, totalOperationCount: 0);
-
-        _ = _state.Transition(to: Initialized);
 
         static VulkanGraphicsMemoryManager[] CreateMemoryManagers(VulkanGraphicsDevice device, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator, uint vkMemoryTypeCount)
         {
@@ -193,7 +188,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkCommandQueue;
         }
     }
@@ -203,7 +198,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkComputeCommandQueueFamilyIndex;
         }
     }
@@ -219,7 +214,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkGraphicsCommandQueueFamilyIndex;
         }
     }
@@ -232,7 +227,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkTransferCommandQueueFamilyIndex;
         }
     }
@@ -287,28 +282,28 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc />
     public override VulkanGraphicsFence CreateFence(bool isSignalled)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         return new VulkanGraphicsFence(this, isSignalled);
     }
 
     /// <inheritdoc />
     public override GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResourceInfo> resources = default)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         return new VulkanGraphicsPipelineSignature(this, inputs, resources);
     }
 
     /// <inheritdoc />
     public override VulkanGraphicsShader CreateShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         return new VulkanGraphicsShader(this, kind, bytecode, entryPointName);
     }
 
     /// <inheritdoc />
     public override VulkanGraphicsRenderPass CreateRenderPass(IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsRenderPass));
+        ThrowIfDisposed();
         return new VulkanGraphicsRenderPass(this, surface, renderTargetFormat, minimumRenderTargetCount);
     }
 
@@ -440,7 +435,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc />
     public override VulkanGraphicsComputeContext RentComputeContext()
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         return _computeContextPool.Rent(this, &CreateComputeContext);
 
         static VulkanGraphicsComputeContext CreateComputeContext(VulkanGraphicsDevice device)
@@ -453,7 +448,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc />
     public override VulkanGraphicsCopyContext RentCopyContext()
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         return _copyContextPool.Rent(this, &CreateCopyContext);
 
         static VulkanGraphicsCopyContext CreateCopyContext(VulkanGraphicsDevice device)
@@ -466,7 +461,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc />
     public override VulkanGraphicsRenderContext RentRenderContext()
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         return _renderContextPool.Rent(this, &CreateRenderContext);
 
         static VulkanGraphicsRenderContext CreateRenderContext(VulkanGraphicsDevice device)
@@ -491,7 +486,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc cref="ReturnContext(GraphicsComputeContext)" />
     public void ReturnContext(VulkanGraphicsComputeContext computeContext)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         ThrowIfNull(computeContext);
 
         if (computeContext.Device != this)
@@ -504,7 +499,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc cref="ReturnContext(GraphicsCopyContext)" />
     public void ReturnContext(VulkanGraphicsCopyContext copyContext)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         ThrowIfNull(copyContext);
 
         if (copyContext.Device != this)
@@ -517,7 +512,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc cref="ReturnContext(GraphicsRenderContext)" />
     public void ReturnContext(VulkanGraphicsRenderContext renderContext)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         ThrowIfNull(renderContext);
 
         if (renderContext.Device != this)
@@ -552,28 +547,21 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        WaitForIdle();
 
-        if (priorState < Disposing)
+        if (isDisposing)
         {
-            WaitForIdle();
-
-            if (isDisposing)
-            {
-                _computeContextPool.Dispose();
-                _copyContextPool.Dispose();
-                _renderContextPool.Dispose();
-            }
-
-            foreach (var memoryManager in _memoryManagers)
-            {
-                memoryManager.Dispose();
-            }
-
-            DisposeVkDevice(_vkDevice);
+            _computeContextPool.Dispose();
+            _copyContextPool.Dispose();
+            _renderContextPool.Dispose();
         }
 
-        _state.EndDispose();
+        foreach (var memoryManager in _memoryManagers)
+        {
+            memoryManager.Dispose();
+        }
+
+        DisposeVkDevice(_vkDevice);
 
         static void DisposeVkDevice(VkDevice vkDevice)
         {

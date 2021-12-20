@@ -1,17 +1,14 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 using TerraFX.Numerics;
-using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_TYPE;
 using static TerraFX.Interop.DirectX.DXGI;
 using static TerraFX.Interop.DirectX.DXGI_SWAP_EFFECT;
 using static TerraFX.Interop.Windows.Windows;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -28,8 +25,6 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
 
     private uint _renderTargetIndex;
 
-    private VolatileState _state;
-
     internal D3D12GraphicsSwapchain(D3D12GraphicsRenderPass renderPass, IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0)
         : base(renderPass, surface)
     {
@@ -43,8 +38,6 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
 
         _renderTargetFormat = renderTargetFormat;
         _renderTargetIndex = GetRenderTargetIndex(dxgiSwapchain, Fence);
-
-        _ = _state.Transition(to: Initialized);
 
         InitializeRenderTargets(this, _renderTargets);
         Surface.SizeChanged += OnGraphicsSurfaceSizeChanged;
@@ -125,7 +118,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _d3d12RtvDescriptorHeap;
         }
     }
@@ -139,7 +132,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _dxgiSwapchain;
         }
     }
@@ -192,8 +185,6 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     /// <inheritdoc />
     public override void Present()
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsSwapchain));
-
         var fence = Fence;
         fence.Wait();
         fence.Reset();
@@ -215,26 +206,19 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        var fence = Fence;
+        fence.Wait();
+        fence.Reset();
 
-        if (priorState < Disposing)
+        CleanupRenderTargets(_renderTargets);
+
+        ReleaseIfNotNull(_d3d12RtvDescriptorHeap);
+        ReleaseIfNotNull(_dxgiSwapchain);
+
+        if (isDisposing)
         {
-            var fence = Fence;
-            fence.Wait();
-            fence.Reset();
-
-            CleanupRenderTargets(_renderTargets);
-
-            ReleaseIfNotNull(_d3d12RtvDescriptorHeap);
-            ReleaseIfNotNull(_dxgiSwapchain);
-
-            if (isDisposing)
-            {
-                Fence?.Dispose();
-            }
+            Fence?.Dispose();
         }
-
-        _state.EndDispose();
     }
 
     private uint GetRenderTargetIndex(IDXGISwapChain3* dxgiSwapchain, D3D12GraphicsFence fence)

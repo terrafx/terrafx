@@ -2,13 +2,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using TerraFX.Advanced;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AppContextUtilities;
 
 namespace TerraFX.Graphics;
 
 /// <summary>Provides the base access required for interacting with a graphics subsystem.</summary>
-public abstract class GraphicsService : IDisposable
+public abstract class GraphicsService : DisposableObject
 {
     /// <summary><c>true</c> if debug mode should be enabled for the service; otherwise, <c>false</c>.</summary>
     /// <remarks>This defaults to <see cref="IsDebug" /> causing it to be enabled for debug builds and disabled for release builds by default.</remarks>
@@ -25,22 +27,12 @@ public abstract class GraphicsService : IDisposable
     );
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsService" /> class.</summary>
-    protected GraphicsService()
+    /// <param name="name">The name of the object or <c>null</c> to use <see cref="MemberInfo.Name" />.</param>
+    protected GraphicsService(string? name = null) : base(name)
     {
     }
 
     /// <summary>Gets the adapters available to the service.</summary>
     /// <exception cref="ObjectDisposedException">The service has been disposed.</exception>
     public abstract IEnumerable<GraphicsAdapter> Adapters { get; }
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        Dispose(isDisposing: true);
-        GC.SuppressFinalize(this);
-    }
-
-    /// <inheritdoc cref="Dispose()" />
-    /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-    protected abstract void Dispose(bool isDisposing);
 }

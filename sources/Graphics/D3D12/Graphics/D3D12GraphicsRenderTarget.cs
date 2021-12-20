@@ -1,11 +1,9 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.DirectX;
-using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12_RTV_DIMENSION;
 using static TerraFX.Interop.Windows.Windows;
-using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
@@ -17,8 +15,6 @@ public sealed unsafe class D3D12GraphicsRenderTarget : GraphicsRenderTarget
     private readonly D3D12_CPU_DESCRIPTOR_HANDLE _d3d12RtvDescriptorHandle;
     private readonly ID3D12Resource* _d3d12RtvResource;
 
-    private VolatileState _state;
-
     internal D3D12GraphicsRenderTarget(D3D12GraphicsSwapchain swapchain, uint index)
         : base(swapchain, index)
     {
@@ -26,8 +22,6 @@ public sealed unsafe class D3D12GraphicsRenderTarget : GraphicsRenderTarget
         _d3d12RtvDescriptorHandle = d3d12RtvDescriptorHandle;
 
         _d3d12RtvResource = CreateD3D12RtvResource(swapchain, index, d3d12RtvDescriptorHandle);
-
-        _ = _state.Transition(to: Initialized);
 
         static ID3D12Resource* CreateD3D12RtvResource(D3D12GraphicsSwapchain swapchain, uint index, D3D12_CPU_DESCRIPTOR_HANDLE d3d12RtvDescriptorHandle)
         {
@@ -90,13 +84,6 @@ public sealed unsafe class D3D12GraphicsRenderTarget : GraphicsRenderTarget
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
-        {
-            ReleaseIfNotNull(_d3d12RtvResource);
-        }
-
-        _state.EndDispose();
+        ReleaseIfNotNull(_d3d12RtvResource);
     }
 }

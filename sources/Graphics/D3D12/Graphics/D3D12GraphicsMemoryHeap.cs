@@ -3,14 +3,11 @@
 // This file includes code based on the MemoryBlock class from https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator/
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.DirectX;
-using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12;
 using static TerraFX.Interop.DirectX.D3D12_HEAP_FLAGS;
 using static TerraFX.Interop.Windows.Windows;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
@@ -24,8 +21,6 @@ public sealed unsafe class D3D12GraphicsMemoryHeap : GraphicsDeviceObject
     private readonly D3D12GraphicsMemoryManager _memoryManager;
     private readonly nuint _size;
 
-    private VolatileState _state;
-
     internal D3D12GraphicsMemoryHeap(D3D12GraphicsMemoryManager memoryManager, nuint size, D3D12_HEAP_TYPE d3d12HeapType, D3D12_HEAP_FLAGS d3d12HeapFlags)
         : base(memoryManager.Device)
     {
@@ -33,8 +28,6 @@ public sealed unsafe class D3D12GraphicsMemoryHeap : GraphicsDeviceObject
         _d3d12HeapDesc = _d3d12Heap->GetDesc();
         _memoryManager = memoryManager;
         _size = size;
-
-        _ = _state.Transition(to: Initialized);
 
         static ID3D12Heap* CreateD3D12Heap(D3D12GraphicsDevice device, nuint size, D3D12_HEAP_TYPE d3d12HeapType, D3D12_HEAP_FLAGS d3d12HeapFlags)
         {
@@ -73,7 +66,7 @@ public sealed unsafe class D3D12GraphicsMemoryHeap : GraphicsDeviceObject
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _d3d12Heap;
         }
     }
@@ -100,13 +93,6 @@ public sealed unsafe class D3D12GraphicsMemoryHeap : GraphicsDeviceObject
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
-        {
-            ReleaseIfNotNull(_d3d12Heap);
-        }
-
-        _state.EndDispose();
+        ReleaseIfNotNull(_d3d12Heap);
     }
 }

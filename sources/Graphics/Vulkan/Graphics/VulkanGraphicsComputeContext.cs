@@ -1,13 +1,10 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
@@ -20,8 +17,6 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
     private readonly VkCommandBuffer _vkCommandBuffer;
     private readonly VkCommandPool _vkCommandPool;
 
-    private VolatileState _state;
-
     internal VulkanGraphicsComputeContext(VulkanGraphicsDevice device)
         : base(device)
     {
@@ -30,8 +25,6 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
 
         _vkCommandBuffer = CreateVkCommandBuffer(device, vkCommandPool);
         _fence = device.CreateFence(isSignalled: true);
-
-        _ = _state.Transition(to: Initialized);
 
         static VkCommandBuffer CreateVkCommandBuffer(VulkanGraphicsDevice device, VkCommandPool vkCommandPool)
         {
@@ -81,7 +74,7 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkCommandBuffer;
         }
     }
@@ -91,7 +84,7 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkCommandPool;
         }
     }
@@ -137,23 +130,16 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        var vkDevice = Device.VkDevice;
+        var vkCommandPool = _vkCommandPool;
 
-        if (priorState < Disposing)
+        DisposeVkCommandBuffer(vkDevice, vkCommandPool, _vkCommandBuffer);
+        DisposeVkCommandPool(vkDevice, vkCommandPool);
+
+        if (isDisposing)
         {
-            var vkDevice = Device.VkDevice;
-            var vkCommandPool = _vkCommandPool;
-
-            DisposeVkCommandBuffer(vkDevice, vkCommandPool, _vkCommandBuffer);
-            DisposeVkCommandPool(vkDevice, vkCommandPool);
-
-            if (isDisposing)
-            {
-                _fence?.Dispose();
-            }
+            _fence?.Dispose();
         }
-
-        _state.EndDispose();
 
         static void DisposeVkCommandBuffer(VkDevice vkDevice, VkCommandPool vkCommandPool, VkCommandBuffer vkCommandBuffer)
         {

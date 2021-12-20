@@ -1,14 +1,11 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
@@ -20,15 +17,11 @@ public sealed unsafe class VulkanGraphicsShader : GraphicsShader
     private readonly UnmanagedArray<byte> _bytecode;
     private readonly VkShaderModule _vkShaderModule;
 
-    private VolatileState _state;
-
     internal VulkanGraphicsShader(VulkanGraphicsDevice device, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
         : base(device, kind, entryPointName)
     {
         _bytecode = GetBytecode(bytecode);
         _vkShaderModule = CreateVkShaderModule(device, _bytecode);
-
-        _ = _state.Transition(to: Initialized);
 
         static VkShaderModule CreateVkShaderModule(VulkanGraphicsDevice device, UnmanagedReadOnlySpan<byte> bytecode)
         {
@@ -75,7 +68,7 @@ public sealed unsafe class VulkanGraphicsShader : GraphicsShader
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkShaderModule;
         }
     }
@@ -90,15 +83,8 @@ public sealed unsafe class VulkanGraphicsShader : GraphicsShader
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
-        {
-            DisposeVkShaderModule(Device.VkDevice, _vkShaderModule);
-            _bytecode.Dispose();
-        }
-
-        _state.EndDispose();
+        DisposeVkShaderModule(Device.VkDevice, _vkShaderModule);
+        _bytecode.Dispose();
 
         static void DisposeVkShaderModule(VkDevice vkDevice, VkShaderModule vkShaderModule)
         {

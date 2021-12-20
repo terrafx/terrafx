@@ -1,9 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkColorComponentFlags;
 using static TerraFX.Interop.Vulkan.VkCompareOp;
 using static TerraFX.Interop.Vulkan.VkCullModeFlags;
@@ -16,8 +15,6 @@ using static TerraFX.Interop.Vulkan.VkShaderStageFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.VkVertexInputRate;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.MathUtilities;
@@ -32,14 +29,10 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
 {
     private readonly VkPipeline _vkPipeline;
 
-    private VolatileState _state;
-
     internal VulkanGraphicsPipeline(VulkanGraphicsRenderPass renderPass, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
         : base(renderPass, signature, vertexShader, pixelShader)
     {
         _vkPipeline = CreateVkPipeline(renderPass, signature, vertexShader, pixelShader);
-
-        _ = _state.Transition(to: Initialized);
 
         static VkPipeline CreateVkPipeline(VulkanGraphicsRenderPass renderPass, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
         {
@@ -282,7 +275,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkPipeline;
         }
     }
@@ -290,7 +283,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
     /// <inheritdoc />
     public override VulkanGraphicsPipelineResourceViewSet CreateResourceViews(ReadOnlySpan<GraphicsResourceView> resourceViews)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsPipeline));
+        ThrowIfDisposed();
         ThrowIfZero(resourceViews.Length);
 
         return new VulkanGraphicsPipelineResourceViewSet(this, resourceViews);
@@ -306,21 +299,14 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        DisposeVkPipeline(Device.VkDevice, _vkPipeline);
 
-        if (priorState < Disposing)
+        if (isDisposing)
         {
-            DisposeVkPipeline(Device.VkDevice, _vkPipeline);
-
-            if (isDisposing)
-            {
-                Signature?.Dispose();
-                PixelShader?.Dispose();
-                VertexShader?.Dispose();
-            }
+            Signature?.Dispose();
+            PixelShader?.Dispose();
+            VertexShader?.Dispose();
         }
-
-        _state.EndDispose();
 
         static void DisposeVkPipeline(VkDevice vkDevice, VkPipeline vkPipeline)
         {

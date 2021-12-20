@@ -1,14 +1,11 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 
 namespace TerraFX.Graphics;
@@ -20,8 +17,6 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     private readonly VkPhysicalDeviceFeatures _vkPhysicalDeviceFeatures;
     private readonly VkPhysicalDeviceMemoryProperties _vkPhysicalDeviceMemoryProperties;
     private readonly VkPhysicalDeviceProperties _vkPhysicalDeviceProperties;
-
-    private VolatileState _state;
 
     internal VulkanGraphicsAdapter(VulkanGraphicsService service, VkPhysicalDevice vkPhysicalDevice)
         : base(service)
@@ -36,8 +31,6 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
 
         var name = GetName(in _vkPhysicalDeviceProperties);
         SetName(name);
-
-        _ = _state.Transition(to: Initialized);
 
         static string GetName(in VkPhysicalDeviceProperties vulkanPhysicalDeviceProperties)
         {
@@ -81,7 +74,7 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkPhysicalDevice;
         }
     }
@@ -98,7 +91,7 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     /// <inheritdoc />
     public override VulkanGraphicsDevice CreateDevice(delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
+        ThrowIfDisposed();
         return new VulkanGraphicsDevice(this, createMemoryAllocator);
     }
 
@@ -114,13 +107,5 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
 
         vkGetPhysicalDeviceMemoryProperties2(VkPhysicalDevice, &vkPhysicalDeviceMemoryProperties);
         return true;
-    }
-
-    /// <inheritdoc />
-    /// <remarks>While there are no unmanaged resources to cleanup, we still want to mark the instance as disposed if, for example, <see cref="GraphicsServiceObject.Service" /> was disposed.</remarks>
-    protected override void Dispose(bool isDisposing)
-    {
-        _ = _state.BeginDispose();
-        _state.EndDispose();
     }
 }

@@ -5,14 +5,12 @@
 
 using System;
 using System.Threading;
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
@@ -30,8 +28,6 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
     private volatile void* _mappedAddress;
     private volatile uint _mappedCount;
 
-    private VolatileState _state;
-
     internal VulkanGraphicsMemoryHeap(VulkanGraphicsMemoryManager memoryManager, nuint size, uint vkMemoryTypeIndex)
         : base(memoryManager.Device)
     {
@@ -39,8 +35,6 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
         _memoryManager = memoryManager;
         _size = size;
         _vkDeviceMemory = CreateVkDeviceMemory(memoryManager.Device, size, vkMemoryTypeIndex);
-
-        _ = _state.Transition(to: Initialized);
 
         static VkDeviceMemory CreateVkDeviceMemory(VulkanGraphicsDevice device, nuint size, uint vkMemoryTypeIndex)
         {
@@ -83,7 +77,7 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkDeviceMemory;
         }
     }
@@ -115,14 +109,7 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
-        {
-            DisposeVkDeviceMemory(Device.VkDevice, _vkDeviceMemory);
-        }
-
-        _state.EndDispose();
+        DisposeVkDeviceMemory(Device.VkDevice, _vkDeviceMemory);
 
         static void DisposeVkDeviceMemory(VkDevice vkDevice, VkDeviceMemory vkDeviceMemory)
         {

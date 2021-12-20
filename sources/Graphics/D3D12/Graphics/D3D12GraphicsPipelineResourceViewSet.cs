@@ -1,16 +1,13 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.DirectX;
-using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_FLAGS;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_SRV_DIMENSION;
 using static TerraFX.Interop.Windows.Windows;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
@@ -21,14 +18,10 @@ public sealed unsafe class D3D12GraphicsPipelineResourceViewSet : GraphicsPipeli
 {
     private readonly ID3D12DescriptorHeap* _d3d12CbvSrvUavDescriptorHeap;
 
-    private VolatileState _state;
-
     internal D3D12GraphicsPipelineResourceViewSet(D3D12GraphicsPipeline pipeline, ReadOnlySpan<GraphicsResourceView> resourceViews)
         : base(pipeline, resourceViews)
     {
         _d3d12CbvSrvUavDescriptorHeap = CreateD3D12CbvSrvUavDescriptorHeap(pipeline, resourceViews);
-
-        _ = _state.Transition(to: Initialized);
 
         static ID3D12DescriptorHeap* CreateD3D12CbvSrvUavDescriptorHeap(D3D12GraphicsPipeline pipeline, ReadOnlySpan<GraphicsResourceView> resourceViews)
         {
@@ -123,7 +116,7 @@ public sealed unsafe class D3D12GraphicsPipelineResourceViewSet : GraphicsPipeli
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _d3d12CbvSrvUavDescriptorHeap;
         }
     }
@@ -147,13 +140,6 @@ public sealed unsafe class D3D12GraphicsPipelineResourceViewSet : GraphicsPipeli
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
-        {
-            ReleaseIfNotNull(_d3d12CbvSrvUavDescriptorHeap);
-        }
-
-        _state.EndDispose();
+        ReleaseIfNotNull(_d3d12CbvSrvUavDescriptorHeap);
     }
 }

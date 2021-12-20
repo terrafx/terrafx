@@ -3,15 +3,12 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
+using TerraFX.Advanced;
 using TerraFX.Collections;
-using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
-using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
@@ -34,8 +31,6 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
     private volatile void* _mappedAddress;
     private volatile uint _mappedCount;
 
-    private VolatileState _state;
-
     internal VulkanGraphicsBuffer(VulkanGraphicsDevice device, in CreateInfo createInfo)
         : base(device, in createInfo.MemoryRegion, createInfo.CpuAccess, createInfo.Kind)
     {
@@ -52,8 +47,6 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
         _vkNonCoherentAtomSize = checked((nuint)vkPhysicalDeviceLimits.nonCoherentAtomSize);
 
         ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(device.VkDevice, createInfo.VkBuffer, _memoryHeap.VkDeviceMemory, createInfo.MemoryRegion.Offset));
-
-        _ = _state.Transition(to: Initialized);
     }
 
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsBuffer" /> class.</summary>
@@ -85,7 +78,7 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkBuffer;
         }
     }
@@ -112,7 +105,7 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
     /// <inheritdoc />
     public override bool TryCreateView(uint count, uint stride, [NotNullWhen(true)] out GraphicsBufferView? bufferView)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsTexture));
+        ThrowIfDisposed();
 
         nuint size = stride;
         size *= count;
@@ -158,25 +151,18 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        _bufferViewsMutex.Dispose();
+        _mapMutex.Dispose();
 
-        if (priorState < Disposing)
+        DisposeAllViewsInternal();
+
+        if (isDisposing)
         {
-            _bufferViewsMutex.Dispose();
-            _mapMutex.Dispose();
-
-            DisposeAllViewsInternal();
-
-            if (isDisposing)
-            {
-                _memoryAllocator.Clear();
-            }
-
-            DisposeVulkanBuffer(Device.VkDevice, _vkBuffer);
-            MemoryRegion.Dispose();
+            _memoryAllocator.Clear();
         }
 
-        _state.EndDispose();
+        DisposeVulkanBuffer(Device.VkDevice, _vkBuffer);
+        MemoryRegion.Dispose();
 
         static void DisposeVulkanBuffer(VkDevice vkDevice, VkBuffer vkBuffer)
         {

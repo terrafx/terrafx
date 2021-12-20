@@ -9,14 +9,11 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkDebugUtilsMessageSeverityFlagsEXT;
 using static TerraFX.Interop.Vulkan.VkDebugUtilsMessageTypeFlagsEXT;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.VkValidationFeatureEnableEXT;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -82,8 +79,6 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
     private readonly VkInstance _vkInstance;
     private readonly VkDebugUtilsMessengerEXT _vkDebugUtilsMessenger;
 
-    private VolatileState _state;
-
     /// <summary>Initializes a new instance of the <see cref="VulkanGraphicsService" /> class.</summary>
     public VulkanGraphicsService()
     {
@@ -121,8 +116,6 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
         _vkDebugUtilsMessenger = CreateVkDebugUtilsMessenger(vkInstance, in _vkInstanceManualImports);
 
         _adapters = GetGraphicsAdapters(this, vkInstance);
-
-        _ = _state.Transition(to: Initialized);
 
         static VkDebugUtilsMessengerEXT CreateVkDebugUtilsMessenger(VkInstance vkInstance, in VkInstanceManualImports vkInstanceManualImports)
         {
@@ -403,7 +396,7 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkInstance;
         }
     }
@@ -422,17 +415,10 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        var vkInstance = _vkInstance;
 
-        if (priorState < Disposing)
-        {
-            var vkInstance = _vkInstance;
-
-            DisposeVkDebugUtilsMessenger(vkInstance, _vkDebugUtilsMessenger, in _vkInstanceManualImports);
-            DisposeVkInstance(vkInstance);
-        }
-
-        _state.EndDispose();
+        DisposeVkDebugUtilsMessenger(vkInstance, _vkDebugUtilsMessenger, in _vkInstanceManualImports);
+        DisposeVkInstance(vkInstance);
 
         static void DisposeVkDebugUtilsMessenger(VkInstance vkInstance, VkDebugUtilsMessengerEXT vkDebugUtilsMessenger, in VkInstanceManualImports vkInstanceManualImports)
         {

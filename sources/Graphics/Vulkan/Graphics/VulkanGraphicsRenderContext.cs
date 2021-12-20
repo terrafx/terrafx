@@ -2,10 +2,9 @@
 
 using System;
 using System.Threading;
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Numerics;
-using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkDescriptorType;
 using static TerraFX.Interop.Vulkan.VkImageLayout;
 using static TerraFX.Interop.Vulkan.VkIndexType;
@@ -14,8 +13,6 @@ using static TerraFX.Interop.Vulkan.VkPipelineBindPoint;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.VkSubpassContents;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -33,8 +30,6 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
 
     private VulkanGraphicsRenderPass? _renderPass;
 
-    private VolatileState _state;
-
     internal VulkanGraphicsRenderContext(VulkanGraphicsDevice device)
         : base(device)
     {
@@ -45,8 +40,6 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
 
         _vkCommandBuffer = CreateVkCommandBuffer(device, vkCommandPool);
         _vkMaxVertexInputBindings = Adapter.VkPhysicalDeviceProperties.limits.maxVertexInputBindings;
-
-        _ = _state.Transition(to: Initialized);
 
         static VkCommandBuffer CreateVkCommandBuffer(VulkanGraphicsDevice device, VkCommandPool vkCommandPool)
         {
@@ -102,7 +95,7 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkCommandBuffer;
         }
     }
@@ -112,7 +105,7 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkCommandPool;
         }
     }
@@ -444,23 +437,16 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        var vkDevice = Device.VkDevice;
+        var vkCommandPool = _vkCommandPool;
 
-        if (priorState < Disposing)
+        DisposeVkCommandBuffer(vkDevice, vkCommandPool, _vkCommandBuffer);
+        DisposeVkCommandPool(vkDevice, vkCommandPool);
+
+        if (isDisposing)
         {
-            var vkDevice = Device.VkDevice;
-            var vkCommandPool = _vkCommandPool;
-
-            DisposeVkCommandBuffer(vkDevice, vkCommandPool, _vkCommandBuffer);
-            DisposeVkCommandPool(vkDevice, vkCommandPool);
-
-            if (isDisposing)
-            {
-                _fence?.Dispose();
-            }
+            _fence?.Dispose();
         }
-
-        _state.EndDispose();
 
         static void DisposeVkCommandBuffer(VkDevice vkDevice, VkCommandPool vkCommandPool, VkCommandBuffer vkCommandBuffer)
         {

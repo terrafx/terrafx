@@ -6,12 +6,11 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using TerraFX.Advanced;
 using TerraFX.Collections;
-using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using static TerraFX.Runtime.Configuration;
-using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
@@ -34,8 +33,6 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
     private ulong _size;
     private ulong _totalFreeMemoryRegionSize;
 
-    private VolatileState _state;
-
     internal VulkanGraphicsMemoryManager(VulkanGraphicsDevice device, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator, uint vkMemoryTypeIndex)
         : base(device)
     {
@@ -50,8 +47,6 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
 
         _emptyMemoryAllocator = null;
         _memoryAllocators = new ValueList<GraphicsMemoryAllocator>();
-
-        _ = _state.Transition(to: Initialized);
 
         for (var i = 0; i < MinimumMemoryAllocatorCount; ++i)
         {
@@ -167,22 +162,15 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        var memoryAllocators = _memoryAllocators.AsSpanUnsafe(0, _memoryAllocators.Count);
 
-        if (priorState < Disposing)
+        for (var index = 0; index < memoryAllocators.Length; index++)
         {
-            var memoryAllocators = _memoryAllocators.AsSpanUnsafe(0, _memoryAllocators.Count);
-
-            for (var index = 0; index < memoryAllocators.Length; index++)
-            {
-                var memoryAllocator = memoryAllocators[index];
-                memoryAllocator.DeviceObject.Dispose();
-            }
-
-            _mutex.Dispose();
+            var memoryAllocator = memoryAllocators[index];
+            memoryAllocator.DeviceObject.Dispose();
         }
 
-        _state.EndDispose();
+        _mutex.Dispose();
     }
 
     private GraphicsMemoryAllocator AddMemoryAllocator(nuint size, bool isDedicated)

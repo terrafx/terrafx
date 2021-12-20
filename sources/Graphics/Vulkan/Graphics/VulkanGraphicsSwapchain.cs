@@ -1,10 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System;
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Numerics;
-using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkCompositeAlphaFlagsKHR;
 using static TerraFX.Interop.Vulkan.VkImageUsageFlags;
 using static TerraFX.Interop.Vulkan.VkObjectType;
@@ -12,8 +10,6 @@ using static TerraFX.Interop.Vulkan.VkPresentModeKHR;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.VkSurfaceTransformFlagsKHR;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
@@ -32,8 +28,6 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
     private VkSwapchainKHR _vkSwapchain;
 
     private uint _renderTargetIndex;
-
-    private VolatileState _state;
 
     internal VulkanGraphicsSwapchain(VulkanGraphicsRenderPass renderPass, IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0)
         : base(renderPass, surface)
@@ -56,8 +50,6 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         _renderTargets = new VulkanGraphicsRenderTarget[renderTargetCount];
         _renderTargetFormat = renderTargetFormat;
         _renderTargetIndex = GetRenderTargetIndex(device, vkSwapchain, Fence);
-        
-        _ = _state.Transition(to: Initialized);
 
         InitializeRenderTargets(this, _renderTargets);
         Surface.SizeChanged += OnGraphicsSurfaceSizeChanged;
@@ -155,7 +147,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkSurface;
         }
     }
@@ -168,7 +160,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkSwapchain;
         }
     }
@@ -178,7 +170,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkSwapchainImages;
         }
     }
@@ -302,7 +294,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
     /// <inheritdoc />
     public override void Present()
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsSwapchain));
+        ThrowIfDisposed();
 
         var fence = Fence;
         fence.Wait();
@@ -335,26 +327,19 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        var fence = Fence;
+        fence.Wait();
+        fence.Reset();
 
-        if (priorState < Disposing)
+        CleanupRenderTargets(_renderTargets);
+
+        CleanupVkSwapchain(Device.VkDevice, _vkSwapchain);
+        DisposeVkSurface(Service.VkInstance, _vkSurface);
+
+        if (isDisposing)
         {
-            var fence = Fence;
-            fence.Wait();
-            fence.Reset();
-
-            CleanupRenderTargets(_renderTargets);
-
-            CleanupVkSwapchain(Device.VkDevice, _vkSwapchain);
-            DisposeVkSurface(Service.VkInstance, _vkSurface);
-
-            if (isDisposing)
-            {
-                Fence?.Dispose();
-            }
+            Fence?.Dispose();
         }
-
-        _state.EndDispose();
 
         static void DisposeVkSurface(VkInstance vkInstance, VkSurfaceKHR vkSurface)
         {

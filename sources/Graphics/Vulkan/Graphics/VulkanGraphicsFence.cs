@@ -2,16 +2,14 @@
 
 using System;
 using System.Threading;
-using TerraFX.Graphics.Advanced;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkFenceCreateFlags;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkResult;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Runtime.Configuration;
-using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -24,14 +22,10 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
 {
     private readonly VkFence _vkFence;
 
-    private VolatileState _state;
-
     internal VulkanGraphicsFence(VulkanGraphicsDevice device, bool isSignalled)
         : base(device)
     {
         _vkFence = CreateVkFence(device, isSignalled ? VK_FENCE_CREATE_SIGNALED_BIT : 0);
-
-        _ = _state.Transition(to: Initialized);
 
         static VkFence CreateVkFence(VulkanGraphicsDevice device, VkFenceCreateFlags vkFenceCreateFlags)
         {
@@ -65,7 +59,7 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkFence;
         }
     }
@@ -105,14 +99,7 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
-        {
-            DisposeVkFence(Device.VkDevice, _vkFence);
-        }
-
-        _state.EndDispose();
+        DisposeVkFence(Device.VkDevice, _vkFence);
 
         static void DisposeVkFence(VkDevice vkDevice, VkFence vkFence)
         {
