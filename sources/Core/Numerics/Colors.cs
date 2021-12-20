@@ -3,7 +3,7 @@
 // This file includes code based on code from https://github.com/microsoft/DirectXMath
 // The original code is Copyright © Microsoft. All rights reserved. Licensed under the MIT License (MIT).
 
-namespace TerraFX.Graphics;
+namespace TerraFX.Numerics;
 
 /// <summary><see cref="Colors" /> defines standard colors using names and RGB values from https://www.w3.org/TR/css-color-3 .</summary>
 public static class Colors

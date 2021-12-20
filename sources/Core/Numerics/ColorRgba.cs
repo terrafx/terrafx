@@ -10,7 +10,7 @@ using System.Runtime.Intrinsics;
 using System.Text;
 using static TerraFX.Utilities.VectorUtilities;
 
-namespace TerraFX.Graphics;
+namespace TerraFX.Numerics;
 
 /// <summary>Defines a red-green-blue-alpha color triple.</summary>
 public readonly struct ColorRgba : IEquatable<ColorRgba>, IFormattable
@@ -89,7 +89,7 @@ public readonly struct ColorRgba : IEquatable<ColorRgba>, IFormattable
     public static bool operator !=(ColorRgba left, ColorRgba right) => CompareNotEqualAny(left._value, right._value);
 
     /// <inheritdoc />
-    public override bool Equals(object? obj) => (obj is ColorRgba other) && Equals(other);
+    public override bool Equals(object? obj) => obj is ColorRgba other && Equals(other);
 
     /// <inheritdoc />
     public bool Equals(ColorRgba other) => this == other;
@@ -105,7 +105,7 @@ public readonly struct ColorRgba : IEquatable<ColorRgba>, IFormattable
     {
         var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
 
-        return new StringBuilder(9 + (separator.Length * 3))
+        return new StringBuilder(9 + separator.Length * 3)
             .Append('<')
             .Append(Red.ToString(format, formatProvider))
             .Append(separator)
