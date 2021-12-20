@@ -8,8 +8,9 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Graphics;
 
-namespace TerraFX.Graphics;
+namespace TerraFX.Advanced;
 
 /// <summary>Describes a region of memory within an allocator.</summary>
 [StructLayout(LayoutKind.Auto)]
@@ -36,11 +37,11 @@ public readonly struct GraphicsMemoryRegion : IDisposable, IEquatable<GraphicsMe
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
     public static bool operator ==(in GraphicsMemoryRegion left, in GraphicsMemoryRegion right)
     {
-        return (left.Alignment == right.Alignment)
-            && (left.Allocator == right.Allocator)
-            && (left.IsAllocated == right.IsAllocated)
-            && (left.Offset == right.Offset)
-            && (left.Size == right.Size);
+        return left.Alignment == right.Alignment
+            && left.Allocator == right.Allocator
+            && left.IsAllocated == right.IsAllocated
+            && left.Offset == right.Offset
+            && left.Size == right.Size;
     }
 
     /// <summary>Compares two memory regions for inequality.</summary>
@@ -49,18 +50,18 @@ public readonly struct GraphicsMemoryRegion : IDisposable, IEquatable<GraphicsMe
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
     public static bool operator !=(in GraphicsMemoryRegion left, in GraphicsMemoryRegion right)
     {
-        return (left.Alignment != right.Alignment)
-            || (left.Allocator != right.Allocator)
-            || (left.IsAllocated != right.IsAllocated)
-            || (left.Offset != right.Offset)
-            || (left.Size != right.Size);
+        return left.Alignment != right.Alignment
+            || left.Allocator != right.Allocator
+            || left.IsAllocated != right.IsAllocated
+            || left.Offset != right.Offset
+            || left.Size != right.Size;
     }
 
     /// <inheritdoc />
     public void Dispose() => Allocator.Free(in this);
 
     /// <inheritdoc />
-    public override bool Equals(object? obj) => (obj is GraphicsMemoryRegion other) && Equals(other);
+    public override bool Equals(object? obj) => obj is GraphicsMemoryRegion other && Equals(other);
 
     /// <inheritdoc />
     public bool Equals(GraphicsMemoryRegion other)

@@ -8,7 +8,7 @@
 
 using System;
 
-namespace TerraFX.Graphics;
+namespace TerraFX.Advanced;
 
 /// <summary>Defines flags that modify how a memory region is allocated.</summary>
 [Flags]

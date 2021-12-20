@@ -8,7 +8,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace TerraFX.Graphics;
+namespace TerraFX.Advanced;
 
 /// <summary>Describes data used for budgeting graphics memory.</summary>
 [StructLayout(LayoutKind.Auto)]

@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using TerraFX.Advanced;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 

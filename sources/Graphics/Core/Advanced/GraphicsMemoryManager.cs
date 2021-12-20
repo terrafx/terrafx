@@ -10,10 +10,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using TerraFX.Advanced;
+using TerraFX.Graphics;
 using static TerraFX.Utilities.AppContextUtilities;
 
-namespace TerraFX.Graphics;
+namespace TerraFX.Advanced;
 
 /// <summary>Provides a way to manage memory for a graphics device.</summary>
 public abstract class GraphicsMemoryManager : GraphicsDeviceObject, IReadOnlyCollection<GraphicsMemoryAllocator>
