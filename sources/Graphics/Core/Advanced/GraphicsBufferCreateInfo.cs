@@ -1,9 +1,9 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System.Runtime.InteropServices;
-using TerraFX.Advanced;
+using TerraFX.Graphics;
 
-namespace TerraFX.Graphics;
+namespace TerraFX.Advanced;
 
 /// <summary>The information required to create a graphics buffer.</summary>
 [StructLayout(LayoutKind.Auto)]
