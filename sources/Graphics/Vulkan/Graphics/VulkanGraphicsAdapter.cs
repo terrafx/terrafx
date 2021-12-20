@@ -20,7 +20,6 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     private readonly VkPhysicalDeviceFeatures _vkPhysicalDeviceFeatures;
     private readonly VkPhysicalDeviceMemoryProperties _vkPhysicalDeviceMemoryProperties;
     private readonly VkPhysicalDeviceProperties _vkPhysicalDeviceProperties;
-    private readonly string _name;
 
     private VolatileState _state;
 
@@ -34,7 +33,9 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
         _vkPhysicalDeviceFeatures = GetVkPhysicalDeviceFeatures(vkPhysicalDevice);
         _vkPhysicalDeviceProperties = GetVkPhysicalDeviceProperties(vkPhysicalDevice);
         _vkPhysicalDeviceMemoryProperties = GetVkPhysicalDeviceMemoryProperties(vkPhysicalDevice);
-        _name = GetName(in _vkPhysicalDeviceProperties);
+
+        var name = GetName(in _vkPhysicalDeviceProperties);
+        SetName(name);
 
         _ = _state.Transition(to: Initialized);
 
@@ -68,9 +69,6 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
 
     /// <inheritdoc />
     public override uint DeviceId => VkPhysicalDeviceProperties.deviceID;
-
-    /// <inheritdoc />
-    public override string Name => _name;
 
     /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();

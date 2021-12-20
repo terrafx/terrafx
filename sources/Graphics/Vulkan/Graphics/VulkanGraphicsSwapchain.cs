@@ -26,7 +26,6 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
     private readonly GraphicsFormat _renderTargetFormat;
     private readonly VkSurfaceKHR _vkSurface;
 
-    private string _name = null!;
     private VulkanGraphicsRenderTarget[] _renderTargets;
     private VkSurfaceCapabilitiesKHR _vkSurfaceCapabilities;
     private UnmanagedArray<VkImage> _vkSwapchainImages;
@@ -59,7 +58,6 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         _renderTargetIndex = GetRenderTargetIndex(device, vkSwapchain, Fence);
         
         _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsSwapchain);
 
         InitializeRenderTargets(this, _renderTargets);
         Surface.SizeChanged += OnGraphicsSurfaceSizeChanged;
@@ -125,29 +123,14 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsSwapchain" /> class.</summary>
     ~VulkanGraphicsSwapchain() => Dispose(isDisposing: false);
 
-    /// <inheritdoc cref="GraphicsRenderPassObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
-    /// <inheritdoc cref="GraphicsRenderPassObject.Device" />
+    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
     /// <inheritdoc cref="GraphicsSwapchain.Fence" />
     public new VulkanGraphicsFence Fence => base.Fence.As<VulkanGraphicsFence>();
-
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_SURFACE_KHR, VkSurface, value);
-            _ = Device.UpdateName(VK_OBJECT_TYPE_SWAPCHAIN_KHR, VkSwapchain, value);
-        }
-    }
 
     /// <inheritdoc cref="GraphicsRenderPassObject.RenderPass" />
     public new VulkanGraphicsRenderPass RenderPass => base.RenderPass.As<VulkanGraphicsRenderPass>();
@@ -164,7 +147,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
     /// <inheritdoc />
     public override uint RenderTargetIndex => _renderTargetIndex;
 
-    /// <inheritdoc cref="GraphicsRenderPassObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the <see cref="VkSurfaceKHR" /> used by the device.</summary>
@@ -339,6 +322,14 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         ThrowExternalExceptionIfNotSuccess(vkQueuePresentKHR(device.VkCommandQueue, &vkPresentInfo));
 
         _renderTargetIndex = GetRenderTargetIndex(device, vkSwapchain, fence);
+    }
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = Device.UpdateName(VK_OBJECT_TYPE_SURFACE_KHR, VkSurface, value);
+        _ = Device.UpdateName(VK_OBJECT_TYPE_SWAPCHAIN_KHR, VkSwapchain, value);
+        base.SetName(value);
     }
 
     /// <inheritdoc />

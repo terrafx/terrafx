@@ -20,8 +20,6 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
     private readonly VkCommandBuffer _vkCommandBuffer;
     private readonly VkCommandPool _vkCommandPool;
 
-    private string _name = null!;
-
     private VolatileState _state;
 
     internal VulkanGraphicsComputeContext(VulkanGraphicsDevice device)
@@ -34,7 +32,6 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
         _fence = device.CreateFence(isSignalled: true);
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsComputeContext);
 
         static VkCommandBuffer CreateVkCommandBuffer(VulkanGraphicsDevice device, VkCommandPool vkCommandPool)
         {
@@ -67,7 +64,7 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsComputeContext" /> class.</summary>
     ~VulkanGraphicsComputeContext() => Dispose(isDisposing: false);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
@@ -76,22 +73,7 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
     /// <inheritdoc />
     public override VulkanGraphicsFence Fence => _fence;
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_COMMAND_BUFFER, VkCommandBuffer, value);
-            _ = Device.UpdateName(VK_OBJECT_TYPE_COMMAND_POOL, VkCommandPool, value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the <see cref="Interop.Vulkan.VkCommandBuffer" /> used by the context.</summary>
@@ -142,6 +124,14 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
             sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
         };
         ThrowExternalExceptionIfNotSuccess(vkBeginCommandBuffer(VkCommandBuffer, &vkCommandBufferBeginInfo));
+    }
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = Device.UpdateName(VK_OBJECT_TYPE_COMMAND_BUFFER, VkCommandBuffer, value);
+        _ = Device.UpdateName(VK_OBJECT_TYPE_COMMAND_POOL, VkCommandPool, value);
+        base.SetName(value);
     }
 
     /// <inheritdoc />

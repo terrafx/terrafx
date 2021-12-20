@@ -14,8 +14,6 @@ public sealed class GraphicsPrimitive : GraphicsPipelineObject
     private readonly GraphicsPipelineResourceViewSet? _pipelineResourceViews;
     private readonly GraphicsBufferView _vertexBufferView;
 
-    private string _name = null!;
-
     /// <summary>Initializes a new instance of the <see cref="GraphicsPrimitive" /> class.</summary>
     /// <param name="pipeline">The pipeline for which the graphics primitive was created.</param>
     /// <param name="vertexBufferView">The vertex buffer view for the primitive.</param>
@@ -27,8 +25,6 @@ public sealed class GraphicsPrimitive : GraphicsPipelineObject
         _indexBufferView = indexBufferView;
         _pipelineResourceViews = !resourceViews.IsEmpty ? pipeline.CreateResourceViews(resourceViews) : null;
         _vertexBufferView = vertexBufferView;
-
-        Name = nameof(GraphicsPrimitive);
     }
 
     /// <summary>Gets the index buffer view for the primitive or <c>null</c> if none exists.</summary>
@@ -39,20 +35,6 @@ public sealed class GraphicsPrimitive : GraphicsPipelineObject
 
     /// <summary>Gets the vertex buffer view for the primitive.</summary>
     public GraphicsBufferView VertexBufferView => _vertexBufferView;
-
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = value ?? "";
-        }
-    }
 
     /// <summary>Draws the graphics primitive using a given graphics render context.</summary>
     /// <param name="renderContext">The render context that should be used to draw the graphics primitive.</param>

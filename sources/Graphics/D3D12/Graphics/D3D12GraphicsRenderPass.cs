@@ -13,7 +13,6 @@ public sealed unsafe class D3D12GraphicsRenderPass : GraphicsRenderPass
 {
     private readonly D3D12GraphicsSwapchain _swapchain;
 
-    private string _name = null!;
     private VolatileState _state;
 
     internal D3D12GraphicsRenderPass(D3D12GraphicsDevice device, IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0)
@@ -22,30 +21,15 @@ public sealed unsafe class D3D12GraphicsRenderPass : GraphicsRenderPass
         _swapchain = new D3D12GraphicsSwapchain(this, surface, renderTargetFormat, minimumRenderTargetCount);
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsRenderPass);
     }
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
 
-    /// <summary>Gets or sets the name for the pipeline signature.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = value ?? "";
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />

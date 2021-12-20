@@ -25,7 +25,6 @@ public sealed unsafe class VulkanGraphicsRenderPass : GraphicsRenderPass
     private readonly VulkanGraphicsSwapchain _swapchain;
     private readonly VkRenderPass _vkRenderPass;
 
-    private string _name = null!;
     private VolatileState _state;
 
     internal VulkanGraphicsRenderPass(VulkanGraphicsDevice device, IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0)
@@ -35,7 +34,6 @@ public sealed unsafe class VulkanGraphicsRenderPass : GraphicsRenderPass
         _swapchain = new VulkanGraphicsSwapchain(this, surface, renderTargetFormat, minimumRenderTargetCount);
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsRenderPass);
 
         static VkRenderPass CreateVkRenderPass(VulkanGraphicsDevice device, GraphicsFormat renderTargetFormat)
         {
@@ -73,27 +71,13 @@ public sealed unsafe class VulkanGraphicsRenderPass : GraphicsRenderPass
         }
     }
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_RENDER_PASS, VkRenderPass, value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <inheritdoc />
@@ -118,6 +102,13 @@ public sealed unsafe class VulkanGraphicsRenderPass : GraphicsRenderPass
     {
         ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
         return new VulkanGraphicsPipeline(this, signature, vertexShader, pixelShader);
+    }
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = Device.UpdateName(VK_OBJECT_TYPE_RENDER_PASS, VkRenderPass, value);
+        base.SetName(value);
     }
 
     /// <inheritdoc />

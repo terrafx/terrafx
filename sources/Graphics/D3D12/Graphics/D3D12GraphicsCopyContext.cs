@@ -22,7 +22,6 @@ public sealed unsafe class D3D12GraphicsCopyContext : GraphicsCopyContext
     private readonly ID3D12GraphicsCommandList* _d3d12GraphicsCommandList;
     private readonly D3D12GraphicsFence _fence;
 
-    private string _name = null!;
     private VolatileState _state;
 
     internal D3D12GraphicsCopyContext(D3D12GraphicsDevice device)
@@ -35,7 +34,6 @@ public sealed unsafe class D3D12GraphicsCopyContext : GraphicsCopyContext
         _fence = device.CreateFence(isSignalled: true);
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsCopyContext);
 
         static ID3D12CommandAllocator* CreateD3D12CommandAllocator(D3D12GraphicsDevice device)
         {
@@ -60,7 +58,7 @@ public sealed unsafe class D3D12GraphicsCopyContext : GraphicsCopyContext
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsCopyContext" /> class.</summary>
     ~D3D12GraphicsCopyContext() => Dispose(isDisposing: false);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <summary>Gets the <see cref="ID3D12CommandAllocator" /> used by the context.</summary>
@@ -89,22 +87,7 @@ public sealed unsafe class D3D12GraphicsCopyContext : GraphicsCopyContext
     /// <inheritdoc />
     public override D3D12GraphicsFence Fence => _fence;
 
-    /// <summary>Gets or sets the name for the pipeline signature.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = D3D12CommandAllocator->UpdateD3D12Name(value);
-            _ = D3D12GraphicsCommandList->UpdateD3D12Name(value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
@@ -162,6 +145,14 @@ public sealed unsafe class D3D12GraphicsCopyContext : GraphicsCopyContext
 
         ThrowExternalExceptionIfFailed(d3d12CommandAllocator->Reset());
         ThrowExternalExceptionIfFailed(D3D12GraphicsCommandList->Reset(d3d12CommandAllocator, pInitialState: null));
+    }
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = D3D12CommandAllocator->UpdateD3D12Name(value);
+        _ = D3D12GraphicsCommandList->UpdateD3D12Name(value);
+        base.SetName(value);
     }
 
     /// <inheritdoc />

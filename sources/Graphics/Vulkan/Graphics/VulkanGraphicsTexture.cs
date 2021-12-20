@@ -30,7 +30,6 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
     private readonly nuint _vkNonCoherentAtomSize;
     private readonly VkSampler _vkSampler;
 
-    private string _name = null!;
     private VolatileState _state;
 
     internal VulkanGraphicsTexture(VulkanGraphicsDevice device, in CreateInfo createInfo)
@@ -46,7 +45,6 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
         ThrowExternalExceptionIfNotSuccess(vkBindImageMemory(device.VkDevice, createInfo.VkImage, _memoryHeap.VkDeviceMemory, createInfo.MemoryRegion.Offset));
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsTexture);
 
         static VkSampler CreateVkSampler(VulkanGraphicsDevice device)
         {
@@ -69,7 +67,7 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsTexture" /> class.</summary>
     ~VulkanGraphicsTexture() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc />
@@ -87,22 +85,7 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
     /// <summary>Gets the memory heap in which the buffer exists.</summary>
     public VulkanGraphicsMemoryHeap MemoryHeap => _memoryHeap;
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_IMAGE, VkImage, value);
-            _ = Device.UpdateName(VK_OBJECT_TYPE_SAMPLER, VkSampler, value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkImage" /> for the buffer.</summary>
@@ -166,6 +149,15 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
 
     /// <inheritdoc />
     public override IEnumerator<VulkanGraphicsTextureView> GetEnumerator() => _textureViews.GetEnumerator();
+
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = Device.UpdateName(VK_OBJECT_TYPE_IMAGE, VkImage, value);
+        _ = Device.UpdateName(VK_OBJECT_TYPE_SAMPLER, VkSampler, value);
+        base.SetName(value);
+    }
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)

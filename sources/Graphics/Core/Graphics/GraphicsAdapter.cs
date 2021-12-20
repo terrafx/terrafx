@@ -19,10 +19,6 @@ public abstract unsafe class GraphicsAdapter : GraphicsServiceObject
     /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
     public abstract uint DeviceId { get; }
 
-    /// <summary>Gets the name of the adapter.</summary>
-    /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
-    public abstract string Name { get; }
-
     /// <summary>Gets the PCI Vendor ID (VID) for the adapter.</summary>
     /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
     public abstract uint VendorId { get; }
@@ -35,7 +31,4 @@ public abstract unsafe class GraphicsAdapter : GraphicsServiceObject
     /// <param name="createMemoryAllocator">A function pointer to a method which creates the backing memory allocators used by the device or <c>null</c> to use the system provided default memory allocator.</param>
     /// <exception cref="ObjectDisposedException">The adapter has been disposed.</exception>
     public abstract GraphicsDevice CreateDevice(delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator);
-
-    /// <inheritdoc />
-    public override string ToString() => Name;
 }

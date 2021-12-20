@@ -46,7 +46,6 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsComputeContext> _computeContextPool;
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsCopyContext> _copyContextPool;
     private MemoryBudgetInfo _memoryBudgetInfo;
-    private string _name = null!;
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext> _renderContextPool;
 
     private VolatileState _state;
@@ -80,7 +79,6 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
         UpdateMemoryBudgetInfo(ref _memoryBudgetInfo, totalOperationCount: 0);
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsDevice);
 
         static VulkanGraphicsMemoryManager[] CreateMemoryManagers(VulkanGraphicsDevice device, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator, uint vkMemoryTypeCount)
         {
@@ -187,22 +185,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = UpdateName(VK_OBJECT_TYPE_DEVICE, VkDevice, value);
-            _ = UpdateName(VK_OBJECT_TYPE_QUEUE, VkCommandQueue, value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsAdapterObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the <see cref="VkQueue" /> used by the device.</summary>
@@ -542,6 +525,14 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
             ThrowForInvalidParent(renderContext.Device);
         }
         _renderContextPool.Return(renderContext);
+    }
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = UpdateName(VK_OBJECT_TYPE_DEVICE, VkDevice, value);
+        _ = UpdateName(VK_OBJECT_TYPE_QUEUE, VkCommandQueue, value);
+        base.SetName(value);
     }
 
     /// <inheritdoc />

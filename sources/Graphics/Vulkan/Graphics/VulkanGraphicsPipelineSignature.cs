@@ -22,7 +22,6 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
     private readonly VkDescriptorSetLayout _vkDescriptorSetLayout;
     private readonly VkPipelineLayout _vkPipelineLayout;
 
-    private string _name = null!;
     private VolatileState _state;
 
     internal VulkanGraphicsPipelineSignature(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResourceInfo> resources)
@@ -34,7 +33,6 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
         _vkPipelineLayout = CreateVkPipelineLayout(device, vkDescriptorSetLayout);
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsPipelineSignature);
 
         static VkDescriptorSetLayout CreateVkDescriptorSetLayout(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineResourceInfo> resources)
         {
@@ -160,28 +158,13 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPipelineSignature" /> class.</summary>
     ~VulkanGraphicsPipelineSignature() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_PIPELINE_LAYOUT, VkPipelineLayout, value);
-            _ = Device.UpdateName(VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, VkDescriptorSetLayout, value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkDescriptorSetLayout" /> for the pipeline.</summary>
@@ -202,6 +185,14 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
             AssertNotDisposedOrDisposing(_state);
             return _vkPipelineLayout;
         }
+    }
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = Device.UpdateName(VK_OBJECT_TYPE_PIPELINE_LAYOUT, VkPipelineLayout, value);
+        _ = Device.UpdateName(VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, VkDescriptorSetLayout, value);
+        base.SetName(value);
     }
 
     /// <inheritdoc />

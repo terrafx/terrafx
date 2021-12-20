@@ -48,7 +48,6 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     private ContextPool<D3D12GraphicsDevice, D3D12GraphicsComputeContext> _computeContextPool;
     private ContextPool<D3D12GraphicsDevice, D3D12GraphicsCopyContext> _copyContextPool;
     private MemoryBudgetInfo _memoryBudgetInfo;
-    private string _name = null!;
     private ContextPool<D3D12GraphicsDevice, D3D12GraphicsRenderContext> _renderContextPool;
 
     private VolatileState _state;
@@ -81,7 +80,6 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
         UpdateMemoryBudgetInfo(ref _memoryBudgetInfo, totalOperationCount: 0);
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsDevice);
 
         static ID3D12CommandQueue* CreateD3D12CommandQueue(ID3D12Device* d3d12Device, D3D12_COMMAND_LIST_TYPE d3d12CommandListType)
         {
@@ -199,24 +197,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     /// <summary>Gets <c>true</c> if the device supports <see cref="D3D12_RESOURCE_HEAP_TIER_2" />; otherwise, <c>false</c>.</summary>
     public bool D3D12SupportsResourceHeapTier2 => _d3d12SupportsResourceHeapTier2;
 
-    /// <summary>Gets or sets the name for the device.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = D3D12Device->UpdateD3D12Name(value);
-            _ = D3D12ComputeCommandQueue->UpdateD3D12Name(value);
-            _ = D3D12CopyCommandQueue->UpdateD3D12Name(value);
-            _ = D3D12DirectCommandQueue->UpdateD3D12Name(value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsAdapterObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <summary>Gets a fence that is used to wait for the device to become idle.</summary>
@@ -581,6 +562,16 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
             ThrowForInvalidParent(renderContext.Device);
         }
         _renderContextPool.Return(renderContext);
+    }
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = D3D12Device->UpdateD3D12Name(value);
+        _ = D3D12ComputeCommandQueue->UpdateD3D12Name(value);
+        _ = D3D12CopyCommandQueue->UpdateD3D12Name(value);
+        _ = D3D12DirectCommandQueue->UpdateD3D12Name(value);
+        base.SetName(value);
     }
 
     /// <inheritdoc />

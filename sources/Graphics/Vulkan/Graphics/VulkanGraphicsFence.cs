@@ -24,7 +24,6 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
 {
     private readonly VkFence _vkFence;
 
-    private string _name = null!;
     private VolatileState _state;
 
     internal VulkanGraphicsFence(VulkanGraphicsDevice device, bool isSignalled)
@@ -33,7 +32,6 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
         _vkFence = CreateVkFence(device, isSignalled ? VK_FENCE_CREATE_SIGNALED_BIT : 0);
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsFence);
 
         static VkFence CreateVkFence(VulkanGraphicsDevice device, VkFenceCreateFlags vkFenceCreateFlags)
         {
@@ -53,27 +51,13 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsFence" /> class.</summary>
     ~VulkanGraphicsFence() => Dispose(isDisposing: false);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_FENCE, VkFence, value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkFence" /> for the fence.</summary>
@@ -94,6 +78,13 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
     {
         var vulkanFence = VkFence;
         ThrowExternalExceptionIfNotSuccess(vkResetFences(Device.VkDevice, fenceCount: 1, &vulkanFence));
+    }
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = Device.UpdateName(VK_OBJECT_TYPE_FENCE, VkFence, value);
+        base.SetName(value);
     }
 
     /// <inheritdoc />

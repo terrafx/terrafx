@@ -25,7 +25,6 @@ public sealed unsafe partial class D3D12GraphicsTexture : GraphicsTexture
     private readonly ValueList<D3D12GraphicsTextureView> _textureViews;
     private readonly ValueMutex _textureViewsMutex;
 
-    private string _name = null!;
     private VolatileState _state;
 
     internal D3D12GraphicsTexture(D3D12GraphicsDevice device, in CreateInfo createInfo)
@@ -42,13 +41,12 @@ public sealed unsafe partial class D3D12GraphicsTexture : GraphicsTexture
         _textureViewsMutex = new ValueMutex();
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsTexture);
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsTexture" /> class.</summary>
     ~D3D12GraphicsTexture() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <inheritdoc />
@@ -85,21 +83,7 @@ public sealed unsafe partial class D3D12GraphicsTexture : GraphicsTexture
     /// <summary>Gets the memory heap in which the buffer exists.</summary>
     public D3D12GraphicsMemoryHeap MemoryHeap => _memoryHeap;
 
-    /// <summary>Gets or sets the name for the pipeline signature.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = D3D12Resource->UpdateD3D12Name(value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
@@ -159,6 +143,13 @@ public sealed unsafe partial class D3D12GraphicsTexture : GraphicsTexture
 
     /// <inheritdoc />
     public override IEnumerator<D3D12GraphicsTextureView> GetEnumerator() => _textureViews.GetEnumerator();
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = D3D12Resource->UpdateD3D12Name(value);
+        base.SetName(value);
+    }
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)

@@ -21,7 +21,6 @@ public sealed unsafe class D3D12GraphicsPipelineResourceViewSet : GraphicsPipeli
 {
     private readonly ID3D12DescriptorHeap* _d3d12CbvSrvUavDescriptorHeap;
 
-    private string _name = null!;
     private VolatileState _state;
 
     internal D3D12GraphicsPipelineResourceViewSet(D3D12GraphicsPipeline pipeline, ReadOnlySpan<GraphicsResourceView> resourceViews)
@@ -30,7 +29,6 @@ public sealed unsafe class D3D12GraphicsPipelineResourceViewSet : GraphicsPipeli
         _d3d12CbvSrvUavDescriptorHeap = CreateD3D12CbvSrvUavDescriptorHeap(pipeline, resourceViews);
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsPipelineResourceViewSet);
 
         static ID3D12DescriptorHeap* CreateD3D12CbvSrvUavDescriptorHeap(D3D12GraphicsPipeline pipeline, ReadOnlySpan<GraphicsResourceView> resourceViews)
         {
@@ -117,7 +115,7 @@ public sealed unsafe class D3D12GraphicsPipelineResourceViewSet : GraphicsPipeli
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsPipelineResourceViewSet" /> class.</summary>
     ~D3D12GraphicsPipelineResourceViewSet() => Dispose(isDisposing: false);
 
-    /// <inheritdoc cref="GraphicsPipelineObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> used by the resource view set for constant buffer, shader resource, and unordered access views.</summary>
@@ -130,28 +128,21 @@ public sealed unsafe class D3D12GraphicsPipelineResourceViewSet : GraphicsPipeli
         }
     }
 
-    /// <inheritdoc cref="GraphicsPipelineObject.Device" />
+    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
-
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = D3D12CbvSrvUavDescriptorHeap->UpdateD3D12Name(nameof(D3D12GraphicsPipelineResourceViewSet));
-        }
-    }
 
     /// <inheritdoc cref="GraphicsPipelineObject.Pipeline" />
     public new D3D12GraphicsPipeline Pipeline => base.Pipeline.As<D3D12GraphicsPipeline>();
 
-    /// <inheritdoc cref="GraphicsPipelineObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = D3D12CbvSrvUavDescriptorHeap->UpdateD3D12Name(value);
+        base.SetName(value);
+    }
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)

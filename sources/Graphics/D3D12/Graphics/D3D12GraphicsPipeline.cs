@@ -21,7 +21,6 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
 {
     private readonly ID3D12PipelineState* _d3d12PipelineState;
 
-    private string _name = null!;
     private VolatileState _state;
 
     internal D3D12GraphicsPipeline(D3D12GraphicsRenderPass renderPass, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
@@ -30,7 +29,6 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
         _d3d12PipelineState = CreateD3D12GraphicsPipelineState(renderPass, signature, vertexShader, pixelShader);
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsPipeline);
 
         static ID3D12PipelineState* CreateD3D12GraphicsPipelineState(D3D12GraphicsRenderPass renderPass, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
         {
@@ -192,7 +190,7 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
     // TEXCOORD
     private static ReadOnlySpan<sbyte> TEXCOORD_SEMANTIC_NAME => new sbyte[] { 0x54, 0x45, 0x58, 0x43, 0x4F, 0x4F, 0x52, 0x44, 0x00 };
 
-    /// <inheritdoc cref="GraphicsRenderPassObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <summary>Gets the underlying <see cref="ID3D12PipelineState" /> for the pipeline.</summary>
@@ -205,22 +203,8 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
         }
     }
 
-    /// <inheritdoc cref="GraphicsRenderPassObject.Device" />
+    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
-
-    /// <summary>Gets or sets the name for the pipeline.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = D3D12PipelineState->UpdateD3D12Name(value);
-        }
-    }
 
     /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
     public new D3D12GraphicsShader? PixelShader => base.PixelShader.As<D3D12GraphicsShader>();
@@ -228,7 +212,7 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
     /// <inheritdoc cref="GraphicsRenderPassObject.RenderPass" />
     public new D3D12GraphicsRenderPass RenderPass => base.RenderPass.As<D3D12GraphicsRenderPass>();
 
-    /// <inheritdoc cref="GraphicsRenderPassObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc cref="GraphicsPipeline.Signature" />
@@ -244,6 +228,13 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
         ThrowIfZero(resourceViews.Length);
 
         return new D3D12GraphicsPipelineResourceViewSet(this, resourceViews);
+    }
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = D3D12PipelineState->UpdateD3D12Name(value);
+        base.SetName(value);
     }
 
     /// <inheritdoc />

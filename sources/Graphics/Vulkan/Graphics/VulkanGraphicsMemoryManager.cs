@@ -30,7 +30,6 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
     private ValueList<GraphicsMemoryAllocator> _memoryAllocators;
 
     private nuint _minimumSize;
-    private string _name = null!;
     private ulong _operationCount;
     private ulong _size;
     private ulong _totalFreeMemoryRegionSize;
@@ -53,7 +52,6 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         _memoryAllocators = new ValueList<GraphicsMemoryAllocator>();
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsMemoryManager);
 
         for (var i = 0; i < MinimumMemoryAllocatorCount; ++i)
         {
@@ -62,7 +60,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         }
     }
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc />
@@ -80,21 +78,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
     /// <inheritdoc />
     public override ulong OperationCount => _operationCount;
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = value ?? "";
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <inheritdoc />

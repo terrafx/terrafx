@@ -30,7 +30,6 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
     private volatile void* _mappedAddress;
     private volatile uint _mappedCount;
 
-    private string _name = null!;
     private VolatileState _state;
 
     internal VulkanGraphicsMemoryHeap(VulkanGraphicsMemoryManager memoryManager, nuint size, uint vkMemoryTypeIndex)
@@ -42,7 +41,6 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
         _vkDeviceMemory = CreateVkDeviceMemory(memoryManager.Device, size, vkMemoryTypeIndex);
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsMemoryHeap);
 
         static VkDeviceMemory CreateVkDeviceMemory(VulkanGraphicsDevice device, nuint size, uint vkMemoryTypeIndex)
         {
@@ -62,7 +60,7 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsMemoryHeap" /> class.</summary>
     ~VulkanGraphicsMemoryHeap() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
@@ -77,21 +75,7 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
     /// <summary>Gets the memory manager which created the memory heap.</summary>
     public VulkanGraphicsMemoryManager MemoryManager => _memoryManager;
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_DEVICE_MEMORY, VkDeviceMemory, value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the <see cref="Interop.Vulkan.VkDeviceMemory" /> for the memory heap.</summary>
@@ -110,6 +94,13 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
     {
         using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
         return MapInternal();
+    }
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = Device.UpdateName(VK_OBJECT_TYPE_DEVICE_MEMORY, VkDeviceMemory, value);
+        base.SetName(value);
     }
 
     /// <summary>Unmaps the memory heap from CPU memory.</summary>

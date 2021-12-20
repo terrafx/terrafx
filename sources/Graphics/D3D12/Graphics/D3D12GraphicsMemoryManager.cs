@@ -30,7 +30,6 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
     private GraphicsMemoryAllocator? _emptyMemoryAllocator;
     private ValueList<GraphicsMemoryAllocator> _memoryAllocators;
     private nuint _minimumSize;
-    private string _name = null!;
     private ulong _operationCount;
     private ulong _size;
     private ulong _totalFreeMemoryRegionSize;
@@ -54,7 +53,6 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
         _memoryAllocators = new ValueList<GraphicsMemoryAllocator>();
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsMemoryManager);
 
         for (var i = 0; i < MinimumMemoryAllocatorCount; ++i)
         {
@@ -63,7 +61,7 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
         }
     }
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <inheritdoc />
@@ -84,24 +82,10 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
     /// <inheritdoc />
     public override nuint MinimumSize => _minimumSize;
 
-    /// <summary>Gets or sets the name for the manager.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = value ?? "";
-        }
-    }
-
     /// <inheritdoc />
     public override ulong OperationCount => _operationCount;
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />

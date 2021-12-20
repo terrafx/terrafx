@@ -26,7 +26,6 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     private readonly D3D12GraphicsRenderTarget[] _renderTargets;
     private readonly GraphicsFormat _renderTargetFormat;
 
-    private string _name = null!;
     private uint _renderTargetIndex;
 
     private VolatileState _state;
@@ -46,7 +45,6 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
         _renderTargetIndex = GetRenderTargetIndex(dxgiSwapchain, Fence);
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsSwapchain);
 
         InitializeRenderTargets(this, _renderTargets);
         Surface.SizeChanged += OnGraphicsSurfaceSizeChanged;
@@ -119,7 +117,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsSwapchain" /> class.</summary>
     ~D3D12GraphicsSwapchain() => Dispose(isDisposing: false);
 
-    /// <inheritdoc cref="GraphicsRenderPassObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> used by the swapchain for render target resources.</summary>
@@ -132,7 +130,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
         }
     }
 
-    /// <inheritdoc cref="GraphicsRenderPassObject.Device" />
+    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
 
     /// <summary>Gets the <see cref="IDXGISwapChain3" /> for the swapchain.</summary>
@@ -149,21 +147,6 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     /// <inheritdoc cref="GraphicsSwapchain.Fence" />
     public new D3D12GraphicsFence Fence => base.Fence.As<D3D12GraphicsFence>();
 
-    /// <summary>Gets or sets the name for the pipeline signature.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = DxgiSwapchain->UpdateDXGIName(value);
-            _ = D3D12RtvDescriptorHeap->UpdateD3D12Name(value);
-        }
-    }
-
     /// <inheritdoc cref="GraphicsRenderPassObject.RenderPass" />
     public new D3D12GraphicsRenderPass RenderPass => base.RenderPass.As<D3D12GraphicsRenderPass>();
 
@@ -179,7 +162,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     /// <inheritdoc />
     public override uint RenderTargetIndex => _renderTargetIndex;
 
-    /// <inheritdoc cref="GraphicsRenderPassObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     private static void CleanupRenderTargets(D3D12GraphicsRenderTarget[] renderTargets)
@@ -219,6 +202,14 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
         ThrowExternalExceptionIfFailed(dxgiSwapchain->Present(SyncInterval: 1, Flags: 0));
 
         _renderTargetIndex = GetRenderTargetIndex(dxgiSwapchain, fence);
+    }
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = DxgiSwapchain->UpdateDXGIName(value);
+        _ = D3D12RtvDescriptorHeap->UpdateD3D12Name(value);
+        base.SetName(value);
     }
 
     /// <inheritdoc />

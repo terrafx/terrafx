@@ -32,7 +32,6 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
     private volatile void* _mappedAddress;
     private volatile uint _mappedCount;
 
-    private string _name = null!;
     private VolatileState _state;
 
     internal D3D12GraphicsBuffer(D3D12GraphicsDevice device, in CreateInfo createInfo)
@@ -50,13 +49,12 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
         _memoryHeap = createInfo.MemoryRegion.Allocator.DeviceObject.As<D3D12GraphicsMemoryHeap>();
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsBuffer);
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsBuffer" /> class.</summary>
     ~D3D12GraphicsBuffer() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <inheritdoc />
@@ -93,21 +91,7 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
     /// <summary>Gets the memory heap in which the buffer exists.</summary>
     public D3D12GraphicsMemoryHeap MemoryHeap => _memoryHeap;
 
-    /// <summary>Gets or sets the name for the buffer.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = D3D12Resource->UpdateD3D12Name(value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
@@ -119,6 +103,13 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
 
     /// <inheritdoc />
     public override IEnumerator<D3D12GraphicsBufferView> GetEnumerator() => _bufferViews.GetEnumerator();
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = D3D12Resource->UpdateD3D12Name(value);
+        base.SetName(value);
+    }
 
     /// <inheritdoc />
     public override bool TryCreateView(uint count, uint stride, [NotNullWhen(true)] out GraphicsBufferView? bufferView)

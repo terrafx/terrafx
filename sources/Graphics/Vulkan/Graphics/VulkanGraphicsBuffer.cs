@@ -34,7 +34,6 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
     private volatile void* _mappedAddress;
     private volatile uint _mappedCount;
 
-    private string _name = null!;
     private VolatileState _state;
 
     internal VulkanGraphicsBuffer(VulkanGraphicsDevice device, in CreateInfo createInfo)
@@ -55,13 +54,12 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
         ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(device.VkDevice, createInfo.VkBuffer, _memoryHeap.VkDeviceMemory, createInfo.MemoryRegion.Offset));
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsBuffer);
     }
 
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsBuffer" /> class.</summary>
     ~VulkanGraphicsBuffer() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc />
@@ -79,21 +77,7 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
     /// <summary>Gets the memory heap in which the buffer exists.</summary>
     public VulkanGraphicsMemoryHeap MemoryHeap => _memoryHeap;
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_BUFFER, VkBuffer, value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkBuffer" /> for the buffer.</summary>

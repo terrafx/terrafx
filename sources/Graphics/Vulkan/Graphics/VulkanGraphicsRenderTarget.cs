@@ -22,7 +22,6 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
     private readonly VkFramebuffer _vkFramebuffer;
     private readonly VkImageView _vkFramebufferImageView;
 
-    private string _name = null!;
     private VolatileState _state;
 
     internal VulkanGraphicsRenderTarget(VulkanGraphicsSwapchain swapchain, uint index)
@@ -35,7 +34,6 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
         _vkFramebuffer = vkFramebuffer;
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsRenderTarget);
 
         static VkFramebuffer CreateVkFramebuffer(VulkanGraphicsSwapchain swapchain, VkImageView vkImageView)
         {
@@ -85,31 +83,16 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsRenderTarget" /> class.</summary>
     ~VulkanGraphicsRenderTarget() => Dispose(isDisposing: false);
 
-    /// <inheritdoc cref="GraphicsSwapchainObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
-    /// <inheritdoc cref="GraphicsSwapchainObject.Device" />
+    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_FRAMEBUFFER, VkFramebuffer, value);
-            _ = Device.UpdateName(VK_OBJECT_TYPE_IMAGE_VIEW, VkFramebufferImageView, value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsSwapchainObject.RenderPass" />
+    /// <inheritdoc cref="GraphicsRenderPassObject.RenderPass" />
     public new VulkanGraphicsRenderPass RenderPass => base.RenderPass.As<VulkanGraphicsRenderPass>();
 
-    /// <inheritdoc cref="GraphicsSwapchainObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <inheritdoc cref="GraphicsSwapchainObject.Swapchain" />
@@ -133,6 +116,14 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
             AssertNotDisposedOrDisposing(_state);
             return _vkFramebufferImageView;
         }
+    }
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = Device.UpdateName(VK_OBJECT_TYPE_FRAMEBUFFER, VkFramebuffer, value);
+        _ = Device.UpdateName(VK_OBJECT_TYPE_IMAGE_VIEW, VkFramebufferImageView, value);
+        base.SetName(value);
     }
 
     /// <inheritdoc />

@@ -22,7 +22,6 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
 {
     private readonly ID3D12RootSignature* _d3d12RootSignature;
 
-    private string _name = null!;
     private VolatileState _state;
 
     internal D3D12GraphicsPipelineSignature(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResourceInfo> resources)
@@ -31,7 +30,6 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
         _d3d12RootSignature = CreateD3D12RootSignature(device, resources);
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsPipelineSignature);
 
         static ID3D12RootSignature* CreateD3D12RootSignature(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsPipelineResourceInfo> resources)
         {
@@ -165,7 +163,7 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsPipelineSignature" /> class.</summary>
     ~D3D12GraphicsPipelineSignature() => Dispose(isDisposing: false);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <summary>Gets the underlying <see cref="ID3D12RootSignature" /> for the pipeline.</summary>
@@ -181,22 +179,15 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
 
-    /// <summary>Gets or sets the name for the pipeline signature.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = D3D12RootSignature->UpdateD3D12Name(value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = D3D12RootSignature->UpdateD3D12Name(value);
+        base.SetName(value);
+    }
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)

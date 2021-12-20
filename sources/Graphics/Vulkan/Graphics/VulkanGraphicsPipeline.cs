@@ -32,7 +32,6 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
 {
     private readonly VkPipeline _vkPipeline;
 
-    private string _name = null!;
     private VolatileState _state;
 
     internal VulkanGraphicsPipeline(VulkanGraphicsRenderPass renderPass, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
@@ -41,7 +40,6 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
         _vkPipeline = CreateVkPipeline(renderPass, signature, vertexShader, pixelShader);
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsPipeline);
 
         static VkPipeline CreateVkPipeline(VulkanGraphicsRenderPass renderPass, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
         {
@@ -261,30 +259,16 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPipeline" /> class.</summary>
     ~VulkanGraphicsPipeline() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_PIPELINE, VkPipeline, value);
-        }
-    }
-
     /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
     public new VulkanGraphicsShader? PixelShader => base.PixelShader.As<VulkanGraphicsShader>();
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <inheritdoc cref="GraphicsPipeline.Signature" />
@@ -310,6 +294,13 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
         ThrowIfZero(resourceViews.Length);
 
         return new VulkanGraphicsPipelineResourceViewSet(this, resourceViews);
+    }
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = Device.UpdateName(VK_OBJECT_TYPE_PIPELINE, VkPipeline, value);
+        base.SetName(value);
     }
 
     /// <inheritdoc />

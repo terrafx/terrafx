@@ -25,7 +25,6 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
     private readonly HANDLE _d3d12FenceSignalEvent;
 
     private ulong _d3d12FenceSignalValue;
-    private string _name = null!;
 
     private VolatileState _state;
 
@@ -36,7 +35,6 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
         _d3d12FenceSignalEvent = CreateEventHandle();
 
         _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsDevice);
 
         static ID3D12Fence* CreateD3D12Fence(D3D12GraphicsDevice device, bool isSignalled)
         {
@@ -59,7 +57,7 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsFence" /> class.</summary>
     ~D3D12GraphicsFence() => Dispose(isDisposing: false);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <summary>Gets the underlying <see cref="ID3D12Fence" /> for the fence.</summary>
@@ -88,21 +86,7 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
 
-    /// <summary>Gets or sets the name for the fence.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = D3D12Fence->UpdateD3D12Name(value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
@@ -115,6 +99,13 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
         {
             _d3d12FenceSignalValue = D3D12Fence->GetCompletedValue() + 1;
         }
+    }
+
+    /// <inheritdoc />
+    public override void SetName(string value)
+    {
+        value = D3D12Fence->UpdateD3D12Name(value);
+        base.SetName(value);
     }
 
     /// <inheritdoc />

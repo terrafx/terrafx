@@ -19,7 +19,6 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
     private readonly IDXGIAdapter3* _dxgiAdapter;
 
     private readonly DXGI_ADAPTER_DESC2 _dxgiAdapterDesc;
-    private readonly string _name;
 
     private VolatileState _state;
 
@@ -31,7 +30,8 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
         _dxgiAdapter = dxgiAdapter;
         _dxgiAdapterDesc = GetDxgiAdapterDesc(dxgiAdapter);
 
-        _name = GetName(in _dxgiAdapterDesc);
+        var name = GetName(in _dxgiAdapterDesc);
+        SetName(name);
 
         _ = _state.Transition(to: Initialized);
 
@@ -67,9 +67,6 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
 
     /// <summary>Gets the <see cref="DXGI_ADAPTER_DESC2" /> for <see cref="DxgiAdapter" />.</summary>
     public ref readonly DXGI_ADAPTER_DESC2 DxgiAdapterDesc => ref _dxgiAdapterDesc;
-
-    /// <inheritdoc />
-    public override string Name => _name;
 
     /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
