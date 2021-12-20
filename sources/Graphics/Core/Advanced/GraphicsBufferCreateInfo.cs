@@ -13,7 +13,7 @@ public readonly unsafe struct GraphicsBufferCreateInfo
     public GraphicsMemoryAllocationFlags AllocationFlags { get; init; }
 
     /// <summary>A function pointer to a method which creates the backing memory allocator used by the buffer or <c>null</c> to use the system provided default memory allocator.</summary>
-    public delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> CreateMemoryAllocator { get; init; }
+    public GraphicsMemoryAllocatorCreateFunc CreateMemoryAllocator { get; init; }
 
     /// <summary>The CPU access capabilities of the buffer.</summary>
     public GraphicsResourceCpuAccess CpuAccess { get; init; }

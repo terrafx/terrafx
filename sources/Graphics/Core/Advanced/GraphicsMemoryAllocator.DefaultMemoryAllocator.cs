@@ -10,14 +10,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using TerraFX.Advanced;
 using TerraFX.Collections;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 
-namespace TerraFX.Graphics;
+namespace TerraFX.Advanced;
 
 public partial class GraphicsMemoryAllocator
 {
@@ -28,7 +27,7 @@ public partial class GraphicsMemoryAllocator
         private int _freeMemoryRegionCount;
         private nuint _totalFreeMemoryRegionSize;
 
-        public DefaultMemoryAllocator(GraphicsDeviceObject deviceObject, delegate*<in GraphicsMemoryRegion, void> onFree, nuint size, bool isDedicated)
+        public DefaultMemoryAllocator(GraphicsDeviceObject deviceObject, GraphicsMemoryAllocatorOnFreeCallback onFree, nuint size, bool isDedicated)
             : base(deviceObject, onFree, size, isDedicated)
         {
             _memoryRegions = new ValueLinkedList<GraphicsMemoryRegion>();

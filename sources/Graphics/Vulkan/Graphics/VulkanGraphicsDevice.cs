@@ -47,7 +47,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     private MemoryBudgetInfo _memoryBudgetInfo;
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext> _renderContextPool;
 
-    internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator)
+    internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter, GraphicsMemoryAllocatorCreateFunc createMemoryAllocator)
         : base(adapter)
     {
         _vkComputeCommandQueueFamilyIndex = GetVkCommandQueueFamilyIndex(adapter, VK_QUEUE_COMPUTE_BIT);
@@ -75,7 +75,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
         _memoryBudgetInfo = new MemoryBudgetInfo();
         UpdateMemoryBudgetInfo(ref _memoryBudgetInfo, totalOperationCount: 0);
 
-        static VulkanGraphicsMemoryManager[] CreateMemoryManagers(VulkanGraphicsDevice device, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator, uint vkMemoryTypeCount)
+        static VulkanGraphicsMemoryManager[] CreateMemoryManagers(VulkanGraphicsDevice device, GraphicsMemoryAllocatorCreateFunc createMemoryAllocator, uint vkMemoryTypeCount)
         {
             var memoryManagers = new VulkanGraphicsMemoryManager[vkMemoryTypeCount];
 
@@ -257,7 +257,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
 
         var createInfo = new VulkanGraphicsBuffer.CreateInfo {
             CpuAccess = bufferCreateInfo.CpuAccess,
-            CreateMemoryAllocator = (bufferCreateInfo.CreateMemoryAllocator is not null) ? bufferCreateInfo.CreateMemoryAllocator : &GraphicsMemoryAllocator.CreateDefault,
+            CreateMemoryAllocator = bufferCreateInfo.CreateMemoryAllocator.IsValid ? bufferCreateInfo.CreateMemoryAllocator : new GraphicsMemoryAllocatorCreateFunc(&GraphicsMemoryAllocator.CreateDefault),
             MemoryRegion = memoryRegion,
             Kind = bufferCreateInfo.Kind,
             VkBuffer = vkBuffer,

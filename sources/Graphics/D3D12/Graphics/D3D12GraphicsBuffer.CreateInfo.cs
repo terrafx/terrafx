@@ -13,7 +13,7 @@ public partial class D3D12GraphicsBuffer
     {
         public GraphicsResourceCpuAccess CpuAccess;
 
-        public delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> CreateMemoryAllocator;
+        public GraphicsMemoryAllocatorCreateFunc CreateMemoryAllocator;
 
         public ID3D12Resource* D3D12Resource;
 

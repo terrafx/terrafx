@@ -21,7 +21,7 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
 {
-    private readonly delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> _createMemoryAllocator;
+    private readonly GraphicsMemoryAllocatorCreateFunc _createMemoryAllocator;
     private readonly D3D12_HEAP_FLAGS _d3d12HeapFlags;
     private readonly D3D12_HEAP_TYPE _d3d12HeapType;
     private readonly ValueMutex _mutex;
@@ -33,12 +33,12 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
     private ulong _size;
     private ulong _totalFreeMemoryRegionSize;
 
-    internal D3D12GraphicsMemoryManager(D3D12GraphicsDevice device, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator, D3D12_HEAP_FLAGS d3d12HeapFlags, D3D12_HEAP_TYPE d3d12HeapType)
+    internal D3D12GraphicsMemoryManager(D3D12GraphicsDevice device, GraphicsMemoryAllocatorCreateFunc createMemoryAllocator, D3D12_HEAP_FLAGS d3d12HeapFlags, D3D12_HEAP_TYPE d3d12HeapType)
         : base(device)
     {
-        if (createMemoryAllocator is null)
+        if (createMemoryAllocator.IsNull)
         {
-            createMemoryAllocator = &GraphicsMemoryAllocator.CreateDefault;
+            createMemoryAllocator = new GraphicsMemoryAllocatorCreateFunc(&GraphicsMemoryAllocator.CreateDefault);
         }
 
         _createMemoryAllocator = createMemoryAllocator;
@@ -178,7 +178,7 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
     private GraphicsMemoryAllocator AddMemoryAllocator(nuint size, bool isDedicated)
     {
         var memoryHeap = new D3D12GraphicsMemoryHeap(this, size, D3D12HeapType, D3D12HeapFlags);
-        var memoryAllocator = _createMemoryAllocator(memoryHeap, &OnAllocatorFree, size, isDedicated);
+        var memoryAllocator = _createMemoryAllocator.Invoke(memoryHeap, new GraphicsMemoryAllocatorOnFreeCallback(&OnAllocatorFree), size, isDedicated);
 
         _operationCount++;
         _memoryAllocators.Add(memoryAllocator);

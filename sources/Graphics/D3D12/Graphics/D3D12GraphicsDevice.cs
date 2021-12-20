@@ -49,7 +49,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     private MemoryBudgetInfo _memoryBudgetInfo;
     private ContextPool<D3D12GraphicsDevice, D3D12GraphicsRenderContext> _renderContextPool;
 
-    internal D3D12GraphicsDevice(D3D12GraphicsAdapter adapter, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator)
+    internal D3D12GraphicsDevice(D3D12GraphicsAdapter adapter, GraphicsMemoryAllocatorCreateFunc createMemoryAllocator)
         : base(adapter)
     {
         var d3d12Device = CreateD3D12Device(adapter);
@@ -101,7 +101,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
             return d3d12Options;
         }
 
-        static D3D12GraphicsMemoryManager[] CreateMemoryManagers(D3D12GraphicsDevice device, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator, bool d3d12SupportsResourceHeapTier2)
+        static D3D12GraphicsMemoryManager[] CreateMemoryManagers(D3D12GraphicsDevice device, GraphicsMemoryAllocatorCreateFunc createMemoryAllocator, bool d3d12SupportsResourceHeapTier2)
         {
             D3D12GraphicsMemoryManager[] memoryManagers;
 
@@ -214,7 +214,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
 
         var createInfo = new D3D12GraphicsBuffer.CreateInfo {
             CpuAccess = bufferCreateInfo.CpuAccess,
-            CreateMemoryAllocator = (bufferCreateInfo.CreateMemoryAllocator is not null) ? bufferCreateInfo.CreateMemoryAllocator : &GraphicsMemoryAllocator.CreateDefault,
+            CreateMemoryAllocator = bufferCreateInfo.CreateMemoryAllocator.IsValid ? bufferCreateInfo.CreateMemoryAllocator : new GraphicsMemoryAllocatorCreateFunc(&GraphicsMemoryAllocator.CreateDefault),
             D3D12Resource = d3d12Resource,
             D3D12ResourceState = d3d12ResourceState,
             Kind = bufferCreateInfo.Kind,

@@ -89,7 +89,7 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     public ref readonly VkPhysicalDeviceProperties VkPhysicalDeviceProperties => ref _vkPhysicalDeviceProperties;
 
     /// <inheritdoc />
-    public override VulkanGraphicsDevice CreateDevice(delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator)
+    public override VulkanGraphicsDevice CreateDevice(GraphicsMemoryAllocatorCreateFunc createMemoryAllocator)
     {
         ThrowIfDisposed();
         return new VulkanGraphicsDevice(this, createMemoryAllocator);

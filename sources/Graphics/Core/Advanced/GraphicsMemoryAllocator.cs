@@ -10,11 +10,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using TerraFX.Advanced;
 using static TerraFX.Utilities.AppContextUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-namespace TerraFX.Graphics;
+namespace TerraFX.Advanced;
 
 /// <summary>An allocator for graphics memory.</summary>
 public abstract unsafe partial class GraphicsMemoryAllocator : IReadOnlyCollection<GraphicsMemoryRegion>
@@ -34,7 +33,7 @@ public abstract unsafe partial class GraphicsMemoryAllocator : IReadOnlyCollecti
     );
 
     private readonly GraphicsDeviceObject _deviceObject;
-    private readonly delegate*<in GraphicsMemoryRegion, void> _onFree;
+    private readonly GraphicsMemoryAllocatorOnFreeCallback _onFree;
     private readonly bool _isDedicated;
     private readonly nuint _size;
 
@@ -46,7 +45,7 @@ public abstract unsafe partial class GraphicsMemoryAllocator : IReadOnlyCollecti
     /// <returns>A new memory allocator that uses a system provided default algorithm.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="deviceObject" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
-    public static GraphicsMemoryAllocator CreateDefault(GraphicsDeviceObject deviceObject, delegate*<in GraphicsMemoryRegion, void> onFree, nuint size, bool isDedicated)
+    public static GraphicsMemoryAllocator CreateDefault(GraphicsDeviceObject deviceObject, GraphicsMemoryAllocatorOnFreeCallback onFree, nuint size, bool isDedicated)
         => new DefaultMemoryAllocator(deviceObject, onFree, size, isDedicated);
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryAllocator" /> class.</summary>
@@ -56,7 +55,7 @@ public abstract unsafe partial class GraphicsMemoryAllocator : IReadOnlyCollecti
     /// <param name="isDedicated"><c>true</c> if the allocator is dedicated to a single allocation; otherwise, <c>false</c>.</param>
     /// <exception cref="ArgumentNullException"><paramref name="deviceObject" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
-    protected GraphicsMemoryAllocator(GraphicsDeviceObject deviceObject, delegate*<in GraphicsMemoryRegion, void> onFree, nuint size, bool isDedicated)
+    protected GraphicsMemoryAllocator(GraphicsDeviceObject deviceObject, GraphicsMemoryAllocatorOnFreeCallback onFree, nuint size, bool isDedicated)
     {
         ThrowIfNull(deviceObject);
         ThrowIfZero(size);
@@ -94,7 +93,7 @@ public abstract unsafe partial class GraphicsMemoryAllocator : IReadOnlyCollecti
     public abstract nuint TotalFreeMemoryRegionSize { get; }
 
     /// <summary>Gets a pointer to the function that should be invoked when <see cref="Free(in GraphicsMemoryRegion)" /> completes.</summary>
-    protected delegate*<in GraphicsMemoryRegion, void> OnFree => _onFree;
+    protected GraphicsMemoryAllocatorOnFreeCallback OnFree => _onFree;
 
     /// <summary>Allocates a memory region of the specified size and alignment.</summary>
     /// <param name="size">The size, in bytes, of the memory region to allocate.</param>
@@ -127,11 +126,9 @@ public abstract unsafe partial class GraphicsMemoryAllocator : IReadOnlyCollecti
             ThrowKeyNotFoundException(memoryRegion, nameof(GraphicsMemoryAllocator));
         }
 
-        var onFree = OnFree;
-
-        if (onFree is not null)
+        if (_onFree.IsValid)
         {
-            onFree(in memoryRegion);
+            _onFree.Invoke(in memoryRegion);
         }
     }
 
