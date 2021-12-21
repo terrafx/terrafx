@@ -439,7 +439,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
 
     /// <summary>Gets an enumerator that can iterate through the items in the linked list.</summary>
     /// <returns>An enumerator that can iterate through the items in the linked list.</returns>
-    public Enumerator GetEnumerator() => new Enumerator(this);
+    public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
     /// <summary>Tries to remove a node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>

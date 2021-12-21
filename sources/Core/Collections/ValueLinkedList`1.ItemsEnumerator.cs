@@ -9,13 +9,13 @@ namespace TerraFX.Collections;
 public partial struct ValueLinkedList<T>
 {
     /// <summary>An enumerator which can iterate through the items in a linked list.</summary>
-    public struct Enumerator : IRefEnumerator<T>
+    public struct ItemsEnumerator : IRefEnumerator<T>
     {
         private readonly ValueLinkedList<T> _linkedList;
         private Node? _current;
         private int _index;
 
-        internal Enumerator(ValueLinkedList<T> linkedList)
+        internal ItemsEnumerator(ValueLinkedList<T> linkedList)
         {
             _linkedList = linkedList;
             _current = linkedList.Last;

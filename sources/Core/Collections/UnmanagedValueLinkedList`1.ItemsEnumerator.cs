@@ -9,13 +9,13 @@ namespace TerraFX.Collections;
 public partial struct UnmanagedValueLinkedList<T>
 {
     /// <summary>An enumerator which can iterate through the items in a linked list.</summary>
-    public unsafe struct Enumerator : IRefEnumerator<T>
+    public unsafe struct ItemsEnumerator : IRefEnumerator<T>
     {
         private readonly UnmanagedValueLinkedList<T> _linkedList;
         private Node* _current;
         private nuint _index;
 
-        internal Enumerator(UnmanagedValueLinkedList<T> linkedList)
+        internal ItemsEnumerator(UnmanagedValueLinkedList<T> linkedList)
         {
             _linkedList = linkedList;
             _current = linkedList.Last;

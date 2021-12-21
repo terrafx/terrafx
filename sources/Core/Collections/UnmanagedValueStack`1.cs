@@ -163,7 +163,7 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
 
     /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
     /// <returns>An enumerator that can iterate through the items in the list.</returns>
-    public Enumerator GetEnumerator() => new Enumerator(this);
+    public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
     /// <summary>Gets a pointer to the item at the specified index of the stack.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>

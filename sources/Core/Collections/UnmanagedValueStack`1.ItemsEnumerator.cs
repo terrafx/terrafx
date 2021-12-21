@@ -5,18 +5,18 @@ using System.Collections;
 
 namespace TerraFX.Collections;
 
-public partial struct ValueStack<T>
+public partial struct UnmanagedValueStack<T>
 {
     /// <summary>An enumerator which can iterate through the items in a stack.</summary>
-    public struct Enumerator : IRefEnumerator<T>
+    public struct ItemsEnumerator : IRefEnumerator<T>
     {
-        private readonly ValueStack<T> _stack;
-        private int _index;
+        private readonly UnmanagedValueStack<T> _stack;
+        private nuint _index;
 
-        internal Enumerator(ValueStack<T> stack)
+        internal ItemsEnumerator(UnmanagedValueStack<T> stack)
         {
             _stack = stack;
-            _index = -1;
+            _index = nuint.MaxValue;
         }
 
         /// <inheritdoc />
@@ -43,10 +43,10 @@ public partial struct ValueStack<T>
         /// <inheritdoc />
         public void Reset()
         {
-            _index = -1;
+            _index = nuint.MaxValue;
         }
 
-        object? IEnumerator.Current => Current;
+        object IEnumerator.Current => Current;
 
         void IDisposable.Dispose() { }
     }

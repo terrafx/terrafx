@@ -16,14 +16,14 @@ public partial struct ValuePool<T>
             _pool = pool;
         }
 
-        public int AvailableCount => _pool.AvailableCount;
+        public int AvailableCount => _pool.AvailableItemCount;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public T[] AvailableItems
         {
             get
             {
-                var availableItems = GC.AllocateUninitializedArray<T>(_pool.AvailableCount);
+                var availableItems = GC.AllocateUninitializedArray<T>(_pool.AvailableItemCount);
                 _pool._availableItems.CopyTo(availableItems);
                 return availableItems;
             }

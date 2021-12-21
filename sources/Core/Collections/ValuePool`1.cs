@@ -1,6 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using TerraFX.Threading;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -12,7 +14,7 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
 [DebuggerTypeProxy(typeof(ValuePool<>.DebugView))]
-public unsafe partial struct ValuePool<T>
+public unsafe partial struct ValuePool<T> : IEnumerable<T>
 {
     private ValueQueue<T> _availableItems;
     private ValueList<T> _items;
@@ -27,7 +29,10 @@ public unsafe partial struct ValuePool<T>
     }
 
     /// <summary>Gets the number of items available in the pool.</summary>
-    public readonly int AvailableCount => _availableItems.Count;
+    public readonly int AvailableItemCount => _availableItems.Count;
+
+    /// <summary>Gets an enumerator that can iterate through the available items in the pool.</summary>
+    public AvailableItemsEnumerator AvailableItems => new AvailableItemsEnumerator(this);
 
     /// <summary>Gets the number of items that can be contained by the pool without being resized.</summary>
     public readonly int Capacity => _items.Capacity;
@@ -35,17 +40,22 @@ public unsafe partial struct ValuePool<T>
     /// <summary>Gets the number of items contained in the pool.</summary>
     public readonly int Count => _items.Count;
 
+    /// <summary>Gets an enumerator that can iterate through the items in the pool.</summary>
+    /// <returns>An enumerator that can iterate through the items in the pool.</returns>
+    public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
+
     /// <summary>Rents an item from the pool, creating a new item if none are available.</summary>
     /// <param name="createItem">A pointer to the function to invoke if a new item needs to be created.</param>
+    /// <param name="arg">The argument passed to <paramref name="createItem" />.</param>
     /// <returns>A rented item.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="createItem" /> is <c>null</c>.</exception>
-    public T Rent(delegate*<T> createItem)
+    public T Rent<TArg>(delegate*<TArg, T> createItem, TArg arg)
     {
         ThrowIfNull(createItem);
 
         if (!_availableItems.TryDequeue(out var item))
         {
-            item = createItem();
+            item = createItem(arg);
             _items.Add(item);
         }
 
@@ -54,13 +64,14 @@ public unsafe partial struct ValuePool<T>
 
     /// <summary>Rents an item from the pool, creating a new item if none are available.</summary>
     /// <param name="createItem">A pointer to the function to invoke if a new item needs to be created.</param>
+    /// <param name="arg">The argument passed to <paramref name="createItem" />.</param>
     /// <param name="mutex">The mutex to use when renting an item from the list.</param>
     /// <returns>A rented item.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="createItem" /> is <c>null</c>.</exception>
-    public T Rent(delegate*<T> createItem, ValueMutex mutex)
+    public T Rent<TArg>(delegate*<TArg, T> createItem, TArg arg, ValueMutex mutex)
     {
         using var disposableMutex = new DisposableMutex(mutex, isExternallySynchronized: false);
-        return Rent(createItem);
+        return Rent(createItem, arg);
     }
 
     /// <summary>Returns an item to the pool.</summary>
@@ -84,4 +95,8 @@ public unsafe partial struct ValuePool<T>
         using var disposableMutex = new DisposableMutex(mutex, isExternallySynchronized: false);
         Return(item);
     }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }

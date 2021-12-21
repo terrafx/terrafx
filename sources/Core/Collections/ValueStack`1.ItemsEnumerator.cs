@@ -5,17 +5,17 @@ using System.Collections;
 
 namespace TerraFX.Collections;
 
-public partial struct ValueQueue<T>
+public partial struct ValueStack<T>
 {
-    /// <summary>An enumerator which can iterate through the items in a queue.</summary>
-    public struct Enumerator : IRefEnumerator<T>
+    /// <summary>An enumerator which can iterate through the items in a stack.</summary>
+    public struct ItemsEnumerator : IRefEnumerator<T>
     {
-        private readonly ValueQueue<T> _queue;
+        private readonly ValueStack<T> _stack;
         private int _index;
 
-        internal Enumerator(ValueQueue<T> queue)
+        internal ItemsEnumerator(ValueStack<T> stack)
         {
-            _queue = queue;
+            _stack = stack;
             _index = -1;
         }
 
@@ -23,7 +23,7 @@ public partial struct ValueQueue<T>
         public T Current => CurrentRef;
 
         /// <inheritdoc />
-        public ref readonly T CurrentRef => ref _queue.GetReferenceUnsafe(_index);
+        public ref readonly T CurrentRef => ref _stack.GetReferenceUnsafe(_index);
 
         /// <inheritdoc />
         public bool MoveNext()
@@ -31,7 +31,7 @@ public partial struct ValueQueue<T>
             var succeeded = true;
             _index++;
 
-            if (_index == _queue.Count)
+            if (_index == _stack.Count)
             {
                 _index--;
                 succeeded = false;

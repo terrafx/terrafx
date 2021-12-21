@@ -1,6 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using TerraFX.Threading;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -12,7 +14,7 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
 [DebuggerTypeProxy(typeof(UnmanagedValuePool<>.DebugView))]
-public unsafe partial struct UnmanagedValuePool<T>
+public unsafe partial struct UnmanagedValuePool<T> : IEnumerable<T>
     where T : unmanaged
 {
     private UnmanagedValueQueue<T> _availableItems;
@@ -29,11 +31,18 @@ public unsafe partial struct UnmanagedValuePool<T>
     /// <summary>Gets the number of items available in the pool.</summary>
     public readonly nuint AvailableCount => _availableItems.Count;
 
+    /// <summary>Gets an enumerator that can iterate through the available items in the pool.</summary>
+    public AvailableItemsEnumerator AvailableItems => new AvailableItemsEnumerator(this);
+
     /// <summary>Gets the number of items that can be contained by the pool without being resized.</summary>
     public readonly nuint Capacity => _items.Capacity;
 
     /// <summary>Gets the number of items contained in the pool.</summary>
     public readonly nuint Count => _items.Count;
+
+    /// <summary>Gets an enumerator that can iterate through the items in the pool.</summary>
+    /// <returns>An enumerator that can iterate through the items in the pool.</returns>
+    public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
     /// <summary>Rents an item from the pool, creating a new item if none are available.</summary>
     /// <param name="createItem">A pointer to the function to invoke if a new item needs to be created.</param>
@@ -79,4 +88,8 @@ public unsafe partial struct UnmanagedValuePool<T>
         using var disposableMutex = new DisposableMutex(mutex, isExternallySynchronized: false);
         Return(item);
     }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }

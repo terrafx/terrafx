@@ -5,17 +5,17 @@ using System.Collections;
 
 namespace TerraFX.Collections;
 
-public partial struct UnmanagedValueList<T>
+public partial struct UnmanagedValueQueue<T>
 {
-    /// <summary>An enumerator which can iterate through the items in a list.</summary>
-    public struct Enumerator : IRefEnumerator<T>
+    /// <summary>An enumerator which can iterate through the items in a queue.</summary>
+    public struct ItemsEnumerator : IRefEnumerator<T>
     {
-        private readonly UnmanagedValueList<T> _list;
+        private readonly UnmanagedValueQueue<T> _queue;
         private nuint _index;
 
-        internal Enumerator(UnmanagedValueList<T> list)
+        internal ItemsEnumerator(UnmanagedValueQueue<T> queue)
         {
-            _list = list;
+            _queue = queue;
             _index = nuint.MaxValue;
         }
 
@@ -23,7 +23,7 @@ public partial struct UnmanagedValueList<T>
         public T Current => CurrentRef;
 
         /// <inheritdoc />
-        public ref readonly T CurrentRef => ref _list.GetReferenceUnsafe(_index);
+        public ref readonly T CurrentRef => ref _queue.GetReferenceUnsafe(_index);
 
         /// <inheritdoc />
         public bool MoveNext()
@@ -31,7 +31,7 @@ public partial struct UnmanagedValueList<T>
             var succeeded = true;
             _index++;
 
-            if (_index == _list.Count)
+            if (_index == _queue.Count)
             {
                 _index--;
                 succeeded = false;
