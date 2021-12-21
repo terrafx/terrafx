@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using TerraFX.Threading;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -144,6 +145,15 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         _items[count] = item;
     }
 
+    /// <summary>Adds an item to the list.</summary>
+    /// <param name="item">The item to add to the list.</param>
+    /// <param name="mutex">The mutex to use when adding <paramref name="item" /> to the list.</param>
+    public void Add(T item, ValueMutex mutex)
+    {
+        using var disposableMutex = new DisposableMutex(mutex, isExternallySynchronized: false);
+        Add(item);
+    }
+
     /// <summary>Converts the backing array for the list to a span.</summary>
     /// <returns>A span that covers the backing array for the list.</returns>
     public Span<T> AsSpanUnsafe() => AsUnmanagedSpanUnsafe().AsSpan();
@@ -274,6 +284,16 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         {
             return false;
         }
+    }
+
+    /// <summary>Removes the first occurence of an item from the list.</summary>
+    /// <param name="item">The item to remove from the list.</param>
+    /// <param name="mutex">The mutex to use when removing <paramref name="item" /> from the list.</param>
+    /// <returns><c>true</c> if <paramref name="item" /> was removed from the list; otherwise, <c>false</c>.</returns>
+    public bool Remove(T item, ValueMutex mutex)
+    {
+        using var disposableMutex = new DisposableMutex(mutex, isExternallySynchronized: false);
+        return Remove(item);
     }
 
     /// <summary>Removes the item at the specified index from the list.</summary>
