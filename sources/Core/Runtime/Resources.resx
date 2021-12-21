@@ -183,6 +183,9 @@
   <data name="ValueIsNegativeMessage" xml:space="preserve">
     <value>'{0}' is negative</value>
   </data>
+  <data name="ValueIsNotDefinedMessage" xml:space="preserve">
+    <value>'{0}' is not defined</value>
+  </data>
   <data name="ValueIsNotInSignedBoundsMessage" xml:space="preserve">
     <value>'{0}' is negative or greater than or equal to '{1}'</value>
   </data>

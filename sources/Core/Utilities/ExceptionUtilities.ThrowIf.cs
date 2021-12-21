@@ -70,6 +70,22 @@ public static unsafe partial class ExceptionUtilities
         }
     }
 
+    /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not defined by <typeparamref name="TEnum" />.</summary>
+    /// <param name="value">The value to be checked if it is defined by <typeparamref name="TEnum" />.</param>
+    /// <param name="valueExpression">The expression of the value being checked.</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not defined by <typeparamref name="TEnum" />.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfNotDefined<TEnum>(TEnum value, [CallerArgumentExpression("value")] string? valueExpression = null)
+        where TEnum : struct, Enum
+    {
+        if (!Enum.IsDefined(value))
+        {
+            AssertNotNull(valueExpression);
+            var message = string.Format(Resources.ValueIsNotDefinedMessage, valueExpression);
+            ThrowArgumentOutOfRangeException(valueExpression, value, message);
+        }
+    }
+
     /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="index" /> is <c>negative</c> or greater than or equal to <paramref name="length" />.</summary>
     /// <param name="index">The index to check.</param>
     /// <param name="length">The length of the collection being indexed.</param>
