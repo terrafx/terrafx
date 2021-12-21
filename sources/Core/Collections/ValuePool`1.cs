@@ -1,0 +1,87 @@
+// Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
+
+using System;
+using System.Diagnostics;
+using TerraFX.Threading;
+using static TerraFX.Utilities.ExceptionUtilities;
+
+namespace TerraFX.Collections;
+
+/// <summary>Represents a pool of items.</summary>
+/// <typeparam name="T">The type of the items contained in the pool.</typeparam>
+/// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
+[DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
+[DebuggerTypeProxy(typeof(ValuePool<>.DebugView))]
+public unsafe partial struct ValuePool<T>
+{
+    private ValueQueue<T> _availableItems;
+    private ValueList<T> _items;
+
+    /// <summary>Initializes a new instance of the <see cref="ValuePool{T}" /> struct.</summary>
+    /// <param name="capacity">The initial capacity of the pool.</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is <c>negative</c>.</exception>
+    public ValuePool(int capacity)
+    {
+        _availableItems = new ValueQueue<T>(capacity);
+        _items = new ValueList<T>(capacity);
+    }
+
+    /// <summary>Gets the number of items available in the pool.</summary>
+    public readonly int AvailableCount => _availableItems.Count;
+
+    /// <summary>Gets the number of items that can be contained by the pool without being resized.</summary>
+    public readonly int Capacity => _items.Capacity;
+
+    /// <summary>Gets the number of items contained in the pool.</summary>
+    public readonly int Count => _items.Count;
+
+    /// <summary>Rents an item from the pool, creating a new item if none are available.</summary>
+    /// <param name="createItem">A pointer to the function to invoke if a new item needs to be created.</param>
+    /// <returns>A rented item.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="createItem" /> is <c>null</c>.</exception>
+    public T Rent(delegate*<T> createItem)
+    {
+        ThrowIfNull(createItem);
+
+        if (!_availableItems.TryDequeue(out var item))
+        {
+            item = createItem();
+            _items.Add(item);
+        }
+
+        return item;
+    }
+
+    /// <summary>Rents an item from the pool, creating a new item if none are available.</summary>
+    /// <param name="createItem">A pointer to the function to invoke if a new item needs to be created.</param>
+    /// <param name="mutex">The mutex to use when renting an item from the list.</param>
+    /// <returns>A rented item.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="createItem" /> is <c>null</c>.</exception>
+    public T Rent(delegate*<T> createItem, ValueMutex mutex)
+    {
+        using var disposableMutex = new DisposableMutex(mutex, isExternallySynchronized: false);
+        return Rent(createItem);
+    }
+
+    /// <summary>Returns an item to the pool.</summary>
+    /// <param name="item">The item that should be returned to the pool.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <c>null</c>.</exception>
+    public void Return(T item)
+    {
+        if (item is null)
+        {
+            ThrowArgumentNullException(nameof(item));
+        }
+        _availableItems.Enqueue(item);
+    }
+
+    /// <summary>Returns an item to the pool.</summary>
+    /// <param name="item">The item that should be returned to the pool.</param>
+    /// <param name="mutex">The mutex to use when renting an item from the list.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <c>null</c>.</exception>
+    public void Return(T item, ValueMutex mutex)
+    {
+        using var disposableMutex = new DisposableMutex(mutex, isExternallySynchronized: false);
+        Return(item);
+    }
+}

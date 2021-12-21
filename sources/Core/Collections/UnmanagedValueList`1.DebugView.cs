@@ -9,7 +9,7 @@ namespace TerraFX.Collections;
 
 public partial struct UnmanagedValueList<T>
 {
-    internal sealed class DebugView
+    internal sealed unsafe class DebugView
     {
         private readonly UnmanagedValueList<T> _list;
 
@@ -21,7 +21,7 @@ public partial struct UnmanagedValueList<T>
         public nuint Count => _list.Count;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        public unsafe T[] Items
+        public T[] Items
         {
             get
             {

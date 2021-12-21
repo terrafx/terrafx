@@ -17,7 +17,7 @@ using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Collections;
 
-/// <summary>Represents a queue of items that can be accessed by index.</summary>
+/// <summary>Represents a queue of items.</summary>
 /// <typeparam name="T">The type of the items contained in the queue.</typeparam>
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
