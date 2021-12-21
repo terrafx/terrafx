@@ -90,13 +90,6 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
         return MapInternal();
     }
 
-    /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = Device.UpdateName(VK_OBJECT_TYPE_DEVICE_MEMORY, VkDeviceMemory, value);
-        base.SetName(value);
-    }
-
     /// <summary>Unmaps the memory heap from CPU memory.</summary>
     /// <remarks>This overload should be used when no memory was written.</remarks>
     /// <exception cref="InvalidOperationException">The memory heap is not already mapped.</exception>
@@ -118,6 +111,12 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
                 vkFreeMemory(vkDevice, vkDeviceMemory, pAllocator: null);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_DEVICE_MEMORY, VkDeviceMemory, value);
     }
 
     private byte* MapInternal()

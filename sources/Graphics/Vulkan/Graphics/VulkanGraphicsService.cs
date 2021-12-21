@@ -436,4 +436,9 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
             }
         }
     }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+    }
 }

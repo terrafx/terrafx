@@ -38,4 +38,9 @@ public sealed unsafe partial class VulkanGraphicsBufferView : GraphicsBufferView
         }
         MemoryRegion.Dispose();
     }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+    }
 }

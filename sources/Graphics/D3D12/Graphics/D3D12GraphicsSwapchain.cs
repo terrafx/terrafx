@@ -196,14 +196,6 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     }
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = DxgiSwapchain->UpdateDXGIName(value);
-        _ = D3D12RtvDescriptorHeap->UpdateD3D12Name(value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         var fence = Fence;
@@ -241,5 +233,12 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
         _renderTargetIndex = GetRenderTargetIndex(dxgiSwapchain, fence);
 
         InitializeRenderTargets(this, renderTargets);
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        DxgiSwapchain->SetDxgiName(value);
+        D3D12RtvDescriptorHeap->SetD3D12Name(value);
     }
 }

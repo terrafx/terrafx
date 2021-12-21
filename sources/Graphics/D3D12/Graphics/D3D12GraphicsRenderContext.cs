@@ -291,14 +291,6 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = D3D12CommandAllocator->UpdateD3D12Name(value);
-        _ = D3D12GraphicsCommandList->UpdateD3D12Name(value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     public override void SetScissor(BoundingRectangle scissor)
     {
         var topLeft = scissor.Location;
@@ -388,5 +380,12 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
         {
             _fence?.Dispose();
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        D3D12CommandAllocator->SetD3D12Name(value);
+        D3D12GraphicsCommandList->SetD3D12Name(value);
     }
 }

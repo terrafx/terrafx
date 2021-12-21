@@ -50,4 +50,9 @@ public sealed unsafe partial class D3D12GraphicsTextureView : GraphicsTextureVie
             _ = Resource.RemoveView(this);
         }
     }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+    }
 }

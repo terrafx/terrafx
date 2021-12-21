@@ -96,13 +96,6 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
     }
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = D3D12Fence->UpdateD3D12Name(value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     public override bool TryWait(int millisecondsTimeout = -1)
     {
         Assert(AssertionsEnabled && (millisecondsTimeout >= Timeout.Infinite));
@@ -146,6 +139,12 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
                 _ = CloseHandle(eventHandle);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        D3D12Fence->SetD3D12Name(value);
     }
 
     private bool TryWait(uint millisecondsTimeout)

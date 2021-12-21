@@ -46,4 +46,8 @@ public sealed unsafe class D3D12GraphicsRenderPass : GraphicsRenderPass
             _swapchain?.Dispose();
         }
     }
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+    }
 }

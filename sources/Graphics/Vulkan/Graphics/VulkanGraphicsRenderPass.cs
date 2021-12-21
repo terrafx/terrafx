@@ -97,13 +97,6 @@ public sealed unsafe class VulkanGraphicsRenderPass : GraphicsRenderPass
     }
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = Device.UpdateName(VK_OBJECT_TYPE_RENDER_PASS, VkRenderPass, value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         if (isDisposing)
@@ -120,5 +113,11 @@ public sealed unsafe class VulkanGraphicsRenderPass : GraphicsRenderPass
                 vkDestroyRenderPass(vkDevice, vkRenderPass, pAllocator: null);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_RENDER_PASS, VkRenderPass, value);
     }
 }

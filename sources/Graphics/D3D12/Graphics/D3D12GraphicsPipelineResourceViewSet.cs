@@ -131,15 +131,14 @@ public sealed unsafe class D3D12GraphicsPipelineResourceViewSet : GraphicsPipeli
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = D3D12CbvSrvUavDescriptorHeap->UpdateD3D12Name(value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         ReleaseIfNotNull(_d3d12CbvSrvUavDescriptorHeap);
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        D3D12CbvSrvUavDescriptorHeap->SetD3D12Name(value);
     }
 }

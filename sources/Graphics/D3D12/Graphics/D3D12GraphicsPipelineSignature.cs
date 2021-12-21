@@ -176,15 +176,14 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = D3D12RootSignature->UpdateD3D12Name(value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         ReleaseIfNotNull(_d3d12RootSignature);
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        D3D12RootSignature->SetD3D12Name(value);
     }
 }

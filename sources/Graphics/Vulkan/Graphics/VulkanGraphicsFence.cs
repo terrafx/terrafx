@@ -75,13 +75,6 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
     }
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = Device.UpdateName(VK_OBJECT_TYPE_FENCE, VkFence, value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     public override bool TryWait(int millisecondsTimeout = -1)
     {
         Assert(AssertionsEnabled && (millisecondsTimeout >= Timeout.Infinite));
@@ -108,7 +101,13 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
                 vkDestroyFence(vkDevice, vkFence, pAllocator: null);
             }
         }
-    }    
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_FENCE, VkFence, value);
+    }
 
     private bool TryWait(ulong millisecondsTimeout)
     {

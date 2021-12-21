@@ -339,14 +339,6 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = Device.UpdateName(VK_OBJECT_TYPE_COMMAND_BUFFER, VkCommandBuffer, value);
-        _ = Device.UpdateName(VK_OBJECT_TYPE_COMMAND_POOL, VkCommandPool, value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     public override void SetScissor(BoundingRectangle scissor)
     {
         var location = scissor.Location;
@@ -463,6 +455,13 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
                 vkDestroyCommandPool(vkDevice, vkCommandPool, pAllocator: null);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_COMMAND_BUFFER, VkCommandBuffer, value);
+        Device.SetVkObjectName(VK_OBJECT_TYPE_COMMAND_POOL, VkCommandPool, value);
     }
 
     private void BindVertexBufferViewsInternal(ReadOnlySpan<GraphicsBufferView> vertexBufferViews, uint firstBindingSlot, VkBuffer* vkVertexBuffers, ulong* vkVertexBufferOffsets)

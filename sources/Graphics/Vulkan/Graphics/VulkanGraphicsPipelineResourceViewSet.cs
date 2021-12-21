@@ -176,14 +176,6 @@ public sealed unsafe class VulkanGraphicsPipelineResourceViewSet : GraphicsPipel
     }
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = Device.UpdateName(VK_OBJECT_TYPE_DESCRIPTOR_POOL, VkDescriptorPool, value);
-        _ = Device.UpdateName(VK_OBJECT_TYPE_DESCRIPTOR_SET, VkDescriptorSet, value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         if (isDisposing)
@@ -210,5 +202,12 @@ public sealed unsafe class VulkanGraphicsPipelineResourceViewSet : GraphicsPipel
                 _ = vkFreeDescriptorSets(vkDevice, vkDescriptorPool, 1, &vkDescriptorSet);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_DESCRIPTOR_POOL, VkDescriptorPool, value);
+        Device.SetVkObjectName(VK_OBJECT_TYPE_DESCRIPTOR_SET, VkDescriptorSet, value);
     }
 }

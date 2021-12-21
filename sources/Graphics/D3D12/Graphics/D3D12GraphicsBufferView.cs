@@ -44,4 +44,9 @@ public sealed unsafe partial class D3D12GraphicsBufferView : GraphicsBufferView
         }
         MemoryRegion.Dispose();
     }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+    }
 }

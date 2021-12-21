@@ -7,6 +7,7 @@ using TerraFX.Advanced;
 using TerraFX.Collections;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
+using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -192,6 +193,12 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
     {
         using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
         return MapForReadInternal(offset, size);
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_BUFFER, VkBuffer, value);
     }
 
     /// <inheritdoc />

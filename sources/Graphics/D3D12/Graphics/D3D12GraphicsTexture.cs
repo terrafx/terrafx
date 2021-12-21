@@ -139,13 +139,6 @@ public sealed unsafe partial class D3D12GraphicsTexture : GraphicsTexture
     public override IEnumerator<D3D12GraphicsTextureView> GetEnumerator() => _textureViews.GetEnumerator();
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = D3D12Resource->UpdateD3D12Name(value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         _d3d12PlacedSubresourceFootprints.Dispose();
@@ -156,6 +149,12 @@ public sealed unsafe partial class D3D12GraphicsTexture : GraphicsTexture
 
         ReleaseIfNotNull(_d3d12Resource);
         MemoryRegion.Dispose();
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        D3D12Resource->SetD3D12Name(value);
     }
 
     internal void AddView(D3D12GraphicsTextureView textureView)

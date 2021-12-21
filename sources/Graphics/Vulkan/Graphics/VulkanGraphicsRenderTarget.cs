@@ -112,14 +112,6 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
     }
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = Device.UpdateName(VK_OBJECT_TYPE_FRAMEBUFFER, VkFramebuffer, value);
-        _ = Device.UpdateName(VK_OBJECT_TYPE_IMAGE_VIEW, VkFramebufferImageView, value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         var vkDevice = Device.VkDevice;
@@ -143,5 +135,12 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
                 vkDestroyImageView(vkDevice, vkFramebufferImageView, pAllocator: null);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_FRAMEBUFFER, VkFramebuffer, value);
+        Device.SetVkObjectName(VK_OBJECT_TYPE_IMAGE_VIEW, VkFramebufferImageView, value);
     }
 }

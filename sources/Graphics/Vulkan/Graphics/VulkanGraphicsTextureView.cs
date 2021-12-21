@@ -114,13 +114,6 @@ public sealed unsafe partial class VulkanGraphicsTextureView : GraphicsTextureVi
     }
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = Device.UpdateName(VK_OBJECT_TYPE_IMAGE_VIEW, VkImageView, value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         if (isDisposing)
@@ -136,5 +129,11 @@ public sealed unsafe partial class VulkanGraphicsTextureView : GraphicsTextureVi
                 vkDestroyImageView(vkDevice, vkImageView, pAllocator: null);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_IMAGE_VIEW, VkImageView, value);
     }
 }

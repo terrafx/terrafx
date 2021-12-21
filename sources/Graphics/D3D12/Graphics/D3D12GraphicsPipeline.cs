@@ -224,13 +224,6 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
     }
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = D3D12PipelineState->UpdateD3D12Name(value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         ReleaseIfNotNull(_d3d12PipelineState);
@@ -241,5 +234,11 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
             PixelShader?.Dispose();
             VertexShader?.Dispose();
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        D3D12PipelineState->SetD3D12Name(value);
     }
 }

@@ -84,15 +84,14 @@ public sealed unsafe class D3D12GraphicsMemoryHeap : GraphicsDeviceObject
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = D3D12Heap->UpdateD3D12Name(value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         ReleaseIfNotNull(_d3d12Heap);
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        D3D12Heap->SetD3D12Name(value);
     }
 }

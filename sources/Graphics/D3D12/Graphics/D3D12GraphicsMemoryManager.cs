@@ -175,6 +175,11 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
         _mutex.Dispose();
     }
 
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+    }
+
     private GraphicsMemoryAllocator AddMemoryAllocator(nuint size, bool isDedicated)
     {
         var memoryHeap = new D3D12GraphicsMemoryHeap(this, size, D3D12HeapType, D3D12HeapFlags);

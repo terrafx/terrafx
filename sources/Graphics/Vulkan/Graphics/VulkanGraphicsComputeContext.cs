@@ -120,14 +120,6 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
     }
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = Device.UpdateName(VK_OBJECT_TYPE_COMMAND_BUFFER, VkCommandBuffer, value);
-        _ = Device.UpdateName(VK_OBJECT_TYPE_COMMAND_POOL, VkCommandPool, value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         var vkDevice = Device.VkDevice;
@@ -156,5 +148,12 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
                 vkDestroyCommandPool(vkDevice, vkCommandPool, pAllocator: null);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_COMMAND_BUFFER, VkCommandBuffer, value);
+        Device.SetVkObjectName(VK_OBJECT_TYPE_COMMAND_POOL, VkCommandPool, value);
     }
 }

@@ -99,13 +99,6 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
     public override IEnumerator<D3D12GraphicsBufferView> GetEnumerator() => _bufferViews.GetEnumerator();
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = D3D12Resource->UpdateD3D12Name(value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     public override bool TryCreateView(uint count, uint stride, [NotNullWhen(true)] out GraphicsBufferView? bufferView)
     {
         ThrowIfDisposed();
@@ -187,6 +180,12 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
     {
         using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
         return MapForReadInternal(offset, size);
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        D3D12Resource->SetD3D12Name(value);
     }
 
     /// <inheritdoc />

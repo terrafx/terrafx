@@ -560,16 +560,6 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = D3D12Device->UpdateD3D12Name(value);
-        _ = D3D12ComputeCommandQueue->UpdateD3D12Name(value);
-        _ = D3D12CopyCommandQueue->UpdateD3D12Name(value);
-        _ = D3D12DirectCommandQueue->UpdateD3D12Name(value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     public override void Signal(GraphicsFence fence)
         => Signal((D3D12GraphicsFence)fence);
 
@@ -610,6 +600,15 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
         ReleaseIfNotNull(_d3d12CopyCommandQueue);
         ReleaseIfNotNull(_d3d12DirectCommandQueue);
         ReleaseIfNotNull(_d3d12Device);
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        D3D12Device->SetD3D12Name(value);
+        D3D12ComputeCommandQueue->SetD3D12Name(value);
+        D3D12CopyCommandQueue->SetD3D12Name(value);
+        D3D12DirectCommandQueue->SetD3D12Name(value);
     }
 
     private GraphicsMemoryBudget GetMemoryBudgetInternal(D3D12_HEAP_TYPE d3d12HeapType, ref MemoryBudgetInfo memoryBudgetInfo)

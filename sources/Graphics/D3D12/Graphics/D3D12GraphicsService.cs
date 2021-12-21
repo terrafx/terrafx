@@ -192,4 +192,9 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
             }
         }
     }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+    }
 }

@@ -86,4 +86,9 @@ public sealed class GraphicsPrimitive : GraphicsPipelineObject
 
         Pipeline?.Dispose();
     }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+    }
 }

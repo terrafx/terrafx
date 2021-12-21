@@ -75,15 +75,14 @@ public sealed unsafe class D3D12GraphicsRenderTarget : GraphicsRenderTarget
     public new D3D12GraphicsSwapchain Swapchain => base.Swapchain.As<D3D12GraphicsSwapchain>();
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = D3D12RtvResource->UpdateD3D12Name(value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         ReleaseIfNotNull(_d3d12RtvResource);
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        D3D12RtvResource->SetD3D12Name(value);
     }
 }

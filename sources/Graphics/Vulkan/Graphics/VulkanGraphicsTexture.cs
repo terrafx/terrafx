@@ -144,15 +144,6 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
     /// <inheritdoc />
     public override IEnumerator<VulkanGraphicsTextureView> GetEnumerator() => _textureViews.GetEnumerator();
 
-
-    /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = Device.UpdateName(VK_OBJECT_TYPE_IMAGE, VkImage, value);
-        _ = Device.UpdateName(VK_OBJECT_TYPE_SAMPLER, VkSampler, value);
-        base.SetName(value);
-    }
-
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
@@ -181,6 +172,13 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
                 vkDestroySampler(vkDevice, vkSampler, pAllocator: null);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_IMAGE, VkImage, value);
+        Device.SetVkObjectName(VK_OBJECT_TYPE_SAMPLER, VkSampler, value);
     }
 
     internal void AddView(VulkanGraphicsTextureView textureView)

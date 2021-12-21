@@ -523,14 +523,6 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = UpdateName(VK_OBJECT_TYPE_DEVICE, VkDevice, value);
-        _ = UpdateName(VK_OBJECT_TYPE_QUEUE, VkCommandQueue, value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     public override void Signal(GraphicsFence fence)
         => Signal((VulkanGraphicsFence)fence);
 
@@ -572,14 +564,19 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal string UpdateName(VkObjectType objectType, ulong objectHandle, string name, [CallerArgumentExpression("objectHandle")] string component = "")
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
     {
-        name ??= "";
+        SetVkObjectName(VK_OBJECT_TYPE_DEVICE, VkDevice, value);
+        SetVkObjectName(VK_OBJECT_TYPE_QUEUE, VkCommandQueue, value);
+    }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal void SetVkObjectName(VkObjectType vkObjectType, ulong vkObjectHandle, string name, [CallerArgumentExpression("vkObjectHandle")] string component = "")
+    {
         ref readonly var vkDeviceManualImports = ref VkDeviceManualImports;
 
-        if (GraphicsService.EnableDebugMode && (vkDeviceManualImports.vkSetDebugUtilsObjectNameEXT is not null) && (objectHandle != 0))
+        if (GraphicsService.EnableDebugMode && (vkDeviceManualImports.vkSetDebugUtilsObjectNameEXT is not null) && (vkObjectHandle != 0))
         {
             var componentName = $"{name}: {component}";
 
@@ -587,20 +584,18 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
             {
                 var vkDebugUtilsObjectNameInfo = new VkDebugUtilsObjectNameInfoEXT {
                     sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT,
-                    objectType = objectType,
-                    objectHandle = objectHandle,
+                    objectType = vkObjectType,
+                    objectHandle = vkObjectHandle,
                     pObjectName = pName
                 };
                 _ = vkDeviceManualImports.vkSetDebugUtilsObjectNameEXT(VkDevice, &vkDebugUtilsObjectNameInfo);
             }
         }
-
-        return name;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal string UpdateName(VkObjectType objectType, void* objectHandle, string name, [CallerArgumentExpression("objectHandle")] string component = "")
-        => UpdateName(objectType, (ulong)objectHandle, name, component);
+    internal void  SetVkObjectName(VkObjectType vkObjectType, void* vkObjectHandle, string name, [CallerArgumentExpression("vkObjectHandle")] string component = "")
+        => SetVkObjectName(vkObjectType, (ulong)vkObjectHandle, name, component);
 
     private GraphicsMemoryBudget GetMemoryBudgetInternal(uint vkMemoryTypeIndex, ref MemoryBudgetInfo memoryBudgetInfo)
     {

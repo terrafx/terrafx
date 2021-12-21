@@ -108,4 +108,14 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
         vkGetPhysicalDeviceMemoryProperties2(VkPhysicalDevice, &vkPhysicalDeviceMemoryProperties);
         return true;
     }
+
+    /// <inheritdoc />
+    protected override void Dispose(bool isDisposing)
+    {
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+    }
 }

@@ -79,6 +79,11 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
         ReleaseIfNotNull(_dxgiAdapter);
     }
 
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+    }
+
     /// <summary>Tries to query the <see cref="DXGI_QUERY_VIDEO_MEMORY_INFO" /> for <see cref="DXGI_MEMORY_SEGMENT_GROUP_LOCAL" />.</summary>
     /// <param name="dxgiLocalVideoMemoryInfo">The video memory info that will be filled.</param>
     /// <returns><c>true</c> if the query succeeded; otherwise, <c>false</c>.</returns>

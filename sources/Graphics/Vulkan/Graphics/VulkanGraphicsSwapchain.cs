@@ -317,14 +317,6 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
     }
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = Device.UpdateName(VK_OBJECT_TYPE_SURFACE_KHR, VkSurface, value);
-        _ = Device.UpdateName(VK_OBJECT_TYPE_SWAPCHAIN_KHR, VkSwapchain, value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         var fence = Fence;
@@ -348,6 +340,13 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
                 vkDestroySurfaceKHR(vkInstance, vkSurface, pAllocator: null);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_SURFACE_KHR, VkSurface, value);
+        Device.SetVkObjectName(VK_OBJECT_TYPE_SWAPCHAIN_KHR, VkSwapchain, value);
     }
 
     private void OnGraphicsSurfaceSizeChanged(object? sender, PropertyChangedEventArgs<Vector2> eventArgs)

@@ -41,9 +41,10 @@ public abstract class DisposableObject : IDisposable
 
     /// <summary>Sets the name of the object.</summary>
     /// <param name="value">The new name of the object or <c>null</c> to use <see cref="MemberInfo.Name" />.</param>
-    public virtual void SetName(string value)
+    public void SetName(string? value)
     {
         _name = value ?? GetType().Name;
+        SetNameInternal(_name);
     }
 
     /// <inheritdoc />
@@ -55,9 +56,11 @@ public abstract class DisposableObject : IDisposable
 
     /// <inheritdoc cref="Dispose()" />
     /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-    protected virtual void Dispose(bool isDisposing)
-    {
-    }
+    protected abstract void Dispose(bool isDisposing);
+
+    /// <summary>Sets the name of the object.</summary>
+    /// <param name="value">The new name of the object.</param>
+    protected abstract void SetNameInternal(string value);
 
     /// <summary>Throws an exception if the object has been disposed.</summary>
     /// <exception cref="ObjectDisposedException">The object has been disposed.</exception>

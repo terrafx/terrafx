@@ -139,14 +139,6 @@ public sealed unsafe class D3D12GraphicsCopyContext : GraphicsCopyContext
     }
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = D3D12CommandAllocator->UpdateD3D12Name(value);
-        _ = D3D12GraphicsCommandList->UpdateD3D12Name(value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         ReleaseIfNotNull(_d3d12GraphicsCommandList);
@@ -156,5 +148,12 @@ public sealed unsafe class D3D12GraphicsCopyContext : GraphicsCopyContext
         {
             _fence?.Dispose();
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        D3D12CommandAllocator->SetD3D12Name(value);
+        D3D12GraphicsCommandList->SetD3D12Name(value);
     }
 }

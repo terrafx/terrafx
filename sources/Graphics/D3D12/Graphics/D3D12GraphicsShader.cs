@@ -46,4 +46,9 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
     {
         Free(_d3d12ShaderBytecode.pShaderBytecode);
     }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+    }
 }

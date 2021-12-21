@@ -74,13 +74,6 @@ public sealed unsafe class VulkanGraphicsShader : GraphicsShader
     }
 
     /// <inheritdoc />
-    public override void SetName(string value)
-    {
-        value = Device.UpdateName(VK_OBJECT_TYPE_SHADER_MODULE, VkShaderModule, value);
-        base.SetName(value);
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         DisposeVkShaderModule(Device.VkDevice, _vkShaderModule);
@@ -93,5 +86,11 @@ public sealed unsafe class VulkanGraphicsShader : GraphicsShader
                 vkDestroyShaderModule(vkDevice, vkShaderModule, pAllocator: null);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_SHADER_MODULE, VkShaderModule, value);
     }
 }

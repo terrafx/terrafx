@@ -173,6 +173,11 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         _mutex.Dispose();
     }
 
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+    }
+
     private GraphicsMemoryAllocator AddMemoryAllocator(nuint size, bool isDedicated)
     {
         var memoryHeap = new VulkanGraphicsMemoryHeap(this, size, VkMemoryTypeIndex);
