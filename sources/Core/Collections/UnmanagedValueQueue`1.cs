@@ -61,7 +61,7 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
         if (span.Length != 0)
         {
             var items = new UnmanagedArray<T>(span.Length, alignment, zero: false);
-            CopyArrayUnsafe<T>(items.GetPointerUnsafe(0), span.GetPointerUnsafe(0), span.Length);
+            CopyArrayUnsafe(items.GetPointerUnsafe(0), span.GetPointerUnsafe(0), span.Length);
             _items = items;
         }
         else
@@ -93,7 +93,7 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
         else
         {
             var items = new UnmanagedArray<T>(array.Length, array.Alignment, zero: false);
-            CopyArrayUnsafe<T>(items.GetPointerUnsafe(0), array.GetPointerUnsafe(0), array.Length);
+            CopyArrayUnsafe(items.GetPointerUnsafe(0), array.GetPointerUnsafe(0), array.Length);
             _items = items;
         }
 
@@ -167,13 +167,13 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
 
             if ((head < tail) || (tail == 0))
             {
-                CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), _items.GetPointerUnsafe(head), count);
+                CopyArrayUnsafe(destination.GetPointerUnsafe(0), _items.GetPointerUnsafe(head), count);
             }
             else
             {
                 var headLength = count - head;
-                CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), _items.GetPointerUnsafe(head), headLength);
-                CopyArrayUnsafe<T>(destination.GetPointerUnsafe(headLength), _items.GetPointerUnsafe(0), tail);
+                CopyArrayUnsafe(destination.GetPointerUnsafe(0), _items.GetPointerUnsafe(head), headLength);
+                CopyArrayUnsafe(destination.GetPointerUnsafe(headLength), _items.GetPointerUnsafe(0), tail);
             }
         }
     }

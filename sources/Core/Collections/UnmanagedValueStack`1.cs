@@ -57,7 +57,7 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
         if (span.Length != 0)
         {
             var items = new UnmanagedArray<T>(span.Length, alignment, zero: false);
-            CopyArrayUnsafe<T>(items.GetPointerUnsafe(0), span.GetPointerUnsafe(0), span.Length);
+            CopyArrayUnsafe(items.GetPointerUnsafe(0), span.GetPointerUnsafe(0), span.Length);
             _items = items;
         }
         else
@@ -87,7 +87,7 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
         else
         {
             var items = new UnmanagedArray<T>(array.Length, array.Alignment, zero: false);
-            CopyArrayUnsafe<T>(items.GetPointerUnsafe(0), array.GetPointerUnsafe(0), array.Length);
+            CopyArrayUnsafe(items.GetPointerUnsafe(0), array.GetPointerUnsafe(0), array.Length);
             _items = items;
         }
 
@@ -132,7 +132,7 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
         if (count != 0)
         {
             ThrowIfNotInInsertBounds(count, destination.Length);
-            CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), _items.GetPointerUnsafe(0), count);
+            CopyArrayUnsafe(destination.GetPointerUnsafe(0), _items.GetPointerUnsafe(0), count);
         }
     }
 

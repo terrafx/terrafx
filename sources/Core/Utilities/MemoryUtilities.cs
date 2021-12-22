@@ -251,7 +251,7 @@ public static unsafe class MemoryUtilities
     /// <param name="destination">The destination buffer to clear.</param>
     /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Clear<T>(void* destination)
+    public static void Clear<T>(T* destination)
         where T : unmanaged => Clear(destination, SizeOf<T>());
 
     /// <summary>Clears a destination buffer to zero.</summary>
@@ -260,7 +260,7 @@ public static unsafe class MemoryUtilities
     /// <param name="count">The count of elements in <paramref name="destination" />.</param>
     /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c> and <paramref name="count" /> is not <c>zero</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ClearArray<T>(void* destination, nuint count)
+    public static void ClearArray<T>(T* destination, nuint count)
         where T : unmanaged => Clear(destination, count * SizeOf<T>());
 
     /// <summary>Clears a destination buffer to zero.</summary>
@@ -269,7 +269,7 @@ public static unsafe class MemoryUtilities
     /// <param name="count">The count of elements in <paramref name="destination" />.</param>
     /// <remarks>This method is unsafe because it does not validate <paramref name="destination" /> is not <c>null</c>.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ClearArrayUnsafe<T>(void* destination, nuint count)
+    public static void ClearArrayUnsafe<T>(T* destination, nuint count)
         where T : unmanaged => ClearUnsafe(destination, count * SizeOf<T>());
 
     /// <summary>Clears a destination buffer to zero.</summary>
@@ -458,7 +458,7 @@ public static unsafe class MemoryUtilities
     /// <param name="destination">The destination buffer to clear.</param>
     /// <remarks>This method is unsafe because it does not validate <paramref name="destination" /> is not <c>null</c>.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ClearUnsafe<T>(void* destination)
+    public static void ClearUnsafe<T>(T* destination)
         where T : unmanaged => ClearUnsafe(destination, SizeOf<T>());
 
     /// <summary>Copies memory from a source buffer to a destination buffer.</summary>
@@ -501,7 +501,7 @@ public static unsafe class MemoryUtilities
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Copy<T>(void* destination, void* source)
+    public static void Copy<T>(T* destination, T* source)
         where T : unmanaged => Copy(destination, source, SizeOf<T>());
 
     /// <summary>Copies memory from a source buffer to a destination buffer.</summary>
@@ -512,7 +512,7 @@ public static unsafe class MemoryUtilities
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c> and <paramref name="count" /> is not <c>zero</c>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c> and <paramref name="count" /> is not <c>zero</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void CopyArray<T>(void* destination, void* source, nuint count)
+    public static void CopyArray<T>(T* destination, T* source, nuint count)
         where T : unmanaged => Copy(destination, source, count * SizeOf<T>());
 
     /// <summary>Copies memory from a source buffer to a destination buffer.</summary>
@@ -525,7 +525,7 @@ public static unsafe class MemoryUtilities
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c> and <paramref name="sourceCount" /> is not <c>zero</c>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c> and <paramref name="destinationCount" /> is not <c>zero</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void CopyArray<T>(void* destination, nuint destinationCount, void* source, nuint sourceCount)
+    public static void CopyArray<T>(T* destination, nuint destinationCount, T* source, nuint sourceCount)
         where T : unmanaged => Copy(destination, destinationCount * SizeOf<T>(), source, sourceCount * SizeOf<T>());
 
     /// <summary>Copies memory from a source buffer to a destination buffer.</summary>
@@ -535,7 +535,7 @@ public static unsafe class MemoryUtilities
     /// <param name="count">The count of elements in <paramref name="source" />.</param>
     /// <remarks>This method is unsafe because it does not validate <paramref name="destination" /> and <paramref name="source" /> are not <c>null</c> if <paramref name="count" /> is not <c>zero</c>.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void CopyArrayUnsafe<T>(void* destination, void* source, nuint count)
+    public static void CopyArrayUnsafe<T>(T* destination, T* source, nuint count)
         where T : unmanaged => CopyUnsafe(destination, source, count * SizeOf<T>());
 
     /// <summary>Copies memory from a source buffer to a destination buffer.</summary>
@@ -837,7 +837,7 @@ public static unsafe class MemoryUtilities
     /// <param name="source">The source buffer from which memory is copied.</param>
     /// <remarks>This method is unsafe because it does not validate <paramref name="destination" /> and <paramref name="source" /> are not <c>null</c>.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void CopyUnsafe<T>(void* destination, void* source)
+    public static void CopyUnsafe<T>(T* destination, T* source)
         where T : unmanaged => CopyUnsafe(destination, source, SizeOf<T>());
 
     /// <summary>Frees an allocated chunk of unmanaged memory.</summary>
@@ -904,10 +904,10 @@ public static unsafe class MemoryUtilities
     /// <param name="zero"><c>true</c> if the allocated memory should be zeroed; otherwise, <c>false</c>.</param>
     /// <returns>The address to an allocated chunk of memory that is at least <c>sizeof(<typeparamref name="T" />)</c> bytes in length.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* Reallocate<T>(void* address, bool zero = false)
+    public static T* Reallocate<T>(T* address, bool zero = false)
         where T : unmanaged
     {
-        var result = TryReallocate<T>(address, zero);
+        var result = TryReallocate(address, zero);
 
         if (result == null)
         {
@@ -923,10 +923,10 @@ public static unsafe class MemoryUtilities
     /// <param name="zero"><c>true</c> if the allocated memory should be zeroed; otherwise, <c>false</c>.</param>
     /// <returns>The address to an allocated chunk of memory that is at least <c>sizeof(<typeparamref name="T" />)</c> bytes in length and that is at least <paramref name="alignment" /> bytes aligned.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* Reallocate<T>(void* address, uint alignment, bool zero = false)
+    public static T* Reallocate<T>(T* address, uint alignment, bool zero = false)
         where T : unmanaged
     {
-        var result = TryReallocate<T>(address, alignment, zero);
+        var result = TryReallocate(address, alignment, zero);
 
         if (result == null)
         {
@@ -943,10 +943,10 @@ public static unsafe class MemoryUtilities
     /// <param name="zero"><c>true</c> if the allocated memory should be zeroed; otherwise, <c>false</c>.</param>
     /// <returns>The address to an allocated chunk of memory that is at least <c>sizeof(<typeparamref name="T" />)</c> bytes in length and where <paramref name="offset" /> is at least <paramref name="alignment" /> bytes aligned.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* Reallocate<T>(void* address, nuint alignment, nuint offset, bool zero = false)
+    public static T* Reallocate<T>(T* address, nuint alignment, nuint offset, bool zero = false)
         where T : unmanaged
     {
-        var result = TryReallocate<T>(address, alignment, offset, zero);
+        var result = TryReallocate(address, alignment, offset, zero);
 
         if (result == null)
         {
@@ -1019,10 +1019,10 @@ public static unsafe class MemoryUtilities
     /// <param name="zero"><c>true</c> if the allocated memory should be zeroed; otherwise, <c>false</c>.</param>
     /// <returns>The address to an allocated chunk of memory that is at least <c>sizeof(<typeparamref name="T" />)</c> bytes in length.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* ReallocateArray<T>(void* address, nuint newCount, bool zero = false)
+    public static T* ReallocateArray<T>(T* address, nuint newCount, bool zero = false)
         where T : unmanaged
     {
-        var result = TryReallocateArray<T>(address, newCount, zero);
+        var result = TryReallocateArray(address, newCount, zero);
 
         if (result == null)
         {
@@ -1039,7 +1039,7 @@ public static unsafe class MemoryUtilities
     /// <param name="zero"><c>true</c> if the allocated memory should be zeroed; otherwise, <c>false</c>.</param>
     /// <returns>The address to an allocated chunk of memory that is at least <c>sizeof(<typeparamref name="T" />)</c> bytes in length and that is at least <paramref name="alignment" /> bytes aligned.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* ReallocateArray<T>(void* address, nuint newCount, nuint alignment, bool zero = false)
+    public static T* ReallocateArray<T>(T* address, nuint newCount, nuint alignment, bool zero = false)
         where T : unmanaged
     {
         var result = TryReallocateArray<T>(address, newCount, alignment, zero);
@@ -1060,10 +1060,10 @@ public static unsafe class MemoryUtilities
     /// <param name="zero"><c>true</c> if the allocated memory should be zeroed; otherwise, <c>false</c>.</param>
     /// <returns>The address to an allocated chunk of memory that is at least <c>sizeof(<typeparamref name="T" />)</c> bytes in length and where <paramref name="offset" /> is at least <paramref name="alignment" /> bytes aligned.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* ReallocateArray<T>(void* address, nuint newCount, nuint alignment, nuint offset, bool zero = false)
+    public static T* ReallocateArray<T>(T* address, nuint newCount, nuint alignment, nuint offset, bool zero = false)
         where T : unmanaged
     {
-        var result = TryReallocateArray<T>(address, newCount, alignment, offset, zero);
+        var result = TryReallocateArray(address, newCount, alignment, offset, zero);
 
         if (result == null)
         {
@@ -1316,7 +1316,7 @@ public static unsafe class MemoryUtilities
     /// <param name="zero"><c>true</c> if the allocated memory should be zeroed; otherwise, <c>false</c>.</param>
     /// <returns>The address to an allocated chunk of memory that is at least <c>sizeof(<typeparamref name="T" />)</c> bytes in length or <c>null</c> if the reallocation failed.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* TryReallocate<T>(void* address, bool zero = false)
+    public static T* TryReallocate<T>(T* address, bool zero = false)
         where T : unmanaged => zero ? mi_rezalloc_tp<T>(address) : mi_realloc_tp<T>(address);
 
     /// <summary>Tries to reallocate a chunk of unmanaged memory that is aligned.</summary>
@@ -1326,7 +1326,7 @@ public static unsafe class MemoryUtilities
     /// <param name="zero"><c>true</c> if the allocated memory should be zeroed; otherwise, <c>false</c>.</param>
     /// <returns>The address to an allocated chunk of memory that is at least <c>sizeof(<typeparamref name="T" />)</c> bytes in length and that is at least <paramref name="alignment" /> bytes aligned or <c>null</c> if the reallocation failed.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* TryReallocate<T>(void* address, uint alignment, bool zero = false)
+    public static T* TryReallocate<T>(T* address, uint alignment, bool zero = false)
         where T : unmanaged => zero ? mi_rezalloc_aligned_tp<T>(address, alignment) : mi_realloc_aligned_tp<T>(address, alignment);
 
     /// <summary>Tries to reallocate a chunk of unmanaged memory that is aligned at a given offset.</summary>
@@ -1337,7 +1337,7 @@ public static unsafe class MemoryUtilities
     /// <param name="zero"><c>true</c> if the allocated memory should be zeroed; otherwise, <c>false</c>.</param>
     /// <returns>The address to an allocated chunk of memory that is at least <c>sizeof(<typeparamref name="T" />)</c> bytes in length and where <paramref name="offset" /> is at least <paramref name="alignment" /> bytes aligned or <c>null</c> if the reallocation failed.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* TryReallocate<T>(void* address, nuint alignment, nuint offset, bool zero = false)
+    public static T* TryReallocate<T>(T* address, nuint alignment, nuint offset, bool zero = false)
         where T : unmanaged => zero ? mi_rezalloc_aligned_at_tp<T>(address, alignment, offset) : mi_realloc_aligned_at_tp<T>(address, alignment, offset);
 
     /// <summary>Tries to reallocate a chunk of unmanaged memory.</summary>
@@ -1380,7 +1380,7 @@ public static unsafe class MemoryUtilities
     /// <param name="zero"><c>true</c> if the allocated memory should be zeroed; otherwise, <c>false</c>.</param>
     /// <returns>The address to an allocated chunk of memory that is at least <c>sizeof(<typeparamref name="T" />)</c> bytes in length or <c>null</c> if the reallocation failed.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* TryReallocateArray<T>(void* address, nuint newCount, bool zero = false)
+    public static T* TryReallocateArray<T>(T* address, nuint newCount, bool zero = false)
         where T : unmanaged => zero ? mi_recalloc_tp<T>(address, newCount) : mi_reallocn_tp<T>(address, newCount);
 
     /// <summary>Tries to reallocate a chunk of unmanaged memory that is aligned.</summary>
@@ -1391,7 +1391,7 @@ public static unsafe class MemoryUtilities
     /// <param name="zero"><c>true</c> if the allocated memory should be zeroed; otherwise, <c>false</c>.</param>
     /// <returns>The address to an allocated chunk of memory that is at least <c>sizeof(<typeparamref name="T" />)</c> bytes in length and that is at least <paramref name="alignment" /> bytes aligned or <c>null</c> if the reallocation failed.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* TryReallocateArray<T>(void* address, nuint newCount, nuint alignment, bool zero = false)
+    public static T* TryReallocateArray<T>(T* address, nuint newCount, nuint alignment, bool zero = false)
         where T : unmanaged => zero ? mi_recalloc_aligned_tp<T>(address, newCount, alignment) : mi_reallocn_aligned_tp<T>(address, newCount, alignment);
 
     /// <summary>Tries to reallocate a chunk of unmanaged memory that is aligned at a given offset.</summary>
@@ -1403,6 +1403,6 @@ public static unsafe class MemoryUtilities
     /// <param name="zero"><c>true</c> if the allocated memory should be zeroed; otherwise, <c>false</c>.</param>
     /// <returns>The address to an allocated chunk of memory that is at least <c>sizeof(<typeparamref name="T" />)</c> bytes in length and where <paramref name="offset" /> is at least <paramref name="alignment" /> bytes aligned or <c>null</c> if the reallocation failed.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* TryReallocateArray<T>(void* address, nuint newCount, nuint alignment, nuint offset, bool zero = false)
+    public static T* TryReallocateArray<T>(T* address, nuint newCount, nuint alignment, nuint offset, bool zero = false)
         where T : unmanaged => zero ? mi_recalloc_aligned_at_tp<T>(address, newCount, alignment, offset) : mi_reallocn_aligned_at_tp<T>(address, newCount, alignment, offset);
 }
