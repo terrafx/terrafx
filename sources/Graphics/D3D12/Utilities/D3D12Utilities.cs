@@ -156,11 +156,9 @@ internal static unsafe partial class D3D12Utilities
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string UpdateD3D12Name<TD3D12Object>(ref this TD3D12Object self, string name, [CallerArgumentExpression("self")] string component = "")
+    public static void SetD3D12Name<TD3D12Object>(ref this TD3D12Object self, string name, [CallerArgumentExpression("self")] string component = "")
         where TD3D12Object : unmanaged, ID3D12Object.Interface
     {
-        name ??= "";
-
         if (GraphicsService.EnableDebugMode)
         {
             var componentName = $"{name}: {component}";
@@ -170,16 +168,12 @@ internal static unsafe partial class D3D12Utilities
                 _ = self.SetName((ushort*)pName);
             }
         }
-
-        return name;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string UpdateDXGIName<TDXGIObject>(ref this TDXGIObject self, string name, [CallerArgumentExpression("self")] string component = "")
+    public static void SetDxgiName<TDXGIObject>(ref this TDXGIObject self, string name, [CallerArgumentExpression("self")] string component = "")
         where TDXGIObject : unmanaged, IDXGIObject.Interface
     {
-        name ??= "";
-
         if (GraphicsService.EnableDebugMode)
         {
             var componentName = $"{name}: {component}";
@@ -189,7 +183,5 @@ internal static unsafe partial class D3D12Utilities
                 _ = self.SetPrivateData(AsReadonlyPointer(in WKPDID_D3DDebugObjectName), (uint)componentName.Length, (ushort*)pName);
             }
         }
-
-        return name;
     }
 }

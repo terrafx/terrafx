@@ -5,6 +5,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using TerraFX.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 using TerraFX.Threading;
@@ -22,7 +23,6 @@ using static TerraFX.Interop.DirectX.D3D12_TEXTURE_LAYOUT;
 using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Runtime.Configuration;
-using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -47,12 +47,9 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     private ContextPool<D3D12GraphicsDevice, D3D12GraphicsComputeContext> _computeContextPool;
     private ContextPool<D3D12GraphicsDevice, D3D12GraphicsCopyContext> _copyContextPool;
     private MemoryBudgetInfo _memoryBudgetInfo;
-    private string _name = null!;
     private ContextPool<D3D12GraphicsDevice, D3D12GraphicsRenderContext> _renderContextPool;
 
-    private VolatileState _state;
-
-    internal D3D12GraphicsDevice(D3D12GraphicsAdapter adapter, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator)
+    internal D3D12GraphicsDevice(D3D12GraphicsAdapter adapter, GraphicsMemoryAllocatorCreateFunc createMemoryAllocator)
         : base(adapter)
     {
         var d3d12Device = CreateD3D12Device(adapter);
@@ -79,9 +76,6 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
         _memoryBudgetInfo = new MemoryBudgetInfo();
         UpdateMemoryBudgetInfo(ref _memoryBudgetInfo, totalOperationCount: 0);
 
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsDevice);
-
         static ID3D12CommandQueue* CreateD3D12CommandQueue(ID3D12Device* d3d12Device, D3D12_COMMAND_LIST_TYPE d3d12CommandListType)
         {
             ID3D12CommandQueue* d3d12CommandQueue;
@@ -107,7 +101,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
             return d3d12Options;
         }
 
-        static D3D12GraphicsMemoryManager[] CreateMemoryManagers(D3D12GraphicsDevice device, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator, bool d3d12SupportsResourceHeapTier2)
+        static D3D12GraphicsMemoryManager[] CreateMemoryManagers(D3D12GraphicsDevice device, GraphicsMemoryAllocatorCreateFunc createMemoryAllocator, bool d3d12SupportsResourceHeapTier2)
         {
             D3D12GraphicsMemoryManager[] memoryManagers;
 
@@ -154,7 +148,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _d3d12ComputeCommandQueue;
         }
     }
@@ -164,7 +158,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _d3d12CopyCommandQueue;
         }
     }
@@ -174,7 +168,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _d3d12DirectCommandQueue;
         }
     }
@@ -184,7 +178,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _d3d12Device;
         }
     }
@@ -198,24 +192,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     /// <summary>Gets <c>true</c> if the device supports <see cref="D3D12_RESOURCE_HEAP_TIER_2" />; otherwise, <c>false</c>.</summary>
     public bool D3D12SupportsResourceHeapTier2 => _d3d12SupportsResourceHeapTier2;
 
-    /// <summary>Gets or sets the name for the device.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = D3D12Device->UpdateD3D12Name(value);
-            _ = D3D12ComputeCommandQueue->UpdateD3D12Name(value);
-            _ = D3D12CopyCommandQueue->UpdateD3D12Name(value);
-            _ = D3D12DirectCommandQueue->UpdateD3D12Name(value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsAdapterObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <summary>Gets a fence that is used to wait for the device to become idle.</summary>
@@ -237,7 +214,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
 
         var createInfo = new D3D12GraphicsBuffer.CreateInfo {
             CpuAccess = bufferCreateInfo.CpuAccess,
-            CreateMemoryAllocator = (bufferCreateInfo.CreateMemoryAllocator is not null) ? bufferCreateInfo.CreateMemoryAllocator : &GraphicsMemoryAllocator.CreateDefault,
+            CreateMemoryAllocator = bufferCreateInfo.CreateMemoryAllocator.IsValid ? bufferCreateInfo.CreateMemoryAllocator : new GraphicsMemoryAllocatorCreateFunc(&GraphicsMemoryAllocator.CreateDefault),
             D3D12Resource = d3d12Resource,
             D3D12ResourceState = d3d12ResourceState,
             Kind = bufferCreateInfo.Kind,
@@ -280,28 +257,28 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     /// <inheritdoc />
     public override D3D12GraphicsFence CreateFence(bool isSignalled)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        ThrowIfDisposed();
         return new D3D12GraphicsFence(this, isSignalled);
     }
 
     /// <inheritdoc />
     public override D3D12GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResourceInfo> resources = default)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        ThrowIfDisposed();
         return new D3D12GraphicsPipelineSignature(this, inputs, resources);
     }
 
     /// <inheritdoc />
     public override D3D12GraphicsShader CreateShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        ThrowIfDisposed();
         return new D3D12GraphicsShader(this, kind, bytecode, entryPointName);
     }
 
     /// <inheritdoc />
     public override D3D12GraphicsRenderPass CreateRenderPass(IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        ThrowIfDisposed();
         return new D3D12GraphicsRenderPass(this, surface, renderTargetFormat, minimumRenderTargetCount);
     }
 
@@ -495,7 +472,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     /// <inheritdoc />
     public override D3D12GraphicsComputeContext RentComputeContext()
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        ThrowIfDisposed();
         return _computeContextPool.Rent(this, &CreateComputeContext);
 
         static D3D12GraphicsComputeContext CreateComputeContext(D3D12GraphicsDevice device)
@@ -508,7 +485,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     /// <inheritdoc />
     public override D3D12GraphicsCopyContext RentCopyContext()
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        ThrowIfDisposed();
         return _copyContextPool.Rent(this, &CreateCopyContext);
 
         static D3D12GraphicsCopyContext CreateCopyContext(D3D12GraphicsDevice device)
@@ -521,7 +498,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     /// <inheritdoc />
     public override D3D12GraphicsRenderContext RentRenderContext()
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        ThrowIfDisposed();
         return _renderContextPool.Rent(this, &CreateRenderContext);
 
         static D3D12GraphicsRenderContext CreateRenderContext(D3D12GraphicsDevice device)
@@ -546,7 +523,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     /// <inheritdoc cref="ReturnContext(GraphicsComputeContext)" />
     public void ReturnContext(D3D12GraphicsComputeContext computeContext)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        ThrowIfDisposed();
         ThrowIfNull(computeContext);
 
         if (computeContext.Device != this)
@@ -559,7 +536,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     /// <inheritdoc cref="ReturnContext(GraphicsCopyContext)" />
     public void ReturnContext(D3D12GraphicsCopyContext copyContext)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        ThrowIfDisposed();
         ThrowIfNull(copyContext);
 
         if (copyContext.Device != this)
@@ -572,7 +549,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     /// <inheritdoc cref="ReturnContext(GraphicsRenderContext)" />
     public void ReturnContext(D3D12GraphicsRenderContext renderContext)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
+        ThrowIfDisposed();
         ThrowIfNull(renderContext);
 
         if (renderContext.Device != this)
@@ -604,32 +581,34 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        WaitForIdle();
 
-        if (priorState < Disposing)
+        if (isDisposing)
         {
-            WaitForIdle();
-
-            if (isDisposing)
-            {
-                _computeContextPool.Dispose();
-                _copyContextPool.Dispose();
-                _renderContextPool.Dispose();
-                _waitForIdleFence?.Dispose();
-            }
-
-            foreach (var memoryManager in _memoryManagers)
-            {
-                memoryManager.Dispose();
-            }
-
-            ReleaseIfNotNull(_d3d12ComputeCommandQueue);
-            ReleaseIfNotNull(_d3d12CopyCommandQueue);
-            ReleaseIfNotNull(_d3d12DirectCommandQueue);
-            ReleaseIfNotNull(_d3d12Device);
+            _computeContextPool.Dispose();
+            _copyContextPool.Dispose();
+            _renderContextPool.Dispose();
+            _waitForIdleFence?.Dispose();
         }
 
-        _state.EndDispose();
+        foreach (var memoryManager in _memoryManagers)
+        {
+            memoryManager.Dispose();
+        }
+
+        ReleaseIfNotNull(_d3d12ComputeCommandQueue);
+        ReleaseIfNotNull(_d3d12CopyCommandQueue);
+        ReleaseIfNotNull(_d3d12DirectCommandQueue);
+        ReleaseIfNotNull(_d3d12Device);
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        D3D12Device->SetD3D12Name(value);
+        D3D12ComputeCommandQueue->SetD3D12Name(value);
+        D3D12CopyCommandQueue->SetD3D12Name(value);
+        D3D12DirectCommandQueue->SetD3D12Name(value);
     }
 
     private GraphicsMemoryBudget GetMemoryBudgetInternal(D3D12_HEAP_TYPE d3d12HeapType, ref MemoryBudgetInfo memoryBudgetInfo)

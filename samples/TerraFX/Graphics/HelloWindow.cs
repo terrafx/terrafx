@@ -52,9 +52,9 @@ public class HelloWindow : Sample
     {
         ExceptionUtilities.ThrowIfNull(application);
 
-        var windowService = application.ServiceProvider.WindowService;
+        var uiService = application.ServiceProvider.UIService;
 
-        _window = windowService.CreateWindow();
+        _window = uiService.DispatcherForCurrentThread.CreateWindow();
         _window.SetTitle(Name);
 
         if (windowLocation.HasValue)
@@ -75,7 +75,7 @@ public class HelloWindow : Sample
         var graphicsDevice = graphicsAdapter.CreateDevice();
         _graphicsDevice = graphicsDevice;
 
-        _graphicsRenderPass = graphicsDevice.CreateRenderPass(_window, GraphicsFormat.R8G8B8A8_UNORM);
+        _graphicsRenderPass = graphicsDevice.CreateRenderPass(_window, GraphicsFormat.B8G8R8A8_UNORM);
         base.Initialize(application, timeout);
     }
 

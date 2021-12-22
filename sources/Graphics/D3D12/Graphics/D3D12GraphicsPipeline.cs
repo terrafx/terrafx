@@ -1,13 +1,11 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using TerraFX.Advanced;
 using TerraFX.Interop.DirectX;
-using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Interop.DirectX.D3D12_PRIMITIVE_TOPOLOGY_TYPE;
 using static TerraFX.Interop.Windows.Windows;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
@@ -20,16 +18,10 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
 {
     private readonly ID3D12PipelineState* _d3d12PipelineState;
 
-    private string _name = null!;
-    private VolatileState _state;
-
     internal D3D12GraphicsPipeline(D3D12GraphicsRenderPass renderPass, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
         : base(renderPass, signature, vertexShader, pixelShader)
     {
         _d3d12PipelineState = CreateD3D12GraphicsPipelineState(renderPass, signature, vertexShader, pixelShader);
-
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsPipeline);
 
         static ID3D12PipelineState* CreateD3D12GraphicsPipelineState(D3D12GraphicsRenderPass renderPass, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
         {
@@ -191,7 +183,7 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
     // TEXCOORD
     private static ReadOnlySpan<sbyte> TEXCOORD_SEMANTIC_NAME => new sbyte[] { 0x54, 0x45, 0x58, 0x43, 0x4F, 0x4F, 0x52, 0x44, 0x00 };
 
-    /// <inheritdoc cref="GraphicsRenderPassObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <summary>Gets the underlying <see cref="ID3D12PipelineState" /> for the pipeline.</summary>
@@ -199,27 +191,13 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _d3d12PipelineState;
         }
     }
 
-    /// <inheritdoc cref="GraphicsRenderPassObject.Device" />
+    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
-
-    /// <summary>Gets or sets the name for the pipeline.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = D3D12PipelineState->UpdateD3D12Name(value);
-        }
-    }
 
     /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
     public new D3D12GraphicsShader? PixelShader => base.PixelShader.As<D3D12GraphicsShader>();
@@ -227,7 +205,7 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
     /// <inheritdoc cref="GraphicsRenderPassObject.RenderPass" />
     public new D3D12GraphicsRenderPass RenderPass => base.RenderPass.As<D3D12GraphicsRenderPass>();
 
-    /// <inheritdoc cref="GraphicsRenderPassObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc cref="GraphicsPipeline.Signature" />
@@ -239,7 +217,7 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
     /// <inheritdoc />
     public override D3D12GraphicsPipelineResourceViewSet CreateResourceViews(ReadOnlySpan<GraphicsResourceView> resourceViews)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsPipeline));
+        ThrowIfDisposed();
         ThrowIfZero(resourceViews.Length);
 
         return new D3D12GraphicsPipelineResourceViewSet(this, resourceViews);
@@ -248,20 +226,19 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        ReleaseIfNotNull(_d3d12PipelineState);
 
-        if (priorState < Disposing)
+        if (isDisposing)
         {
-            ReleaseIfNotNull(_d3d12PipelineState);
-
-            if (isDisposing)
-            {
-                Signature?.Dispose();
-                PixelShader?.Dispose();
-                VertexShader?.Dispose();
-            }
+            Signature?.Dispose();
+            PixelShader?.Dispose();
+            VertexShader?.Dispose();
         }
+    }
 
-        _state.EndDispose();
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        D3D12PipelineState->SetD3D12Name(value);
     }
 }

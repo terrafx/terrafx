@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using TerraFX.Advanced;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics;
@@ -16,9 +17,6 @@ public abstract partial class GraphicsDevice : GraphicsAdapterObject, IDisposabl
     {
         ThrowIfNull(adapter);
     }
-
-    /// <summary>Gets or sets the name for the device.</summary>
-    public abstract string Name { get; set; }
 
     /// <summary>Creates a new graphics buffer.</summary>
     /// <param name="bufferCreateInfo">The creation info describing the buffer.</param>
@@ -277,9 +275,6 @@ public abstract partial class GraphicsDevice : GraphicsAdapterObject, IDisposabl
     /// <param name="fence">The fence to be signalled</param>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public abstract void Signal(GraphicsFence fence);
-
-    /// <inheritdoc />
-    public override string ToString() => Name;
 
     /// <summary>Waits for the device to become idle.</summary>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>

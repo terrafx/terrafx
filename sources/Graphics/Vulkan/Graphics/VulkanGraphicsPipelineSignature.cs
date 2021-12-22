@@ -1,15 +1,13 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkDescriptorType;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkShaderStageFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
@@ -21,9 +19,6 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
     private readonly VkDescriptorSetLayout _vkDescriptorSetLayout;
     private readonly VkPipelineLayout _vkPipelineLayout;
 
-    private string _name = null!;
-    private VolatileState _state;
-
     internal VulkanGraphicsPipelineSignature(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResourceInfo> resources)
         : base(device, inputs, resources)
     {
@@ -31,9 +26,6 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
         _vkDescriptorSetLayout = vkDescriptorSetLayout;
 
         _vkPipelineLayout = CreateVkPipelineLayout(device, vkDescriptorSetLayout);
-
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsPipelineSignature);
 
         static VkDescriptorSetLayout CreateVkDescriptorSetLayout(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineResourceInfo> resources)
         {
@@ -159,28 +151,13 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPipelineSignature" /> class.</summary>
     ~VulkanGraphicsPipelineSignature() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_PIPELINE_LAYOUT, VkPipelineLayout, value);
-            _ = Device.UpdateName(VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, VkDescriptorSetLayout, value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkDescriptorSetLayout" /> for the pipeline.</summary>
@@ -188,7 +165,7 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkDescriptorSetLayout;
         }
     }
@@ -198,7 +175,7 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkPipelineLayout;
         }
     }
@@ -206,17 +183,10 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        var vkDevice = Device.VkDevice;
 
-        if (priorState < Disposing)
-        {
-            var vkDevice = Device.VkDevice;
-
-            DisposeVkDescriptorSetLayout(vkDevice, _vkDescriptorSetLayout);
-            DisposeVkPipelineLayout(vkDevice, _vkPipelineLayout);
-        }
-
-        _state.EndDispose();
+        DisposeVkDescriptorSetLayout(vkDevice, _vkDescriptorSetLayout);
+        DisposeVkPipelineLayout(vkDevice, _vkPipelineLayout);
 
         static void DisposeVkDescriptorSetLayout(VkDevice vkDevice, VkDescriptorSetLayout vulkanDescriptorSetLayout)
         {
@@ -233,5 +203,12 @@ public sealed unsafe class VulkanGraphicsPipelineSignature : GraphicsPipelineSig
                 vkDestroyPipelineLayout(vkDevice, vkPipelineLayout, pAllocator: null);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_PIPELINE_LAYOUT, VkPipelineLayout, value);
+        Device.SetVkObjectName(VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, VkDescriptorSetLayout, value);
     }
 }

@@ -3,12 +3,11 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
+using TerraFX.Advanced;
 using TerraFX.Collections;
 using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -31,9 +30,6 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
     private volatile void* _mappedAddress;
     private volatile uint _mappedCount;
 
-    private string _name = null!;
-    private VolatileState _state;
-
     internal D3D12GraphicsBuffer(D3D12GraphicsDevice device, in CreateInfo createInfo)
         : base(device, in createInfo.MemoryRegion, createInfo.CpuAccess, createInfo.Kind)
     {
@@ -45,17 +41,14 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
         _d3d12ResourceGpuVirtualAddress = d3d12Resource->GetGPUVirtualAddress();
         _d3d12ResourceState = createInfo.D3D12ResourceState;
         _mapMutex = new ValueMutex();
-        _memoryAllocator = createInfo.CreateMemoryAllocator(this, null, createInfo.MemoryRegion.Size, false);
+        _memoryAllocator = createInfo.CreateMemoryAllocator.Invoke(this, default, createInfo.MemoryRegion.Size, false);
         _memoryHeap = createInfo.MemoryRegion.Allocator.DeviceObject.As<D3D12GraphicsMemoryHeap>();
-
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsBuffer);
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsBuffer" /> class.</summary>
     ~D3D12GraphicsBuffer() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <inheritdoc />
@@ -66,7 +59,7 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _d3d12Resource;
         }
     }
@@ -92,21 +85,7 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
     /// <summary>Gets the memory heap in which the buffer exists.</summary>
     public D3D12GraphicsMemoryHeap MemoryHeap => _memoryHeap;
 
-    /// <summary>Gets or sets the name for the buffer.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = D3D12Resource->UpdateD3D12Name(value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
@@ -122,7 +101,7 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
     /// <inheritdoc />
     public override bool TryCreateView(uint count, uint stride, [NotNullWhen(true)] out GraphicsBufferView? bufferView)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsBuffer));
+        ThrowIfDisposed();
 
         nuint size = stride;
         size *= count;
@@ -168,25 +147,18 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        _bufferViewsMutex.Dispose();
+        _mapMutex.Dispose();
 
-        if (priorState < Disposing)
+        DisposeAllViewsInternal();
+
+        if (isDisposing)
         {
-            _bufferViewsMutex.Dispose();
-            _mapMutex.Dispose();
-
-            DisposeAllViewsInternal();
-
-            if (isDisposing)
-            {
-                _memoryAllocator.Clear();
-            }
-
-            ReleaseIfNotNull(_d3d12Resource);
-            MemoryRegion.Dispose();
+            _memoryAllocator.Clear();
         }
 
-        _state.EndDispose();
+        ReleaseIfNotNull(_d3d12Resource);
+        MemoryRegion.Dispose();
     }
 
     /// <inheritdoc />
@@ -208,6 +180,12 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
     {
         using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
         return MapForReadInternal(offset, size);
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        D3D12Resource->SetD3D12Name(value);
     }
 
     /// <inheritdoc />

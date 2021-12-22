@@ -1,11 +1,10 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System.Collections.Generic;
+using TerraFX.Advanced;
 using TerraFX.Collections;
 using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -24,9 +23,6 @@ public sealed unsafe partial class D3D12GraphicsTexture : GraphicsTexture
     private readonly ValueList<D3D12GraphicsTextureView> _textureViews;
     private readonly ValueMutex _textureViewsMutex;
 
-    private string _name = null!;
-    private VolatileState _state;
-
     internal D3D12GraphicsTexture(D3D12GraphicsDevice device, in CreateInfo createInfo)
         : base(device, in createInfo.MemoryRegion, createInfo.CpuAccess, in createInfo.TextureInfo)
     {
@@ -39,15 +35,12 @@ public sealed unsafe partial class D3D12GraphicsTexture : GraphicsTexture
         _mapMutex = new ValueMutex();
         _memoryHeap = createInfo.MemoryRegion.Allocator.DeviceObject.As<D3D12GraphicsMemoryHeap>();
         _textureViewsMutex = new ValueMutex();
-
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsTexture);
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsTexture" /> class.</summary>
     ~D3D12GraphicsTexture() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <inheritdoc />
@@ -61,7 +54,7 @@ public sealed unsafe partial class D3D12GraphicsTexture : GraphicsTexture
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _d3d12Resource;
         }
     }
@@ -84,27 +77,13 @@ public sealed unsafe partial class D3D12GraphicsTexture : GraphicsTexture
     /// <summary>Gets the memory heap in which the buffer exists.</summary>
     public D3D12GraphicsMemoryHeap MemoryHeap => _memoryHeap;
 
-    /// <summary>Gets or sets the name for the pipeline signature.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = D3D12Resource->UpdateD3D12Name(value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
     public override D3D12GraphicsTextureView CreateView(ushort mipLevelIndex, ushort mipLevelCount)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsBuffer));
+        ThrowIfDisposed();
 
         ThrowIfNotInBounds(mipLevelIndex, MipLevelCount);
         ThrowIfNotInInsertBounds(mipLevelCount, MipLevelCount - mipLevelIndex);
@@ -162,21 +141,20 @@ public sealed unsafe partial class D3D12GraphicsTexture : GraphicsTexture
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        _d3d12PlacedSubresourceFootprints.Dispose();
+        _mapMutex.Dispose();
+        _textureViewsMutex.Dispose();
 
-        if (priorState < Disposing)
-        {
-            _d3d12PlacedSubresourceFootprints.Dispose();
-            _mapMutex.Dispose();
-            _textureViewsMutex.Dispose();
+        DisposeAllViewsInternal();
 
-            DisposeAllViewsInternal();
+        ReleaseIfNotNull(_d3d12Resource);
+        MemoryRegion.Dispose();
+    }
 
-            ReleaseIfNotNull(_d3d12Resource);
-            MemoryRegion.Dispose();
-        }
-
-        _state.EndDispose();
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        D3D12Resource->SetD3D12Name(value);
     }
 
     internal void AddView(D3D12GraphicsTextureView textureView)

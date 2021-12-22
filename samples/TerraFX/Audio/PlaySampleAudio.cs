@@ -33,6 +33,7 @@ public sealed class PlaySampleAudio : Sample
         _service = application.ServiceProvider.AudioService;
 
         var task = _service.StartAsync();
+
         if (!task.IsCompleted)
         {
             task.AsTask().Wait();
@@ -46,6 +47,7 @@ public sealed class PlaySampleAudio : Sample
         ExceptionUtilities.ThrowIfNull(_service);
 
         var task = _service.StopAsync();
+
         if (!task.IsCompleted)
         {
             task.AsTask().Wait();
@@ -67,6 +69,7 @@ public sealed class PlaySampleAudio : Sample
         ExceptionUtilities.ThrowIfNull(_service);
 
         IAudioAdapter? preferredAdapter = null;
+
         await foreach (var audioAdapter in _service.EnumerateAudioDevices())
         {
             if (audioAdapter is PulseSinkAdapter sinkAdapter)

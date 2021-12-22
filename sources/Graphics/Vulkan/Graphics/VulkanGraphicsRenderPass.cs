@@ -1,7 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkAttachmentLoadOp;
 using static TerraFX.Interop.Vulkan.VkAttachmentStoreOp;
 using static TerraFX.Interop.Vulkan.VkImageLayout;
@@ -10,9 +10,6 @@ using static TerraFX.Interop.Vulkan.VkPipelineBindPoint;
 using static TerraFX.Interop.Vulkan.VkSampleCountFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
@@ -24,17 +21,11 @@ public sealed unsafe class VulkanGraphicsRenderPass : GraphicsRenderPass
     private readonly VulkanGraphicsSwapchain _swapchain;
     private readonly VkRenderPass _vkRenderPass;
 
-    private string _name = null!;
-    private VolatileState _state;
-
     internal VulkanGraphicsRenderPass(VulkanGraphicsDevice device, IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0)
         : base(device, surface, renderTargetFormat)
     {
         _vkRenderPass = CreateVkRenderPass(device, renderTargetFormat);
         _swapchain = new VulkanGraphicsSwapchain(this, surface, renderTargetFormat, minimumRenderTargetCount);
-
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsRenderPass);
 
         static VkRenderPass CreateVkRenderPass(VulkanGraphicsDevice device, GraphicsFormat renderTargetFormat)
         {
@@ -72,27 +63,13 @@ public sealed unsafe class VulkanGraphicsRenderPass : GraphicsRenderPass
         }
     }
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_RENDER_PASS, VkRenderPass, value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <inheritdoc />
@@ -103,7 +80,7 @@ public sealed unsafe class VulkanGraphicsRenderPass : GraphicsRenderPass
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkRenderPass.Value;
         }
     }
@@ -115,26 +92,19 @@ public sealed unsafe class VulkanGraphicsRenderPass : GraphicsRenderPass
     /// <inheritdoc cref="CreatePipeline(GraphicsPipelineSignature, GraphicsShader?, GraphicsShader?)" />
     public VulkanGraphicsPipeline CreatePipeline(VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader = null, VulkanGraphicsShader? pixelShader = null)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         return new VulkanGraphicsPipeline(this, signature, vertexShader, pixelShader);
     }
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
+        if (isDisposing)
         {
-            if (isDisposing)
-            {
-                _swapchain?.Dispose();
-            }
-
-            DisposeVkRenderPass(Device.VkDevice, _vkRenderPass);
+            _swapchain?.Dispose();
         }
 
-        _state.EndDispose();
+        DisposeVkRenderPass(Device.VkDevice, _vkRenderPass);
 
         static void DisposeVkRenderPass(VkDevice vkDevice, VkRenderPass vkRenderPass)
         {
@@ -143,5 +113,11 @@ public sealed unsafe class VulkanGraphicsRenderPass : GraphicsRenderPass
                 vkDestroyRenderPass(vkDevice, vkRenderPass, pAllocator: null);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_RENDER_PASS, VkRenderPass, value);
     }
 }

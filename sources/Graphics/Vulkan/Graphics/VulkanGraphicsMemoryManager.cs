@@ -6,11 +6,11 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using TerraFX.Advanced;
 using TerraFX.Collections;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using static TerraFX.Runtime.Configuration;
-using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
@@ -21,7 +21,7 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
 {
-    private readonly delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> _createMemoryAllocator;
+    private readonly GraphicsMemoryAllocatorCreateFunc _createMemoryAllocator;
     private readonly ValueMutex _mutex;
     private readonly uint _vkMemoryTypeIndex;
 
@@ -29,19 +29,16 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
     private ValueList<GraphicsMemoryAllocator> _memoryAllocators;
 
     private nuint _minimumSize;
-    private string _name = null!;
     private ulong _operationCount;
     private ulong _size;
     private ulong _totalFreeMemoryRegionSize;
 
-    private VolatileState _state;
-
-    internal VulkanGraphicsMemoryManager(VulkanGraphicsDevice device, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator, uint vkMemoryTypeIndex)
+    internal VulkanGraphicsMemoryManager(VulkanGraphicsDevice device, GraphicsMemoryAllocatorCreateFunc createMemoryAllocator, uint vkMemoryTypeIndex)
         : base(device)
     {
-        if (createMemoryAllocator is null)
+        if (createMemoryAllocator.IsNull)
         {
-            createMemoryAllocator = &GraphicsMemoryAllocator.CreateDefault;
+            createMemoryAllocator = new GraphicsMemoryAllocatorCreateFunc(&GraphicsMemoryAllocator.CreateDefault);
         }
 
         _createMemoryAllocator = createMemoryAllocator;
@@ -51,9 +48,6 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         _emptyMemoryAllocator = null;
         _memoryAllocators = new ValueList<GraphicsMemoryAllocator>();
 
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsMemoryManager);
-
         for (var i = 0; i < MinimumMemoryAllocatorCount; ++i)
         {
             var memoryAllocatorSize = GetAdjustedMemoryAllocatorSize(MaximumSharedMemoryAllocatorSize);
@@ -61,7 +55,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         }
     }
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc />
@@ -79,21 +73,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
     /// <inheritdoc />
     public override ulong OperationCount => _operationCount;
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = value ?? "";
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <inheritdoc />
@@ -182,28 +162,26 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        var memoryAllocators = _memoryAllocators.AsSpanUnsafe(0, _memoryAllocators.Count);
 
-        if (priorState < Disposing)
+        for (var index = 0; index < memoryAllocators.Length; index++)
         {
-            var memoryAllocators = _memoryAllocators.AsSpanUnsafe(0, _memoryAllocators.Count);
-
-            for (var index = 0; index < memoryAllocators.Length; index++)
-            {
-                var memoryAllocator = memoryAllocators[index];
-                memoryAllocator.DeviceObject.Dispose();
-            }
-
-            _mutex.Dispose();
+            var memoryAllocator = memoryAllocators[index];
+            memoryAllocator.DeviceObject.Dispose();
         }
 
-        _state.EndDispose();
+        _mutex.Dispose();
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
     }
 
     private GraphicsMemoryAllocator AddMemoryAllocator(nuint size, bool isDedicated)
     {
         var memoryHeap = new VulkanGraphicsMemoryHeap(this, size, VkMemoryTypeIndex);
-        var memoryAllocator = _createMemoryAllocator(memoryHeap, &OnAllocatorFree, size, isDedicated);
+        var memoryAllocator = _createMemoryAllocator.Invoke(memoryHeap, new GraphicsMemoryAllocatorOnFreeCallback(&OnAllocatorFree), size, isDedicated);
 
         _operationCount++;
         _memoryAllocators.Add(memoryAllocator);

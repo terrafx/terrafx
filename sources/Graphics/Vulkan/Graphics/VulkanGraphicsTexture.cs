@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System.Collections.Generic;
+using TerraFX.Advanced;
 using TerraFX.Collections;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
@@ -10,8 +11,6 @@ using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkSamplerMipmapMode;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
@@ -29,9 +28,6 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
     private readonly nuint _vkNonCoherentAtomSize;
     private readonly VkSampler _vkSampler;
 
-    private string _name = null!;
-    private VolatileState _state;
-
     internal VulkanGraphicsTexture(VulkanGraphicsDevice device, in CreateInfo createInfo)
         : base(device, in createInfo.MemoryRegion, createInfo.CpuAccess, in createInfo.TextureInfo)
     {
@@ -43,9 +39,6 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
         _vkSampler = CreateVkSampler(device);
 
         ThrowExternalExceptionIfNotSuccess(vkBindImageMemory(device.VkDevice, createInfo.VkImage, _memoryHeap.VkDeviceMemory, createInfo.MemoryRegion.Offset));
-
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsTexture);
 
         static VkSampler CreateVkSampler(VulkanGraphicsDevice device)
         {
@@ -68,7 +61,7 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsTexture" /> class.</summary>
     ~VulkanGraphicsTexture() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc />
@@ -86,22 +79,7 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
     /// <summary>Gets the memory heap in which the buffer exists.</summary>
     public VulkanGraphicsMemoryHeap MemoryHeap => _memoryHeap;
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_IMAGE, VkImage, value);
-            _ = Device.UpdateName(VK_OBJECT_TYPE_SAMPLER, VkSampler, value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkImage" /> for the buffer.</summary>
@@ -109,7 +87,7 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkImage;
         }
     }
@@ -122,7 +100,7 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkSampler;
         }
     }
@@ -130,7 +108,7 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
     /// <inheritdoc />
     public override VulkanGraphicsTextureView CreateView(ushort mipLevelIndex, ushort mipLevelCount)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsBuffer));
+        ThrowIfDisposed();
 
         ThrowIfNotInBounds(mipLevelIndex, MipLevelCount);
         ThrowIfNotInInsertBounds(mipLevelCount, MipLevelCount - mipLevelIndex);
@@ -169,22 +147,15 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        _mapMutex.Dispose();
+        _textureViewsMutex.Dispose();
 
-        if (priorState < Disposing)
-        {
-            _mapMutex.Dispose();
-            _textureViewsMutex.Dispose();
+        DisposeAllViewsInternal();
 
-            DisposeAllViewsInternal();
+        DisposeVkSampler(Device.VkDevice, _vkSampler);
+        DisposeVulkanImage(Device.VkDevice, _vkImage);
 
-            DisposeVkSampler(Device.VkDevice, _vkSampler);
-            DisposeVulkanImage(Device.VkDevice, _vkImage);
-
-            MemoryRegion.Dispose();
-        }
-
-        _state.EndDispose();
+        MemoryRegion.Dispose();
 
         static void DisposeVulkanImage(VkDevice vkDevice, VkImage vkImage)
         {
@@ -201,6 +172,13 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
                 vkDestroySampler(vkDevice, vkSampler, pAllocator: null);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_IMAGE, VkImage, value);
+        Device.SetVkObjectName(VK_OBJECT_TYPE_SAMPLER, VkSampler, value);
     }
 
     internal void AddView(VulkanGraphicsTextureView textureView)

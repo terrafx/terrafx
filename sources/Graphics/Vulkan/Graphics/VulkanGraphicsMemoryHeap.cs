@@ -5,13 +5,12 @@
 
 using System;
 using System.Threading;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
@@ -29,9 +28,6 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
     private volatile void* _mappedAddress;
     private volatile uint _mappedCount;
 
-    private string _name = null!;
-    private VolatileState _state;
-
     internal VulkanGraphicsMemoryHeap(VulkanGraphicsMemoryManager memoryManager, nuint size, uint vkMemoryTypeIndex)
         : base(memoryManager.Device)
     {
@@ -39,9 +35,6 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
         _memoryManager = memoryManager;
         _size = size;
         _vkDeviceMemory = CreateVkDeviceMemory(memoryManager.Device, size, vkMemoryTypeIndex);
-
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsMemoryHeap);
 
         static VkDeviceMemory CreateVkDeviceMemory(VulkanGraphicsDevice device, nuint size, uint vkMemoryTypeIndex)
         {
@@ -61,7 +54,7 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsMemoryHeap" /> class.</summary>
     ~VulkanGraphicsMemoryHeap() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
@@ -76,21 +69,7 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
     /// <summary>Gets the memory manager which created the memory heap.</summary>
     public VulkanGraphicsMemoryManager MemoryManager => _memoryManager;
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_DEVICE_MEMORY, VkDeviceMemory, value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the <see cref="Interop.Vulkan.VkDeviceMemory" /> for the memory heap.</summary>
@@ -98,7 +77,7 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkDeviceMemory;
         }
     }
@@ -123,14 +102,7 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
-        {
-            DisposeVkDeviceMemory(Device.VkDevice, _vkDeviceMemory);
-        }
-
-        _state.EndDispose();
+        DisposeVkDeviceMemory(Device.VkDevice, _vkDeviceMemory);
 
         static void DisposeVkDeviceMemory(VkDevice vkDevice, VkDeviceMemory vkDeviceMemory)
         {
@@ -139,6 +111,12 @@ public sealed unsafe class VulkanGraphicsMemoryHeap : GraphicsDeviceObject
                 vkFreeMemory(vkDevice, vkDeviceMemory, pAllocator: null);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_DEVICE_MEMORY, VkDeviceMemory, value);
     }
 
     private byte* MapInternal()

@@ -160,7 +160,7 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
         var items = &_data->Item;
         var length = _data->Length;
 
-        ClearArrayUnsafe<T>(items, length);
+        ClearArrayUnsafe(items, length);
     }
 
     /// <summary>Copies the items in the array to a given destination.</summary>
@@ -177,7 +177,7 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
         ThrowIfNull(destination);
         ThrowIfNotInInsertBounds(length, destination.Length);
 
-        CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), items, length);
+        CopyArrayUnsafe(destination.GetPointerUnsafe(0), items, length);
     }
 
     /// <summary>Copies the items in the array to a given destination.</summary>
@@ -192,7 +192,7 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
 
         ThrowIfNotInInsertBounds(length, destination.Length);
 
-        CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), items, length);
+        CopyArrayUnsafe(destination.GetPointerUnsafe(0), items, length);
     }
 
     /// <summary>Gets an enumerator that can iterate through the items in the array.</summary>

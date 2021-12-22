@@ -15,7 +15,7 @@ using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Collections;
 
-/// <summary>Represents a queue of unmanaged items that can be accessed by index.</summary>
+/// <summary>Represents a queue of unmanaged items.</summary>
 /// <typeparam name="T">The type of the unmanaged items contained in the queue.</typeparam>
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
@@ -61,7 +61,7 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
         if (span.Length != 0)
         {
             var items = new UnmanagedArray<T>(span.Length, alignment, zero: false);
-            CopyArrayUnsafe<T>(items.GetPointerUnsafe(0), span.GetPointerUnsafe(0), span.Length);
+            CopyArrayUnsafe(items.GetPointerUnsafe(0), span.GetPointerUnsafe(0), span.Length);
             _items = items;
         }
         else
@@ -93,7 +93,7 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
         else
         {
             var items = new UnmanagedArray<T>(array.Length, array.Alignment, zero: false);
-            CopyArrayUnsafe<T>(items.GetPointerUnsafe(0), array.GetPointerUnsafe(0), array.Length);
+            CopyArrayUnsafe(items.GetPointerUnsafe(0), array.GetPointerUnsafe(0), array.Length);
             _items = items;
         }
 
@@ -167,13 +167,13 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
 
             if ((head < tail) || (tail == 0))
             {
-                CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), _items.GetPointerUnsafe(head), count);
+                CopyArrayUnsafe(destination.GetPointerUnsafe(0), _items.GetPointerUnsafe(head), count);
             }
             else
             {
                 var headLength = count - head;
-                CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), _items.GetPointerUnsafe(head), headLength);
-                CopyArrayUnsafe<T>(destination.GetPointerUnsafe(headLength), _items.GetPointerUnsafe(0), tail);
+                CopyArrayUnsafe(destination.GetPointerUnsafe(0), _items.GetPointerUnsafe(head), headLength);
+                CopyArrayUnsafe(destination.GetPointerUnsafe(headLength), _items.GetPointerUnsafe(0), tail);
             }
         }
     }
@@ -245,7 +245,7 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
 
     /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
     /// <returns>An enumerator that can iterate through the items in the list.</returns>
-    public Enumerator GetEnumerator() => new Enumerator(this);
+    public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
     /// <summary>Gets a pointer to the item at the specified index of the queue.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
@@ -258,14 +258,15 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
         if (index < _count)
         {
             var head = _head;
+            var headLength = _count - head;
 
-            if ((head < _tail) || (index < (_count - head)))
+            if ((head < _tail) || (index < headLength))
             {
                 item = _items.GetPointerUnsafe(head + index);
             }
             else
             {
-                item = _items.GetPointerUnsafe(index);
+                item = _items.GetPointerUnsafe(index - headLength);
             }
         }
         else
@@ -309,6 +310,46 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
             Fail();
         }
         return item;
+    }
+
+    /// <summary>Removes the first occurence of an item from the queue.</summary>
+    /// <param name="item">The item to remove from the queue.</param>
+    /// <returns><c>true</c> if <paramref name="item" /> was removed from the queue; otherwise, <c>false</c>.</returns>
+    public bool Remove(T item)
+    {
+        var items = _items;
+
+        if (!items.IsNull)
+        {
+            var count = _count;
+            var head = _head;
+            var tail = _tail;
+
+            if (TryGetIndexOfUnsafe(items.GetPointerUnsafe(head), count - head, item, out var index) || TryGetIndexOfUnsafe(items.GetPointerUnsafe(0), tail, item, out index))
+            {
+                var newTail = unchecked(tail - 1);
+                var newCount = count - 1;
+
+                CopyArrayUnsafe(items.GetPointerUnsafe(index), items.GetPointerUnsafe(index + 1), newCount - index);
+
+                if (tail == 0)
+                {
+                    newTail = newCount;
+                }
+                else if (head >= tail)
+                {
+                    items[newCount] = items[0];
+                    CopyArrayUnsafe(items.GetPointerUnsafe(0), items.GetPointerUnsafe(1), newTail);
+                }
+
+                _tail = newTail;
+                _count = newCount;
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>Trims any excess capacity, up to a given threshold, from the queue.</summary>

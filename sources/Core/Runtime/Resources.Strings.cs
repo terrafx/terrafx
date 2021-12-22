@@ -71,6 +71,9 @@ public static partial class Resources
     /// <summary>Gets a localized string similar to <c>'{0}' is negative</c>.</summary>
     public static string ValueIsNegativeMessage => GetString(nameof(ValueIsNegativeMessage));
 
+    /// <summary>Gets a localized string similar to <c>'{0}' is not defined</c>.</summary>
+    public static string ValueIsNotDefinedMessage => GetString(nameof(ValueIsNotDefinedMessage));
+
     /// <summary>Gets a localized string similar to <c>'{0}' is negative or greater than or equal to '{1}'</c>.</summary>
     public static string ValueIsNotInSignedBoundsMessage => GetString(nameof(ValueIsNotInSignedBoundsMessage));
 

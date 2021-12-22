@@ -1,13 +1,11 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 
 namespace TerraFX.Graphics;
@@ -19,9 +17,6 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     private readonly VkPhysicalDeviceFeatures _vkPhysicalDeviceFeatures;
     private readonly VkPhysicalDeviceMemoryProperties _vkPhysicalDeviceMemoryProperties;
     private readonly VkPhysicalDeviceProperties _vkPhysicalDeviceProperties;
-    private readonly string _name;
-
-    private VolatileState _state;
 
     internal VulkanGraphicsAdapter(VulkanGraphicsService service, VkPhysicalDevice vkPhysicalDevice)
         : base(service)
@@ -33,9 +28,9 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
         _vkPhysicalDeviceFeatures = GetVkPhysicalDeviceFeatures(vkPhysicalDevice);
         _vkPhysicalDeviceProperties = GetVkPhysicalDeviceProperties(vkPhysicalDevice);
         _vkPhysicalDeviceMemoryProperties = GetVkPhysicalDeviceMemoryProperties(vkPhysicalDevice);
-        _name = GetName(in _vkPhysicalDeviceProperties);
 
-        _ = _state.Transition(to: Initialized);
+        var name = GetName(in _vkPhysicalDeviceProperties);
+        SetName(name);
 
         static string GetName(in VkPhysicalDeviceProperties vulkanPhysicalDeviceProperties)
         {
@@ -68,9 +63,6 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     /// <inheritdoc />
     public override uint DeviceId => VkPhysicalDeviceProperties.deviceID;
 
-    /// <inheritdoc />
-    public override string Name => _name;
-
     /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
@@ -82,7 +74,7 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkPhysicalDevice;
         }
     }
@@ -97,9 +89,9 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     public ref readonly VkPhysicalDeviceProperties VkPhysicalDeviceProperties => ref _vkPhysicalDeviceProperties;
 
     /// <inheritdoc />
-    public override VulkanGraphicsDevice CreateDevice(delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator)
+    public override VulkanGraphicsDevice CreateDevice(GraphicsMemoryAllocatorCreateFunc createMemoryAllocator)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
+        ThrowIfDisposed();
         return new VulkanGraphicsDevice(this, createMemoryAllocator);
     }
 
@@ -118,10 +110,12 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     }
 
     /// <inheritdoc />
-    /// <remarks>While there are no unmanaged resources to cleanup, we still want to mark the instance as disposed if, for example, <see cref="GraphicsServiceObject.Service" /> was disposed.</remarks>
     protected override void Dispose(bool isDisposing)
     {
-        _ = _state.BeginDispose();
-        _state.EndDispose();
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
     }
 }

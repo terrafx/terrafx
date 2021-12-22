@@ -2,15 +2,14 @@
 
 using System;
 using System.Threading;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkFenceCreateFlags;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkResult;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Runtime.Configuration;
-using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -23,16 +22,10 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
 {
     private readonly VkFence _vkFence;
 
-    private string _name = null!;
-    private VolatileState _state;
-
     internal VulkanGraphicsFence(VulkanGraphicsDevice device, bool isSignalled)
         : base(device)
     {
         _vkFence = CreateVkFence(device, isSignalled ? VK_FENCE_CREATE_SIGNALED_BIT : 0);
-
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsFence);
 
         static VkFence CreateVkFence(VulkanGraphicsDevice device, VkFenceCreateFlags vkFenceCreateFlags)
         {
@@ -52,27 +45,13 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsFence" /> class.</summary>
     ~VulkanGraphicsFence() => Dispose(isDisposing: false);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_FENCE, VkFence, value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkFence" /> for the fence.</summary>
@@ -80,7 +59,7 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkFence;
         }
     }
@@ -113,14 +92,7 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
-        {
-            DisposeVkFence(Device.VkDevice, _vkFence);
-        }
-
-        _state.EndDispose();
+        DisposeVkFence(Device.VkDevice, _vkFence);
 
         static void DisposeVkFence(VkDevice vkDevice, VkFence vkFence)
         {
@@ -129,7 +101,13 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
                 vkDestroyFence(vkDevice, vkFence, pAllocator: null);
             }
         }
-    }    
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_FENCE, VkFence, value);
+    }
 
     private bool TryWait(ulong millisecondsTimeout)
     {

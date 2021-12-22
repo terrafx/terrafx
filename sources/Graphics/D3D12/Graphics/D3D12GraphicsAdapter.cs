@@ -1,14 +1,12 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using TerraFX.Interop.DirectX;
-using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Interop.DirectX.DXGI_MEMORY_SEGMENT_GROUP;
-using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.D3D12Utilities;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
+using TerraFX.Advanced;
 
 namespace TerraFX.Graphics;
 
@@ -16,11 +14,7 @@ namespace TerraFX.Graphics;
 public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
 {
     private readonly IDXGIAdapter3* _dxgiAdapter;
-
     private readonly DXGI_ADAPTER_DESC2 _dxgiAdapterDesc;
-    private readonly string _name;
-
-    private VolatileState _state;
 
     internal D3D12GraphicsAdapter(D3D12GraphicsService service, IDXGIAdapter3* dxgiAdapter)
         : base(service)
@@ -30,9 +24,8 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
         _dxgiAdapter = dxgiAdapter;
         _dxgiAdapterDesc = GetDxgiAdapterDesc(dxgiAdapter);
 
-        _name = GetName(in _dxgiAdapterDesc);
-
-        _ = _state.Transition(to: Initialized);
+        var name = GetName(in _dxgiAdapterDesc);
+        SetName(name);
 
         static DXGI_ADAPTER_DESC2 GetDxgiAdapterDesc(IDXGIAdapter3* dxgiAdapter)
         {
@@ -49,7 +42,7 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsAdapter" /> class.</summary>
-    ~D3D12GraphicsAdapter() => Dispose(isDisposing: true);
+    ~D3D12GraphicsAdapter() => Dispose(isDisposing: false);
 
     /// <inheritdoc />
     public override uint DeviceId => DxgiAdapterDesc.DeviceId;
@@ -59,16 +52,13 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _dxgiAdapter;
         }
     }
 
     /// <summary>Gets the <see cref="DXGI_ADAPTER_DESC2" /> for <see cref="DxgiAdapter" />.</summary>
     public ref readonly DXGI_ADAPTER_DESC2 DxgiAdapterDesc => ref _dxgiAdapterDesc;
-
-    /// <inheritdoc />
-    public override string Name => _name;
 
     /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
@@ -77,23 +67,21 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
     public override uint VendorId => DxgiAdapterDesc.VendorId;
 
     /// <inheritdoc />
-    public override D3D12GraphicsDevice CreateDevice(delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator)
+    public override D3D12GraphicsDevice CreateDevice(GraphicsMemoryAllocatorCreateFunc createMemoryAllocator)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsAdapter));
+        ThrowIfDisposed();
         return new D3D12GraphicsDevice(this, createMemoryAllocator);
     }
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        ReleaseIfNotNull(_dxgiAdapter);
+    }
 
-        if (priorState < Disposing)
-        {
-            ReleaseIfNotNull(_dxgiAdapter);
-        }
-
-        _state.EndDispose();
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
     }
 
     /// <summary>Tries to query the <see cref="DXGI_QUERY_VIDEO_MEMORY_INFO" /> for <see cref="DXGI_MEMORY_SEGMENT_GROUP_LOCAL" />.</summary>

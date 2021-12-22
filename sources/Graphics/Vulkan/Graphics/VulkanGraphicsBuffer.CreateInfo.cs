@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System.Runtime.InteropServices;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
 
 namespace TerraFX.Graphics;
@@ -12,7 +13,7 @@ public partial class VulkanGraphicsBuffer
     {
         public GraphicsResourceCpuAccess CpuAccess;
 
-        public delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> CreateMemoryAllocator;
+        public GraphicsMemoryAllocatorCreateFunc CreateMemoryAllocator;
 
         public GraphicsBufferKind Kind;
 

@@ -185,6 +185,13 @@ public static unsafe class UnsafeUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref readonly T GetReference<T>(this ReadOnlySpan<T> span, nuint index) => ref Unsafe.Add(ref MemoryMarshal.GetReference(span), index);
 
+    /// <summary>Determines if a given reference to a value of type <typeparamref name="T" /> is not a null reference.</summary>
+    /// <typeparam name="T">The type of the reference</typeparam>
+    /// <param name="source">The reference to check.</param>
+    /// <returns><c>true</c> if <paramref name="source" /> is not a null reference; otherwise, <c>false</c>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsNotNullRef<T>(in T source) => !IsNullRef(in source);
+
     /// <inheritdoc cref="Unsafe.IsNullRef{T}(ref T)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNullRef<T>(in T source) => Unsafe.IsNullRef(ref AsRef(in source));

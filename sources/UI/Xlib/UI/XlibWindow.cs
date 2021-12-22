@@ -3,7 +3,6 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-using TerraFX.Collections;
 using TerraFX.Graphics;
 using TerraFX.Interop.Xlib;
 using TerraFX.Numerics;
@@ -24,45 +23,108 @@ namespace TerraFX.UI;
 public sealed unsafe class XlibWindow : Window
 {
     private readonly FlowDirection _flowDirection;
+    private readonly XWindow _handle;
     private readonly ReadingDirection _readingDirection;
 
-    private ValueLazy<XWindow> _handle;
-    private ValueLazy<PropertySet> _properties;
-
-#pragma warning disable CS0649
-
-    private string _title;
     private BoundingRectangle _bounds;
     private BoundingRectangle _clientBounds;
     private BoundingRectangle _frameExtents;
-    private WindowState _windowState;
     private bool _isActive;
     private bool _isEnabled;
     private bool _isVisible;
+    private string _title = null!;
+    private WindowState _windowState;
 
     private VolatileState _state;
 
-    internal XlibWindow(XlibWindowService windowService)
-        : base(windowService, Thread.CurrentThread)
+    internal XlibWindow(XlibUIDispatcher dispatcher)
+        : base(dispatcher)
     {
         _flowDirection = FlowDirection.TopToBottom;
+        _handle = CreateHandle(this, Service.Display);
         _readingDirection = ReadingDirection.LeftToRight;
 
-        _handle = new ValueLazy<XWindow>(CreateWindowHandle);
-        _properties = new ValueLazy<PropertySet>(CreateProperties);
-
-        _title = typeof(XlibWindow).FullName!;
-        _bounds = BoundingRectangle.Zero;
-        _clientBounds = BoundingRectangle.Zero;
-        _frameExtents = BoundingRectangle.Zero;
-        _isEnabled = true;
-
         _ = _state.Transition(to: Initialized);
+
+        static XWindow CreateHandle(XlibWindow window, Display* display)
+        {
+            XLockDisplay(display);
+
+            try
+            {
+                return CreateHandleInternal(window, display);
+            }
+            finally
+            {
+                XUnlockDisplay(display);
+            }
+        }
+
+        static XWindow CreateHandleInternal(XlibWindow window, Display* display)
+        {
+            XWindow handle;
+
+            var service = window.Service;
+
+            var defaultRootWindow = service.DefaultRootWindow;
+            var defaultScreen = service.DefaultScreen;
+
+            var defaultScreenWidth = XWidthOfScreen(defaultScreen);
+            var defaultScreenHeight = XHeightOfScreen(defaultScreen);
+
+            ThrowForLastErrorIfZero(handle = XCreateWindow(
+                display,
+                defaultRootWindow,
+                (int)(defaultScreenWidth * 0.125f),
+                (int)(defaultScreenHeight * 0.125f),
+                (uint)(defaultScreenWidth * 0.75f),
+                (uint)(defaultScreenHeight * 0.75f),
+                0,
+                (int)CopyFromParent,
+                InputOutput,
+                (Visual*)CopyFromParent,
+                0,
+                null
+            ));
+
+            _ = XSelectInput(
+                display,
+                handle,
+                ExposureMask | VisibilityChangeMask | StructureNotifyMask | PropertyChangeMask
+            );
+
+            const int WmProtocolCount = 1;
+
+            var wmProtocols = stackalloc Atom[WmProtocolCount] {
+                service.GetAtom(WM_DELETE_WINDOW)
+            };
+
+            ThrowForLastErrorIfZero(XSetWMProtocols(
+                display,
+                handle,
+                wmProtocols,
+                WmProtocolCount
+            ));
+
+            var gcHandle = (nuint)(nint)GCHandle.ToIntPtr(GCHandle.Alloc(window, GCHandleType.Normal));
+
+            SendClientMessage(
+                display,
+                handle,
+                NoEventMask,
+                handle,
+                service.GetAtom(_TERRAFX_CREATE_WINDOW),
+                unchecked((nint)(uint)gcHandle),
+                (nint)(gcHandle >> 32)
+            );
+
+            SetWindowTitle(service, display, handle, nameof(XlibWindow));
+            return handle;
+        }
     }
 
     /// <summary>Finalizes an instance of the <see cref="XlibWindow" /> class.</summary>
-    ~XlibWindow()
-        => Dispose(isDisposing: false);
+    ~XlibWindow() => Dispose(isDisposing: false);
 
     /// <inheritdoc />
     public override event EventHandler<PropertyChangedEventArgs<Vector2>>? ClientLocationChanged;
@@ -77,68 +139,58 @@ public sealed unsafe class XlibWindow : Window
     public override event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
 
     /// <inheritdoc />
-    public override BoundingRectangle Bounds
-        => _bounds;
+    public override BoundingRectangle Bounds => _bounds;
 
     /// <inheritdoc />
-    public override BoundingRectangle ClientBounds
-        => _clientBounds;
+    public override BoundingRectangle ClientBounds => _clientBounds;
+
+    /// <inheritdoc cref="UIDispatcherObject.Dispatcher" />
+    public new XlibUIDispatcher Dispatcher => base.Dispatcher.As<XlibUIDispatcher>();
 
     /// <inheritdoc />
-    public override FlowDirection FlowDirection
-        => _flowDirection;
+    public override FlowDirection FlowDirection => _flowDirection;
 
-    /// <summary>Gets the underlying <c>Window</c> for the window.</summary>
-    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+    /// <summary>Gets the underlying handle for the window.</summary>
     public XWindow Handle
-        => _handle.Value;
+    {
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _handle;
+        }
+    }
 
     /// <inheritdoc />
-    public override bool IsActive
-        => _isActive;
+    public override bool IsActive => _isActive;
 
     /// <inheritdoc />
-    public override bool IsEnabled
-        => _isEnabled;
+    public override bool IsEnabled => _isEnabled;
 
     /// <inheritdoc />
-    public override bool IsVisible
-        => _isVisible;
+    public override bool IsVisible => _isVisible;
 
     /// <inheritdoc />
-    public override IPropertySet Properties
-        => _properties.Value;
+    public override ReadingDirection ReadingDirection => _readingDirection;
 
     /// <inheritdoc />
-    public override ReadingDirection ReadingDirection
-        => _readingDirection;
+    public override string Title => _title;
+
+    /// <inheritdoc cref="UIDispatcherObject.Service" />
+    public new XlibUIService Service => base.Service.As<XlibUIService>();
 
     /// <inheritdoc />
-    public override string Title
-        => _title;
-
-    /// <inheritdoc cref="Window.WindowService" />
-    public new XlibWindowService WindowService
-        => (XlibWindowService)base.WindowService;
+    public override WindowState WindowState => _windowState;
 
     /// <inheritdoc />
-    public override WindowState WindowState
-        => _windowState;
+    protected override IntPtr SurfaceContextHandle => (nint)Service.Display;
 
     /// <inheritdoc />
-    protected override IntPtr SurfaceContextHandle
-        => (nint)XlibDispatchService.Instance.Display;
+    protected override IntPtr SurfaceHandle => Handle;
 
     /// <inheritdoc />
-    protected override IntPtr SurfaceHandle
-        => Handle;
+    protected override GraphicsSurfaceKind SurfaceKind => GraphicsSurfaceKind.Xlib;
 
     /// <inheritdoc />
-    protected override GraphicsSurfaceKind SurfaceKind
-        => GraphicsSurfaceKind.Xlib;
-
-    /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
     public override void Activate()
     {
         if (!TryActivate())
@@ -148,103 +200,101 @@ public sealed unsafe class XlibWindow : Window
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
     /// <exception cref="ExternalException">The call to <see cref="XSendEvent(Display*, XWindow, int, nint, XEvent*)" /> failed.</exception>
-    /// <remarks>
-    ///   <para>This method can be called from any thread.</para>
-    ///   <para>This method does nothing if the underlying <c>Window</c> has not been created.</para>
-    /// </remarks>
     public override void Close()
     {
-        if (_handle.IsValueCreated)
-        {
-            var dispatchService = XlibDispatchService.Instance;
-            var display = dispatchService.Display;
-            var window = Handle;
+        ThrowIfDisposedOrDisposing(_state, nameof(XlibWindow));
 
-            if (dispatchService.GetAtomIsSupported(_NET_CLOSE_WINDOW))
-            {
-                SendClientMessage(
-                    display,
-                    dispatchService.DefaultRootWindow,
-                    SubstructureNotifyMask | SubstructureRedirectMask,
-                    window,
-                    dispatchService.GetAtom(_NET_CLOSE_WINDOW),
-                    CurrentTime,
-                    SourceApplication
-                );
-            }
-            else
-            {
-                SendClientMessage(
-                    display,
-                    window,
-                    NoEventMask,
-                    window,
-                    dispatchService.GetAtom(WM_PROTOCOLS),
-                    dispatchService.GetAtom(WM_DELETE_WINDOW)
-                );
-            }
+        var service = Service;
+        var display = service.Display;
+        var window = _handle;
+
+        if (service.GetAtomIsSupported(_NET_CLOSE_WINDOW))
+        {
+            SendClientMessage(
+                display,
+                service.DefaultRootWindow,
+                SubstructureNotifyMask | SubstructureRedirectMask,
+                window,
+                service.GetAtom(_NET_CLOSE_WINDOW),
+                CurrentTime,
+                SourceApplication
+            );
+        }
+        else
+        {
+            SendClientMessage(
+                display,
+                window,
+                NoEventMask,
+                window,
+                service.GetAtom(WM_PROTOCOLS),
+                service.GetAtom(WM_DELETE_WINDOW)
+            );
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>true</c> but the instance has already been disposed.</exception>
     public override void Disable()
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(XlibWindow));
+
         if (IsEnabled)
         {
             var wmHints = new XWMHints {
                 flags = InputHint,
                 input = False
             };
-            _ = XSetWMHints(XlibDispatchService.Instance.Display, Handle, &wmHints);
+            _ = XSetWMHints(Service.Display, _handle, &wmHints);
         }
     }
 
     /// <inheritdoc />
     /// <exception cref="ExternalException">The call to <see cref="XGetWMHints(Display*, XWindow)" /> failed.</exception>
-    /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>false</c> but the instance has already been disposed.</exception>
     public override void Enable()
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(XlibWindow));
+
         if (!IsEnabled)
         {
             var wmHints = new XWMHints {
                 flags = InputHint,
                 input = True
             };
-            _ = XSetWMHints(XlibDispatchService.Instance.Display, Handle, &wmHints);
+            _ = XSetWMHints(Service.Display, _handle, &wmHints);
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Hidden" /> but the instance has already been disposed.</exception>
     public override void Hide()
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(XlibWindow));
+
         if (WindowState != WindowState.Hidden)
         {
-            var dispatchService = XlibDispatchService.Instance;
+            var service = Service;
 
             ThrowForLastErrorIfZero(XWithdrawWindow(
-                dispatchService.Display,
-                Handle,
-                XScreenNumberOfScreen(dispatchService.DefaultScreen)
+                service.Display,
+                _handle,
+                XScreenNumberOfScreen(service.DefaultScreen)
             ));
         }
     }
 
     /// <inheritdoc />
     /// <exception cref="ExternalException">The call to <see cref="XGetWindowAttributes(Display*, XWindow, XWindowAttributes*)" /> failed.</exception>
-    /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Maximized" /> but the instance has already been disposed.</exception>
     public override void Maximize()
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(XlibWindow));
+
         var windowState = _windowState;
 
         if (windowState != WindowState.Maximized)
         {
-            var dispatchService = XlibDispatchService.Instance;
-            var display = dispatchService.Display;
-            var window = Handle;
+            var service = Service;
+            var display = service.Display;
+            var window = _handle;
 
             if (windowState == WindowState.Minimized)
             {
@@ -257,39 +307,40 @@ public sealed unsafe class XlibWindow : Window
                 ShowWindow(display, window);
             }
 
-            if (dispatchService.GetAtomIsSupported(_NET_WM_STATE_MAXIMIZED_HORZ) && dispatchService.GetAtomIsSupported(_NET_WM_STATE_MAXIMIZED_VERT))
+            if (service.GetAtomIsSupported(_NET_WM_STATE_MAXIMIZED_HORZ) && service.GetAtomIsSupported(_NET_WM_STATE_MAXIMIZED_VERT))
             {
                 SendClientMessage(
                     display,
-                    dispatchService.DefaultRootWindow,
+                    service.DefaultRootWindow,
                     SubstructureNotifyMask | SubstructureRedirectMask,
                     window,
-                    dispatchService.GetAtom(_NET_WM_STATE),
+                    service.GetAtom(_NET_WM_STATE),
                     _NET_WM_STATE_ADD,
-                    (nint)dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_HORZ),
-                    (nint)dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_VERT),
+                    service.GetAtom(_NET_WM_STATE_MAXIMIZED_HORZ),
+                    service.GetAtom(_NET_WM_STATE_MAXIMIZED_VERT),
                     SourceApplication
                 );
             }
             else
             {
-                throw new NotImplementedException();
+                ThrowNotImplementedException();
             }
         }
     }
 
     /// <inheritdoc />
     /// <exception cref="ExternalException">The call to <see cref="XIconifyWindow(Display*, XWindow, int)" /> failed.</exception>
-    /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Minimized" /> but the instance has already been disposed.</exception>
     public override void Minimize()
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(XlibWindow));
+
         var windowState = _windowState;
 
         if (windowState != WindowState.Minimized)
         {
-            var dispatchService = XlibDispatchService.Instance;
-            var display = dispatchService.Display;
-            var window = Handle;
+            var service = Service;
+            var display = service.Display;
+            var window = _handle;
 
             if (windowState == WindowState.Hidden)
             {
@@ -299,29 +350,30 @@ public sealed unsafe class XlibWindow : Window
             ThrowForLastErrorIfZero(XIconifyWindow(
                 display,
                 window,
-                XScreenNumberOfScreen(dispatchService.DefaultScreen)
+                XScreenNumberOfScreen(service.DefaultScreen)
             ));
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
     public override void Relocate(Vector2 location)
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(XlibWindow));
+
         if (_bounds.Location != location)
         {
-            var dispatchService = XlibDispatchService.Instance;
-            var display = dispatchService.Display;
-            var window = Handle;
+            var service = Service;
+            var display = service.Display;
+            var window = _handle;
 
-            if (dispatchService.GetAtomIsSupported(_NET_MOVERESIZE_WINDOW))
+            if (service.GetAtomIsSupported(_NET_MOVERESIZE_WINDOW))
             {
                 SendClientMessage(
                     display,
-                    dispatchService.DefaultRootWindow,
+                    service.DefaultRootWindow,
                     SubstructureNotifyMask | SubstructureRedirectMask,
                     window,
-                    dispatchService.GetAtom(_NET_MOVERESIZE_WINDOW),
+                    service.GetAtom(_NET_MOVERESIZE_WINDOW),
                     NorthWestGravity | (0b0011 << 8) | (SourceApplication << 12),
                     (nint)location.X,
                     (nint)location.Y,
@@ -331,29 +383,30 @@ public sealed unsafe class XlibWindow : Window
             }
             else
             {
-                throw new NotImplementedException();
+                ThrowNotImplementedException();
             }
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
     public override void RelocateClient(Vector2 location)
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(XlibWindow));
+
         if (_clientBounds.Location != location)
         {
-            var dispatchService = XlibDispatchService.Instance;
-            var display = dispatchService.Display;
-            var window = Handle;
+            var service = Service;
+            var display = service.Display;
+            var window = _handle;
 
-            if (dispatchService.GetAtomIsSupported(_NET_MOVERESIZE_WINDOW))
+            if (service.GetAtomIsSupported(_NET_MOVERESIZE_WINDOW))
             {
                 SendClientMessage(
                     display,
-                    dispatchService.DefaultRootWindow,
+                    service.DefaultRootWindow,
                     SubstructureNotifyMask | SubstructureRedirectMask,
                     window,
-                    dispatchService.GetAtom(_NET_MOVERESIZE_WINDOW),
+                    service.GetAtom(_NET_MOVERESIZE_WINDOW),
                     StaticGravity | (0b0011 << 8) | (SourceApplication << 12),
                     (nint)location.X,
                     (nint)location.Y,
@@ -363,29 +416,30 @@ public sealed unsafe class XlibWindow : Window
             }
             else
             {
-                throw new NotImplementedException();
+                ThrowNotImplementedException();
             }
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
     public override void Resize(Vector2 size)
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(XlibWindow));
+
         if (_bounds.Size != size)
         {
-            var dispatchService = XlibDispatchService.Instance;
-            var display = dispatchService.Display;
-            var window = Handle;
+            var service = Service;
+            var display = service.Display;
+            var window = _handle;
 
-            if (dispatchService.GetAtomIsSupported(_NET_MOVERESIZE_WINDOW))
+            if (service.GetAtomIsSupported(_NET_MOVERESIZE_WINDOW))
             {
                 SendClientMessage(
                     display,
-                    dispatchService.DefaultRootWindow,
+                    service.DefaultRootWindow,
                     SubstructureNotifyMask | SubstructureRedirectMask,
                     window,
-                    dispatchService.GetAtom(_NET_MOVERESIZE_WINDOW),
+                    service.GetAtom(_NET_MOVERESIZE_WINDOW),
                     NorthWestGravity | (0b1100 << 8) | (SourceApplication << 12),
                     None,
                     None,
@@ -395,29 +449,30 @@ public sealed unsafe class XlibWindow : Window
             }
             else
             {
-                throw new NotImplementedException();
+                ThrowNotImplementedException();
             }
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
     public override void ResizeClient(Vector2 size)
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(XlibWindow));
+
         if (_clientBounds.Size != size)
         {
-            var dispatchService = XlibDispatchService.Instance;
-            var display = dispatchService.Display;
-            var window = Handle;
+            var service = Service;
+            var display = service.Display;
+            var window = _handle;
 
-            if (dispatchService.GetAtomIsSupported(_NET_MOVERESIZE_WINDOW))
+            if (service.GetAtomIsSupported(_NET_MOVERESIZE_WINDOW))
             {
                 SendClientMessage(
                     display,
-                    dispatchService.DefaultRootWindow,
+                    service.DefaultRootWindow,
                     SubstructureNotifyMask | SubstructureRedirectMask,
                     window,
-                    dispatchService.GetAtom(_NET_MOVERESIZE_WINDOW),
+                    service.GetAtom(_NET_MOVERESIZE_WINDOW),
                     StaticGravity | (0b1100 << 8) | (SourceApplication << 12),
                     None,
                     None,
@@ -427,22 +482,23 @@ public sealed unsafe class XlibWindow : Window
             }
             else
             {
-                throw new NotImplementedException();
+                ThrowNotImplementedException();
             }
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Normal" /> but the instance has already been disposed.</exception>
     public override void Restore()
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(XlibWindow));
+
         var windowState = _windowState;
 
         if (windowState != WindowState.Normal)
         {
-            var dispatchService = XlibDispatchService.Instance;
-            var display = dispatchService.Display;
-            var window = Handle;
+            var service = Service;
+            var display = service.Display;
+            var window = _handle;
 
             if (windowState == WindowState.Minimized)
             {
@@ -461,67 +517,69 @@ public sealed unsafe class XlibWindow : Window
                 _ = XMapWindow(display, window);
             }
 
-            if (dispatchService.GetAtomIsSupported(_NET_WM_STATE_MAXIMIZED_HORZ) && dispatchService.GetAtomIsSupported(_NET_WM_STATE_MAXIMIZED_VERT))
+            if (service.GetAtomIsSupported(_NET_WM_STATE_MAXIMIZED_HORZ) && service.GetAtomIsSupported(_NET_WM_STATE_MAXIMIZED_VERT))
             {
                 SendClientMessage(
                     display,
-                    dispatchService.DefaultRootWindow,
+                    service.DefaultRootWindow,
                     SubstructureNotifyMask | SubstructureRedirectMask,
                     window,
-                    dispatchService.GetAtom(_NET_WM_STATE),
+                    service.GetAtom(_NET_WM_STATE),
                     _NET_WM_STATE_REMOVE,
-                    (nint)dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_HORZ),
-                    (nint)dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_VERT),
+                    service.GetAtom(_NET_WM_STATE_MAXIMIZED_HORZ),
+                    service.GetAtom(_NET_WM_STATE_MAXIMIZED_VERT),
                     SourceApplication
                 );
             }
             else
             {
-                throw new NotImplementedException();
+                ThrowNotImplementedException();
             }
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
     public override void SetTitle(string title)
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(XlibWindow));
+
         if (_title != title)
         {
-            var dispatchService = XlibDispatchService.Instance;
-            SetWindowTitle(dispatchService, dispatchService.Display, Handle, title);
+            var service = Service;
+            SetWindowTitle(service, service.Display, _handle, title);
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException"><see cref="IsVisible" /> was <c>false</c> but the instance has already been disposed.</exception>
     public override void Show()
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(XlibWindow));
+
         if (_windowState == WindowState.Hidden)
         {
-            _ = XMapWindow(XlibDispatchService.Instance.Display, Handle);
+            _ = XMapWindow(Service.Display, _handle);
         }
     }
 
     /// <inheritdoc />
-    /// <returns><c>true</c> if the instance was succesfully activated; otherwise, <c>false</c>.</returns>
-    /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
     public override bool TryActivate()
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(XlibWindow));
+
         if (!_isActive)
         {
-            var dispatchService = XlibDispatchService.Instance;
-            var display = dispatchService.Display;
-            var window = Handle;
+            var service = Service;
+            var display = service.Display;
+            var window = _handle;
 
-            if (dispatchService.GetAtomIsSupported(_NET_ACTIVE_WINDOW))
+            if (service.GetAtomIsSupported(_NET_ACTIVE_WINDOW))
             {
                 SendClientMessage(
                     display,
-                    dispatchService.DefaultRootWindow,
+                    service.DefaultRootWindow,
                     SubstructureNotifyMask | SubstructureRedirectMask,
                     window,
-                    dispatchService.GetAtom(_NET_ACTIVE_WINDOW),
+                    service.GetAtom(_NET_ACTIVE_WINDOW),
                     SourceApplication,
                     CurrentTime,
                     None
@@ -529,7 +587,7 @@ public sealed unsafe class XlibWindow : Window
             }
             else
             {
-                throw new NotImplementedException();
+                ThrowNotImplementedException();
             }
         }
         return true;
@@ -552,7 +610,7 @@ public sealed unsafe class XlibWindow : Window
             }
             else
             {
-                DisposeWindowHandle();
+                DisposeHandle();
             }
         }
 
@@ -621,113 +679,40 @@ public sealed unsafe class XlibWindow : Window
         }
     }
 
-    private XWindow CreateWindowHandle()
+    private void DisposeHandle()
     {
-        var dispatchService = XlibDispatchService.Instance;
-        var display = dispatchService.Display;
-
-        var defaultRootWindow = dispatchService.DefaultRootWindow;
-        var defaultScreen = dispatchService.DefaultScreen;
-
-        var defaultScreenWidth = XWidthOfScreen(defaultScreen);
-        var defaultScreenHeight = XHeightOfScreen(defaultScreen);
-
-        XWindow window;
-
-        ThrowForLastErrorIfZero(window = XCreateWindow(
-            display,
-            defaultRootWindow,
-            (int)(defaultScreenWidth * 0.125f),
-            (int)(defaultScreenHeight * 0.125f),
-            (uint)(defaultScreenWidth * 0.75f),
-            (uint)(defaultScreenHeight * 0.75f),
-            0,
-            (int)CopyFromParent,
-            InputOutput,
-            (Visual*)CopyFromParent,
-            0,
-            null
-        ));
-
-        _ = XSelectInput(
-            display,
-            window,
-            ExposureMask | VisibilityChangeMask | StructureNotifyMask | PropertyChangeMask
-        );
-
-        const int WmProtocolCount = 1;
-
-        var wmProtocols = stackalloc Atom[WmProtocolCount] {
-            dispatchService.GetAtom(WM_DELETE_WINDOW)
-        };
-
-        ThrowForLastErrorIfZero(XSetWMProtocols(
-            display,
-            window,
-            wmProtocols,
-            WmProtocolCount
-        ));
+        var service = Service;
+        var display = service.Display;
+        var handle = _handle;
 
         var gcHandle = GCHandle.Alloc(this, GCHandleType.Normal);
         var gcHandlePtr = (nuint)(nint)GCHandle.ToIntPtr(gcHandle);
 
         SendClientMessage(
             display,
-            window,
+            handle,
             NoEventMask,
-            window,
-            dispatchService.GetAtom(_TERRAFX_CREATE_WINDOW),
+            handle,
+            service.GetAtom(_TERRAFX_DISPOSE_WINDOW),
             unchecked((nint)(uint)gcHandlePtr),
             (nint)(gcHandlePtr >> 32)
         );
 
-        SetWindowTitle(dispatchService, display, window, _title);
-        return window;
-    }
-
-    private PropertySet CreateProperties()
-        => new PropertySet();
-
-    private void DisposeWindowHandle()
-    {
-        AssertThread(ParentThread);
-        AssertDisposing(_state);
-
-        if (_handle.IsValueCreated)
-        {
-            var dispatchService = XlibDispatchService.Instance;
-            var display = dispatchService.Display;
-            var window = _handle.Value;
-
-            var gcHandle = GCHandle.Alloc(this, GCHandleType.Normal);
-            var gcHandlePtr = (nuint)(nint)GCHandle.ToIntPtr(gcHandle);
-
-            SendClientMessage(
-                display,
-                window,
-                NoEventMask,
-                window,
-                dispatchService.GetAtom(_TERRAFX_DISPOSE_WINDOW),
-                unchecked((nint)(uint)gcHandlePtr),
-                (nint)(gcHandlePtr >> 32)
-            );
-
-            _ = XDestroyWindow(display, window);
-        }
+        _ = XDestroyWindow(display, handle);
     }
 
     private void HandleXClientMessage(XClientMessageEvent* xclientMessage)
     {
-        var dispatchService = XlibDispatchService.Instance;
+        var service = Service;
 
-        if ((xclientMessage->format != 32) || (xclientMessage->message_type != dispatchService.GetAtom(WM_PROTOCOLS)))
+        if ((xclientMessage->format != 32) || (xclientMessage->message_type != service.GetAtom(WM_PROTOCOLS)))
         {
             return;
         }
 
         var eventAtom = (nuint)xclientMessage->data.l[0];
 
-        if (eventAtom == dispatchService.GetAtom(WM_DELETE_WINDOW))
+        if (eventAtom == service.GetAtom(WM_DELETE_WINDOW))
         {
             // If we are already disposing, then Dispose is happening on some other thread
             // and Close was called in order for us to continue disposal on the parent thread.
@@ -736,7 +721,7 @@ public sealed unsafe class XlibWindow : Window
 
             if (_state == Disposing)
             {
-                DisposeWindowHandle();
+                DisposeHandle();
             }
             else
             {
@@ -745,7 +730,7 @@ public sealed unsafe class XlibWindow : Window
         }
     }
 
-    private static void HandleXCirculate(XCirculateEvent* xcirculate) { }
+    private void HandleXCirculate(XCirculateEvent* xcirculate) { }
 
     private void HandleXConfigure(XConfigureEvent* xconfigure)
     {
@@ -761,7 +746,7 @@ public sealed unsafe class XlibWindow : Window
             ThrowForLastErrorIfZero(XTranslateCoordinates(
                 xconfigure->display,
                 xconfigure->window,
-                XlibDispatchService.Instance.DefaultRootWindow,
+                Service.DefaultRootWindow,
                 0,
                 0,
                 &xconfigure->x,
@@ -805,51 +790,51 @@ public sealed unsafe class XlibWindow : Window
         {
             _ = _state.Transition(to: Disposed);
         }
+        _ = Dispatcher.RemoveWindow(_handle);
     }
 
     private static void HandleXExpose(XExposeEvent* xexpose) { }
 
-    private void HandleXMap(XMapEvent* xmap)
-        => UpdateWindowState(XlibDispatchService.Instance, xmap->display, xmap->@event);
+    private void HandleXMap(XMapEvent* xmap) => UpdateWindowState(Service, xmap->display, xmap->@event);
 
     private void HandleXProperty(XPropertyEvent* xproperty)
     {
-        var dispatchService = XlibDispatchService.Instance;
+        var service = Service;
         var atom = xproperty->atom;
 
-        if (atom == dispatchService.GetAtom(_NET_FRAME_EXTENTS))
+        if (atom == service.GetAtom(_NET_FRAME_EXTENTS))
         {
-            HandleXPropertyNetFrameExtents(xproperty, dispatchService);
+            HandleXPropertyNetFrameExtents(xproperty, service);
         }
-        else if (atom == dispatchService.GetAtom(_NET_WM_NAME))
+        else if (atom == service.GetAtom(_NET_WM_NAME))
         {
-            HandleXPropertyNetWmName(xproperty, dispatchService);
+            HandleXPropertyNetWmName(xproperty, service);
         }
-        else if (atom == dispatchService.GetAtom(_NET_WM_STATE))
+        else if (atom == service.GetAtom(_NET_WM_STATE))
         {
-            HandleXPropertyNetWmState(xproperty, dispatchService);
+            HandleXPropertyNetWmState(xproperty, service);
         }
         else if (atom == XA_WM_HINTS)
         {
-            HandleXPropertyWmHints(xproperty, dispatchService);
+            HandleXPropertyWmHints(xproperty, service);
         }
         else if (atom == XA_WM_NAME)
         {
-            HandleXPropertyWmName(xproperty, dispatchService);
+            HandleXPropertyWmName(xproperty, service);
         }
-        else if (atom == dispatchService.GetAtom(WM_STATE))
+        else if (atom == service.GetAtom(WM_STATE))
         {
-            HandleXPropertyWmState(xproperty, dispatchService);
+            HandleXPropertyWmState(xproperty, service);
         }
     }
 
-    private void HandleXPropertyNetFrameExtents(XPropertyEvent* xproperty, XlibDispatchService dispatchService)
-        => UpdateFrameExtents(dispatchService, xproperty->display, xproperty->window);
+    private void HandleXPropertyNetFrameExtents(XPropertyEvent* xproperty, XlibUIService service)
+        => UpdateFrameExtents(service, xproperty->display, xproperty->window);
 
-    private void HandleXPropertyNetWmState(XPropertyEvent* xproperty, XlibDispatchService dispatchService)
-        => UpdateWindowState(XlibDispatchService.Instance, xproperty->display, xproperty->window);
+    private void HandleXPropertyNetWmState(XPropertyEvent* xproperty, XlibUIService service)
+        => UpdateWindowState(Service, xproperty->display, xproperty->window);
 
-    private void HandleXPropertyWmHints(XPropertyEvent* xproperty, XlibDispatchService dispatchService)
+    private void HandleXPropertyWmHints(XPropertyEvent* xproperty, XlibUIService service)
     {
         XWMHints* wmHints = null;
 
@@ -870,17 +855,17 @@ public sealed unsafe class XlibWindow : Window
         }
     }
 
-    private void HandleXPropertyNetWmName(XPropertyEvent* xproperty, XlibDispatchService dispatchService)
-        => UpdateWindowTitle(dispatchService, xproperty->display, xproperty->window);
+    private void HandleXPropertyNetWmName(XPropertyEvent* xproperty, XlibUIService service)
+        => UpdateWindowTitle(service, xproperty->display, xproperty->window);
 
-    private void HandleXPropertyWmName(XPropertyEvent* xproperty, XlibDispatchService dispatchService)
-        => UpdateWindowTitle(dispatchService, xproperty->display, xproperty->window);
+    private void HandleXPropertyWmName(XPropertyEvent* xproperty, XlibUIService service)
+        => UpdateWindowTitle(service, xproperty->display, xproperty->window);
 
-    private void HandleXPropertyWmState(XPropertyEvent* xproperty, XlibDispatchService dispatchService)
-        => UpdateWindowState(dispatchService, xproperty->display, xproperty->window);
+    private void HandleXPropertyWmState(XPropertyEvent* xproperty, XlibUIService service)
+        => UpdateWindowState(service, xproperty->display, xproperty->window);
 
     private void HandleXUnmap(XUnmapEvent* xunmap)
-        => UpdateWindowState(XlibDispatchService.Instance, xunmap->display, xunmap->@event);
+        => UpdateWindowState(Service, xunmap->display, xunmap->@event);
 
     private void HandleXVisibility(XVisibilityEvent* xvisibility) => _isVisible = xvisibility->state != VisibilityFullyObscured;
 
@@ -920,9 +905,9 @@ public sealed unsafe class XlibWindow : Window
         }
     }
 
-    private void UpdateFrameExtents(XlibDispatchService dispatchService, Display* display, XWindow window)
+    private void UpdateFrameExtents(XlibUIService service, Display* display, XWindow window)
     {
-        if (dispatchService.GetAtomIsSupported(_NET_FRAME_EXTENTS))
+        if (service.GetAtomIsSupported(_NET_FRAME_EXTENTS))
         {
             Atom actualType;
             int actualFormat;
@@ -933,7 +918,7 @@ public sealed unsafe class XlibWindow : Window
             _ = XGetWindowProperty(
                 display,
                 window,
-                dispatchService.GetAtom(_NET_FRAME_EXTENTS),
+                service.GetAtom(_NET_FRAME_EXTENTS),
                 0,
                 4,
                 False,
@@ -964,13 +949,13 @@ public sealed unsafe class XlibWindow : Window
         }
         else
         {
-            throw new NotImplementedException();
+            ThrowNotImplementedException();
         }
     }
 
-    private void UpdateWindowState(XlibDispatchService dispatchService, Display* display, XWindow window)
+    private void UpdateWindowState(XlibUIService service, Display* display, XWindow window)
     {
-        if (dispatchService.GetAtomIsSupported(_NET_WM_STATE))
+        if (service.GetAtomIsSupported(_NET_WM_STATE))
         {
             Atom actualType;
             int actualFormat;
@@ -981,7 +966,7 @@ public sealed unsafe class XlibWindow : Window
             _ = XGetWindowProperty(
                 display,
                 window,
-                dispatchService.GetAtom(_NET_WM_STATE),
+                service.GetAtom(_NET_WM_STATE),
                 0,
                 nint.MaxValue,
                 False,
@@ -1002,19 +987,19 @@ public sealed unsafe class XlibWindow : Window
 
                 for (nuint i = 0; i < itemCount; i++)
                 {
-                    if (netWmState[i] == dispatchService.GetAtom(_NET_WM_STATE_FOCUSED))
+                    if (netWmState[i] == service.GetAtom(_NET_WM_STATE_FOCUSED))
                     {
                         foundNetWmStateFocused = true;
                     }
-                    else if (netWmState[i] == dispatchService.GetAtom(_NET_WM_STATE_HIDDEN))
+                    else if (netWmState[i] == service.GetAtom(_NET_WM_STATE_HIDDEN))
                     {
                         foundNetWmStateHidden = true;
                     }
-                    else if (netWmState[i] == dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_HORZ))
+                    else if (netWmState[i] == service.GetAtom(_NET_WM_STATE_MAXIMIZED_HORZ))
                     {
                         foundNetWmStateMaximizedHorz = true;
                     }
-                    else if (netWmState[i] == dispatchService.GetAtom(_NET_WM_STATE_MAXIMIZED_VERT))
+                    else if (netWmState[i] == service.GetAtom(_NET_WM_STATE_MAXIMIZED_VERT))
                     {
                         foundNetWmStateMaximizedVert = true;
                     }
@@ -1043,47 +1028,54 @@ public sealed unsafe class XlibWindow : Window
         }
         else
         {
-            throw new NotImplementedException();
+            ThrowNotImplementedException();
         }
     }
 
-    private void UpdateWindowTitle(XlibDispatchService dispatchService, Display* display, XWindow window)
+    private void UpdateWindowTitle(XlibUIService service, Display* display, XWindow window)
     {
-        if (dispatchService.GetAtomIsSupported(_NET_WM_NAME))
-        {
-            Atom actualType;
-            int actualFormat;
-            nuint itemCount;
-            nuint bytesRemaining;
-            sbyte* wmName;
+        Atom actualType;
+        int actualFormat;
+        nuint bytesRemaining;
+        nuint itemCount;
+        sbyte* wmName;
 
+        if (service.GetAtomIsSupported(_NET_WM_NAME))
+        {
             _ = XGetWindowProperty(
                 display,
                 window,
-                dispatchService.GetAtom(_NET_WM_NAME),
+                service.GetAtom(_NET_WM_NAME),
                 0,
                 nint.MaxValue,
                 False,
-                dispatchService.GetAtom(UTF8_STRING),
+                service.GetAtom(UTF8_STRING),
                 &actualType,
                 &actualFormat,
                 &itemCount,
                 &bytesRemaining,
                 (byte**)&wmName
             );
-
-            if ((actualType == dispatchService.GetAtom(UTF8_STRING)) && (actualFormat == 8) && (bytesRemaining == 0))
-            {
-                _title = GetUtf8Span(wmName, checked((int)itemCount)).GetString() ?? string.Empty;
-            }
-            else
-            {
-                _title = string.Empty;
-            }
         }
         else
         {
-            throw new NotImplementedException();
+            XTextProperty textProperty;
+            _ = XGetWMName(display, window, &textProperty);
+
+            actualType = textProperty.encoding;
+            actualFormat = textProperty.format;
+            bytesRemaining = 0;
+            itemCount = textProperty.nitems;
+            wmName = (sbyte*)textProperty.value;
+        }
+
+        if ((actualType == service.GetAtom(UTF8_STRING)) && (actualFormat == 8) && (bytesRemaining == 0))
+        {
+            _title = GetUtf8Span(wmName, checked((int)itemCount)).GetString() ?? string.Empty;
+        }
+        else
+        {
+            _title = string.Empty;
         }
     }
 }

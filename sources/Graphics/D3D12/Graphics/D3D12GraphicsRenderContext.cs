@@ -2,18 +2,16 @@
 
 using System;
 using System.Threading;
+using TerraFX.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 using TerraFX.Numerics;
-using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D_PRIMITIVE_TOPOLOGY;
 using static TerraFX.Interop.DirectX.D3D12;
 using static TerraFX.Interop.DirectX.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_RESOURCE_STATES;
 using static TerraFX.Interop.DirectX.DXGI_FORMAT;
 using static TerraFX.Interop.Windows.Windows;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -28,10 +26,7 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     private readonly ID3D12GraphicsCommandList* _d3d12GraphicsCommandList;
     private readonly D3D12GraphicsFence _fence;
 
-    private string _name = null!;
     private D3D12GraphicsRenderPass? _renderPass;
-
-    private VolatileState _state;
 
     internal D3D12GraphicsRenderContext(D3D12GraphicsDevice device)
         : base(device)
@@ -41,9 +36,6 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
 
         _d3d12GraphicsCommandList = CreateD3D12GraphicsCommandList(device, d3d12CommandAllocator);
         _fence = device.CreateFence(isSignalled: true);
-
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsRenderContext);
 
         static ID3D12CommandAllocator* CreateD3D12CommandAllocator(D3D12GraphicsDevice device)
         {
@@ -68,7 +60,7 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsRenderContext" /> class.</summary>
     ~D3D12GraphicsRenderContext() => Dispose(isDisposing: false);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <summary>Gets the <see cref="ID3D12CommandAllocator" /> used by the context.</summary>
@@ -76,7 +68,7 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _d3d12CommandAllocator;
         }
     }
@@ -86,7 +78,7 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _d3d12GraphicsCommandList;
         }
     }
@@ -100,25 +92,10 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     /// <inheritdoc />
     public override uint MaxBoundVertexBufferViewCount => D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT;
 
-    /// <summary>Gets or sets the name for the pipeline signature.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = D3D12CommandAllocator->UpdateD3D12Name(value);
-            _ = D3D12GraphicsCommandList->UpdateD3D12Name(value);
-        }
-    }
-
     /// <inheritdoc />
     public override D3D12GraphicsRenderPass? RenderPass => _renderPass;
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
@@ -396,19 +373,19 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        ReleaseIfNotNull(_d3d12GraphicsCommandList);
+        ReleaseIfNotNull(_d3d12CommandAllocator);
 
-        if (priorState < Disposing)
+        if (isDisposing)
         {
-            ReleaseIfNotNull(_d3d12GraphicsCommandList);
-            ReleaseIfNotNull(_d3d12CommandAllocator);
-
-            if (isDisposing)
-            {
-                _fence?.Dispose();
-            }
+            _fence?.Dispose();
         }
+    }
 
-        _state.EndDispose();
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        D3D12CommandAllocator->SetD3D12Name(value);
+        D3D12GraphicsCommandList->SetD3D12Name(value);
     }
 }

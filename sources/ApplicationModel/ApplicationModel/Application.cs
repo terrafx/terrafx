@@ -64,11 +64,10 @@ public sealed class Application
 
         _state.Transition(from: Stopped, to: Running);
         {
-            var windowService = _serviceProvider.WindowService;
+            var uiService = _serviceProvider.UIService;
 
-            var dispatchService = windowService.DispatchService;
-            var dispatcher = dispatchService.DispatcherForCurrentThread;
-            var previousTimestamp = dispatchService.CurrentTimestamp;
+            var dispatcher = uiService.DispatcherForCurrentThread;
+            var previousTimestamp = uiService.CurrentTimestamp;
 
             var previousFrameCount = 0u;
             var framesPerSecond = 0u;
@@ -86,7 +85,7 @@ public sealed class Application
 
             while (_state == Running)
             {
-                var currentTimestamp = dispatchService.CurrentTimestamp;
+                var currentTimestamp = uiService.CurrentTimestamp;
                 var frameCount = previousFrameCount++;
                 {
                     var delta = currentTimestamp - previousTimestamp;

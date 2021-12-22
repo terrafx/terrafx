@@ -1,6 +1,5 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.	
 
-using System;
 using TerraFX.Interop.Xlib;
 using TerraFX.UI;
 using static TerraFX.Interop.Xlib.Xlib;
@@ -67,29 +66,36 @@ internal static unsafe partial class XlibUtilities
         ));
     }
 
-    public static void SetWindowTitle(XlibDispatchService dispatchService, Display* display, XWindow window, string value)
+    public static void SetWindowTitle(XlibUIService service, Display* display, XWindow window, string value)
     {
-        if (dispatchService.GetAtomIsSupported(_NET_WM_NAME))
-        {
-            var utf8Title = value.GetUtf8Span();
+        var utf8Title = value.GetUtf8Span();
 
-            fixed (sbyte* pUtf8Title = utf8Title)
+        fixed (sbyte* pUtf8Title = utf8Title)
+        {
+            if (service.GetAtomIsSupported(_NET_WM_NAME))
             {
+
                 _ = XChangeProperty(
                     display,
                     window,
-                    dispatchService.GetAtom(_NET_WM_NAME),
-                    dispatchService.GetAtom(UTF8_STRING),
+                    service.GetAtom(_NET_WM_NAME),
+                    service.GetAtom(UTF8_STRING),
                     8,
                     PropModeReplace,
                     (byte*)pUtf8Title,
                     utf8Title.Length
                 );
             }
-        }
-        else
-        {
-            throw new NotImplementedException();
+            else
+            {
+                var textProperty = new XTextProperty {
+                    value = (byte*)pUtf8Title,
+                    encoding = service.GetAtom(UTF8_STRING),
+                    format = 8,
+                    nitems = (uint)utf8Title.Length,
+                };
+                XSetWMName(display, window, &textProperty);
+            }
         }
     }
 

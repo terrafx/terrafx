@@ -17,7 +17,7 @@ using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Collections;
 
-/// <summary>Represents a stack of items that can be accessed by index.</summary>
+/// <summary>Represents a stack of items.</summary>
 /// <typeparam name="T">The type of the items contained in the stack.</typeparam>
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
@@ -162,7 +162,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
 
     /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
     /// <returns>An enumerator that can iterate through the items in the list.</returns>
-    public Enumerator GetEnumerator() => new Enumerator(this);
+    public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
     /// <summary>Gets a reference to the item at the specified index of the list.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>

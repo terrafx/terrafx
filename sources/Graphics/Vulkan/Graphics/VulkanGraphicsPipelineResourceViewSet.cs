@@ -1,15 +1,13 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkDescriptorPoolCreateFlags;
 using static TerraFX.Interop.Vulkan.VkDescriptorType;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
@@ -21,9 +19,6 @@ public sealed unsafe class VulkanGraphicsPipelineResourceViewSet : GraphicsPipel
     private readonly VkDescriptorPool _vkDescriptorPool;
     private readonly VkDescriptorSet _vkDescriptorSet;
 
-    private string _name = null!;
-    private VolatileState _state;
-
     internal VulkanGraphicsPipelineResourceViewSet(VulkanGraphicsPipeline pipeline, ReadOnlySpan<GraphicsResourceView> resourceViews)
         : base(pipeline, resourceViews)
     {
@@ -31,9 +26,6 @@ public sealed unsafe class VulkanGraphicsPipelineResourceViewSet : GraphicsPipel
         _vkDescriptorPool = vkDescriptorPool;
 
         _vkDescriptorSet = CreateVkDescriptorSet(pipeline, vkDescriptorPool, pipeline.Signature.VkDescriptorSetLayout);
-
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(GraphicsPipelineResourceViewSet);
 
         static VkDescriptorPool CreateVkDescriptorPool(VulkanGraphicsPipeline pipeline, UnmanagedReadOnlySpan<GraphicsPipelineResourceInfo> resources)
         {
@@ -151,31 +143,16 @@ public sealed unsafe class VulkanGraphicsPipelineResourceViewSet : GraphicsPipel
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPipelineResourceViewSet" /> class.</summary>
     ~VulkanGraphicsPipelineResourceViewSet() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsPipelineObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
-    /// <inheritdoc cref="GraphicsPipelineObject.Device" />
+    /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
-
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_DESCRIPTOR_POOL, VkDescriptorPool, value);
-            _ = Device.UpdateName(VK_OBJECT_TYPE_DESCRIPTOR_SET, VkDescriptorSet, value);
-        }
-    }
 
     /// <inheritdoc cref="GraphicsPipelineObject.Pipeline" />
     public new VulkanGraphicsPipeline Pipeline => base.Pipeline.As<VulkanGraphicsPipeline>();
 
-    /// <inheritdoc cref="GraphicsPipelineObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the <see cref="Interop.Vulkan.VkDescriptorPool" /> for the resource view set.</summary>
@@ -183,7 +160,7 @@ public sealed unsafe class VulkanGraphicsPipelineResourceViewSet : GraphicsPipel
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkDescriptorPool;
         }
     }
@@ -193,7 +170,7 @@ public sealed unsafe class VulkanGraphicsPipelineResourceViewSet : GraphicsPipel
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkDescriptorSet;
         }
     }
@@ -201,21 +178,14 @@ public sealed unsafe class VulkanGraphicsPipelineResourceViewSet : GraphicsPipel
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
+        if (isDisposing)
         {
-            if (isDisposing)
-            {
-                var vkDevice = Device.VkDevice;
-                var vkDescriptorPool = _vkDescriptorPool;
+            var vkDevice = Device.VkDevice;
+            var vkDescriptorPool = _vkDescriptorPool;
 
-                DisposeVkDescriptorSet(vkDevice, vkDescriptorPool, _vkDescriptorSet);
-                DisposeVkDescriptorPool(vkDevice, _vkDescriptorPool);
-            }
+            DisposeVkDescriptorSet(vkDevice, vkDescriptorPool, _vkDescriptorSet);
+            DisposeVkDescriptorPool(vkDevice, _vkDescriptorPool);
         }
-
-        _state.EndDispose();
 
         static void DisposeVkDescriptorPool(VkDevice vkDevice, VkDescriptorPool vkDescriptorPool)
         {
@@ -232,5 +202,12 @@ public sealed unsafe class VulkanGraphicsPipelineResourceViewSet : GraphicsPipel
                 _ = vkFreeDescriptorSets(vkDevice, vkDescriptorPool, 1, &vkDescriptorSet);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_DESCRIPTOR_POOL, VkDescriptorPool, value);
+        Device.SetVkObjectName(VK_OBJECT_TYPE_DESCRIPTOR_SET, VkDescriptorSet, value);
     }
 }

@@ -6,11 +6,11 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using TerraFX.Advanced;
 using TerraFX.Collections;
 using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
 using static TerraFX.Runtime.Configuration;
-using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
@@ -21,7 +21,7 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
 {
-    private readonly delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> _createMemoryAllocator;
+    private readonly GraphicsMemoryAllocatorCreateFunc _createMemoryAllocator;
     private readonly D3D12_HEAP_FLAGS _d3d12HeapFlags;
     private readonly D3D12_HEAP_TYPE _d3d12HeapType;
     private readonly ValueMutex _mutex;
@@ -29,19 +29,16 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
     private GraphicsMemoryAllocator? _emptyMemoryAllocator;
     private ValueList<GraphicsMemoryAllocator> _memoryAllocators;
     private nuint _minimumSize;
-    private string _name = null!;
     private ulong _operationCount;
     private ulong _size;
     private ulong _totalFreeMemoryRegionSize;
 
-    private VolatileState _state;
-
-    internal D3D12GraphicsMemoryManager(D3D12GraphicsDevice device, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator, D3D12_HEAP_FLAGS d3d12HeapFlags, D3D12_HEAP_TYPE d3d12HeapType)
+    internal D3D12GraphicsMemoryManager(D3D12GraphicsDevice device, GraphicsMemoryAllocatorCreateFunc createMemoryAllocator, D3D12_HEAP_FLAGS d3d12HeapFlags, D3D12_HEAP_TYPE d3d12HeapType)
         : base(device)
     {
-        if (createMemoryAllocator is null)
+        if (createMemoryAllocator.IsNull)
         {
-            createMemoryAllocator = &GraphicsMemoryAllocator.CreateDefault;
+            createMemoryAllocator = new GraphicsMemoryAllocatorCreateFunc(&GraphicsMemoryAllocator.CreateDefault);
         }
 
         _createMemoryAllocator = createMemoryAllocator;
@@ -52,9 +49,6 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
         _emptyMemoryAllocator = null;
         _memoryAllocators = new ValueList<GraphicsMemoryAllocator>();
 
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsMemoryManager);
-
         for (var i = 0; i < MinimumMemoryAllocatorCount; ++i)
         {
             var memoryAllocatorSize = GetAdjustedMemoryAllocatorSize(MaximumSharedMemoryAllocatorSize);
@@ -62,7 +56,7 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
         }
     }
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <inheritdoc />
@@ -83,24 +77,10 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
     /// <inheritdoc />
     public override nuint MinimumSize => _minimumSize;
 
-    /// <summary>Gets or sets the name for the manager.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = value ?? "";
-        }
-    }
-
     /// <inheritdoc />
     public override ulong OperationCount => _operationCount;
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
@@ -184,28 +164,26 @@ public sealed unsafe class D3D12GraphicsMemoryManager : GraphicsMemoryManager
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        var memoryAllocators = _memoryAllocators.AsSpanUnsafe(0, _memoryAllocators.Count);
 
-        if (priorState < Disposing)
+        for (var index = 0; index < memoryAllocators.Length; index++)
         {
-            var memoryAllocators = _memoryAllocators.AsSpanUnsafe(0, _memoryAllocators.Count);
-
-            for (var index = 0; index < memoryAllocators.Length; index++)
-            {
-                var memoryAllocator = memoryAllocators[index];
-                memoryAllocator.DeviceObject.Dispose();
-            }
-
-            _mutex.Dispose();
+            var memoryAllocator = memoryAllocators[index];
+            memoryAllocator.DeviceObject.Dispose();
         }
 
-        _state.EndDispose();
+        _mutex.Dispose();
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
     }
 
     private GraphicsMemoryAllocator AddMemoryAllocator(nuint size, bool isDedicated)
     {
         var memoryHeap = new D3D12GraphicsMemoryHeap(this, size, D3D12HeapType, D3D12HeapFlags);
-        var memoryAllocator = _createMemoryAllocator(memoryHeap, &OnAllocatorFree, size, isDedicated);
+        var memoryAllocator = _createMemoryAllocator.Invoke(memoryHeap, new GraphicsMemoryAllocatorOnFreeCallback(&OnAllocatorFree), size, isDedicated);
 
         _operationCount++;
         _memoryAllocators.Add(memoryAllocator);

@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using TerraFX.Threading;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -59,7 +60,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         if (span.Length != 0)
         {
             var items = new UnmanagedArray<T>(span.Length, alignment, zero: false);
-            CopyArrayUnsafe<T>(items.GetPointerUnsafe(0), span.GetPointerUnsafe(0), span.Length);
+            CopyArrayUnsafe(items.GetPointerUnsafe(0), span.GetPointerUnsafe(0), span.Length);
             _items = items;
         }
         else
@@ -89,7 +90,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         else
         {
             var items = new UnmanagedArray<T>(array.Length, array.Alignment, zero: false);
-            CopyArrayUnsafe<T>(items.GetPointerUnsafe(0), array.GetPointerUnsafe(0), array.Length);
+            CopyArrayUnsafe(items.GetPointerUnsafe(0), array.GetPointerUnsafe(0), array.Length);
             _items = items;
         }
 
@@ -144,6 +145,15 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         _items[count] = item;
     }
 
+    /// <summary>Adds an item to the list.</summary>
+    /// <param name="item">The item to add to the list.</param>
+    /// <param name="mutex">The mutex to use when adding <paramref name="item" /> to the list.</param>
+    public void Add(T item, ValueMutex mutex)
+    {
+        using var disposableMutex = new DisposableMutex(mutex, isExternallySynchronized: false);
+        Add(item);
+    }
+
     /// <summary>Converts the backing array for the list to a span.</summary>
     /// <returns>A span that covers the backing array for the list.</returns>
     public Span<T> AsSpanUnsafe() => AsUnmanagedSpanUnsafe().AsSpan();
@@ -177,7 +187,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         if (count != 0)
         {
             ThrowIfNotInInsertBounds(count, destination.Length);
-            CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), _items.GetPointerUnsafe(0), count);
+            CopyArrayUnsafe(destination.GetPointerUnsafe(0), _items.GetPointerUnsafe(0), count);
         }
     }
 
@@ -208,7 +218,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
 
     /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
     /// <returns>An enumerator that can iterate through the items in the list.</returns>
-    public Enumerator GetEnumerator() => new Enumerator(this);
+    public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
     /// <summary>Gets a pointer to the item at the specified index of the list.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
@@ -253,7 +263,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
 
         if (index != newCount)
         {
-            CopyArrayUnsafe<T>(items.GetPointerUnsafe(index), items.GetPointerUnsafe(index + 1), count - index);
+            CopyArrayUnsafe(items.GetPointerUnsafe(index), items.GetPointerUnsafe(index + 1), count - index);
         }
 
         _count = newCount;
@@ -276,6 +286,16 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         }
     }
 
+    /// <summary>Removes the first occurence of an item from the list.</summary>
+    /// <param name="item">The item to remove from the list.</param>
+    /// <param name="mutex">The mutex to use when removing <paramref name="item" /> from the list.</param>
+    /// <returns><c>true</c> if <paramref name="item" /> was removed from the list; otherwise, <c>false</c>.</returns>
+    public bool Remove(T item, ValueMutex mutex)
+    {
+        using var disposableMutex = new DisposableMutex(mutex, isExternallySynchronized: false);
+        return Remove(item);
+    }
+
     /// <summary>Removes the item at the specified index from the list.</summary>
     /// <param name="index">The zero-based index of the item to remove.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.</exception>
@@ -289,7 +309,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
 
         if (index < newCount)
         {
-            CopyArrayUnsafe<T>(items.GetPointerUnsafe(index), items.GetPointerUnsafe(index + 1), newCount - index);
+            CopyArrayUnsafe(items.GetPointerUnsafe(index), items.GetPointerUnsafe(index + 1), newCount - index);
         }
 
         if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())

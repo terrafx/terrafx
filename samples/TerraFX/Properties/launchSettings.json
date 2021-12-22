@@ -4,6 +4,10 @@
       "commandName": "Project",
       "commandLineArgs": "all",
       "nativeDebugging": true
+    },
+    "WSL": {
+      "commandName": "WSL",
+      "commandLineArgs": "TerraFX.Samples.dll all"
     }
   }
 }

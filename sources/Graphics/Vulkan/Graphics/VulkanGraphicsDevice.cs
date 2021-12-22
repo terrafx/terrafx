@@ -6,6 +6,7 @@
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkBufferUsageFlags;
@@ -21,7 +22,6 @@ using static TerraFX.Interop.Vulkan.VkSampleCountFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Runtime.Configuration;
-using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
@@ -40,16 +40,14 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     private readonly uint _vkGraphicsCommandQueueFamilyIndex;
     private readonly uint _vkMemoryTypeCount;
     private readonly uint _vkTransferCommandQueueFamilyIndex;
+    private readonly VkDeviceManualImports _vkDeviceManualImports;
 
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsComputeContext> _computeContextPool;
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsCopyContext> _copyContextPool;
     private MemoryBudgetInfo _memoryBudgetInfo;
-    private string _name = null!;
     private ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext> _renderContextPool;
 
-    private VolatileState _state;
-
-    internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator)
+    internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter, GraphicsMemoryAllocatorCreateFunc createMemoryAllocator)
         : base(adapter)
     {
         _vkComputeCommandQueueFamilyIndex = GetVkCommandQueueFamilyIndex(adapter, VK_QUEUE_COMPUTE_BIT);
@@ -60,6 +58,8 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
 
         var vkDevice = CreateVkDevice(adapter, vkGraphicsCommandQueueFamilyIndex);
         _vkDevice = vkDevice;
+
+        InitializeVkDeviceManualImports(vkDevice, ref _vkDeviceManualImports);
 
         _vkCommandQueue = GetVkCommandQueue(vkDevice, vkGraphicsCommandQueueFamilyIndex);
 
@@ -75,10 +75,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
         _memoryBudgetInfo = new MemoryBudgetInfo();
         UpdateMemoryBudgetInfo(ref _memoryBudgetInfo, totalOperationCount: 0);
 
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsDevice);
-
-        static VulkanGraphicsMemoryManager[] CreateMemoryManagers(VulkanGraphicsDevice device, delegate*<GraphicsDeviceObject, delegate*<in GraphicsMemoryRegion, void>, nuint, bool, GraphicsMemoryAllocator> createMemoryAllocator, uint vkMemoryTypeCount)
+        static VulkanGraphicsMemoryManager[] CreateMemoryManagers(VulkanGraphicsDevice device, GraphicsMemoryAllocatorCreateFunc createMemoryAllocator, uint vkMemoryTypeCount)
         {
             var memoryManagers = new VulkanGraphicsMemoryManager[vkMemoryTypeCount];
 
@@ -169,6 +166,12 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
             }
             return vkCommandQueueFamilyIndex;
         }
+
+        static void InitializeVkDeviceManualImports(VkDevice vkDevice, ref VkDeviceManualImports vkDeviceManualImports)
+        {
+            ReadOnlySpan<sbyte> vkSetDebugUtilsObjectNameEXT = new sbyte[] { 0x76, 0x6B, 0x53, 0x65, 0x74, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4F, 0x62, 0x6A, 0x65, 0x63, 0x74, 0x4E, 0x61, 0x6D, 0x65, 0x45, 0x58, 0x54, 0x00 };
+            vkDeviceManualImports.vkSetDebugUtilsObjectNameEXT = (delegate* unmanaged<VkDevice, VkDebugUtilsObjectNameInfoEXT*, VkResult>)vkGetDeviceProcAddr(vkDevice, vkSetDebugUtilsObjectNameEXT.GetPointer());
+        }
     }
 
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsDevice" /> class.</summary>
@@ -177,22 +180,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = UpdateName(VK_OBJECT_TYPE_DEVICE, VkDevice, value);
-            _ = UpdateName(VK_OBJECT_TYPE_QUEUE, VkCommandQueue, value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsAdapterObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the <see cref="VkQueue" /> used by the device.</summary>
@@ -200,7 +188,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkCommandQueue;
         }
     }
@@ -210,7 +198,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkComputeCommandQueueFamilyIndex;
         }
     }
@@ -218,12 +206,15 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkDevice"/> for the device.</summary>
     public VkDevice VkDevice => _vkDevice;
 
+    /// <summary>Gets the methods that must be manually imported for <see cref="VkDevice" />.</summary>
+    public ref readonly VkDeviceManualImports VkDeviceManualImports => ref _vkDeviceManualImports;
+
     /// <summary>Gets the index of the queue family that supports graphics operations for <see cref="VkCommandQueue" />.</summary>
     public uint VkGraphicsCommandQueueFamilyIndex
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkGraphicsCommandQueueFamilyIndex;
         }
     }
@@ -236,7 +227,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkTransferCommandQueueFamilyIndex;
         }
     }
@@ -266,7 +257,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
 
         var createInfo = new VulkanGraphicsBuffer.CreateInfo {
             CpuAccess = bufferCreateInfo.CpuAccess,
-            CreateMemoryAllocator = (bufferCreateInfo.CreateMemoryAllocator is not null) ? bufferCreateInfo.CreateMemoryAllocator : &GraphicsMemoryAllocator.CreateDefault,
+            CreateMemoryAllocator = bufferCreateInfo.CreateMemoryAllocator.IsValid ? bufferCreateInfo.CreateMemoryAllocator : new GraphicsMemoryAllocatorCreateFunc(&GraphicsMemoryAllocator.CreateDefault),
             MemoryRegion = memoryRegion,
             Kind = bufferCreateInfo.Kind,
             VkBuffer = vkBuffer,
@@ -291,28 +282,28 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc />
     public override VulkanGraphicsFence CreateFence(bool isSignalled)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         return new VulkanGraphicsFence(this, isSignalled);
     }
 
     /// <inheritdoc />
     public override GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResourceInfo> resources = default)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         return new VulkanGraphicsPipelineSignature(this, inputs, resources);
     }
 
     /// <inheritdoc />
     public override VulkanGraphicsShader CreateShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         return new VulkanGraphicsShader(this, kind, bytecode, entryPointName);
     }
 
     /// <inheritdoc />
     public override VulkanGraphicsRenderPass CreateRenderPass(IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsRenderPass));
+        ThrowIfDisposed();
         return new VulkanGraphicsRenderPass(this, surface, renderTargetFormat, minimumRenderTargetCount);
     }
 
@@ -444,7 +435,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc />
     public override VulkanGraphicsComputeContext RentComputeContext()
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         return _computeContextPool.Rent(this, &CreateComputeContext);
 
         static VulkanGraphicsComputeContext CreateComputeContext(VulkanGraphicsDevice device)
@@ -457,7 +448,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc />
     public override VulkanGraphicsCopyContext RentCopyContext()
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         return _copyContextPool.Rent(this, &CreateCopyContext);
 
         static VulkanGraphicsCopyContext CreateCopyContext(VulkanGraphicsDevice device)
@@ -470,7 +461,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc />
     public override VulkanGraphicsRenderContext RentRenderContext()
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         return _renderContextPool.Rent(this, &CreateRenderContext);
 
         static VulkanGraphicsRenderContext CreateRenderContext(VulkanGraphicsDevice device)
@@ -495,7 +486,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc cref="ReturnContext(GraphicsComputeContext)" />
     public void ReturnContext(VulkanGraphicsComputeContext computeContext)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         ThrowIfNull(computeContext);
 
         if (computeContext.Device != this)
@@ -508,7 +499,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc cref="ReturnContext(GraphicsCopyContext)" />
     public void ReturnContext(VulkanGraphicsCopyContext copyContext)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         ThrowIfNull(copyContext);
 
         if (copyContext.Device != this)
@@ -521,7 +512,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc cref="ReturnContext(GraphicsRenderContext)" />
     public void ReturnContext(VulkanGraphicsRenderContext renderContext)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
+        ThrowIfDisposed();
         ThrowIfNull(renderContext);
 
         if (renderContext.Device != this)
@@ -548,28 +539,21 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        WaitForIdle();
 
-        if (priorState < Disposing)
+        if (isDisposing)
         {
-            WaitForIdle();
-
-            if (isDisposing)
-            {
-                _computeContextPool.Dispose();
-                _copyContextPool.Dispose();
-                _renderContextPool.Dispose();
-            }
-
-            foreach (var memoryManager in _memoryManagers)
-            {
-                memoryManager.Dispose();
-            }
-
-            DisposeVkDevice(_vkDevice);
+            _computeContextPool.Dispose();
+            _copyContextPool.Dispose();
+            _renderContextPool.Dispose();
         }
 
-        _state.EndDispose();
+        foreach (var memoryManager in _memoryManagers)
+        {
+            memoryManager.Dispose();
+        }
+
+        DisposeVkDevice(_vkDevice);
 
         static void DisposeVkDevice(VkDevice vkDevice)
         {
@@ -580,12 +564,19 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal string UpdateName(VkObjectType objectType, ulong objectHandle, string name, [CallerArgumentExpression("objectHandle")] string component = "")
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
     {
-        name ??= "";
+        SetVkObjectName(VK_OBJECT_TYPE_DEVICE, VkDevice, value);
+        SetVkObjectName(VK_OBJECT_TYPE_QUEUE, VkCommandQueue, value);
+    }
 
-        if (GraphicsService.EnableDebugMode && (Service.VkSetDebugUtilsObjectName != null) && (objectHandle != 0))
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal void SetVkObjectName(VkObjectType vkObjectType, ulong vkObjectHandle, string name, [CallerArgumentExpression("vkObjectHandle")] string component = "")
+    {
+        ref readonly var vkDeviceManualImports = ref VkDeviceManualImports;
+
+        if (GraphicsService.EnableDebugMode && (vkDeviceManualImports.vkSetDebugUtilsObjectNameEXT is not null) && (vkObjectHandle != 0))
         {
             var componentName = $"{name}: {component}";
 
@@ -593,20 +584,18 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
             {
                 var vkDebugUtilsObjectNameInfo = new VkDebugUtilsObjectNameInfoEXT {
                     sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT,
-                    objectType = objectType,
-                    objectHandle = objectHandle,
+                    objectType = vkObjectType,
+                    objectHandle = vkObjectHandle,
                     pObjectName = pName
                 };
-                _ = Service.VkSetDebugUtilsObjectName(VkDevice, &vkDebugUtilsObjectNameInfo);
+                _ = vkDeviceManualImports.vkSetDebugUtilsObjectNameEXT(VkDevice, &vkDebugUtilsObjectNameInfo);
             }
         }
-
-        return name;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal string UpdateName(VkObjectType objectType, void* objectHandle, string name, [CallerArgumentExpression("objectHandle")] string component = "")
-        => UpdateName(objectType, (ulong)objectHandle, name, component);
+    internal void  SetVkObjectName(VkObjectType vkObjectType, void* vkObjectHandle, string name, [CallerArgumentExpression("vkObjectHandle")] string component = "")
+        => SetVkObjectName(vkObjectType, (ulong)vkObjectHandle, name, component);
 
     private GraphicsMemoryBudget GetMemoryBudgetInternal(uint vkMemoryTypeIndex, ref MemoryBudgetInfo memoryBudgetInfo)
     {

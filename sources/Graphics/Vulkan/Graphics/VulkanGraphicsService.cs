@@ -9,14 +9,11 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkDebugUtilsMessageSeverityFlagsEXT;
 using static TerraFX.Interop.Vulkan.VkDebugUtilsMessageTypeFlagsEXT;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.VkValidationFeatureEnableEXT;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -76,13 +73,11 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
     private readonly string[] _optionalExtensionNames;
     private readonly string[] _requiredLayerNames;
     private readonly string[] _optionalLayerNames;
+    private readonly VkInstanceManualImports _vkInstanceManualImports;
 
     private readonly ImmutableArray<VulkanGraphicsAdapter> _adapters;
     private readonly VkInstance _vkInstance;
     private readonly VkDebugUtilsMessengerEXT _vkDebugUtilsMessenger;
-    private readonly delegate* unmanaged<VkDevice, VkDebugUtilsObjectNameInfoEXT*, VkResult> _vkSetDebugUtilsObjectName;
-
-    private VolatileState _state;
 
     /// <summary>Initializes a new instance of the <see cref="VulkanGraphicsService" /> class.</summary>
     public VulkanGraphicsService()
@@ -116,24 +111,20 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
         var vkInstance = CreateVkInstance(engineName, requiredExtensionNames, optionalExtensionNames, requiredLayerNames, optionalLayerNames, EnableDebugMode);
         _vkInstance = vkInstance;
 
-        _vkDebugUtilsMessenger = CreateVkDebugUtilsMessenger(vkInstance);
-        _vkSetDebugUtilsObjectName = GetVkSetDebugUtilsObjectName(vkInstance);
+        InitializeVkInstanceManualImports(vkInstance, ref _vkInstanceManualImports);
+
+        _vkDebugUtilsMessenger = CreateVkDebugUtilsMessenger(vkInstance, in _vkInstanceManualImports);
 
         _adapters = GetGraphicsAdapters(this, vkInstance);
 
-        _ = _state.Transition(to: Initialized);
-
-        static VkDebugUtilsMessengerEXT CreateVkDebugUtilsMessenger(VkInstance vkInstance)
+        static VkDebugUtilsMessengerEXT CreateVkDebugUtilsMessenger(VkInstance vkInstance, in VkInstanceManualImports vkInstanceManualImports)
         {
             var vkDebugUtilsMessenger = VkDebugUtilsMessengerEXT.NULL;
 
-            if (EnableDebugMode)
+            if (EnableDebugMode && (vkInstanceManualImports.vkCreateDebugUtilsMessengerEXT is not null))
             {
                 InitializeVkDebugUtilsMessengerCreateInfo(out var vkDebugUtilsMessengerCreateInfo);
-
-                // We don't want to fail if creating the debug utils messenger failed
-                var vkCreateDebugUtilsMessengerEXT = (delegate* unmanaged<IntPtr, VkDebugUtilsMessengerCreateInfoEXT*, VkAllocationCallbacks*, ulong*, VkResult>)vkGetInstanceProcAddr(vkInstance, VKCREATEDEBUGUTILSMESSENGEREXT_FUNCTION_NAME.GetPointer());
-                _ = vkCreateDebugUtilsMessengerEXT(vkInstance, &vkDebugUtilsMessengerCreateInfo, null, (ulong*)&vkDebugUtilsMessenger);
+                _ = vkInstanceManualImports.vkCreateDebugUtilsMessengerEXT(vkInstance, &vkDebugUtilsMessengerCreateInfo, null, &vkDebugUtilsMessenger);
             }
 
             return vkDebugUtilsMessenger;
@@ -339,18 +330,6 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
             return vkLayerProperties;
         }
 
-        static delegate* unmanaged <VkDevice, VkDebugUtilsObjectNameInfoEXT*, VkResult> GetVkSetDebugUtilsObjectName(VkInstance vkInstance)
-        {
-            void* vkSetDebugUtilsObjectName = null;
-
-            if (EnableDebugMode)
-            {
-                vkSetDebugUtilsObjectName = vkGetInstanceProcAddr(vkInstance, VKSETDEBUGUTILSOBJECTNAMEEXT_FUNCTION_NAME.GetPointer());
-            }
-
-            return (delegate* unmanaged<VkDevice, VkDebugUtilsObjectNameInfoEXT*, VkResult>)vkSetDebugUtilsObjectName;
-        }
-
         static string[] GetNames(string dataName)
         {
             var namesData = AppContext.GetData(dataName) as string ?? string.Empty;
@@ -366,6 +345,21 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
                 messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT,
                 pfnUserCallback = &VulkanDebugUtilsMessengerCallback,
             };
+        }
+
+        static void InitializeVkInstanceManualImports(VkInstance vkInstance, ref VkInstanceManualImports vkInstanceManualImports)
+        {
+            ReadOnlySpan<sbyte> vkCreateDebugUtilsMessengerEXT = new sbyte[] { 0x76, 0x6B, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4D, 0x65, 0x73, 0x73, 0x65, 0x6E, 0x67, 0x65, 0x72, 0x45, 0x58, 0x54, 0x00 };
+            vkInstanceManualImports.vkCreateDebugUtilsMessengerEXT = (delegate* unmanaged<VkInstance, VkDebugUtilsMessengerCreateInfoEXT*, VkAllocationCallbacks*, VkDebugUtilsMessengerEXT*, VkResult>)vkGetInstanceProcAddr(vkInstance, vkCreateDebugUtilsMessengerEXT.GetPointer());
+
+            ReadOnlySpan<sbyte> vkDestroyDebugUtilsMessengerEXT = new sbyte[] { 0x76, 0x6B, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6F, 0x79, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4D, 0x65, 0x73, 0x73, 0x65, 0x6E, 0x67, 0x65, 0x72, 0x45, 0x58, 0x54, 0x00 };
+            vkInstanceManualImports.vkDestroyDebugUtilsMessengerEXT = (delegate* unmanaged<VkInstance, VkDebugUtilsMessengerEXT, VkAllocationCallbacks*, void>)vkGetInstanceProcAddr(vkInstance, vkDestroyDebugUtilsMessengerEXT.GetPointer());
+
+            ReadOnlySpan<sbyte> vkCreateWin32SurfaceKHR = new sbyte[] { 0x76, 0x6B, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x57, 0x69, 0x6E, 0x33, 0x32, 0x53, 0x75, 0x72, 0x66, 0x61, 0x63, 0x65, 0x4B, 0x48, 0x52, 0x00 };
+            vkInstanceManualImports.vkCreateWin32SurfaceKHR = (delegate* unmanaged<VkInstance, VkWin32SurfaceCreateInfoKHR*, VkAllocationCallbacks*, VkSurfaceKHR*, VkResult>)vkGetInstanceProcAddr(vkInstance, vkCreateWin32SurfaceKHR.GetPointer());
+
+            ReadOnlySpan<sbyte> vkCreateXlibSurfaceKHR = new sbyte[] { 0x76, 0x6B, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x58, 0x6C, 0x69, 0x62, 0x53, 0x75, 0x72, 0x66, 0x61, 0x63, 0x65, 0x4B, 0x48, 0x52, 0x00 };
+            vkInstanceManualImports.vkCreateXlibSurfaceKHR = (delegate* unmanaged<VkInstance, VkXlibSurfaceCreateInfoKHR*, VkAllocationCallbacks*, VkSurfaceKHR*, VkResult>)vkGetInstanceProcAddr(vkInstance, vkCreateXlibSurfaceKHR.GetPointer());
         }
 
         static int MarshalNames(string[] names, out sbyte* namesBuffer)
@@ -393,15 +387,6 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsService" /> class.</summary>
     ~VulkanGraphicsService() => Dispose(isDisposing: false);
 
-    // vkCreateDebugUtilsMessengerEXT
-    private static ReadOnlySpan<sbyte> VKCREATEDEBUGUTILSMESSENGEREXT_FUNCTION_NAME => new sbyte[] { 0x76, 0x6B, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4D, 0x65, 0x73, 0x73, 0x65, 0x6E, 0x67, 0x65, 0x72, 0x45, 0x58, 0x54, 0x00 };
-
-    // vkDestroyDebugUtilsMessengerEXT
-    private static ReadOnlySpan<sbyte> VKDESTROYDEBUGUTILSMESSENGEREXT_FUNCTION_NAME => new sbyte[] { 0x76, 0x6B, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6F, 0x79, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4D, 0x65, 0x73, 0x73, 0x65, 0x6E, 0x67, 0x65, 0x72, 0x45, 0x58, 0x54, 0x00 };
-
-    // vkSetDebugUtilsObjectNameEXT
-    private static ReadOnlySpan<sbyte> VKSETDEBUGUTILSOBJECTNAMEEXT_FUNCTION_NAME => new sbyte[] { 0x76, 0x6B, 0x53, 0x65, 0x74, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4F, 0x62, 0x6A, 0x65, 0x63, 0x74, 0x4E, 0x61, 0x6D, 0x65, 0x45, 0x58, 0x54, 0x00 };
-
     /// <inheritdoc />
     /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(VkInstance, uint*, VkPhysicalDevice*)" /> failed.</exception>
     public override IEnumerable<VulkanGraphicsAdapter> Adapters => _adapters;
@@ -411,13 +396,13 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkInstance;
         }
     }
 
-    /// <summary>Gets a function pointer to the <see cref="vkSetDebugUtilsObjectNameEXT(VkDevice, VkDebugUtilsObjectNameInfoEXT*)" /> or <c>null</c> if it could not be resolved.</summary>
-    public delegate* unmanaged<VkDevice, VkDebugUtilsObjectNameInfoEXT*, VkResult> VkSetDebugUtilsObjectName => _vkSetDebugUtilsObjectName;
+    /// <summary>Gets the methods that must be manually imported for <see cref="VkInstance" />.</summary>
+    public ref readonly VkInstanceManualImports VkInstanceManualImports => ref _vkInstanceManualImports;
 
     [UnmanagedCallersOnly]
     private static VkBool32 VulkanDebugUtilsMessengerCallback(VkDebugUtilsMessageSeverityFlagsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes, VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
@@ -430,24 +415,16 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        var vkInstance = _vkInstance;
 
-        if (priorState < Disposing)
-        {
-            var vkInstance = _vkInstance;
+        DisposeVkDebugUtilsMessenger(vkInstance, _vkDebugUtilsMessenger, in _vkInstanceManualImports);
+        DisposeVkInstance(vkInstance);
 
-            DisposeVkDebugUtilsMessenger(vkInstance, _vkDebugUtilsMessenger);
-            DisposeVkInstance(vkInstance);
-        }
-
-        _state.EndDispose();
-
-        static void DisposeVkDebugUtilsMessenger(VkInstance vkInstance, VkDebugUtilsMessengerEXT vkDebugUtilsMessenger)
+        static void DisposeVkDebugUtilsMessenger(VkInstance vkInstance, VkDebugUtilsMessengerEXT vkDebugUtilsMessenger, in VkInstanceManualImports vkInstanceManualImports)
         {
             if (vkDebugUtilsMessenger != VkDebugUtilsMessengerEXT.NULL)
             {
-                var vkDestroyDebugUtilsMessengerEXT = (delegate* unmanaged<IntPtr, VkDebugUtilsMessengerEXT, VkAllocationCallbacks*, void>)vkGetInstanceProcAddr(vkInstance, VKDESTROYDEBUGUTILSMESSENGEREXT_FUNCTION_NAME.GetPointer());
-                vkDestroyDebugUtilsMessengerEXT(vkInstance, vkDebugUtilsMessenger, null);
+                vkInstanceManualImports.vkDestroyDebugUtilsMessengerEXT(vkInstance, vkDebugUtilsMessenger, null);
             }
         }
 
@@ -458,5 +435,10 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
                 vkDestroyInstance(vkInstance, pAllocator: null);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
     }
 }

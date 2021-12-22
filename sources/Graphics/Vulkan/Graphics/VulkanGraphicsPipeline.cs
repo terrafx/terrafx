@@ -1,8 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkColorComponentFlags;
 using static TerraFX.Interop.Vulkan.VkCompareOp;
 using static TerraFX.Interop.Vulkan.VkCullModeFlags;
@@ -15,8 +15,6 @@ using static TerraFX.Interop.Vulkan.VkShaderStageFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.VkVertexInputRate;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.MathUtilities;
@@ -31,16 +29,10 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
 {
     private readonly VkPipeline _vkPipeline;
 
-    private string _name = null!;
-    private VolatileState _state;
-
     internal VulkanGraphicsPipeline(VulkanGraphicsRenderPass renderPass, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
         : base(renderPass, signature, vertexShader, pixelShader)
     {
         _vkPipeline = CreateVkPipeline(renderPass, signature, vertexShader, pixelShader);
-
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsPipeline);
 
         static VkPipeline CreateVkPipeline(VulkanGraphicsRenderPass renderPass, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
         {
@@ -260,30 +252,16 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPipeline" /> class.</summary>
     ~VulkanGraphicsPipeline() => Dispose(isDisposing: true);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_PIPELINE, VkPipeline, value);
-        }
-    }
-
     /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
     public new VulkanGraphicsShader? PixelShader => base.PixelShader.As<VulkanGraphicsShader>();
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <inheritdoc cref="GraphicsPipeline.Signature" />
@@ -297,7 +275,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkPipeline;
         }
     }
@@ -305,7 +283,7 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
     /// <inheritdoc />
     public override VulkanGraphicsPipelineResourceViewSet CreateResourceViews(ReadOnlySpan<GraphicsResourceView> resourceViews)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsPipeline));
+        ThrowIfDisposed();
         ThrowIfZero(resourceViews.Length);
 
         return new VulkanGraphicsPipelineResourceViewSet(this, resourceViews);
@@ -314,21 +292,14 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        DisposeVkPipeline(Device.VkDevice, _vkPipeline);
 
-        if (priorState < Disposing)
+        if (isDisposing)
         {
-            DisposeVkPipeline(Device.VkDevice, _vkPipeline);
-
-            if (isDisposing)
-            {
-                Signature?.Dispose();
-                PixelShader?.Dispose();
-                VertexShader?.Dispose();
-            }
+            Signature?.Dispose();
+            PixelShader?.Dispose();
+            VertexShader?.Dispose();
         }
-
-        _state.EndDispose();
 
         static void DisposeVkPipeline(VkDevice vkDevice, VkPipeline vkPipeline)
         {
@@ -337,5 +308,11 @@ public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
                 vkDestroyPipeline(vkDevice, vkPipeline, pAllocator: null);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_PIPELINE, VkPipeline, value);
     }
 }

@@ -1,12 +1,10 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using TerraFX.Advanced;
 using TerraFX.Interop.Vulkan;
-using TerraFX.Threading;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
@@ -19,10 +17,6 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
     private readonly VkCommandBuffer _vkCommandBuffer;
     private readonly VkCommandPool _vkCommandPool;
 
-    private string _name = null!;
-
-    private VolatileState _state;
-
     internal VulkanGraphicsComputeContext(VulkanGraphicsDevice device)
         : base(device)
     {
@@ -31,9 +25,6 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
 
         _vkCommandBuffer = CreateVkCommandBuffer(device, vkCommandPool);
         _fence = device.CreateFence(isSignalled: true);
-
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(VulkanGraphicsComputeContext);
 
         static VkCommandBuffer CreateVkCommandBuffer(VulkanGraphicsDevice device, VkCommandPool vkCommandPool)
         {
@@ -66,7 +57,7 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsComputeContext" /> class.</summary>
     ~VulkanGraphicsComputeContext() => Dispose(isDisposing: false);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
@@ -75,22 +66,7 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
     /// <inheritdoc />
     public override VulkanGraphicsFence Fence => _fence;
 
-    /// <inheritdoc />
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = Device.UpdateName(VK_OBJECT_TYPE_COMMAND_BUFFER, VkCommandBuffer, value);
-            _ = Device.UpdateName(VK_OBJECT_TYPE_COMMAND_POOL, VkCommandPool, value);
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the <see cref="Interop.Vulkan.VkCommandBuffer" /> used by the context.</summary>
@@ -98,7 +74,7 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkCommandBuffer;
         }
     }
@@ -108,7 +84,7 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _vkCommandPool;
         }
     }
@@ -146,23 +122,16 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        var vkDevice = Device.VkDevice;
+        var vkCommandPool = _vkCommandPool;
 
-        if (priorState < Disposing)
+        DisposeVkCommandBuffer(vkDevice, vkCommandPool, _vkCommandBuffer);
+        DisposeVkCommandPool(vkDevice, vkCommandPool);
+
+        if (isDisposing)
         {
-            var vkDevice = Device.VkDevice;
-            var vkCommandPool = _vkCommandPool;
-
-            DisposeVkCommandBuffer(vkDevice, vkCommandPool, _vkCommandBuffer);
-            DisposeVkCommandPool(vkDevice, vkCommandPool);
-
-            if (isDisposing)
-            {
-                _fence?.Dispose();
-            }
+            _fence?.Dispose();
         }
-
-        _state.EndDispose();
 
         static void DisposeVkCommandBuffer(VkDevice vkDevice, VkCommandPool vkCommandPool, VkCommandBuffer vkCommandBuffer)
         {
@@ -179,5 +148,12 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
                 vkDestroyCommandPool(vkDevice, vkCommandPool, pAllocator: null);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
+        Device.SetVkObjectName(VK_OBJECT_TYPE_COMMAND_BUFFER, VkCommandBuffer, value);
+        Device.SetVkObjectName(VK_OBJECT_TYPE_COMMAND_POOL, VkCommandPool, value);
     }
 }

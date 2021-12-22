@@ -8,7 +8,7 @@ using TerraFX.Graphics;
 namespace TerraFX.Samples.ServiceProviders;
 
 [SupportedOSPlatform("windows10.0")]
-public sealed class D3D12GraphicsServiceProvider : Win32WindowServiceProvider
+public sealed class D3D12GraphicsServiceProvider : Win32UIServiceProvider
 {
     private ValueLazy<D3D12GraphicsService> _graphicsService;
 

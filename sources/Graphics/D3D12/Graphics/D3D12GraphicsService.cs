@@ -5,13 +5,10 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Runtime.InteropServices;
 using TerraFX.Interop.DirectX;
-using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.DirectX.DXGI;
 using static TerraFX.Interop.DirectX.DXGI_DEBUG_RLO_FLAGS;
 using static TerraFX.Interop.Windows.Windows;
-using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -23,8 +20,6 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
     private readonly IDXGIFactory4* _dxgiFactory;
     private readonly ImmutableArray<D3D12GraphicsAdapter> _adapters;
 
-    private VolatileState _state;
-
     /// <summary>Initializes a new instance of the <see cref="D3D12GraphicsService" /> class.</summary>
     public D3D12GraphicsService() : base()
     {
@@ -32,8 +27,6 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
 
         _dxgiFactory = dxgiFactory;
         _adapters = GetAdapters(this, dxgiFactory);
-
-        _ = _state.Transition(to: Initialized);
 
         static IDXGIFactory4* CreateDxgiFactory(bool enableDebugMode)
         {
@@ -152,7 +145,7 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
     {
         get
         {
-            AssertNotDisposedOrDisposing(_state);
+            AssertNotDisposed();
             return _dxgiFactory;
         }
     }
@@ -160,27 +153,20 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
-
-        if (priorState < Disposing)
+        if (isDisposing)
         {
-            if (isDisposing)
+            foreach (var adapter in _adapters)
             {
-                foreach (var adapter in _adapters)
-                {
-                    adapter?.Dispose();
-                }
-            }
-
-            ReleaseIfNotNull(_dxgiFactory);
-
-            if (EnableDebugMode)
-            {
-                TryReportLiveObjects();
+                adapter?.Dispose();
             }
         }
 
-        _state.EndDispose();
+        ReleaseIfNotNull(_dxgiFactory);
+
+        if (EnableDebugMode)
+        {
+            TryReportLiveObjects();
+        }
 
         static void TryReportLiveObjects()
         {
@@ -205,5 +191,10 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
                 _ = dxgiDebug[0]->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL | DXGI_DEBUG_RLO_IGNORE_INTERNAL);
             }
         }
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
     }
 }

@@ -3,7 +3,6 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-using TerraFX.Collections;
 using TerraFX.Graphics;
 using TerraFX.Interop.Windows;
 using TerraFX.Numerics;
@@ -14,11 +13,12 @@ using static TerraFX.Interop.Windows.SW;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Interop.Windows.WM;
 using static TerraFX.Interop.Windows.WS;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
-using static TerraFX.UI.Win32WindowService;
+using static TerraFX.UI.Win32UIService;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.MarshalUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.Win32Utilities;
 
 namespace TerraFX.UI;
@@ -27,42 +27,56 @@ namespace TerraFX.UI;
 public sealed unsafe class Win32Window : Window
 {
     private readonly FlowDirection _flowDirection;
+    private readonly HWND _handle;
     private readonly ReadingDirection _readingDirection;
 
-    private ValueLazy<HWND> _handle;
-    private ValueLazy<PropertySet> _properties;
-
-    private string _title;
     private BoundingRectangle _bounds;
     private BoundingRectangle _clientBounds;
     private uint _extendedStyle;
-    private uint _style;
-    private WindowState _windowState;
     private bool _isActive;
+    private uint _style;
+    private string _title = null!;
+    private WindowState _windowState;
 
     private VolatileState _state;
 
-    internal Win32Window(Win32WindowService windowService)
-        : base(windowService, Thread.CurrentThread)
+    internal Win32Window(Win32UIDispatcher dispatcher)
+        : base(dispatcher)
     {
         _flowDirection = FlowDirection.TopToBottom;
+        _handle = CreateHandle(this, Service.ClassAtom);
         _readingDirection = ReadingDirection.LeftToRight;
 
-        _handle = new ValueLazy<HWND>(CreateWindowHandle);
-        _properties = new ValueLazy<PropertySet>(CreateProperties);
-
-        _title = typeof(Win32Window).FullName!;
-        _bounds = BoundingRectangle.Zero;
-        _clientBounds = BoundingRectangle.Zero;
-        _extendedStyle = WS_EX_OVERLAPPEDWINDOW;
-        _style = WS_OVERLAPPEDWINDOW;
-
         _ = _state.Transition(to: Initialized);
+
+        static HWND CreateHandle(Win32Window window, ushort classAtom)
+        {
+            HWND hWnd;
+
+            fixed (char* lpWindowName = nameof(Win32Window))
+            {
+                ThrowForLastErrorIfZero(hWnd = CreateWindowExW(
+                    WS_EX_OVERLAPPEDWINDOW,
+                    (ushort*)classAtom,
+                    (ushort*)lpWindowName,
+                    WS_OVERLAPPEDWINDOW,
+                    X: CW_USEDEFAULT,
+                    Y: CW_USEDEFAULT,
+                    nWidth: CW_USEDEFAULT,
+                    nHeight: CW_USEDEFAULT,
+                    hWndParent: HWND_DESKTOP,
+                    hMenu: HMENU.NULL,
+                    hInstance: EntryPointModule,
+                    lpParam: (void*)GCHandle.ToIntPtr(GCHandle.Alloc(window))
+                ));
+            }
+
+            return hWnd;
+        }
     }
 
     /// <summary>Finalizes an instance of the <see cref="Win32Window" /> class.</summary>
-    ~Win32Window()
-        => Dispose(isDisposing: false);
+    ~Win32Window() => Dispose(isDisposing: false);
 
     /// <inheritdoc />
     public override event EventHandler<PropertyChangedEventArgs<Vector2>>? ClientLocationChanged;
@@ -77,68 +91,66 @@ public sealed unsafe class Win32Window : Window
     public override event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
 
     /// <inheritdoc />
-    public override BoundingRectangle Bounds
-        => _bounds;
+    public override BoundingRectangle Bounds => _bounds;
 
     /// <inheritdoc />
-    public override BoundingRectangle ClientBounds
-        => _clientBounds;
+    public override BoundingRectangle ClientBounds => _clientBounds;
+
+    /// <inheritdoc cref="UIDispatcherObject.Dispatcher" />
+    public new Win32UIDispatcher Dispatcher => base.Dispatcher.As<Win32UIDispatcher>();
 
     /// <inheritdoc />
-    public override FlowDirection FlowDirection
-        => _flowDirection;
+    public override FlowDirection FlowDirection => _flowDirection;
 
-    /// <summary>Gets the underlying <c>HWND</c> for the window.</summary>
-    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+    /// <summary>Gets the underlying handle for the window.</summary>
     public HWND Handle
-        => _handle.Value;
+    {
+        get
+        {
+            AssertNotDisposedOrDisposing(_state);
+            return _handle;
+        }
+    }
 
     /// <inheritdoc />
-    public override bool IsActive
-        => _isActive;
+    public override bool IsActive => _isActive;
 
     /// <inheritdoc />
-    public override bool IsEnabled
-        => (_style & WS_DISABLED) == 0;
+    public override bool IsEnabled => (_style & WS_DISABLED) == 0;
 
     /// <inheritdoc />
-    public override bool IsVisible
-        => (_style & WS_VISIBLE) != 0;
+    public override bool IsVisible => (_style & WS_VISIBLE) != 0;
 
     /// <inheritdoc />
-    public override IPropertySet Properties
-        => _properties.Value;
+    public override ReadingDirection ReadingDirection => _readingDirection;
+
+    /// <inheritdoc cref="UIDispatcherObject.Service" />
+    public new Win32UIService Service => base.Service.As<Win32UIService>();
 
     /// <inheritdoc />
-    public override ReadingDirection ReadingDirection
-        => _readingDirection;
+    public override string Title => _title;
 
     /// <inheritdoc />
-    public override string Title
-        => _title;
-
-    /// <inheritdoc cref="Window.WindowService" />
-    public new Win32WindowService WindowService
-        => (Win32WindowService)base.WindowService;
+    public override WindowState WindowState => _windowState;
 
     /// <inheritdoc />
-    public override WindowState WindowState
-        => _windowState;
+    protected override IntPtr SurfaceContextHandle => EntryPointModule;
 
     /// <inheritdoc />
-    protected override IntPtr SurfaceContextHandle
-        => EntryPointModule;
+    protected override IntPtr SurfaceHandle => Handle;
 
     /// <inheritdoc />
-    protected override IntPtr SurfaceHandle
-        => Handle;
+    protected override GraphicsSurfaceKind SurfaceKind => GraphicsSurfaceKind.Win32;
+
+    private static void DisposeHandle(HWND handle)
+    {
+        if (handle != HWND.NULL)
+        {
+            ThrowExternalExceptionIfFalse(DestroyWindow(handle));
+        }
+    }
 
     /// <inheritdoc />
-    protected override GraphicsSurfaceKind SurfaceKind
-        => GraphicsSurfaceKind.Win32;
-
-    /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
     public override void Activate()
     {
         if (!TryActivate())
@@ -148,90 +160,90 @@ public sealed unsafe class Win32Window : Window
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-    /// <remarks>
-    ///   <para>This method can be called from any thread.</para>
-    ///   <para>This method does nothing if the underlying <c>HWND</c> has not been created.</para>
-    /// </remarks>
     public override void Close()
     {
-        if (_handle.IsValueCreated)
-        {
-            _ = SendMessageW(Handle, WM_CLOSE, wParam: 0u, lParam: 0);
-        }
+        ThrowIfDisposedOrDisposing(_state, nameof(Win32Window));
+        _ = SendMessageW(_handle, WM_CLOSE, wParam: 0u, lParam: 0);
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>true</c> but the instance has already been disposed.</exception>
     public override void Disable()
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(Win32Window));
+
         if (IsEnabled)
         {
-            _ = EnableWindow(Handle, FALSE);
+            _ = EnableWindow(_handle, FALSE);
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>false</c> but the instance has already been disposed.</exception>
     public override void Enable()
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(Win32Window));
+
         if (!IsEnabled)
         {
-            _ = EnableWindow(Handle, TRUE);
+            _ = EnableWindow(_handle, TRUE);
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException"><see cref="IsVisible" /> was <c>true</c> but the instance has already been disposed.</exception>
     public override void Hide()
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(Win32Window));
+
         if (WindowState != WindowState.Hidden)
         {
-            _ = ShowWindow(Handle, SW_HIDE);
+            _ = ShowWindow(_handle, SW_HIDE);
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Maximized" /> but the instance has already been disposed.</exception>
     public override void Maximize()
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(Win32Window));
+
         if (WindowState != WindowState.Maximized)
         {
-            _ = ShowWindow(Handle, SW_MAXIMIZE);
+            _ = ShowWindow(_handle, SW_MAXIMIZE);
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Minimized" /> but the instance has already been disposed.</exception>
     public override void Minimize()
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(Win32Window));
+
         if (WindowState != WindowState.Minimized)
         {
-            _ = ShowWindow(Handle, SW_MINIMIZE);
+            _ = ShowWindow(_handle, SW_MINIMIZE);
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
     public override void Relocate(Vector2 location)
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(Win32Window));
+
         if (_bounds.Location != location)
         {
             ThrowExternalExceptionIfFalse(MoveWindow(
-                Handle,
+                _handle,
                 (int)location.X,
                 (int)location.Y,
                 (int)_bounds.Size.X,
                 (int)_bounds.Size.Y,
                 bRepaint: TRUE
-            ), nameof(MoveWindow));
+            ));
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
     public override void RelocateClient(Vector2 location)
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(Win32Window));
+
         if (_clientBounds.Location != location)
         {
             var topLeft = location;
@@ -244,32 +256,34 @@ public sealed unsafe class Win32Window : Window
                 bottom = (int)bottomRight.Y,
             };
 
-            ThrowExternalExceptionIfFalse(AdjustWindowRectEx(&rect, _style, bMenu: FALSE, _extendedStyle), nameof(AdjustWindowRectEx));
-            ThrowExternalExceptionIfFalse(MoveWindow(Handle, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, bRepaint: TRUE), nameof(MoveWindow));
+            ThrowExternalExceptionIfFalse(AdjustWindowRectEx(&rect, _style, bMenu: FALSE, _extendedStyle));
+            ThrowExternalExceptionIfFalse(MoveWindow(_handle, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, bRepaint: TRUE));
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
     public override void Resize(Vector2 size)
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(Win32Window));
+
         if (_bounds.Size != size)
         {
             ThrowExternalExceptionIfFalse(MoveWindow(
-                Handle,
+                _handle,
                 (int)_bounds.Location.X,
                 (int)_bounds.Location.Y,
                 (int)size.X,
                 (int)size.Y,
                 bRepaint: TRUE
-            ), nameof(MoveWindow));
+            ));
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
     public override void ResizeClient(Vector2 size)
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(Win32Window));
+
         if (_clientBounds.Size != size)
         {
             var topLeft = ClientLocation;
@@ -282,166 +296,51 @@ public sealed unsafe class Win32Window : Window
                 bottom = (int)bottomRight.Y,
             };
 
-            ThrowExternalExceptionIfFalse(AdjustWindowRectEx(&rect, _style, bMenu: FALSE, _extendedStyle), nameof(AdjustWindowRectEx));
-            ThrowExternalExceptionIfFalse(MoveWindow(Handle, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, bRepaint: TRUE), nameof(MoveWindow));
+            ThrowExternalExceptionIfFalse(AdjustWindowRectEx(&rect, _style, bMenu: FALSE, _extendedStyle));
+            ThrowExternalExceptionIfFalse(MoveWindow(_handle, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, bRepaint: TRUE));
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Normal" /> but the instance has already been disposed.</exception>
     public override void Restore()
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(Win32Window));
+
         if (WindowState != WindowState.Normal)
         {
-            _ = ShowWindow(Handle, SW_RESTORE);
+            _ = ShowWindow(_handle, SW_RESTORE);
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
     public override void SetTitle(string title)
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(Win32Window));
+
         if (_title != title)
         {
             title ??= string.Empty;
 
             fixed (char* pTitle = title)
             {
-                ThrowExternalExceptionIfFalse(SetWindowTextW(Handle, (ushort*)pTitle), nameof(SetWindowTextW));
+                ThrowExternalExceptionIfFalse(SetWindowTextW(_handle, (ushort*)pTitle));
             }
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException"><see cref="IsVisible" /> was <c>false</c> but the instance has already been disposed.</exception>
     public override void Show()
     {
+        ThrowIfDisposedOrDisposing(_state, nameof(Win32Window));
+
         if (WindowState == WindowState.Hidden)
         {
-            _ = ShowWindow(Handle, SW_SHOW);
+            _ = ShowWindow(_handle, SW_SHOW);
         }
     }
 
     /// <inheritdoc />
-    /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
-    public override bool TryActivate()
-        => _isActive || (SetForegroundWindow(Handle) != FALSE);
-
-    internal nint ProcessWindowMessage(uint msg, nuint wParam, nint lParam)
-    {
-        ThrowIfNotThread(ParentThread);
-
-        switch (msg)
-        {
-            case WM_DESTROY:
-            {
-                return HandleWmDestroy();
-            }
-
-            case WM_MOVE:
-            {
-                return HandleWmMove(lParam);
-            }
-
-            case WM_SIZE:
-            {
-                return HandleWmSize(wParam, lParam);
-            }
-
-            case WM_ACTIVATE:
-            {
-                return HandleWmActivate(wParam);
-            }
-
-            case WM_ENABLE:
-            {
-                return HandleWmEnable(wParam);
-            }
-
-            case WM_SETTEXT:
-            {
-                return HandleWmSetText(wParam, lParam);
-            }
-
-            case WM_CLOSE:
-            {
-                return HandleWmClose();
-            }
-
-            case WM_SHOWWINDOW:
-            {
-                return HandleWmShowWindow(wParam);
-            }
-
-            case WM_WINDOWPOSCHANGED:
-            {
-                return HandleWmWindowPosChanged(wParam, lParam);
-            }
-
-            case WM_STYLECHANGED:
-            {
-                return HandleWmStyleChanged(wParam, lParam);
-            }
-
-            default:
-            {
-                return DefWindowProcW(_handle.Value, msg, wParam, lParam);
-            }
-        }
-    }
-
-    private PropertySet CreateProperties()
-        => new PropertySet();
-
-    private HWND CreateWindowHandle()
-    {
-        AssertNotDisposedOrDisposing(_state);
-
-        HWND hWnd;
-
-        fixed (char* lpWindowName = _title)
-        {
-            ThrowForLastErrorIfZero(hWnd = CreateWindowExW(
-                _extendedStyle,
-                (ushort*)WindowService.ClassAtom,
-                (ushort*)lpWindowName,
-                _style,
-                X: CW_USEDEFAULT,
-                Y: CW_USEDEFAULT,
-                nWidth: CW_USEDEFAULT,
-                nHeight: CW_USEDEFAULT,
-                hWndParent: default,
-                hMenu: default,
-                hInstance: EntryPointModule,
-                lpParam: GCHandle.ToIntPtr(GCHandle.Alloc(this, GCHandleType.Normal)).ToPointer()
-            ));
-        }
-
-        // Set the initial bounds so that resizing and relocating before showing work as expected
-        // For GetClientRect, it always returns the position as (0, 0) annd so we need to remap
-        // the points to screen coordinates to ensure we are tracking the right location.
-
-        RECT clientRect;
-
-        ThrowExternalExceptionIfFalse(GetClientRect(hWnd, &clientRect), nameof(GetClientRect));
-        ThrowExternalExceptionIfFalse(MapWindowPoints(hWnd, HWND_DESKTOP, (POINT*)&clientRect, 2), nameof(MapWindowPoints));
-
-        _clientBounds = BoundingRectangle.CreateFromSize(
-            Vector2.Create(clientRect.left, clientRect.top),
-            Vector2.Create(clientRect.right, clientRect.bottom) - Vector2.Create(clientRect.left, clientRect.top)
-        );
-
-        RECT rect;
-
-        ThrowExternalExceptionIfFalse(GetWindowRect(hWnd, &rect), nameof(GetWindowRect));
-
-        _bounds = BoundingRectangle.CreateFromSize(
-            Vector2.Create(rect.left, rect.top),
-            Vector2.Create(rect.right, rect.bottom) - Vector2.Create(clientRect.left, clientRect.top)
-        );
-
-        return hWnd;
-    }
+    public override bool TryActivate() => _isActive || (SetForegroundWindow(_handle) != FALSE);
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
@@ -452,7 +351,7 @@ public sealed unsafe class Win32Window : Window
         {
             // We are only allowed to dispose of the window handle from the parent
             // thread. So, if we are on the wrong thread, we will close the window
-            // and call DisposeWindowHandle from the appropriate thread.
+            // and call DisposeHandle from the appropriate thread.
 
             if (Thread.CurrentThread != ParentThread)
             {
@@ -460,31 +359,103 @@ public sealed unsafe class Win32Window : Window
             }
             else
             {
-                DisposeWindowHandle();
+                DisposeHandle(_handle);
             }
         }
 
         _state.EndDispose();
     }
 
-    private void DisposeWindowHandle()
+    internal LRESULT ProcessWindowMessage(uint msg, WPARAM wParam, LPARAM lParam)
     {
-        AssertThread(ParentThread);
-        AssertDisposing(_state);
+        ThrowIfNotThread(ParentThread);
+        LRESULT result;
 
-        if (_handle.IsValueCreated)
+        switch (msg)
         {
-            ThrowExternalExceptionIfFalse(DestroyWindow(_handle.Value), nameof(DestroyWindow));
+            case WM_CREATE:
+            {
+                result = HandleWmCreate(wParam, lParam);
+                break;
+            }
+
+            case WM_DESTROY:
+            {
+                result = HandleWmDestroy(wParam, lParam);
+                break;
+            }
+
+            case WM_MOVE:
+            {
+                result = HandleWmMove(wParam, lParam);
+                break;
+            }
+
+            case WM_SIZE:
+            {
+                result = HandleWmSize(wParam, lParam);
+                break;
+            }
+
+            case WM_ACTIVATE:
+            {
+                result = HandleWmActivate(wParam, lParam);
+                break;
+            }
+
+            case WM_ENABLE:
+            {
+                result = HandleWmEnable(wParam, lParam);
+                break;
+            }
+
+            case WM_SETTEXT:
+            {
+                result = HandleWmSetText(wParam, lParam);
+                break;
+            }
+
+            case WM_CLOSE:
+            {
+                result = HandleWmClose(wParam, lParam);
+                break;
+            }
+
+            case WM_SHOWWINDOW:
+            {
+                result = HandleWmShowWindow(wParam, lParam);
+                break;
+            }
+
+            case WM_WINDOWPOSCHANGED:
+            {
+                result = HandleWmWindowPosChanged(wParam, lParam);
+                break;
+            }
+
+            case WM_STYLECHANGED:
+            {
+                result = HandleWmStyleChanged(wParam, lParam);
+                break;
+            }
+
+            default:
+            {
+                result = DefWindowProcW(_handle, msg, wParam, lParam);
+                break;
+            }
         }
+
+        return result;
     }
 
-    private nint HandleWmActivate(nuint wParam)
+    private LRESULT HandleWmActivate(WPARAM wParam, LPARAM lParam)
     {
-        _isActive = LOWORD((uint)wParam) != WA_INACTIVE;
+        _isActive = LOWORD(wParam) != WA_INACTIVE;
         return 0;
     }
 
-    private nint HandleWmClose()
+    private LRESULT HandleWmClose(WPARAM wParam, LPARAM lParam)
     {
         // If we are already disposing, then Dispose is happening on some other thread
         // and Close was called in order for us to continue disposal on the parent thread.
@@ -493,16 +464,28 @@ public sealed unsafe class Win32Window : Window
 
         if (_state == Disposing)
         {
-            DisposeWindowHandle();
+            DisposeHandle(_handle);
         }
         else
         {
             Dispose();
         }
+
         return 0;
     }
 
-    private nint HandleWmDestroy()
+    private LRESULT HandleWmCreate(WPARAM wParam, LPARAM lParam)
+    {
+        var createStruct = (CREATESTRUCTW*)lParam;
+
+        _extendedStyle = createStruct->dwExStyle;
+        _style = unchecked((uint)createStruct->style);
+        _title = GetUtf16Span(createStruct->lpszName).GetString() ?? "";
+
+        return 0;
+    }
+
+    private LRESULT HandleWmDestroy(WPARAM wParam, LPARAM lParam)
     {
         // We handle this here to ensure we transition to the appropriate state in the case
         // an end-user called DestroyWindow themselves. The assumption here is that this was
@@ -514,12 +497,14 @@ public sealed unsafe class Win32Window : Window
         {
             _ = _state.Transition(to: Disposed);
         }
+        _ = Dispatcher.RemoveWindow(_handle);
+
         return 0;
     }
 
-    private nint HandleWmEnable(nuint wParam)
+    private LRESULT HandleWmEnable(WPARAM wParam, LPARAM lParam)
     {
-        if (wParam != FALSE)
+        if (wParam != (WPARAM)FALSE)
         {
             _style &= ~(uint)WS_DISABLED;
         }
@@ -530,10 +515,10 @@ public sealed unsafe class Win32Window : Window
         return 0;
     }
 
-    private nint HandleWmMove(nint lParam)
+    private LRESULT HandleWmMove(WPARAM wParam, LPARAM lParam)
     {
         var previousClientLocation = _clientBounds.Location;
-        var currentClientLocation = Vector2.Create(LOWORD((uint)lParam), HIWORD((uint)lParam));
+        var currentClientLocation = Vector2.Create(LOWORD(lParam), HIWORD(lParam));
 
         _clientBounds.Location = currentClientLocation;
         OnClientLocationChanged(previousClientLocation, currentClientLocation);
@@ -541,22 +526,22 @@ public sealed unsafe class Win32Window : Window
         return 0;
     }
 
-    private nint HandleWmSetText(nuint wParam, nint lParam)
+    private LRESULT HandleWmSetText(WPARAM wParam, LPARAM lParam)
     {
-        var result = DefWindowProcW(_handle.Value, WM_SETTEXT, wParam, lParam);
+        var result = DefWindowProcW(_handle, WM_SETTEXT, wParam, lParam);
 
         if (result == TRUE)
         {
             // We only need to update the title if the text was set
-            _title = Marshal.PtrToStringUni(lParam)!;
+            _title = GetUtf16Span((ushort*)lParam).GetString() ?? "";
         }
 
         return result;
     }
 
-    private nint HandleWmShowWindow(nuint wParam)
+    private LRESULT HandleWmShowWindow(WPARAM wParam, LPARAM lParam)
     {
-        if (LOWORD((uint)wParam) != FALSE)
+        if (wParam != (WPARAM)FALSE)
         {
             _style |= WS_VISIBLE;
         }
@@ -567,13 +552,18 @@ public sealed unsafe class Win32Window : Window
         return 0;
     }
 
-    private nint HandleWmSize(nuint wParam, nint lParam)
+    private LRESULT HandleWmSize(WPARAM wParam, LPARAM lParam)
     {
-        _windowState = (WindowState)(uint)wParam;
-        Assert(AssertionsEnabled && Enum.IsDefined(_windowState));
+        _windowState = (uint)wParam switch {
+            SIZE_RESTORED => WindowState.Normal,
+            SIZE_MINIMIZED => WindowState.Minimized,
+            SIZE_MAXIMIZED => WindowState.Maximized,
+            SIZE_MAXHIDE => WindowState.Hidden,
+            _ => _windowState,
+        };
 
         var previousClientSize = _clientBounds.Size;
-        var currentClientSize = Vector2.Create(LOWORD((uint)lParam), HIWORD((uint)lParam));
+        var currentClientSize = Vector2.Create(LOWORD(lParam), HIWORD(lParam));
 
         _clientBounds.Size = currentClientSize;
         OnClientSizeChanged(previousClientSize, currentClientSize);
@@ -581,7 +571,7 @@ public sealed unsafe class Win32Window : Window
         return 0;
     }
 
-    private nint HandleWmStyleChanged(nuint wParam, nint lParam)
+    private LRESULT HandleWmStyleChanged(WPARAM wParam, LPARAM lParam)
     {
         var styleStruct = (STYLESTRUCT*)lParam;
 
@@ -597,9 +587,9 @@ public sealed unsafe class Win32Window : Window
         return 0;
     }
 
-    private nint HandleWmWindowPosChanged(nuint wParam, nint lParam)
+    private LRESULT HandleWmWindowPosChanged(WPARAM wParam, LPARAM lParam)
     {
-        var result = DefWindowProc(_handle.Value, WM_WINDOWPOSCHANGED, wParam, lParam);
+        var result = DefWindowProc(_handle, WM_WINDOWPOSCHANGED, wParam, lParam);
 
         var windowPos = (WINDOWPOS*)lParam;
 

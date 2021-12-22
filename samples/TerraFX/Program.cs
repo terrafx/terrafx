@@ -12,6 +12,7 @@ using TerraFX.Numerics;
 using TerraFX.Samples.Audio;
 using TerraFX.Samples.Graphics;
 using TerraFX.Samples.ServiceProviders;
+using TerraFX.Samples.UI;
 
 namespace TerraFX.Samples;
 
@@ -19,7 +20,7 @@ public static unsafe class Program
 {
     internal static readonly ApplicationServiceProvider s_pulseAudioServiceProvider = new PulseAudioServiceProvider();
 
-    internal static readonly ApplicationServiceProvider s_uiServiceProvider = OperatingSystem.IsWindows() ? new Win32WindowServiceProvider() : new XlibWindowServiceProvider();
+    internal static readonly ApplicationServiceProvider s_uiServiceProvider = OperatingSystem.IsWindows() ? new Win32UIServiceProvider() : new XlibWindowServiceProvider();
 
     [SupportedOSPlatform("windows10.0")]
     internal static readonly ApplicationServiceProvider s_d3d12GraphicsServiceProvider = new D3D12GraphicsServiceProvider();
@@ -64,6 +65,10 @@ public static unsafe class Program
         new PlaySampleAudio("PulseAudio.PlaySampleAudio", s_pulseAudioServiceProvider),
     };
 
+    private static readonly Sample[] s_uiSamples = {
+        new EmptyWindow("UI.EmptyWindow", s_uiServiceProvider),
+    };
+
     private static IEnumerable<Sample> AllSamples
     {
         get
@@ -72,6 +77,7 @@ public static unsafe class Program
 
             samples = samples.Concat(AudioSamples);
             samples = samples.Concat(GraphicsSamples);
+            samples = samples.Concat(UISamples);
 
             return samples;
         }
@@ -106,6 +112,21 @@ public static unsafe class Program
             if (OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
             {
                 samples = samples.Concat(s_vulkanSamples);
+            }
+
+            return samples;
+        }
+    }
+
+    private static IEnumerable<Sample> UISamples
+    {
+        get
+        {
+            var samples = Enumerable.Empty<Sample>();
+
+            if (OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
+            {
+                samples = samples.Concat(s_uiSamples);
             }
 
             return samples;

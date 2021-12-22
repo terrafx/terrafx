@@ -1,9 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using TerraFX.Advanced;
 using TerraFX.Interop.DirectX;
-using TerraFX.Threading;
-using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
@@ -14,9 +13,6 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
 {
     private readonly D3D12_SHADER_BYTECODE _d3d12ShaderBytecode;
 
-    private string _name = null!;
-    private VolatileState _state;
-
     internal D3D12GraphicsShader(D3D12GraphicsDevice device, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
         : base(device, kind, entryPointName)
     {
@@ -25,15 +21,12 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
 
         var destination = new Span<byte>(_d3d12ShaderBytecode.pShaderBytecode, bytecode.Length);
         bytecode.CopyTo(destination);
-
-        _ = _state.Transition(to: Initialized);
-        Name = nameof(D3D12GraphicsShader);
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsShader" /> class.</summary>
     ~D3D12GraphicsShader() => Dispose(isDisposing: false);
 
-    /// <inheritdoc cref="GraphicsDeviceObject.Adapter" />
+    /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <inheritdoc />
@@ -45,33 +38,17 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
 
-    /// <summary>Gets or sets the name for the pipeline signature.</summary>
-    public override string Name
-    {
-        get
-        {
-            return _name;
-        }
-
-        set
-        {
-            _name = value ?? "";
-        }
-    }
-
-    /// <inheritdoc cref="GraphicsDeviceObject.Service" />
+    /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var priorState = _state.BeginDispose();
+        Free(_d3d12ShaderBytecode.pShaderBytecode);
+    }
 
-        if (priorState < Disposing)
-        {
-            Free(_d3d12ShaderBytecode.pShaderBytecode);
-        }
-
-        _state.EndDispose();
+    /// <inheritdoc />
+    protected override void SetNameInternal(string value)
+    {
     }
 }

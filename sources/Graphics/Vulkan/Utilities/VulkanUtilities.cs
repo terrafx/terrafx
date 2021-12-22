@@ -129,7 +129,7 @@ internal static unsafe partial class VulkanUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowExternalExceptionIfNotSuccess(VkResult value, [CallerArgumentExpression("value")] string? valueExpression = null)
     {
-        if (value != VK_SUCCESS)
+        if (value is not VK_SUCCESS and not VK_SUBOPTIMAL_KHR)
         {
             AssertNotNull(valueExpression);
             ThrowExternalException(valueExpression, (int)value);
