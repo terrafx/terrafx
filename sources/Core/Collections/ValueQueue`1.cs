@@ -270,14 +270,15 @@ public partial struct ValueQueue<T> : IEnumerable<T>
         if (unchecked((uint)index < (uint)_count))
         {
             var head = _head;
+            var headLength = count - head;
 
-            if ((head < _tail) || (index < (count - head)))
+            if ((head < _tail) || (index < headLength))
             {
                 return ref _items.GetReference(head + index);
             }
             else
             {
-                return ref _items.GetReference(index);
+                return ref _items.GetReference(index - headLength);
             }
         }
         else
@@ -310,6 +311,63 @@ public partial struct ValueQueue<T> : IEnumerable<T>
             Fail();
         }
         return item;
+    }
+
+    /// <summary>Removes the first occurence of an item from the queue.</summary>
+    /// <param name="item">The item to remove from the queue.</param>
+    /// <returns><c>true</c> if <paramref name="item" /> was removed from the queue; otherwise, <c>false</c>.</returns>
+    public bool Remove(T item)
+    {
+        var items = _items;
+
+        if (items is not null)
+        {
+            var count = _count;
+            var head = _head;
+            var tail = _tail;
+
+            var index = Array.IndexOf(items, item, head, count - head);
+
+            if (index == -1)
+            {
+                index = Array.IndexOf(items, item, 0, tail);
+            }
+
+            if (index != -1)
+            {
+                var newTail = tail - 1;
+                var newCount = count - 1;
+
+                Array.Copy(items, index + 1, items, index, newCount - index);
+
+                if (tail == 0)
+                {
+                    newTail = newCount;
+                }
+                else if (head >= tail)
+                {
+                    items[newCount] = items[0];
+                    Array.Copy(items, 1, items, 0, newTail);
+
+                    if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+                    {
+                        items[newTail] = default!;
+                    }
+                }
+
+                if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+                {
+                    items[newTail] = default!;
+                }
+
+                _tail = newTail;
+                _count = newCount;
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>Trims any excess capacity, up to a given threshold, from the queue.</summary>

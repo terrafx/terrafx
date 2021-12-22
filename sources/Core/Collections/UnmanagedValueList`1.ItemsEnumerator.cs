@@ -29,7 +29,7 @@ public partial struct UnmanagedValueList<T>
         public bool MoveNext()
         {
             var succeeded = true;
-            _index++;
+            _index = unchecked(_index + 1);
 
             if (_index == _list.Count)
             {

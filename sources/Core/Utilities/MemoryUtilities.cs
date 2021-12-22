@@ -1042,7 +1042,7 @@ public static unsafe class MemoryUtilities
     public static T* ReallocateArray<T>(T* address, nuint newCount, nuint alignment, bool zero = false)
         where T : unmanaged
     {
-        var result = TryReallocateArray<T>(address, newCount, alignment, zero);
+        var result = TryReallocateArray(address, newCount, alignment, zero);
 
         if (result == null)
         {

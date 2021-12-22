@@ -40,9 +40,41 @@ public unsafe partial struct ValuePool<T> : IEnumerable<T>
     /// <summary>Gets the number of items contained in the pool.</summary>
     public readonly int Count => _items.Count;
 
+    /// <summary>Removes all items from the pool.</summary>
+    public void Clear()
+    {
+        _items.Clear();
+        _availableItems.Clear();
+    }
+
     /// <summary>Gets an enumerator that can iterate through the items in the pool.</summary>
     /// <returns>An enumerator that can iterate through the items in the pool.</returns>
     public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
+
+    /// <summary>Removes the first occurence of an item from the pool.</summary>
+    /// <param name="item">The item to remove from the pool.</param>
+    /// <returns><c>true</c> if <paramref name="item" /> was removed from the pool; otherwise, <c>false</c>.</returns>
+    public bool Remove(T item)
+    {
+        var result = _items.Remove(item);
+
+        if (result)
+        {
+            _ = _availableItems.Remove(item);
+        }
+
+        return result;
+    }
+
+    /// <summary>Removes the first occurence of an item from the pool.</summary>
+    /// <param name="item">The item to remove from the pool.</param>
+    /// <param name="mutex">The mutex to use when removing an item from the pool.</param>
+    /// <returns><c>true</c> if <paramref name="item" /> was removed from the pool; otherwise, <c>false</c>.</returns>
+    public bool Remove(T item, ValueMutex mutex)
+    {
+        using var disposableMutex = new DisposableMutex(mutex, isExternallySynchronized: false);
+        return Remove(item);
+    }
 
     /// <summary>Rents an item from the pool, creating a new item if none are available.</summary>
     /// <param name="createItem">A pointer to the function to invoke if a new item needs to be created.</param>
@@ -65,7 +97,7 @@ public unsafe partial struct ValuePool<T> : IEnumerable<T>
     /// <summary>Rents an item from the pool, creating a new item if none are available.</summary>
     /// <param name="createItem">A pointer to the function to invoke if a new item needs to be created.</param>
     /// <param name="arg">The argument passed to <paramref name="createItem" />.</param>
-    /// <param name="mutex">The mutex to use when renting an item from the list.</param>
+    /// <param name="mutex">The mutex to use when renting an item from the pool.</param>
     /// <returns>A rented item.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="createItem" /> is <c>null</c>.</exception>
     public T Rent<TArg>(delegate*<TArg, T> createItem, TArg arg, ValueMutex mutex)
@@ -88,7 +120,7 @@ public unsafe partial struct ValuePool<T> : IEnumerable<T>
 
     /// <summary>Returns an item to the pool.</summary>
     /// <param name="item">The item that should be returned to the pool.</param>
-    /// <param name="mutex">The mutex to use when renting an item from the list.</param>
+    /// <param name="mutex">The mutex to use when returning an item to the pool.</param>
     /// <exception cref="ArgumentNullException"><paramref name="item" /> is <c>null</c>.</exception>
     public void Return(T item, ValueMutex mutex)
     {

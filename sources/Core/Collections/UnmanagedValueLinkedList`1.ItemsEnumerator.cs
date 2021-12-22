@@ -39,7 +39,7 @@ public partial struct UnmanagedValueLinkedList<T>
         public bool MoveNext()
         {
             var succeeded = true;
-            _index++;
+            _index = unchecked(_index + 1);
 
             if (_index == _linkedList.Count)
             {

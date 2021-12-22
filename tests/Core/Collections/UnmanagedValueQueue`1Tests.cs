@@ -705,6 +705,64 @@ public static class UnmanagedValueQueueTests
         }
     }
 
+    /// <summary>Provides validation of the <see cref="ValueQueue{T}.Remove(T)" /> method.</summary>
+    [Test]
+    public static void RemoveTest()
+    {
+        var array = new UnmanagedArray<int>(4);
+
+        array[0] = 1;
+        array[1] = 2;
+        array[2] = 3;
+        array[3] = 4;
+
+        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true))
+        {
+            Assert.That(() => valueQueue.Remove(1),
+                Is.True
+            );
+
+            Assert.That(() => valueQueue,
+                Is.EquivalentTo(new int[] { 2, 3, 4 })
+            );
+
+            valueQueue.Enqueue(1);
+
+            Assert.That(() => valueQueue,
+                Is.EquivalentTo(new int[] { 2, 3, 4, 1 })
+            );
+
+            Assert.That(() => valueQueue.Remove(2),
+                Is.True
+            );
+
+            Assert.That(() => valueQueue,
+                Is.EquivalentTo(new int[] { 3, 4, 1 })
+            );
+
+            valueQueue.Enqueue(2);
+
+            Assert.That(() => valueQueue,
+                Is.EquivalentTo(new int[] { 3, 4, 1, 2 })
+            );
+
+            Assert.That(() => valueQueue.Remove(1),
+                Is.True
+            );
+
+            Assert.That(() => valueQueue,
+                Is.EquivalentTo(new int[] { 3, 4, 2 })
+            );
+        }
+
+        using (var valueQueue = new UnmanagedValueQueue<int>())
+        {
+            Assert.That(() => valueQueue.Remove(0),
+                Is.False
+            );
+        }
+    }
+
     /// <summary>Provides validation of the <see cref="UnmanagedValueQueue{T}.TrimExcess" /> method.</summary>
     [Test]
     public static void TrimExcessTest()

@@ -496,6 +496,49 @@ public static class ValueQueueTests
         );
     }
 
+    /// <summary>Provides validation of the <see cref="ValueQueue{T}.Remove(T)" /> method.</summary>
+    [Test]
+    public static void RemoveTest()
+    {
+        var valueQueue = new ValueQueue<int>(new int[] { 1, 2, 3, 4 });
+
+        Assert.That(() => valueQueue.Remove(1),
+            Is.True
+        );
+
+        Assert.That(() => valueQueue,
+            Is.EquivalentTo(new int[] { 2, 3, 4 })
+        );
+
+        valueQueue.Enqueue(1);
+
+        Assert.That(() => valueQueue,
+            Is.EquivalentTo(new int[] { 2, 3, 4, 1 })
+        );
+
+        Assert.That(() => valueQueue.Remove(2),
+            Is.True
+        );
+
+        Assert.That(() => valueQueue,
+            Is.EquivalentTo(new int[] { 3, 4, 1 })
+        );
+
+        valueQueue.Enqueue(2);
+
+        Assert.That(() => valueQueue,
+            Is.EquivalentTo(new int[] { 3, 4, 1, 2 })
+        );
+
+        Assert.That(() => valueQueue.Remove(1),
+            Is.True
+        );
+
+        Assert.That(() => valueQueue,
+            Is.EquivalentTo(new int[] { 3, 4, 2 })
+        );
+    }
+
     /// <summary>Provides validation of the <see cref="ValueQueue{T}.TrimExcess(float)" /> method.</summary>
     [Test]
     public static void TrimExcessTest()
