@@ -2,8 +2,8 @@
 
 #include "SmokeTypes.hlsl"
 
-Texture3D textureInput : register(t0);
-SamplerState samplerInput : register(s0);
+Texture3D textureInput : register(t2);
+SamplerState samplerInput : register(s2);
 
 float4 main(PSInput input) : SV_Target
 {

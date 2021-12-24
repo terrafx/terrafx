@@ -45,42 +45,44 @@ public sealed class HelloQuad : HelloWindow
         _uploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024);
         _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
-        var graphicsCopyContext = graphicsDevice.RentCopyContext();
+        var copyCommandQueue = graphicsDevice.CopyCommandQueue;
+        var copyContext = copyCommandQueue.RentContext();
         {
-            graphicsCopyContext.Reset();
-            _quadPrimitive = CreateQuadPrimitive(graphicsCopyContext);
-
-            graphicsCopyContext.Flush();
-            graphicsDevice.WaitForIdle();
+            copyContext.Reset();
+            {
+                _quadPrimitive = CreateQuadPrimitive(copyContext);
+            }
+            copyContext.Close();
+            copyContext.Execute();
         }
-        graphicsDevice.ReturnContext(graphicsCopyContext);
+        copyCommandQueue.ReturnContext(copyContext);
 
         _uploadBuffer.DisposeAllViews();
     }
 
-    protected override void Draw(GraphicsRenderContext graphicsRenderContext)
+    protected override void Draw(GraphicsRenderContext renderContext)
     {
-        _quadPrimitive.Draw(graphicsRenderContext);
-        base.Draw(graphicsRenderContext);
+        _quadPrimitive.Draw(renderContext);
+        base.Draw(renderContext);
     }
 
-    private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsCopyContext graphicsCopyContext)
+    private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsCopyContext copyContext)
     {
-        var graphicsRenderPass = GraphicsRenderPass;
-        var graphicsSurface = graphicsRenderPass.Surface;
+        var renderPass = RenderPass;
+        var surface = renderPass.Surface;
 
-        var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Identity", "main", "main");
+        var graphicsPipeline = CreateGraphicsPipeline(renderPass, "Identity", "main", "main");
         var uploadBuffer = _uploadBuffer;
 
         return new GraphicsPrimitive(
             graphicsPipeline,
-            CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
-            CreateIndexBufferView(graphicsCopyContext, _indexBuffer, uploadBuffer)
+            CreateVertexBufferView(copyContext, _vertexBuffer, uploadBuffer, aspectRatio: surface.PixelWidth / surface.PixelHeight),
+            CreateIndexBufferView(copyContext, _indexBuffer, uploadBuffer)
         );
 
-        static GraphicsBufferView CreateIndexBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer indexBuffer, GraphicsBuffer uploadBuffer)
+        static GraphicsBufferView CreateIndexBufferView(GraphicsCopyContext copyContext, GraphicsBuffer indexBuffer, GraphicsBuffer uploadBuffer)
         {
-            var uploadBufferView = uploadBuffer.CreateView<ushort>(6);
+            var uploadBufferView = uploadBuffer.CreateBufferView<ushort>(6);
             var indexBufferSpan = uploadBufferView.Map<ushort>();
             {
                 // clockwise when looking at the triangle from the outside
@@ -95,14 +97,14 @@ public sealed class HelloQuad : HelloWindow
             }
             uploadBufferView.UnmapAndWrite();
 
-            var indexBufferView = indexBuffer.CreateView<ushort>(6);
-            graphicsCopyContext.Copy(indexBufferView, uploadBufferView);
+            var indexBufferView = indexBuffer.CreateBufferView<ushort>(6);
+            copyContext.Copy(indexBufferView, uploadBufferView);
             return indexBufferView;
         }
 
-        static GraphicsBufferView CreateVertexBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
+        static GraphicsBufferView CreateVertexBufferView(GraphicsCopyContext copyContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
         {
-            var uploadBufferView = uploadBuffer.CreateView<IdentityVertex>(4);
+            var uploadBufferView = uploadBuffer.CreateBufferView<IdentityVertex>(4);
             var vertexBufferSpan = uploadBufferView.Map<IdentityVertex>();
             {
                 vertexBufferSpan[0] = new IdentityVertex {                          //
@@ -127,31 +129,43 @@ public sealed class HelloQuad : HelloWindow
             }
             uploadBufferView.UnmapAndWrite();
 
-            var vertexBufferView = vertexBuffer.CreateView<IdentityVertex>(4);
-            graphicsCopyContext.Copy(vertexBufferView, uploadBufferView);
+            var vertexBufferView = vertexBuffer.CreateBufferView<IdentityVertex>(4);
+            copyContext.Copy(vertexBufferView, uploadBufferView);
             return vertexBufferView;
         }
 
-        GraphicsPipeline CreateGraphicsPipeline(GraphicsRenderPass graphicsRenderPass, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
+        GraphicsPipeline CreateGraphicsPipeline(GraphicsRenderPass renderPass, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
         {
-            var graphicsDevice = graphicsRenderPass.Device;
+            var graphicsDevice = renderPass.Device;
 
-            var signature = CreateGraphicsPipelineSignature(graphicsDevice);
-            var vertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint);
-            var pixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint);
+            var pipelineCreateOptions = new GraphicsPipelineCreateOptions {
+                Signature = CreateGraphicsPipelineSignature(graphicsDevice),
+                PixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint),
+                VertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint),
+            };
 
-            return graphicsRenderPass.CreatePipeline(signature, vertexShader, pixelShader);
+            return renderPass.CreatePipeline(in pipelineCreateOptions);
         }
 
         GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)
         {
-            var inputs = new GraphicsPipelineInput[1] {
-                new GraphicsPipelineInput(
-                    new GraphicsPipelineInputElement[2] {
-                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Color, GraphicsFormat.R32G32B32A32_SFLOAT, size: 16, alignment: 16),
-                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Position, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
-                    }
-                ),
+            var inputs = new UnmanagedArray<GraphicsPipelineInput>(2) {
+                [0] = new GraphicsPipelineInput {
+                    BindingIndex = 0,
+                    ByteAlignment = 16,
+                    ByteLength = 16,
+                    Format = GraphicsFormat.R32G32B32A32_SFLOAT,
+                    Kind = GraphicsPipelineInputKind.Color,
+                    ShaderVisibility = GraphicsShaderVisibility.Vertex,
+                },
+                [1] = new GraphicsPipelineInput {
+                    BindingIndex = 1,
+                    ByteAlignment = 4,
+                    ByteLength = 12,
+                    Format = GraphicsFormat.R32G32B32_SFLOAT,
+                    Kind = GraphicsPipelineInputKind.Position,
+                    ShaderVisibility = GraphicsShaderVisibility.Vertex,
+                },
             };
 
             return graphicsDevice.CreatePipelineSignature(inputs);

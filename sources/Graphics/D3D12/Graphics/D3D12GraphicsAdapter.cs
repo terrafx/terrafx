@@ -1,104 +1,122 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using TerraFX.Collections;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
+using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Interop.DirectX.DXGI_MEMORY_SEGMENT_GROUP;
 using static TerraFX.Utilities.D3D12Utilities;
-using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
-using TerraFX.Advanced;
 
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
 {
-    private readonly IDXGIAdapter3* _dxgiAdapter;
-    private readonly DXGI_ADAPTER_DESC2 _dxgiAdapterDesc;
+    private IDXGIAdapter1* _dxgiAdapter;
+    private readonly uint _dxgiAdapterVersion;
 
-    internal D3D12GraphicsAdapter(D3D12GraphicsService service, IDXGIAdapter3* dxgiAdapter)
-        : base(service)
+    private ValueList<D3D12GraphicsDevice> _devices;
+    private readonly ValueMutex _devicesMutex;
+
+    internal D3D12GraphicsAdapter(D3D12GraphicsService service, IDXGIAdapter1* dxgiAdapter) : base(service)
     {
-        ThrowIfNull(dxgiAdapter);
+        _dxgiAdapter = GetLatestDxgiAdapter(dxgiAdapter, out _dxgiAdapterVersion);
 
-        _dxgiAdapter = dxgiAdapter;
-        _dxgiAdapterDesc = GetDxgiAdapterDesc(dxgiAdapter);
+        DXGI_ADAPTER_DESC1 dxgiAdapterDesc;
+        ThrowExternalExceptionIfFailed(_dxgiAdapter->GetDesc1(&dxgiAdapterDesc));
 
-        var name = GetName(in _dxgiAdapterDesc);
-        SetName(name);
+        AdapterInfo.Description = GetUtf16Span(dxgiAdapterDesc.Description, 128).GetString() ?? string.Empty;
+        AdapterInfo.PciDeviceId = dxgiAdapterDesc.DeviceId;
+        AdapterInfo.PciVendorId = dxgiAdapterDesc.VendorId;
 
-        static DXGI_ADAPTER_DESC2 GetDxgiAdapterDesc(IDXGIAdapter3* dxgiAdapter)
-        {
-            DXGI_ADAPTER_DESC2 dxgiAdapterDesc;
-            ThrowExternalExceptionIfFailed(dxgiAdapter->GetDesc2(&dxgiAdapterDesc));
-            return dxgiAdapterDesc;
-        }
+        SetName(AdapterInfo.Description);
 
-        static string GetName(in DXGI_ADAPTER_DESC2 dxgiAdapterDesc)
-        {
-            var name = GetUtf16Span(in dxgiAdapterDesc.Description[0], 128).GetString();
-            return name ?? string.Empty;
-        }
+        _devices = new ValueList<D3D12GraphicsDevice>();
+        _devicesMutex = new ValueMutex();
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsAdapter" /> class.</summary>
     ~D3D12GraphicsAdapter() => Dispose(isDisposing: false);
 
-    /// <inheritdoc />
-    public override uint DeviceId => DxgiAdapterDesc.DeviceId;
+    /// <summary>Gets the the underlying <see cref="IDXGIAdapter1" /> for the adapter.</summary>
+    public IDXGIAdapter1* DxgiAdapter => _dxgiAdapter;
 
-    /// <summary>Gets the the underlying <see cref="IDXGIAdapter3" /> for the adapter.</summary>
-    public IDXGIAdapter3* DxgiAdapter
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _dxgiAdapter;
-        }
-    }
-
-    /// <summary>Gets the <see cref="DXGI_ADAPTER_DESC2" /> for <see cref="DxgiAdapter" />.</summary>
-    public ref readonly DXGI_ADAPTER_DESC2 DxgiAdapterDesc => ref _dxgiAdapterDesc;
+    /// <summary>Gets the interface version of <see cref="DxgiAdapter" />.</summary>
+    public uint DxgiAdapterVersion => _dxgiAdapterVersion;
 
     /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
-    /// <inheritdoc />
-    public override uint VendorId => DxgiAdapterDesc.VendorId;
-
-    /// <inheritdoc />
-    public override D3D12GraphicsDevice CreateDevice(GraphicsMemoryAllocatorCreateFunc createMemoryAllocator)
-    {
-        ThrowIfDisposed();
-        return new D3D12GraphicsDevice(this, createMemoryAllocator);
-    }
-
-    /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
-    {
-        ReleaseIfNotNull(_dxgiAdapter);
-    }
-
-    /// <inheritdoc />
-    protected override void SetNameInternal(string value)
-    {
-    }
-
     /// <summary>Tries to query the <see cref="DXGI_QUERY_VIDEO_MEMORY_INFO" /> for <see cref="DXGI_MEMORY_SEGMENT_GROUP_LOCAL" />.</summary>
     /// <param name="dxgiLocalVideoMemoryInfo">The video memory info that will be filled.</param>
     /// <returns><c>true</c> if the query succeeded; otherwise, <c>false</c>.</returns>
-    public bool TryGetDxgiQueryLocalVideoMemoryInfo(DXGI_QUERY_VIDEO_MEMORY_INFO* dxgiLocalVideoMemoryInfo)
+    public bool TryQueryLocalVideoMemoryInfo(DXGI_QUERY_VIDEO_MEMORY_INFO* dxgiLocalVideoMemoryInfo)
     {
-        var result = DxgiAdapter->QueryVideoMemoryInfo(NodeIndex: 0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, dxgiLocalVideoMemoryInfo);
-        return result.SUCCEEDED;
+        var result = false;
+
+        if (DxgiAdapterVersion >= 3)
+        {
+            var dxgiAdapter3 = (IDXGIAdapter3*)DxgiAdapter;
+            result = dxgiAdapter3->QueryVideoMemoryInfo(NodeIndex: 0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, dxgiLocalVideoMemoryInfo).SUCCEEDED;
+        }
+
+        return result;
     }
 
     /// <summary>Tries to query the <see cref="DXGI_QUERY_VIDEO_MEMORY_INFO" /> for <see cref="DXGI_MEMORY_SEGMENT_GROUP_NON_LOCAL" />.</summary>
     /// <param name="dxgiNonLocalVideoMemoryInfo">The video memory info that will be filled.</param>
     /// <returns><c>true</c> if the query succeeded; otherwise, <c>false</c>.</returns>
-    public bool TryGetDxgiQueryNonLocalVideoMemoryInfo(DXGI_QUERY_VIDEO_MEMORY_INFO* dxgiNonLocalVideoMemoryInfo)
+    public bool TryQueryNonLocalVideoMemoryInfo(DXGI_QUERY_VIDEO_MEMORY_INFO* dxgiNonLocalVideoMemoryInfo)
     {
-        var result = DxgiAdapter->QueryVideoMemoryInfo(NodeIndex: 0, DXGI_MEMORY_SEGMENT_GROUP_NON_LOCAL, dxgiNonLocalVideoMemoryInfo);
-        return result.SUCCEEDED;
+        var result = false;
+
+        if (DxgiAdapterVersion >= 3)
+        {
+            var dxgiAdapter3 = (IDXGIAdapter3*)DxgiAdapter;
+            result = dxgiAdapter3->QueryVideoMemoryInfo(NodeIndex: 0, DXGI_MEMORY_SEGMENT_GROUP_NON_LOCAL, dxgiNonLocalVideoMemoryInfo).SUCCEEDED;
+        }
+
+        return result;
+    }
+
+    /// <inheritdoc />
+    protected override D3D12GraphicsDevice CreateDeviceUnsafe(in GraphicsDeviceCreateOptions createOptions)
+    {
+        return new D3D12GraphicsDevice(this, in createOptions);
+    }
+
+    /// <inheritdoc />
+    protected override void Dispose(bool isDisposing)
+    {
+        if (isDisposing)
+        {
+            for (var index = _devices.Count - 1; index >= 0; index--)
+            {
+                var device = _devices.GetReferenceUnsafe(index);
+                device.Dispose();
+            }
+            _devices.Clear();
+        }
+        _devicesMutex.Dispose();
+
+        ReleaseIfNotNull(_dxgiAdapter);
+        _dxgiAdapter = null;
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameUnsafe(string value)
+    {
+    }
+
+    internal void AddDevice(D3D12GraphicsDevice device)
+    {
+        _devices.Add(device, _devicesMutex);
+    }
+
+    internal bool RemoveDevice(D3D12GraphicsDevice device)
+    {
+        return IsDisposed || _devices.Remove(device, _devicesMutex);
     }
 }

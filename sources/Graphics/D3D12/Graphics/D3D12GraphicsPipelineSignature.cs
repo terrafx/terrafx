@@ -1,6 +1,5 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System;
 using TerraFX.Interop.DirectX;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_RANGE_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_ROOT_SIGNATURE_FLAGS;
@@ -9,8 +8,9 @@ using static TerraFX.Interop.DirectX.D3D_ROOT_SIGNATURE_VERSION;
 using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.D3D12Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
-using TerraFX.Advanced;
+using TerraFX.Graphics.Advanced;
 
 namespace TerraFX.Graphics;
 
@@ -19,133 +19,183 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
 {
     private readonly ID3D12RootSignature* _d3d12RootSignature;
 
-    internal D3D12GraphicsPipelineSignature(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResourceInfo> resources)
-        : base(device, inputs, resources)
+    internal D3D12GraphicsPipelineSignature(D3D12GraphicsDevice device, in GraphicsPipelineSignatureCreateOptions createOptions) : base(device)
     {
-        _d3d12RootSignature = CreateD3D12RootSignature(device, resources);
+        device.AddPipelineSignature(this);
 
-        static ID3D12RootSignature* CreateD3D12RootSignature(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsPipelineResourceInfo> resources)
+        if (createOptions.TakeInputsOwnership)
         {
-            ID3DBlob* d3dRootSignatureBlob = null;
-            ID3DBlob* d3dRootSignatureErrorBlob = null;
-
-            try
-            {
-                // We split this into two methods so the JIT can still optimize the "core" part
-                return CreateD3D12RootSignatureInternal(device, resources, &d3dRootSignatureBlob, &d3dRootSignatureErrorBlob);
-            }
-            finally
-            {
-                ReleaseIfNotNull(d3dRootSignatureErrorBlob);
-                ReleaseIfNotNull(d3dRootSignatureBlob);
-            }
+            PipelineSignatureInfo.Inputs = createOptions.Inputs;
+        }
+        else
+        {
+            var inputs = createOptions.Inputs;
+            PipelineSignatureInfo.Inputs = new UnmanagedArray<GraphicsPipelineInput>(inputs.Length);
+            inputs.CopyTo(PipelineSignatureInfo.Inputs);
         }
 
-        static ID3D12RootSignature* CreateD3D12RootSignatureInternal(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsPipelineResourceInfo> resources, ID3DBlob** pD3DRootSignatureBlob, ID3DBlob** pD3DRootSignatureErrorBlob)
+        if (createOptions.TakeResourcesOwnership)
         {
-            ID3D12RootSignature* d3d12RootSignature;
+            PipelineSignatureInfo.Resources = createOptions.Resources;
+        }
+        else
+        {
+            var resources = createOptions.Resources;
+            PipelineSignatureInfo.Resources = new UnmanagedArray<GraphicsPipelineResource>(resources.Length);
+            resources.CopyTo(PipelineSignatureInfo.Resources);
+        }
+
+        _d3d12RootSignature = CreateD3D12RootSignature(device, in createOptions);
+
+        SetNameUnsafe(Name);
+
+        static ID3D12RootSignature* CreateD3D12RootSignature(D3D12GraphicsDevice device, in GraphicsPipelineSignatureCreateOptions createOptions)
+        {
+            ID3D12RootSignature* d3d12RootSignature = null;
 
             var d3d12RootSignatureDesc = new D3D12_ROOT_SIGNATURE_DESC {
+                NumParameters = 0,
+                pParameters = null,
+                pStaticSamplers = null,
                 Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT,
             };
 
-            var d3d12RootParameterCount = 0;
-            var d3d12StaticSamplerDescCount = 0;
+            var resources = createOptions.Resources;
 
-            var d3d12RootParametersIndex = 0;
-            var d3d12StaticSamplerDescsIndex = 0;
-
-            var constantShaderRegister = 0;
-            var textureShaderRegister = 0;
-
-            for (var inputIndex = 0; inputIndex < resources.Length; inputIndex++)
+            if (resources.Length != 0)
             {
-                d3d12RootParameterCount++;
+                var d3d12RootParameterCount = 0;
+                var d3d12StaticSamplerDescCount = 0;
 
-                if (resources[inputIndex].Kind == GraphicsPipelineResourceKind.Texture)
+                var d3d12RootParametersIndex = 0;
+                var d3d12StaticSamplerDescsIndex = 0;
+
+                for (nuint index = 0; index < resources.Length; index++)
                 {
-                    d3d12StaticSamplerDescCount++;
-                }
-            }
+                    ref readonly var resource = ref resources[index];
 
-            var d3d12RootParameters = stackalloc D3D12_ROOT_PARAMETER[d3d12RootParameterCount];
-            var d3d12StaticSamplerDescs = stackalloc D3D12_STATIC_SAMPLER_DESC[d3d12StaticSamplerDescCount];
-            var d3d12DescriptorRanges = stackalloc D3D12_DESCRIPTOR_RANGE[d3d12StaticSamplerDescCount];
-
-            for (var inputIndex = 0; inputIndex < resources.Length; inputIndex++)
-            {
-                var input = resources[inputIndex];
-
-                switch (input.Kind)
-                {
-                    case GraphicsPipelineResourceKind.ConstantBuffer:
+                    switch (resource.Kind)
                     {
-                        var d3d12ShaderVisibility = GetD3D12ShaderVisiblity(input.ShaderVisibility);
-                        d3d12RootParameters[d3d12RootParametersIndex].InitAsConstantBufferView(unchecked((uint)constantShaderRegister), registerSpace: 0, d3d12ShaderVisibility);
+                        case GraphicsPipelineResourceKind.ConstantBuffer:
+                        {
+                            d3d12RootParameterCount++;
+                            break;
+                        }
 
-                        constantShaderRegister++;
-                        d3d12RootParametersIndex++;
-                        break;
-                    }
+                        case GraphicsPipelineResourceKind.Texture:
+                        {
+                            d3d12RootParameterCount++;
+                            d3d12StaticSamplerDescCount++;
+                            break;
+                        }
 
-                    case GraphicsPipelineResourceKind.Texture:
-                    {
-                        d3d12DescriptorRanges[d3d12StaticSamplerDescsIndex] = new D3D12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, numDescriptors: 1, baseShaderRegister: unchecked((uint)textureShaderRegister));
-                        var shaderVisibility = GetD3D12ShaderVisiblity(input.ShaderVisibility);
-
-                        d3d12RootParameters[d3d12RootParametersIndex].InitAsDescriptorTable(1, &d3d12DescriptorRanges[d3d12StaticSamplerDescsIndex], shaderVisibility);
-                        d3d12StaticSamplerDescs[d3d12StaticSamplerDescsIndex] = new D3D12_STATIC_SAMPLER_DESC(
-                            shaderRegister: unchecked((uint)d3d12StaticSamplerDescsIndex),
-                            shaderVisibility: shaderVisibility
-                        );
-
-                        textureShaderRegister++;
-                        d3d12RootParametersIndex++;
-                        d3d12StaticSamplerDescsIndex++;
-                        break;
-                    }
-
-                    default:
-                    {
-                        break;
+                        default:
+                        {
+                            ThrowForInvalidKind(resource.Kind);
+                            break;
+                        }
                     }
                 }
+
+                var d3d12RootParameters = stackalloc D3D12_ROOT_PARAMETER[d3d12RootParameterCount];
+                var d3d12StaticSamplerDescs = stackalloc D3D12_STATIC_SAMPLER_DESC[d3d12StaticSamplerDescCount];
+                var d3d12DescriptorRanges = stackalloc D3D12_DESCRIPTOR_RANGE[d3d12StaticSamplerDescCount];
+
+                for (nuint index = 0; index < resources.Length; index++)
+                {
+                    ref readonly var resource = ref resources[index];
+
+                    switch (resource.Kind)
+                    {
+                        case GraphicsPipelineResourceKind.ConstantBuffer:
+                        {
+                            d3d12RootParameters[d3d12RootParametersIndex].InitAsConstantBufferView(
+                                resource.BindingIndex,
+                                registerSpace: 0,
+                                GetD3D12ShaderVisiblity(resource.ShaderVisibility)
+                            );
+
+                            d3d12RootParametersIndex++;
+                            break;
+                        }
+
+                        case GraphicsPipelineResourceKind.Texture:
+                        {
+                            var shaderVisibility = GetD3D12ShaderVisiblity(resource.ShaderVisibility);
+
+                            d3d12DescriptorRanges[d3d12StaticSamplerDescsIndex] = new D3D12_DESCRIPTOR_RANGE(
+                                D3D12_DESCRIPTOR_RANGE_TYPE_SRV,
+                                numDescriptors: 1,
+                                baseShaderRegister: resource.BindingIndex
+                            );
+
+                            d3d12RootParameters[d3d12RootParametersIndex].InitAsDescriptorTable(
+                                numDescriptorRanges: 1,
+                                &d3d12DescriptorRanges[d3d12StaticSamplerDescsIndex],
+                                shaderVisibility
+                            );
+
+                            d3d12StaticSamplerDescs[d3d12StaticSamplerDescsIndex] = new D3D12_STATIC_SAMPLER_DESC(
+                                shaderRegister: resource.BindingIndex,
+                                shaderVisibility: shaderVisibility
+                            );
+
+                            d3d12RootParametersIndex++;
+                            d3d12StaticSamplerDescsIndex++;
+                            break;
+                        }
+
+                        default:
+                        {
+                            ThrowForInvalidKind(resource.Kind);
+                            break;
+                        }
+                    }
+                }
+
+                d3d12RootSignatureDesc.NumParameters = unchecked((uint)d3d12RootParameterCount);
+                d3d12RootSignatureDesc.pParameters = d3d12RootParameters;
+
+                d3d12RootSignatureDesc.NumStaticSamplers = unchecked((uint)d3d12StaticSamplerDescCount);
+                d3d12RootSignatureDesc.pStaticSamplers = d3d12StaticSamplerDescs;
             }
 
-            d3d12RootSignatureDesc.NumParameters = unchecked((uint)d3d12RootParameterCount);
-            d3d12RootSignatureDesc.pParameters = d3d12RootParameters;
+            ID3DBlob* d3dRootSignatureBlob;
+            ID3DBlob* d3dRootSignatureErrorBlob;
 
-            d3d12RootSignatureDesc.NumStaticSamplers = unchecked((uint)d3d12StaticSamplerDescCount);
-            d3d12RootSignatureDesc.pStaticSamplers = d3d12StaticSamplerDescs;
+            ThrowExternalExceptionIfFailed(D3D12SerializeRootSignature(&d3d12RootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &d3dRootSignatureBlob, &d3dRootSignatureErrorBlob));
 
-            ThrowExternalExceptionIfFailed(D3D12SerializeRootSignature(&d3d12RootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, pD3DRootSignatureBlob, pD3DRootSignatureErrorBlob));
-            ThrowExternalExceptionIfFailed(device.D3D12Device->CreateRootSignature(0, pD3DRootSignatureBlob[0]->GetBufferPointer(), pD3DRootSignatureBlob[0]->GetBufferSize(), __uuidof<ID3D12RootSignature>(), (void**)&d3d12RootSignature));
+            var result = device.D3D12Device->CreateRootSignature(0, d3dRootSignatureBlob->GetBufferPointer(), d3dRootSignatureBlob->GetBufferSize(), __uuidof<ID3D12RootSignature>(), (void**)&d3d12RootSignature);
+
+            ReleaseIfNotNull(d3dRootSignatureBlob);
+            ReleaseIfNotNull(d3dRootSignatureErrorBlob);
+
+            if (result.FAILED)
+            {
+                ThrowExternalException(nameof(ID3D12Device.CreateRootSignature), result);
+            }
 
             return d3d12RootSignature;
         }
 
         static D3D12_SHADER_VISIBILITY GetD3D12ShaderVisiblity(GraphicsShaderVisibility shaderVisibility)
         {
-            D3D12_SHADER_VISIBILITY d3d12ShaderVisibility;
+            D3D12_SHADER_VISIBILITY d3d12ShaderVisibility = 0;
 
-            switch (shaderVisibility)
+            if (shaderVisibility == GraphicsShaderVisibility.All)
             {
-                case GraphicsShaderVisibility.Vertex:
+                d3d12ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+            }
+            else
+            {
+                if (shaderVisibility.HasFlag(GraphicsShaderVisibility.Vertex))
                 {
-                    d3d12ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-                    break;
+                    d3d12ShaderVisibility |= D3D12_SHADER_VISIBILITY_VERTEX;
                 }
 
-                case GraphicsShaderVisibility.Pixel:
+                if (shaderVisibility.HasFlag(GraphicsShaderVisibility.Pixel))
                 {
-                    d3d12ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-                    break;
-                }
-
-                default:
-                {
-                    d3d12ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-                    break;
+                    d3d12ShaderVisibility |= D3D12_SHADER_VISIBILITY_PIXEL;
                 }
             }
 
@@ -160,14 +210,7 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <summary>Gets the underlying <see cref="ID3D12RootSignature" /> for the pipeline.</summary>
-    public ID3D12RootSignature* D3D12RootSignature
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _d3d12RootSignature;
-        }
-    }
+    public ID3D12RootSignature* D3D12RootSignature => _d3d12RootSignature;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
@@ -179,10 +222,12 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
     protected override void Dispose(bool isDisposing)
     {
         ReleaseIfNotNull(_d3d12RootSignature);
+
+        _ = Device.RemovePipelineSignature(this);
     }
 
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override void SetNameUnsafe(string value)
     {
         D3D12RootSignature->SetD3D12Name(value);
     }

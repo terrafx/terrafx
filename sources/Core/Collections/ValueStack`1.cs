@@ -78,7 +78,8 @@ public partial struct ValueStack<T> : IEnumerable<T>
     /// <param name="array">The array that is used to populate the stack.</param>
     /// <param name="takeOwnership"><c>true</c> if the stack should take ownership of the array; otherwise, <c>false</c>.</param>
     /// <exception cref="ArgumentNullException"><paramref name="array" /> is <c>null</c>.</exception>
-    public ValueStack(T[] array, bool takeOwnership = false)
+    /// <remarks>By default ownership of <paramref name="array" /> is given to the value list.</remarks>
+    public ValueStack(T[] array, bool takeOwnership = true)
     {
         ThrowIfNull(array);
 

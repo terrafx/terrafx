@@ -1,15 +1,11 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System;
-using System.Threading;
-using TerraFX.Advanced;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 using static TerraFX.Interop.DirectX.D3D12_FENCE_FLAGS;
 using static TerraFX.Interop.Windows.WAIT;
 using static TerraFX.Interop.Windows.Windows;
-using static TerraFX.Runtime.Configuration;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -19,32 +15,32 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsFence : GraphicsFence
 {
-    private readonly ID3D12Fence* _d3d12Fence;
-    private readonly HANDLE _d3d12FenceSignalEvent;
+    private ID3D12Fence* _d3d12Fence;
+    private readonly uint _d3d12FenceVersion;
 
-    private ulong _d3d12FenceSignalValue;
+    private HANDLE _signalEventHandle;
 
-    internal D3D12GraphicsFence(D3D12GraphicsDevice device, bool isSignalled)
-        : base(device)
+    internal D3D12GraphicsFence(D3D12GraphicsDevice device, in GraphicsFenceCreateOptions createOptions) : base(device)
     {
-        _d3d12Fence = CreateD3D12Fence(device, isSignalled);
-        _d3d12FenceSignalEvent = CreateEventHandle();
+        device.AddFence(this);
 
-        static ID3D12Fence* CreateD3D12Fence(D3D12GraphicsDevice device, bool isSignalled)
+        FenceInfo.IsSignalled = createOptions.IsSignalled;
+
+        _d3d12Fence = CreateD3D12Fence(in createOptions, out _d3d12FenceVersion);
+
+        var initialState = createOptions.IsSignalled ? TRUE : FALSE;
+        ThrowForLastErrorIfZero(_signalEventHandle = CreateEventW(lpEventAttributes: null, bManualReset: TRUE, initialState, lpName: null));
+
+        SetNameUnsafe(Name);
+
+        ID3D12Fence* CreateD3D12Fence(in GraphicsFenceCreateOptions createOptions, out uint d3d12FenceVersion)
         {
             ID3D12Fence* d3d12Fence;
 
-            var initialValue = isSignalled ? 0UL : 1UL;
+            var initialValue = createOptions.IsSignalled ? 0UL : 1UL;
             ThrowExternalExceptionIfFailed(device.D3D12Device->CreateFence(initialValue, D3D12_FENCE_FLAG_NONE, __uuidof<ID3D12Fence>(), (void**)&d3d12Fence));
 
-            return d3d12Fence;
-        }
-
-        static HANDLE CreateEventHandle()
-        {
-            HANDLE eventHandle;
-            ThrowForLastErrorIfZero(eventHandle = CreateEventW(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null));
-            return eventHandle;
+            return GetLatestD3D12Fence(d3d12Fence, out d3d12FenceVersion);
         }
     }
 
@@ -55,27 +51,10 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
     /// <summary>Gets the underlying <see cref="ID3D12Fence" /> for the fence.</summary>
-    public ID3D12Fence* D3D12Fence
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _d3d12Fence;
-        }
-    }
+    public ID3D12Fence* D3D12Fence => _d3d12Fence;
 
-    /// <summary>Gets a <see cref="HANDLE" /> to an event which is raised when the fence enters the signalled state.</summary>
-    public HANDLE D3D12FenceSignalEvent
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _d3d12FenceSignalEvent;
-        }
-    }
-
-    /// <summary>Gets the value at which the fence will enter the signalled state.</summary>
-    public ulong D3D12FenceSignalValue => _d3d12FenceSignalValue;
+    /// <summary>Gets the interface version of <see cref="D3D12Fence" />.</summary>
+    public uint D3D12FenceVersion => _d3d12FenceVersion;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
@@ -83,91 +62,50 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
     /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
-    /// <inheritdoc />
-    public override bool IsSignalled => D3D12Fence->GetCompletedValue() >= D3D12FenceSignalValue;
-
-    /// <inheritdoc />
-    public override void Reset()
-    {
-        if (IsSignalled)
-        {
-            _d3d12FenceSignalValue = D3D12Fence->GetCompletedValue() + 1;
-        }
-    }
-
-    /// <inheritdoc />
-    public override bool TryWait(int millisecondsTimeout = -1)
-    {
-        Assert(AssertionsEnabled && (millisecondsTimeout >= Timeout.Infinite));
-        return TryWait(unchecked((uint)millisecondsTimeout));
-    }
-
-    /// <inheritdoc />
-    public override bool TryWait(TimeSpan timeout)
-    {
-        var remainingMilliseconds = (long)timeout.TotalMilliseconds;
-        Assert(AssertionsEnabled && (remainingMilliseconds >= Timeout.Infinite));
-
-        var isSignalled = false;
-
-        while (remainingMilliseconds > INFINITE)
-        {
-            const uint MillisecondsTimeout = INFINITE - 1;
-
-            if (TryWait(MillisecondsTimeout))
-            {
-                isSignalled = true;
-                break;
-            }
-
-            remainingMilliseconds -= MillisecondsTimeout;
-        }
-
-        return isSignalled || TryWait(unchecked((uint)remainingMilliseconds));
-    }
+    /// <summary>Gets the event <see cref="HANDLE" /> which is raised when the fence enters the signalled state.</summary>
+    public HANDLE SignalEventHandle => _signalEventHandle;
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         ReleaseIfNotNull(_d3d12Fence);
-        DisposeEventHandle(_d3d12FenceSignalEvent);
+        _d3d12Fence = null;
 
-        static void DisposeEventHandle(HANDLE eventHandle)
-        {
-            if (eventHandle != HANDLE.NULL)
-            {
-                _ = CloseHandle(eventHandle);
-            }
-        }
+        CloseIfNotNull(_signalEventHandle);
+        _signalEventHandle = HANDLE.NULL;
+
+        _ = Device.RemoveFence(this);
     }
 
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override void ResetUnsafe()
+    {
+        ThrowForLastErrorIfZero(ResetEvent(_signalEventHandle));
+        ThrowExternalExceptionIfFailed(_d3d12Fence->Signal(0));
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameUnsafe(string value)
     {
         D3D12Fence->SetD3D12Name(value);
     }
 
-    private bool TryWait(uint millisecondsTimeout)
+    /// <inheritdoc />
+    protected override bool TryWaitUnsafe(uint millisecondsTimeout)
     {
-        var isSignalled = IsSignalled;
+        var isSignalled = false;
+        var signalEventHandle = SignalEventHandle;
 
-        var d3d12Fence = D3D12Fence;
-        var d3d12FenceSignalEvent = D3D12FenceSignalEvent;
+        ThrowExternalExceptionIfFailed(D3D12Fence->SetEventOnCompletion(1, signalEventHandle));
+        var result = WaitForSingleObject(signalEventHandle, millisecondsTimeout);
 
-        if (!isSignalled)
+        if (result == WAIT_OBJECT_0)
         {
-            ThrowExternalExceptionIfFailed(D3D12Fence->SetEventOnCompletion(D3D12FenceSignalValue, d3d12FenceSignalEvent));
-
-            var result = WaitForSingleObject(d3d12FenceSignalEvent, millisecondsTimeout);
-
-            if (result == WAIT_OBJECT_0)
-            {
-                isSignalled = true;
-            }
-            else if (result != WAIT_TIMEOUT)
-            {
-                ThrowForLastError(nameof(WaitForSingleObject));
-            }
+            isSignalled = true;
+        }
+        else if (result != WAIT_TIMEOUT)
+        {
+            ThrowForLastError(nameof(WaitForSingleObject));
         }
 
         return isSignalled;

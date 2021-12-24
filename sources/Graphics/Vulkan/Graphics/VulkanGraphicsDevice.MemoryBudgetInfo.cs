@@ -31,9 +31,9 @@ public partial class VulkanGraphicsDevice : GraphicsDevice
 
         public ulong TotalOperationCountAtLastUpdate;
 
-        private fixed ulong _totalFreeMemoryRegionSizeAtLastUpdate[(int)VK_MAX_MEMORY_HEAPS];
+        private fixed ulong _totalFreeMemoryRegionByteLengthAtLastUpdate[(int)VK_MAX_MEMORY_HEAPS];
 
-        private fixed ulong _totalSizeAtLastUpdate[(int)VK_MAX_MEMORY_HEAPS];
+        private fixed ulong _totalByteLengthAtLastUpdate[(int)VK_MAX_MEMORY_HEAPS];
 
         public MemoryBudgetInfo()
         {
@@ -43,45 +43,45 @@ public partial class VulkanGraphicsDevice : GraphicsDevice
 
             for (var index = 0; index < MaxMemoryManagerTypes; index++)
             {
-                _totalFreeMemoryRegionSizeAtLastUpdate[index] = 0;
-                _totalSizeAtLastUpdate[index] = 0;
+                _totalFreeMemoryRegionByteLengthAtLastUpdate[index] = 0;
+                _totalByteLengthAtLastUpdate[index] = 0;
             }
         }
 
         public void Dispose() => RWLock.Dispose();
 
-        public ulong GetTotalAllocatedMemoryRegionSizeAtLastUpdate(uint vkMemoryTypeIndex)
+        public ulong GetTotalAllocatedMemoryRegionByteLengthAtLastUpdate(uint vkMemoryTypeIndex)
         {
             Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
 
-            var totalSizeAtLastUpdate = _totalSizeAtLastUpdate[vkMemoryTypeIndex];
-            var totalFreeMemoryRegionSizeAtLastUpdate = _totalFreeMemoryRegionSizeAtLastUpdate[vkMemoryTypeIndex];
+            var totalSizeAtLastUpdate = _totalByteLengthAtLastUpdate[vkMemoryTypeIndex];
+            var totalFreeMemoryRegionSizeAtLastUpdate = _totalFreeMemoryRegionByteLengthAtLastUpdate[vkMemoryTypeIndex];
 
             return totalSizeAtLastUpdate - totalFreeMemoryRegionSizeAtLastUpdate;
         }
 
-        public ulong GetTotalFreeMemoryRegionSizeAtLastUpdate(uint vkMemoryTypeIndex)
+        public ulong GetTotalFreeMemoryRegionByteLengthAtLastUpdate(uint vkMemoryTypeIndex)
         {
             Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
-            return _totalFreeMemoryRegionSizeAtLastUpdate[vkMemoryTypeIndex];
+            return _totalFreeMemoryRegionByteLengthAtLastUpdate[vkMemoryTypeIndex];
         }
 
-        public ulong GetTotalSizeAtLastUpdate(uint vkMemoryTypeIndex)
+        public ulong GetTotalByteLengthAtLastUpdate(uint vkMemoryTypeIndex)
         {
             Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
-            return _totalSizeAtLastUpdate[vkMemoryTypeIndex];
+            return _totalByteLengthAtLastUpdate[vkMemoryTypeIndex];
         }
 
-        public void SetTotalFreeMemoryRegionSizeAtLastUpdate(uint vkMemoryTypeIndex, ulong value)
+        public void SetTotalFreeMemoryRegionByteLengthAtLastUpdate(uint vkMemoryTypeIndex, ulong value)
         {
             Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
-            _totalFreeMemoryRegionSizeAtLastUpdate[vkMemoryTypeIndex] = value;
+            _totalFreeMemoryRegionByteLengthAtLastUpdate[vkMemoryTypeIndex] = value;
         }
 
-        public void SetTotalSizeAtLastUpdate(uint vkMemoryTypeIndex, ulong value)
+        public void SetTotalByteLengthAtLastUpdate(uint vkMemoryTypeIndex, ulong value)
         {
             Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
-            _totalSizeAtLastUpdate[vkMemoryTypeIndex] = value;
+            _totalByteLengthAtLastUpdate[vkMemoryTypeIndex] = value;
         }
     }
 }

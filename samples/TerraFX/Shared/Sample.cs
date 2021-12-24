@@ -95,8 +95,27 @@ public abstract class Sample : IDisposable
                         ThrowExternalException(nameof(D3DCompileFromFile), result);
                     }
 
-                    var shaderBytecode = new ReadOnlySpan<byte>(d3dShaderBlob->GetBufferPointer(), (int)d3dShaderBlob->GetBufferSize());
-                    return graphicsDevice.CreateShader(kind, shaderBytecode, entryPointName);
+                    var bytecode = new UnmanagedArray<byte>(d3dShaderBlob->GetBufferSize());
+                    new UnmanagedReadOnlySpan<byte>((byte*)d3dShaderBlob->GetBufferPointer(), bytecode.Length).CopyTo(bytecode);
+
+                    switch (kind)
+                    {
+                        case GraphicsShaderKind.Pixel:
+                        {
+                            return graphicsDevice.CreatePixelShader(bytecode, entryPointName);
+                        }
+
+                        case GraphicsShaderKind.Vertex:
+                        {
+                            return graphicsDevice.CreateVertexShader(bytecode, entryPointName);
+                        }
+
+                        default:
+                        {
+                            ThrowForInvalidKind(kind);
+                            return null!;
+                        }
+                    }
                 }
                 finally
                 {
@@ -133,10 +152,27 @@ public abstract class Sample : IDisposable
 
             using var fileReader = File.OpenRead(assetOutput);
 
-            var bytecode = new byte[fileReader.Length];
-            _ = fileReader.Read(bytecode);
+            var bytecode = new UnmanagedArray<byte>((nuint)fileReader.Length);
+            _ = fileReader.Read(bytecode.AsSpan());
 
-            return graphicsDevice.CreateShader(kind, bytecode, entryPointName);
+            switch (kind)
+            {
+                case GraphicsShaderKind.Pixel:
+                {
+                    return graphicsDevice.CreatePixelShader(bytecode, entryPointName);
+                }
+
+                case GraphicsShaderKind.Vertex:
+                {
+                    return graphicsDevice.CreateVertexShader(bytecode, entryPointName);
+                }
+
+                default:
+                {
+                    ThrowForInvalidKind(kind);
+                    return null!;
+                }
+            }
         }
 
         static ReadOnlySpan<sbyte> GetD3D12CompileTarget(GraphicsShaderKind graphicsShaderKind)

@@ -1,16 +1,19 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using TerraFX.Advanced;
 using TerraFX.Collections;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
+using static TerraFX.Interop.Vulkan.VkBufferUsageFlags;
 using static TerraFX.Interop.Vulkan.VkObjectType;
+using static TerraFX.Interop.Vulkan.VkSharingMode;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
@@ -19,27 +22,29 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
 {
-    private readonly ValueList<VulkanGraphicsBufferView> _bufferViews;
-    private readonly ValueMutex _bufferViewsMutex;
-    private readonly ValueMutex _mapMutex;
-    private readonly GraphicsMemoryAllocator _memoryAllocator;
-    private readonly VulkanGraphicsMemoryHeap _memoryHeap;
-    private readonly VkBuffer _vkBuffer;
+    private VkBuffer _vkBuffer;
+
     private readonly nuint _vkMinTexelBufferOffsetAlignment;
     private readonly nuint _vkMinUniformBufferOffsetAlignment;
     private readonly nuint _vkNonCoherentAtomSize;
 
-    private volatile void* _mappedAddress;
-    private volatile uint _mappedCount;
+    private GraphicsMemoryAllocator _memoryAllocator;
+    private VulkanGraphicsMemoryHeap _memoryHeap;
 
-    internal VulkanGraphicsBuffer(VulkanGraphicsDevice device, in CreateInfo createInfo)
-        : base(device, in createInfo.MemoryRegion, createInfo.CpuAccess, createInfo.Kind)
+    private ValueList<VulkanGraphicsBufferView> _bufferViews;
+    private readonly ValueMutex _bufferViewsMutex;
+
+    private volatile uint _mappedCount;
+    private readonly ValueMutex _mappedMutex;
+
+    internal VulkanGraphicsBuffer(VulkanGraphicsDevice device, in GraphicsBufferCreateOptions createOptions) : base(device)
     {
-        _bufferViewsMutex = new ValueMutex();
-        _mapMutex = new ValueMutex();
-        _memoryAllocator = createInfo.CreateMemoryAllocator.Invoke(this, default, createInfo.MemoryRegion.Size, false);
-        _memoryHeap = createInfo.MemoryRegion.Allocator.DeviceObject.As<VulkanGraphicsMemoryHeap>();
-        _vkBuffer = createInfo.VkBuffer;
+        device.AddBuffer(this);
+
+        BufferInfo.Kind = createOptions.Kind;
+
+        var vkBuffer = CreateVkBuffer(in createOptions);
+        _vkBuffer = vkBuffer;
 
         ref readonly var vkPhysicalDeviceLimits = ref Adapter.VkPhysicalDeviceProperties.limits;
 
@@ -47,7 +52,90 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
         _vkMinUniformBufferOffsetAlignment = checked((nuint)vkPhysicalDeviceLimits.minUniformBufferOffsetAlignment);
         _vkNonCoherentAtomSize = checked((nuint)vkPhysicalDeviceLimits.nonCoherentAtomSize);
 
-        ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(device.VkDevice, createInfo.VkBuffer, _memoryHeap.VkDeviceMemory, createInfo.MemoryRegion.Offset));
+        var memoryAllocatorCreateOptions = new GraphicsMemoryAllocatorCreateOptions {
+            ByteLength = MemoryRegion.ByteLength,
+            IsDedicated = false,
+            OnFree = default,
+        };
+
+        if (createOptions.CreateMemorySuballocator.IsNotNull)
+        {
+            _memoryAllocator = createOptions.CreateMemorySuballocator.Invoke(this, in memoryAllocatorCreateOptions);
+        }
+        else
+        {
+            _memoryAllocator = GraphicsMemoryAllocator.CreateDefault(this, in memoryAllocatorCreateOptions);
+        }
+
+        _memoryHeap = MemoryRegion.MemoryAllocator.DeviceObject.As<VulkanGraphicsMemoryHeap>();
+
+        _bufferViews = new ValueList<VulkanGraphicsBufferView>();
+        _bufferViewsMutex = new ValueMutex();
+
+        _mappedCount = 0;
+        _mappedMutex = new ValueMutex();
+
+        SetNameUnsafe(Name);
+
+        VkBuffer CreateVkBuffer(in GraphicsBufferCreateOptions createOptions)
+        {
+            VkBuffer vkBuffer;
+
+            var vkDevice = Device.VkDevice;
+            var cpuAccess = createOptions.CpuAccess;
+
+            var vkBufferCreateInfo = new VkBufferCreateInfo {
+                sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+                pNext = null,
+                flags = 0,
+                size = createOptions.ByteLength,
+                usage = GetVkBufferUsageKind(cpuAccess, createOptions.Kind),
+                sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+                queueFamilyIndexCount = 0,
+                pQueueFamilyIndices = null,
+            };
+            ThrowExternalExceptionIfNotSuccess(vkCreateBuffer(vkDevice, &vkBufferCreateInfo, pAllocator: null, &vkBuffer));
+
+            VkMemoryRequirements vkMemoryRequirements;
+            vkGetBufferMemoryRequirements(vkDevice, vkBuffer, &vkMemoryRequirements);
+
+            ResourceInfo.CpuAccess = cpuAccess;
+            ResourceInfo.MappedAddress = null;
+
+            var memoryManager = device.GetMemoryManager(cpuAccess, vkMemoryRequirements.memoryTypeBits);
+
+            var memoryAllocationOptions = new GraphicsMemoryAllocationOptions {
+                ByteLength = (nuint)vkMemoryRequirements.size,
+                ByteAlignment = (nuint)vkMemoryRequirements.alignment,
+                AllocationFlags = createOptions.AllocationFlags,
+            };
+            var memoryRegion = memoryManager.Allocate(in memoryAllocationOptions);
+            ResourceInfo.MemoryRegion = memoryRegion;
+
+            var vkDeviceMemory = ResourceInfo.MemoryRegion.MemoryAllocator.DeviceObject.As<VulkanGraphicsMemoryHeap>().VkDeviceMemory;
+            ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(
+                vkDevice,
+                vkBuffer,
+                vkDeviceMemory,
+                memoryRegion.ByteOffset
+            ));
+
+            return vkBuffer;
+        }
+
+        static VkBufferUsageFlags GetVkBufferUsageKind(GraphicsCpuAccess cpuAccess, GraphicsBufferKind bufferKind)
+        {
+            return cpuAccess switch {
+                GraphicsCpuAccess.Read => VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                GraphicsCpuAccess.Write => VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                _ => bufferKind switch {
+                    GraphicsBufferKind.Vertex => VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                    GraphicsBufferKind.Index => VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                    GraphicsBufferKind.Constant => VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                    _ => default,
+                }
+            };
+        }
     }
 
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsBuffer" /> class.</summary>
@@ -56,17 +144,8 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
     /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
-    /// <inheritdoc />
-    public override int Count => _bufferViews.Count;
-
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
-
-    /// <inheritdoc />
-    public override bool IsMapped => MemoryHeap.IsMapped;
-
-    /// <inheritdoc />
-    public override unsafe void* MappedAddress => MemoryHeap.MappedAddress;
 
     /// <summary>Gets the memory heap in which the buffer exists.</summary>
     public VulkanGraphicsMemoryHeap MemoryHeap => _memoryHeap;
@@ -75,14 +154,7 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkBuffer" /> for the buffer.</summary>
-    public VkBuffer VkBuffer
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkBuffer;
-        }
-    }
+    public VkBuffer VkBuffer => _vkBuffer;
 
     /// <summary>Gets the <see cref="VkPhysicalDeviceLimits.minTexelBufferOffsetAlignment" /> for <see cref="Adapter" />.</summary>
     public nuint VkMinTexelBufferOffsetAlignment => _vkMinTexelBufferOffsetAlignment;
@@ -94,78 +166,32 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
     public nuint VkNonCoherentAtomSize => _vkNonCoherentAtomSize;
 
     /// <inheritdoc />
-    public override void DisposeAllViews()
-    {
-        using var mutex = new DisposableMutex(_bufferViewsMutex, isExternallySynchronized: false);
-        DisposeAllViewsInternal();
-    }
-
-    /// <inheritdoc />
-    public override IEnumerator<VulkanGraphicsBufferView> GetEnumerator() => _bufferViews.GetEnumerator();
-
-    /// <inheritdoc />
-    public override bool TryCreateView(uint count, uint stride, [NotNullWhen(true)] out GraphicsBufferView? bufferView)
-    {
-        ThrowIfDisposed();
-
-        nuint size = stride;
-        size *= count;
-        nuint alignment = 0;
-
-        if (Kind == GraphicsBufferKind.Index)
-        {
-            if (stride is not 2 and not 4)
-            {
-                ThrowForInvalidKind(Kind);
-            }
-            alignment = stride;
-        }
-        else if (Kind == GraphicsBufferKind.Constant)
-        {
-            alignment = VkMinUniformBufferOffsetAlignment;
-        }
-        else if (Kind == GraphicsBufferKind.Default)
-        {
-            alignment = VkMinTexelBufferOffsetAlignment;
-        }
-
-        var succeeded = _memoryAllocator.TryAllocate(size, alignment, out var memoryRegion);
-        bufferView = succeeded ? new VulkanGraphicsBufferView(this, in memoryRegion, stride) : null;
-
-        return succeeded;
-    }
-
-    /// <inheritdoc />
-    public override void Unmap()
-    {
-        using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
-        UnmapInternal();
-    }
-
-    /// <inheritdoc />
-    public override void UnmapAndWrite()
-    {
-        using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
-        UnmapAndWriteInternal();
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        _bufferViewsMutex.Dispose();
-        _mapMutex.Dispose();
-
-        DisposeAllViewsInternal();
-
         if (isDisposing)
         {
+            DisposeAllViewsUnsafe();
+            _bufferViews.Clear();
+
             _memoryAllocator.Clear();
+
+            _memoryAllocator = null!;
+            _memoryHeap = null!;
         }
+        _bufferViewsMutex.Dispose();
 
-        DisposeVulkanBuffer(Device.VkDevice, _vkBuffer);
-        MemoryRegion.Dispose();
+        DisposeVkBuffer(Device.VkDevice, _vkBuffer);
+        _vkBuffer = VkBuffer.NULL;
 
-        static void DisposeVulkanBuffer(VkDevice vkDevice, VkBuffer vkBuffer)
+        _mappedCount = 0;
+        _mappedMutex.Dispose();
+
+        ResourceInfo.MappedAddress = null;
+        ResourceInfo.MemoryRegion.Dispose();
+
+        _ = Device.RemoveBuffer(this);
+
+        static void DisposeVkBuffer(VkDevice vkDevice, VkBuffer vkBuffer)
         {
             if (vkBuffer != VkBuffer.NULL)
             {
@@ -175,109 +201,162 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
     }
 
     /// <inheritdoc />
-    protected override byte* Map()
+    protected override void DisposeAllViewsUnsafe()
     {
-        using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
-        return MapInternal();
+        for (var index = _bufferViews.Count - 1; index >= 0; index--)
+        {
+            var bufferView = _bufferViews.GetReferenceUnsafe(index);
+            bufferView.Dispose();
+        }
     }
 
     /// <inheritdoc />
-    protected override byte* MapForRead()
+    protected override byte* MapUnsafe()
     {
-        using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
-        return MapForReadInternal();
+        using var mutex = new DisposableMutex(_mappedMutex, isExternallySynchronized: false);
+        return MapNoMutex();
     }
 
     /// <inheritdoc />
-    protected override byte* MapForRead(nuint offset, nuint size)
+    protected override byte* MapForReadUnsafe()
     {
-        using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
-        return MapForReadInternal(offset, size);
+        using var mutex = new DisposableMutex(_mappedMutex, isExternallySynchronized: false);
+        return MapForReadNoMutex();
     }
 
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override byte* MapForReadUnsafe(nuint offset, nuint size)
+    {
+        using var mutex = new DisposableMutex(_mappedMutex, isExternallySynchronized: false);
+        return MapForReadNoMutex(offset, size);
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameUnsafe(string value)
     {
         Device.SetVkObjectName(VK_OBJECT_TYPE_BUFFER, VkBuffer, value);
     }
 
     /// <inheritdoc />
-    protected override void UnmapAndWrite(nuint offset, nuint size)
+    protected override bool TryCreateBufferViewUnsafe(in GraphicsBufferViewCreateOptions createOptions, [NotNullWhen(true)] out GraphicsBufferView? bufferView)
     {
-        using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
-        UnmapAndWriteInternal(offset, size);
+        nuint byteLength = createOptions.BytesPerElement;
+        byteLength *= createOptions.ElementCount;
+        nuint byteAlignment = 0;
+
+        if (Kind == GraphicsBufferKind.Index)
+        {
+            byteAlignment = createOptions.BytesPerElement;
+        }
+        else if (Kind == GraphicsBufferKind.Constant)
+        {
+            byteAlignment = VkMinUniformBufferOffsetAlignment;
+        }
+        else if (Kind == GraphicsBufferKind.Default)
+        {
+            byteAlignment = VkMinTexelBufferOffsetAlignment;
+        }
+
+        var succeeded = _memoryAllocator.TryAllocate(byteLength, byteAlignment, out var memoryRegion);
+        bufferView = succeeded ? new VulkanGraphicsBufferView(this, in createOptions, in memoryRegion) : null;
+
+        return succeeded;
     }
 
-    internal void AddView(VulkanGraphicsBufferView bufferView)
+    /// <inheritdoc />
+    protected override void UnmapUnsafe()
     {
-        using var mutex = new DisposableMutex(_bufferViewsMutex, isExternallySynchronized: false);
-        _bufferViews.Add(bufferView);
+        using var mutex = new DisposableMutex(_mappedMutex, isExternallySynchronized: false);
+        UnmapNoMutex();
     }
 
-    internal bool RemoveView(VulkanGraphicsBufferView bufferView)
+    /// <inheritdoc />
+    protected override void UnmapAndWriteUnsafe()
+    {
+        using var mutex = new DisposableMutex(_mappedMutex, isExternallySynchronized: false);
+        UnmapAndWriteNoMutex();
+    }
+
+
+    /// <inheritdoc />
+    protected override void UnmapAndWriteUnsafe(nuint offset, nuint size)
+    {
+        using var mutex = new DisposableMutex(_mappedMutex, isExternallySynchronized: false);
+        UnmapAndWriteNoMutex(offset, size);
+    }
+
+    internal void AddBufferView(VulkanGraphicsBufferView bufferView)
+    {
+        _bufferViews.Add(bufferView, _bufferViewsMutex);
+    }
+
+    internal byte* MapView(nuint byteStart)
+    {
+        return MapUnsafe() + byteStart;
+    }
+
+    internal byte* MapViewForRead(nuint byteStart, nuint byteLength)
+    {
+        return MapForReadUnsafe(byteStart, byteLength) + byteStart;
+    }
+
+    internal bool RemoveBufferView(VulkanGraphicsBufferView bufferView)
     {
         using var mutex = new DisposableMutex(_bufferViewsMutex, isExternallySynchronized: false);
         return _bufferViews.Remove(bufferView);
     }
 
-    private void DisposeAllViewsInternal()
+    internal void UnmapView()
     {
-        // This method should only be called under a mutex
-
-        foreach (var bufferView in _bufferViews)
-        {
-            bufferView.Dispose();
-        }
-
-        _bufferViews.Clear();
+        UnmapUnsafe();
     }
 
-    private byte* MapInternal()
+    internal void UnmapViewAndWrite(nuint byteStart, nuint byteLength)
     {
-        // This method should only be called under a mutex
+        UnmapAndWriteUnsafe(byteStart, byteLength);
+    }
+
+    private byte* MapNoMutex()
+    {
         byte* mappedAddress;
 
         if (Interlocked.Increment(ref _mappedCount) == 1)
         {
-            mappedAddress = MemoryHeap.Map() + MemoryRegion.Offset;
-            _mappedAddress = mappedAddress;
+            mappedAddress = MemoryHeap.Map() + MemoryRegion.ByteOffset;
+            ResourceInfo.MappedAddress = mappedAddress;
         }
         else
         {
-            mappedAddress = (byte*)_mappedAddress;
+            mappedAddress = (byte*)ResourceInfo.MappedAddress;
         }
 
         return mappedAddress;
     }
 
-    private byte* MapForReadInternal()
+    private byte* MapForReadNoMutex()
     {
-        // This method should only be called under a mutex
-        return MapForReadInternal(0, Size);
+        return MapForReadNoMutex(0, ByteLength);
     }
 
-    private byte* MapForReadInternal(nuint offset, nuint size)
+    private byte* MapForReadNoMutex(nuint byteStart, nuint byteLength)
     {
-        // This method should only be called under a mutex
-
-        var mappedAddress = MapInternal();
+        var mappedAddress = MapNoMutex();
         var vkNonCoherentAtomSize = VkNonCoherentAtomSize;
 
         var vkMappedMemoryRange = new VkMappedMemoryRange {
             sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
+            pNext = null,
             memory = MemoryHeap.VkDeviceMemory,
-            offset = MemoryRegion.Offset + offset,
-            size = (size + vkNonCoherentAtomSize - 1) & ~(vkNonCoherentAtomSize - 1),
+            offset = AlignDown(MemoryRegion.ByteOffset + byteStart, vkNonCoherentAtomSize),
+            size = AlignUp(byteLength, vkNonCoherentAtomSize),
         };
         ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(Device.VkDevice, 1, &vkMappedMemoryRange));
 
         return mappedAddress;
     }
 
-    private void UnmapInternal()
+    private void UnmapNoMutex()
     {
-        // This method should only be called under a mutex
-
         var mappedCount = Interlocked.Decrement(ref _mappedCount);
 
         if (mappedCount == uint.MaxValue)
@@ -287,19 +366,17 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
         else if (mappedCount == 0)
         {
             MemoryHeap.Unmap();
+            ResourceInfo.MappedAddress = null;
         }
     }
 
-    private void UnmapAndWriteInternal()
+    private void UnmapAndWriteNoMutex()
     {
-        // This method should only be called under a mutex
-        UnmapAndWriteInternal(0, Size);
+        UnmapAndWriteNoMutex(0, ByteLength);
     }
 
-    private void UnmapAndWriteInternal(nuint offset, nuint size)
+    private void UnmapAndWriteNoMutex(nuint byteStart, nuint byteLength)
     {
-        // This method should only be called under a mutex
-
         var mappedCount = Interlocked.Decrement(ref _mappedCount);
 
         if (mappedCount == uint.MaxValue)
@@ -310,15 +387,17 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
 
         var vkMappedMemoryRange = new VkMappedMemoryRange {
             sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
+            pNext = null,
             memory = MemoryHeap.VkDeviceMemory,
-            offset = MemoryRegion.Offset + offset,
-            size = (size + vkNonCoherentAtomSize - 1) & ~(vkNonCoherentAtomSize - 1),
+            offset = AlignDown(MemoryRegion.ByteOffset + byteStart, vkNonCoherentAtomSize),
+            size = AlignUp(byteLength, vkNonCoherentAtomSize),
         };
         ThrowExternalExceptionIfNotSuccess(vkFlushMappedMemoryRanges(Device.VkDevice, 1, &vkMappedMemoryRange));
 
         if (mappedCount == 0)
         {
             MemoryHeap.Unmap();
+            ResourceInfo.MappedAddress = null;
         }
     }
 }

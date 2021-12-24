@@ -1,24 +1,21 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-// This file includes code based on the Allocator class from https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator/
+// This file includes code based on the Allocator class from https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator/
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using TerraFX.Advanced;
+using TerraFX.Collections;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
-using static TerraFX.Interop.Vulkan.VkBufferUsageFlags;
-using static TerraFX.Interop.Vulkan.VkImageTiling;
-using static TerraFX.Interop.Vulkan.VkImageType;
-using static TerraFX.Interop.Vulkan.VkImageUsageFlags;
+using TerraFX.Utilities;
 using static TerraFX.Interop.Vulkan.VkMemoryHeapFlags;
 using static TerraFX.Interop.Vulkan.VkMemoryPropertyFlags;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkPhysicalDeviceType;
 using static TerraFX.Interop.Vulkan.VkQueueFlags;
-using static TerraFX.Interop.Vulkan.VkSampleCountFlags;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Runtime.Configuration;
@@ -33,72 +30,159 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
 {
-    private readonly VulkanGraphicsMemoryManager[] _memoryManagers;
-    private readonly VkQueue _vkCommandQueue;
-    private readonly uint _vkComputeCommandQueueFamilyIndex;
-    private readonly VkDevice _vkDevice;
-    private readonly uint _vkGraphicsCommandQueueFamilyIndex;
-    private readonly uint _vkMemoryTypeCount;
-    private readonly uint _vkTransferCommandQueueFamilyIndex;
+    private const int VkQueueFamilyCount = 3;
+
+    private VkDevice _vkDevice;
     private readonly VkDeviceManualImports _vkDeviceManualImports;
 
-    private ContextPool<VulkanGraphicsDevice, VulkanGraphicsComputeContext> _computeContextPool;
-    private ContextPool<VulkanGraphicsDevice, VulkanGraphicsCopyContext> _copyContextPool;
+    private readonly VulkanGraphicsMemoryManager[] _memoryManagers;
+
+    private ValueList<VulkanGraphicsBuffer> _buffers;
+    private readonly ValueMutex _buffersMutex;
+
+    private ValueList<VulkanGraphicsFence> _fences;
+    private readonly ValueMutex _fencesMutex;
+
+    private ValueList<VulkanGraphicsPipelineSignature> _pipelineSignatures;
+    private readonly ValueMutex _pipelineSignaturesMutex;
+
+    private ValueList<VulkanGraphicsRenderPass> _renderPasses;
+    private readonly ValueMutex _renderPassesMutex;
+
+    private ValueList<VulkanGraphicsShader> _shaders;
+    private readonly ValueMutex _shadersMutex;
+
+    private ValueList<VulkanGraphicsTexture> _textures;
+    private readonly ValueMutex _texturesMutex;
+
     private MemoryBudgetInfo _memoryBudgetInfo;
-    private ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext> _renderContextPool;
 
-    internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter, GraphicsMemoryAllocatorCreateFunc createMemoryAllocator)
-        : base(adapter)
+    internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter, in GraphicsDeviceCreateOptions createOptions) : base(adapter)
     {
-        _vkComputeCommandQueueFamilyIndex = GetVkCommandQueueFamilyIndex(adapter, VK_QUEUE_COMPUTE_BIT);
-        _vkTransferCommandQueueFamilyIndex = GetVkCommandQueueFamilyIndex(adapter, VK_QUEUE_TRANSFER_BIT);
+        var vkQueueFamilyIndices = stackalloc uint[VkQueueFamilyCount] {
+            GetVkQueueFamilyIndex(VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT, 0),
+            GetVkQueueFamilyIndex(VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT, 0),
+            GetVkQueueFamilyIndex(VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT, 0),
+        };
 
-        var vkGraphicsCommandQueueFamilyIndex = GetVkCommandQueueFamilyIndex(adapter, VK_QUEUE_GRAPHICS_BIT);
-        _vkGraphicsCommandQueueFamilyIndex = vkGraphicsCommandQueueFamilyIndex;
+        var vkQueueIndices = stackalloc uint[VkQueueFamilyCount] {
+            0,
+            0,
+            0,
+        };
 
-        var vkDevice = CreateVkDevice(adapter, vkGraphicsCommandQueueFamilyIndex);
-        _vkDevice = vkDevice;
+        _vkDevice = CreateVkDevice(vkQueueFamilyIndices, vkQueueIndices, ref _vkDeviceManualImports);
 
-        InitializeVkDeviceManualImports(vkDevice, ref _vkDeviceManualImports);
+        _buffers = new ValueList<VulkanGraphicsBuffer>();
+        _buffersMutex = new ValueMutex();
 
-        _vkCommandQueue = GetVkCommandQueue(vkDevice, vkGraphicsCommandQueueFamilyIndex);
+        _fences = new ValueList<VulkanGraphicsFence>();
+        _fencesMutex = new ValueMutex();
 
-        var vkMemoryTypeCount = adapter.VkPhysicalDeviceMemoryProperties.memoryTypeCount;
-        _vkMemoryTypeCount = vkMemoryTypeCount;
+        _pipelineSignatures = new ValueList<VulkanGraphicsPipelineSignature>();
+        _pipelineSignaturesMutex = new ValueMutex();
 
-        _memoryManagers = CreateMemoryManagers(this, createMemoryAllocator, vkMemoryTypeCount);
+        _renderPasses = new ValueList<VulkanGraphicsRenderPass>();
+        _renderPassesMutex = new ValueMutex();
 
-        _computeContextPool = new ContextPool<VulkanGraphicsDevice, VulkanGraphicsComputeContext>();
-        _copyContextPool = new ContextPool<VulkanGraphicsDevice, VulkanGraphicsCopyContext>();
-        _renderContextPool = new ContextPool<VulkanGraphicsDevice, VulkanGraphicsRenderContext>();
+        _shaders = new ValueList<VulkanGraphicsShader>();
+        _shadersMutex = new ValueMutex();
+
+        _textures = new ValueList<VulkanGraphicsTexture>();
+        _texturesMutex = new ValueMutex();
+
+        DeviceInfo.ComputeQueue = new VulkanGraphicsComputeCommandQueue(this, vkQueueFamilyIndices[0], vkQueueIndices[0]);
+        DeviceInfo.CopyQueue = new VulkanGraphicsCopyCommandQueue(this, vkQueueFamilyIndices[1], vkQueueIndices[1]);
+        DeviceInfo.RenderQueue = new VulkanGraphicsRenderCommandQueue(this, vkQueueFamilyIndices[2], vkQueueIndices[2]);
+
+        _memoryManagers = CreateMemoryManagers(createOptions.CreateMemoryAllocator);
 
         _memoryBudgetInfo = new MemoryBudgetInfo();
         UpdateMemoryBudgetInfo(ref _memoryBudgetInfo, totalOperationCount: 0);
 
-        static VulkanGraphicsMemoryManager[] CreateMemoryManagers(VulkanGraphicsDevice device, GraphicsMemoryAllocatorCreateFunc createMemoryAllocator, uint vkMemoryTypeCount)
+        SetNameUnsafe(Name);
+
+        VulkanGraphicsMemoryManager[] CreateMemoryManagers(GraphicsMemoryAllocatorCreateFunc memoryAllocatorCreateFunc)
         {
+            var vkMemoryTypeCount = Adapter.VkPhysicalDeviceMemoryProperties.memoryTypeCount;
             var memoryManagers = new VulkanGraphicsMemoryManager[vkMemoryTypeCount];
 
-            for (var vkMemoryTypeIndex = 0u; vkMemoryTypeIndex < vkMemoryTypeCount; vkMemoryTypeIndex++)
+            var createOptions = new VulkanGraphicsMemoryManagerCreateOptions {
+                CreateMemoryAllocator = memoryAllocatorCreateFunc,
+            };
+
+            for (var index = 0u; index < memoryManagers.Length; index++)
             {
-                memoryManagers[vkMemoryTypeIndex] = new VulkanGraphicsMemoryManager(device, createMemoryAllocator, vkMemoryTypeIndex);
+                createOptions.VkMemoryTypeIndex = index;
+                memoryManagers[index] = new VulkanGraphicsMemoryManager(this, in createOptions);
             }
 
             return memoryManagers;
         }
 
-        static VkDevice CreateVkDevice(VulkanGraphicsAdapter adapter, uint vkCommandQueueFamilyIndex)
+        VkDevice CreateVkDevice(uint* vkQueueFamilyIndices, uint* vkQueueIndices, ref VkDeviceManualImports vkDeviceManualImports)
         {
             VkDevice vkDevice;
 
-            var vkQueuePriority = 1.0f;
-
-            var vkDeviceQueueCreateInfo = new VkDeviceQueueCreateInfo {
-                sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
-                queueFamilyIndex = vkCommandQueueFamilyIndex,
-                queueCount = 1,
-                pQueuePriorities = &vkQueuePriority,
+            var vkQueuePriorities = stackalloc float[VkQueueFamilyCount] {
+                1.0f,
+                1.0f,
+                1.0f
             };
+
+            var vkDeviceQueueCreateInfos = stackalloc VkDeviceQueueCreateInfo[VkQueueFamilyCount] {
+                new VkDeviceQueueCreateInfo {
+                    sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+                    pNext = null,
+                    flags = 0,
+                    queueFamilyIndex = vkQueueFamilyIndices[0],
+                    queueCount = 1,
+                    pQueuePriorities = vkQueuePriorities,
+                },
+                new VkDeviceQueueCreateInfo {
+                    sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+                    pNext = null,
+                    flags = 0,
+                    queueFamilyIndex = vkQueueFamilyIndices[1],
+                    queueCount = 1,
+                    pQueuePriorities = vkQueuePriorities,
+                },
+                new VkDeviceQueueCreateInfo {
+                    sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+                    pNext = null,
+                    flags = 0,
+                    queueFamilyIndex = vkQueueFamilyIndices[2],
+                    queueCount = 1,
+                    pQueuePriorities = vkQueuePriorities,
+                },
+            };
+            var vkDeviceQueueCreateInfoCount = (uint)VkQueueFamilyCount;
+
+            if (vkDeviceQueueCreateInfos[1].queueFamilyIndex == vkDeviceQueueCreateInfos[0].queueFamilyIndex)
+            {
+                // TODO: Ideally we'd correctly handle multiple queues and ownership transfer
+                // but that's a lot of complexity for very little benefit this early on.
+                vkQueueIndices[1] = 0;
+                vkDeviceQueueCreateInfos[0].queueCount = 1;
+                vkDeviceQueueCreateInfoCount--;
+            }
+
+            if (vkDeviceQueueCreateInfos[2].queueFamilyIndex == vkDeviceQueueCreateInfos[0].queueFamilyIndex)
+            {
+                // TODO: Ideally we'd correctly handle multiple queues and ownership transfer
+                // but that's a lot of complexity for very little benefit this early on.
+                vkQueueIndices[1] = 0;
+                vkDeviceQueueCreateInfos[0].queueCount = 1;
+                vkDeviceQueueCreateInfoCount--;
+            }
+            else if (vkDeviceQueueCreateInfos[2].queueFamilyIndex == vkDeviceQueueCreateInfos[1].queueFamilyIndex)
+            {
+                // TODO: Ideally we'd correctly handle multiple queues and ownership transfer
+                // but that's a lot of complexity for very little benefit this early on.
+                vkQueueIndices[1] = 0;
+                vkDeviceQueueCreateInfos[0].queueCount = 1;
+                vkDeviceQueueCreateInfoCount--;
+            }
 
             const int EnabledExtensionNamesCount = 2;
 
@@ -114,8 +198,8 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
 
             var vkDeviceCreateInfo = new VkDeviceCreateInfo {
                 sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-                queueCreateInfoCount = 1,
-                pQueueCreateInfos = &vkDeviceQueueCreateInfo,
+                queueCreateInfoCount = vkDeviceQueueCreateInfoCount,
+                pQueueCreateInfos = vkDeviceQueueCreateInfos,
                 enabledLayerCount = enabledVkLayersNamesCount,
                 ppEnabledLayerNames = enabledVkLayerNames,
                 enabledExtensionCount = EnabledExtensionNamesCount,
@@ -125,52 +209,46 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
 
             if (GraphicsService.EnableDebugMode)
             {
-                enabledVkLayerNames[enabledVkLayersNamesCount - 1] = VK_LAYER_KHRONOS_VALIDATION_NAME.GetPointer();
+                // VK_LAYER_KHRONOS_validation
+                ReadOnlySpan<sbyte> vkLayerKhronosValidation = new sbyte[] { 0x56, 0x4B, 0x5F, 0x4C, 0x41, 0x59, 0x45, 0x52, 0x5F, 0x4B, 0x48, 0x52, 0x4F, 0x4E, 0x4F, 0x53, 0x5F, 0x76, 0x61, 0x6C, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x00 };
+                enabledVkLayerNames[enabledVkLayersNamesCount - 1] = vkLayerKhronosValidation.GetPointer();
             }
 
             ThrowExternalExceptionIfNotSuccess(vkCreateDevice(adapter.VkPhysicalDevice, &vkDeviceCreateInfo, pAllocator: null, &vkDevice));
 
+            // vkSetDebugUtilsObjectNameEXT
+            ReadOnlySpan<sbyte> vkSetDebugUtilsObjectNameEXT = new sbyte[] { 0x76, 0x6B, 0x53, 0x65, 0x74, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4F, 0x62, 0x6A, 0x65, 0x63, 0x74, 0x4E, 0x61, 0x6D, 0x65, 0x45, 0x58, 0x54, 0x00 };
+            vkDeviceManualImports.vkSetDebugUtilsObjectNameEXT = (delegate* unmanaged<VkDevice, VkDebugUtilsObjectNameInfoEXT*, VkResult>)vkGetDeviceProcAddr(vkDevice, vkSetDebugUtilsObjectNameEXT.GetPointer());
+
             return vkDevice;
         }
 
-        static VkQueue GetVkCommandQueue(VkDevice vkDevice, uint vkCommandQueueFamilyIndex)
+        uint GetVkQueueFamilyIndex(VkQueueFlags vkQueueFlags, VkQueueFlags vkDisallowedQueueFlags)
         {
-            VkQueue vkCommandQueue;
-            vkGetDeviceQueue(vkDevice, vkCommandQueueFamilyIndex, queueIndex: 0, &vkCommandQueue);
-            return vkCommandQueue;
-        }
+            var vkQueueFamilyIndex = uint.MaxValue;
+            var vkQueueFamilyProperties = Adapter.VkQueueFamilyProperties;
 
-        static uint GetVkCommandQueueFamilyIndex(VulkanGraphicsAdapter adapter, VkQueueFlags vkQueueFlags)
-        {
-            var vkCommandQueueFamilyIndex = uint.MaxValue;
-            var vkPhysicalDevice = adapter.VkPhysicalDevice;
-
-            uint vkQueueFamilyPropertyCount;
-            vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice, &vkQueueFamilyPropertyCount, pQueueFamilyProperties: null);
-
-            var vkQueueFamilyProperties = stackalloc VkQueueFamilyProperties[(int)vkQueueFamilyPropertyCount];
-            vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice, &vkQueueFamilyPropertyCount, vkQueueFamilyProperties);
-
-            for (uint i = 0; i < vkQueueFamilyPropertyCount; i++)
+            for (nuint i = 0; i < vkQueueFamilyProperties.Length; i++)
             {
-                if ((vkQueueFamilyProperties[i].queueFlags & vkQueueFlags) == vkQueueFlags)
+                var queueFlags = vkQueueFamilyProperties[i].queueFlags;
+
+                if ((queueFlags & vkDisallowedQueueFlags) != 0)
                 {
-                    vkCommandQueueFamilyIndex = i;
+                    continue;
+                }
+
+                if ((queueFlags & vkQueueFlags) == vkQueueFlags)
+                {
+                    vkQueueFamilyIndex = (uint)i;
                     break;
                 }
             }
 
-            if (vkCommandQueueFamilyIndex == uint.MaxValue)
+            if (vkQueueFamilyIndex == uint.MaxValue)
             {
                 ThrowForMissingFeature();
             }
-            return vkCommandQueueFamilyIndex;
-        }
-
-        static void InitializeVkDeviceManualImports(VkDevice vkDevice, ref VkDeviceManualImports vkDeviceManualImports)
-        {
-            ReadOnlySpan<sbyte> vkSetDebugUtilsObjectNameEXT = new sbyte[] { 0x76, 0x6B, 0x53, 0x65, 0x74, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4F, 0x62, 0x6A, 0x65, 0x63, 0x74, 0x4E, 0x61, 0x6D, 0x65, 0x45, 0x58, 0x54, 0x00 };
-            vkDeviceManualImports.vkSetDebugUtilsObjectNameEXT = (delegate* unmanaged<VkDevice, VkDebugUtilsObjectNameInfoEXT*, VkResult>)vkGetDeviceProcAddr(vkDevice, vkSetDebugUtilsObjectNameEXT.GetPointer());
+            return vkQueueFamilyIndex;
         }
     }
 
@@ -180,28 +258,17 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
+    /// <inheritdoc cref="GraphicsDevice.ComputeCommandQueue" />
+    public new VulkanGraphicsComputeCommandQueue ComputeCommandQueue => base.ComputeCommandQueue.As<VulkanGraphicsComputeCommandQueue>();
+
+    /// <inheritdoc cref="GraphicsDevice.CopyCommandQueue" />
+    public new VulkanGraphicsCopyCommandQueue CopyCommandQueue => base.CopyCommandQueue.As<VulkanGraphicsCopyCommandQueue>();
+
+    /// <inheritdoc cref="GraphicsDevice.RenderCommandQueue" />
+    public new VulkanGraphicsRenderCommandQueue RenderCommandQueue => base.RenderCommandQueue.As<VulkanGraphicsRenderCommandQueue>();
+
     /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
-
-    /// <summary>Gets the <see cref="VkQueue" /> used by the device.</summary>
-    public VkQueue VkCommandQueue
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkCommandQueue;
-        }
-    }
-
-    /// <summary>Gets the index of the queue family that supports compute operations for <see cref="VkCommandQueue" />.</summary>
-    public uint VkComputeCommandQueueFamilyIndex
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkComputeCommandQueueFamilyIndex;
-        }
-    }
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkDevice"/> for the device.</summary>
     public VkDevice VkDevice => _vkDevice;
@@ -209,351 +276,106 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <summary>Gets the methods that must be manually imported for <see cref="VkDevice" />.</summary>
     public ref readonly VkDeviceManualImports VkDeviceManualImports => ref _vkDeviceManualImports;
 
-    /// <summary>Gets the index of the queue family that supports graphics operations for <see cref="VkCommandQueue" />.</summary>
-    public uint VkGraphicsCommandQueueFamilyIndex
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkGraphicsCommandQueueFamilyIndex;
-        }
-    }
-
-    /// <summary>Gets the <see cref="VkPhysicalDeviceMemoryProperties.memoryTypeCount"/> for the <see cref="VulkanGraphicsAdapter.VkPhysicalDevice" />.</summary>
-    public uint VkMemoryTypeCount => _vkMemoryTypeCount;
-
-    /// <summary>Gets the index of the queue family that supports transfer operations for <see cref="VkCommandQueue" />.</summary>
-    public uint VkTransferCommandQueueFamilyIndex
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkTransferCommandQueueFamilyIndex;
-        }
-    }
-
     // VK_LAYER_KHRONOS_validation
     private static ReadOnlySpan<sbyte> VK_LAYER_KHRONOS_VALIDATION_NAME => new sbyte[] { 0x56, 0x4B, 0x5F, 0x4C, 0x41, 0x59, 0x45, 0x52, 0x5F, 0x4B, 0x48, 0x52, 0x4F, 0x4E, 0x4F, 0x53, 0x5F, 0x76, 0x61, 0x6C, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x00 };
 
     /// <inheritdoc />
-    public override VulkanGraphicsBuffer CreateBuffer(in GraphicsBufferCreateInfo bufferCreateInfo)
+    protected override VulkanGraphicsBuffer CreateBufferUnsafe(in GraphicsBufferCreateOptions createOptions)
     {
-        var vkDevice = VkDevice;
-
-        var vkBufferCreateInfo = new VkBufferCreateInfo {
-            sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-            size = bufferCreateInfo.Size,
-            usage = GetVkBufferUsageKind(bufferCreateInfo.CpuAccess, bufferCreateInfo.Kind)
-        };
-
-        VkBuffer vkBuffer;
-        ThrowExternalExceptionIfNotSuccess(vkCreateBuffer(vkDevice, &vkBufferCreateInfo, pAllocator: null, &vkBuffer));
-
-        VkMemoryRequirements vkMemoryRequirements;
-        vkGetBufferMemoryRequirements(vkDevice, vkBuffer, &vkMemoryRequirements);
-
-        var memoryManagerIndex = GetMemoryManagerIndex(bufferCreateInfo.CpuAccess, vkMemoryRequirements.memoryTypeBits);
-        var memoryRegion = _memoryManagers[memoryManagerIndex].Allocate(checked((nuint)vkMemoryRequirements.size), checked((nuint)vkMemoryRequirements.alignment), bufferCreateInfo.AllocationFlags);
-
-        var createInfo = new VulkanGraphicsBuffer.CreateInfo {
-            CpuAccess = bufferCreateInfo.CpuAccess,
-            CreateMemoryAllocator = bufferCreateInfo.CreateMemoryAllocator.IsValid ? bufferCreateInfo.CreateMemoryAllocator : new GraphicsMemoryAllocatorCreateFunc(&GraphicsMemoryAllocator.CreateDefault),
-            MemoryRegion = memoryRegion,
-            Kind = bufferCreateInfo.Kind,
-            VkBuffer = vkBuffer,
-        };
-        return new VulkanGraphicsBuffer(this, in createInfo);
-
-        static VkBufferUsageFlags GetVkBufferUsageKind(GraphicsResourceCpuAccess cpuAccess, GraphicsBufferKind kind)
-        {
-            return cpuAccess switch {
-                GraphicsResourceCpuAccess.Read => VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                GraphicsResourceCpuAccess.Write => VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                _ => kind switch {
-                    GraphicsBufferKind.Vertex => VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                    GraphicsBufferKind.Index => VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                    GraphicsBufferKind.Constant => VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                    _ => default,
-                }
-            };
-        }
+        return new VulkanGraphicsBuffer(this, in createOptions);
     }
 
     /// <inheritdoc />
-    public override VulkanGraphicsFence CreateFence(bool isSignalled)
+    protected override VulkanGraphicsFence CreateFenceUnsafe(in GraphicsFenceCreateOptions createOptions)
     {
-        ThrowIfDisposed();
-        return new VulkanGraphicsFence(this, isSignalled);
+        return new VulkanGraphicsFence(this, in createOptions);
     }
 
     /// <inheritdoc />
-    public override GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResourceInfo> resources = default)
+    protected override VulkanGraphicsPipelineSignature CreatePipelineSignatureUnsafe(in GraphicsPipelineSignatureCreateOptions createOptions)
     {
-        ThrowIfDisposed();
-        return new VulkanGraphicsPipelineSignature(this, inputs, resources);
+        return new VulkanGraphicsPipelineSignature(this, in createOptions);
     }
 
     /// <inheritdoc />
-    public override VulkanGraphicsShader CreateShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
+    protected override VulkanGraphicsRenderPass CreateRenderPassUnsafe(in GraphicsRenderPassCreateOptions createOptions)
     {
-        ThrowIfDisposed();
-        return new VulkanGraphicsShader(this, kind, bytecode, entryPointName);
+        return new VulkanGraphicsRenderPass(this, in createOptions);
     }
 
     /// <inheritdoc />
-    public override VulkanGraphicsRenderPass CreateRenderPass(IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0)
+    protected override VulkanGraphicsShader CreateShaderUnsafe(in GraphicsShaderCreateOptions createOptions)
     {
-        ThrowIfDisposed();
-        return new VulkanGraphicsRenderPass(this, surface, renderTargetFormat, minimumRenderTargetCount);
+        return new VulkanGraphicsShader(this, in createOptions);
     }
 
     /// <inheritdoc />
-    public override VulkanGraphicsTexture CreateTexture(in GraphicsTextureCreateInfo textureCreateInfo)
+    protected override VulkanGraphicsTexture CreateTextureUnsafe(in GraphicsTextureCreateOptions createOptions)
     {
-        var vkDevice = VkDevice;
-        var vkImageCreateInfo = GetVkImageCreateInfo(in textureCreateInfo);
-
-        VkImage vkImage;
-        ThrowExternalExceptionIfNotSuccess(vkCreateImage(vkDevice, &vkImageCreateInfo, pAllocator: null, &vkImage));
-
-        VkMemoryRequirements vkMemoryRequirements;
-        vkGetImageMemoryRequirements(vkDevice, vkImage, &vkMemoryRequirements);
-
-        var memoryManagerIndex = GetMemoryManagerIndex(textureCreateInfo.CpuAccess, vkMemoryRequirements.memoryTypeBits);
-        var memoryRegion = _memoryManagers[memoryManagerIndex].Allocate(checked((nuint)vkMemoryRequirements.size), checked((nuint)vkMemoryRequirements.alignment), textureCreateInfo.AllocationFlags);
-
-        var format = textureCreateInfo.Format;
-
-        var width = textureCreateInfo.Width;
-        var height = textureCreateInfo.Height;
-        var depth = textureCreateInfo.Depth;
-
-        var rowPitch = width * format.GetSize();
-        var slicePitch = rowPitch * height;
-
-        var createInfo = new VulkanGraphicsTexture.CreateInfo {
-            CpuAccess = textureCreateInfo.CpuAccess,
-            MemoryRegion = memoryRegion,
-            TextureInfo = new GraphicsTextureInfo {
-                Depth = depth,
-                Format = format,
-                Height = height,
-                Kind = textureCreateInfo.Kind,
-                MipLevelCount = textureCreateInfo.MipLevelCount,
-                RowPitch = rowPitch,
-                SlicePitch = slicePitch,
-                Width = width,
-            },
-            VkImage = vkImage,
-        };
-        return new VulkanGraphicsTexture(this, in createInfo);
-
-        static VkImageCreateInfo GetVkImageCreateInfo(in GraphicsTextureCreateInfo textureCreateInfo)
-        {
-            var vkImageCreateInfo = new VkImageCreateInfo {
-                sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
-                imageType = GetVkImageType(textureCreateInfo.Kind),
-                format = textureCreateInfo.Format.AsVkFormat(),
-                extent = new VkExtent3D {
-                    width = textureCreateInfo.Width,
-                    height = textureCreateInfo.Height,
-                    depth = textureCreateInfo.Depth,
-                },
-                mipLevels = textureCreateInfo.MipLevelCount,
-                arrayLayers = 1,
-                samples = VK_SAMPLE_COUNT_1_BIT,
-                tiling = VK_IMAGE_TILING_OPTIMAL,
-                usage = GetVkImageUsageFlags(textureCreateInfo.CpuAccess),
-            };
-
-            return vkImageCreateInfo;
-        }
-
-        static VkImageType GetVkImageType(GraphicsTextureKind kind)
-        {
-            VkImageType vkImageType = 0;
-
-            switch (kind)
-            {
-                case GraphicsTextureKind.OneDimensional:
-                {
-                    vkImageType = VK_IMAGE_TYPE_1D;
-                    break;
-                }
-
-                case GraphicsTextureKind.TwoDimensional:
-                {
-                    vkImageType = VK_IMAGE_TYPE_2D;
-                    break;
-                }
-
-                case GraphicsTextureKind.ThreeDimensional:
-                {
-                    vkImageType = VK_IMAGE_TYPE_3D;
-                    break;
-                }
-
-                default:
-                {
-                    ThrowForInvalidKind(kind);
-                    break;
-                }
-            }
-
-            return vkImageType;
-        }
-
-        static VkImageUsageFlags GetVkImageUsageFlags(GraphicsResourceCpuAccess cpuAccess)
-        {
-            return cpuAccess switch {
-                GraphicsResourceCpuAccess.Read => VK_IMAGE_USAGE_TRANSFER_DST_BIT,
-                GraphicsResourceCpuAccess.Write => VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
-                _ => VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
-            };
-        }
-    }
-
-    /// <inheritdoc />
-    public override GraphicsMemoryBudget GetMemoryBudget(GraphicsMemoryManager memoryManager)
-        => GetMemoryBudget((VulkanGraphicsMemoryManager)memoryManager);
-
-    /// <inheritdoc cref="GetMemoryBudget(GraphicsMemoryManager)" />
-    public GraphicsMemoryBudget GetMemoryBudget(VulkanGraphicsMemoryManager memoryManager)
-    {
-        ref var memoryBudgetInfo = ref _memoryBudgetInfo;
-        var totalOperationCount = GetTotalOperationCount(memoryManager.VkMemoryTypeIndex);
-
-        if ((totalOperationCount - memoryBudgetInfo.TotalOperationCountAtLastUpdate) >= 30)
-        {
-            UpdateMemoryBudgetInfo(ref memoryBudgetInfo, totalOperationCount);
-        }
-
-        using var readerLock = new DisposableReaderLock(memoryBudgetInfo.RWLock, isExternallySynchronized: false);
-        return GetMemoryBudgetInternal(memoryManager.VkMemoryTypeIndex, ref memoryBudgetInfo);
-    }
-
-    /// <inheritdoc />
-    public override VulkanGraphicsComputeContext RentComputeContext()
-    {
-        ThrowIfDisposed();
-        return _computeContextPool.Rent(this, &CreateComputeContext);
-
-        static VulkanGraphicsComputeContext CreateComputeContext(VulkanGraphicsDevice device)
-        {
-            AssertNotNull(device);
-            return new VulkanGraphicsComputeContext(device);
-        }
-    }
-
-    /// <inheritdoc />
-    public override VulkanGraphicsCopyContext RentCopyContext()
-    {
-        ThrowIfDisposed();
-        return _copyContextPool.Rent(this, &CreateCopyContext);
-
-        static VulkanGraphicsCopyContext CreateCopyContext(VulkanGraphicsDevice device)
-        {
-            AssertNotNull(device);
-            return new VulkanGraphicsCopyContext(device);
-        }
-    }
-
-    /// <inheritdoc />
-    public override VulkanGraphicsRenderContext RentRenderContext()
-    {
-        ThrowIfDisposed();
-        return _renderContextPool.Rent(this, &CreateRenderContext);
-
-        static VulkanGraphicsRenderContext CreateRenderContext(VulkanGraphicsDevice device)
-        {
-            AssertNotNull(device);
-            return new VulkanGraphicsRenderContext(device);
-        }
-    }
-
-    /// <inheritdoc />
-    public override void ReturnContext(GraphicsComputeContext renderContext)
-        => ReturnContext((VulkanGraphicsComputeContext)renderContext);
-
-    /// <inheritdoc />
-    public override void ReturnContext(GraphicsCopyContext renderContext)
-        => ReturnContext((VulkanGraphicsCopyContext)renderContext);
-
-    /// <inheritdoc />
-    public override void ReturnContext(GraphicsRenderContext renderContext)
-        => ReturnContext((VulkanGraphicsRenderContext)renderContext);
-
-    /// <inheritdoc cref="ReturnContext(GraphicsComputeContext)" />
-    public void ReturnContext(VulkanGraphicsComputeContext computeContext)
-    {
-        ThrowIfDisposed();
-        ThrowIfNull(computeContext);
-
-        if (computeContext.Device != this)
-        {
-            ThrowForInvalidParent(computeContext.Device);
-        }
-        _computeContextPool.Return(computeContext);
-    }
-
-    /// <inheritdoc cref="ReturnContext(GraphicsCopyContext)" />
-    public void ReturnContext(VulkanGraphicsCopyContext copyContext)
-    {
-        ThrowIfDisposed();
-        ThrowIfNull(copyContext);
-
-        if (copyContext.Device != this)
-        {
-            ThrowForInvalidParent(copyContext.Device);
-        }
-        _copyContextPool.Return(copyContext);
-    }
-
-    /// <inheritdoc cref="ReturnContext(GraphicsRenderContext)" />
-    public void ReturnContext(VulkanGraphicsRenderContext renderContext)
-    {
-        ThrowIfDisposed();
-        ThrowIfNull(renderContext);
-
-        if (renderContext.Device != this)
-        {
-            ThrowForInvalidParent(renderContext.Device);
-        }
-        _renderContextPool.Return(renderContext);
-    }
-
-    /// <inheritdoc />
-    public override void Signal(GraphicsFence fence)
-        => Signal((VulkanGraphicsFence)fence);
-
-    /// <inheritdoc cref="Signal(GraphicsFence)" />
-    public void Signal(VulkanGraphicsFence fence)
-        => ThrowExternalExceptionIfNotSuccess(vkQueueSubmit(VkCommandQueue, submitCount: 0, pSubmits: null, fence.VkFence));
-
-    /// <inheritdoc />
-    public override void WaitForIdle()
-    {
-        ThrowExternalExceptionIfNotSuccess(vkDeviceWaitIdle(_vkDevice));
+        return new VulkanGraphicsTexture(this, in createOptions);
     }
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        WaitForIdle();
-
         if (isDisposing)
         {
-            _computeContextPool.Dispose();
-            _copyContextPool.Dispose();
-            _renderContextPool.Dispose();
-        }
+            for (var index = _buffers.Count - 1; index >= 0; index--)
+            {
+                var buffer = _buffers.GetReferenceUnsafe(index);
+                buffer.Dispose();
+            }
+            _buffers.Clear();
 
-        foreach (var memoryManager in _memoryManagers)
-        {
-            memoryManager.Dispose();
+            for (var index = _pipelineSignatures.Count - 1; index >= 0; index--)
+            {
+                var pipelineSignature = _pipelineSignatures.GetReferenceUnsafe(index);
+                pipelineSignature.Dispose();
+            }
+            _pipelineSignatures.Clear();
+
+            for (var index = _renderPasses.Count - 1; index >= 0; index--)
+            {
+                var renderPass = _renderPasses.GetReferenceUnsafe(index);
+                renderPass.Dispose();
+            }
+            _renderPasses.Clear();
+
+            for (var index = _shaders.Count - 1; index >= 0; index--)
+            {
+                var shader = _shaders.GetReferenceUnsafe(index);
+                shader.Dispose();
+            }
+            _shaders.Clear();
+
+            for (var index = _textures.Count - 1; index >= 0; index--)
+            {
+                var texture = _textures.GetReferenceUnsafe(index);
+                texture.Dispose();
+            }
+            _textures.Clear();
+
+            DeviceInfo.ComputeQueue.Dispose();
+            DeviceInfo.CopyQueue.Dispose();
+            DeviceInfo.RenderQueue.Dispose();
+
+            foreach (var memoryManager in _memoryManagers)
+            {
+                memoryManager.Dispose();
+            }
+
+            for (var index = _fences.Count - 1; index >= 0; index--)
+            {
+                var fence = _fences.GetReferenceUnsafe(index);
+                fence.Dispose();
+            }
+            _fences.Clear();
         }
 
         DisposeVkDevice(_vkDevice);
+        _vkDevice = VkDevice.NULL;
+
+        _ = Adapter.RemoveDevice(this);
 
         static void DisposeVkDevice(VkDevice vkDevice)
         {
@@ -565,10 +387,90 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     }
 
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override void SetNameUnsafe(string value)
     {
         SetVkObjectName(VK_OBJECT_TYPE_DEVICE, VkDevice, value);
-        SetVkObjectName(VK_OBJECT_TYPE_QUEUE, VkCommandQueue, value);
+    }
+
+    internal void AddBuffer(VulkanGraphicsBuffer buffer)
+    {
+        _buffers.Add(buffer, _buffersMutex);
+    }
+
+    internal void AddFence(VulkanGraphicsFence fence)
+    {
+        _fences.Add(fence, _fencesMutex);
+    }
+
+    internal void AddPipelineSignature(VulkanGraphicsPipelineSignature pipelineSignature)
+    {
+        _pipelineSignatures.Add(pipelineSignature, _pipelineSignaturesMutex);
+    }
+
+    internal void AddRenderPass(VulkanGraphicsRenderPass renderPass)
+    {
+        _renderPasses.Add(renderPass, _renderPassesMutex);
+    }
+
+    internal void AddShader(VulkanGraphicsShader shader)
+    {
+        _shaders.Add(shader, _shadersMutex);
+    }
+
+    internal void AddTexture(VulkanGraphicsTexture texture)
+    {
+        _textures.Add(texture, _texturesMutex);
+    }
+
+    internal GraphicsMemoryBudget GetMemoryBudget(VulkanGraphicsMemoryManager memoryManager)
+    {
+        var totalOperationCount = GetTotalOperationCount(memoryManager.VkMemoryTypeIndex);
+
+        ref var memoryBudgetInfo = ref _memoryBudgetInfo;
+
+        if ((totalOperationCount - memoryBudgetInfo.TotalOperationCountAtLastUpdate) >= 30)
+        {
+            UpdateMemoryBudgetInfo(ref memoryBudgetInfo, totalOperationCount);
+        }
+
+        using var readerLock = new DisposableReaderLock(memoryBudgetInfo.RWLock, isExternallySynchronized: false);
+        return GetMemoryBudgetNoLock(memoryManager, in memoryBudgetInfo);
+    }
+
+    internal VulkanGraphicsMemoryManager GetMemoryManager(GraphicsCpuAccess cpuAccess, uint vkMemoryTypeBits)
+    {
+        var memoryManagerIndex = GetMemoryManagerIndex(cpuAccess, vkMemoryTypeBits);
+        return _memoryManagers[memoryManagerIndex];
+    }
+
+    internal bool RemoveBuffer(VulkanGraphicsBuffer buffer)
+    {
+        return IsDisposed || _buffers.Remove(buffer, _buffersMutex);
+    }
+
+    internal bool RemoveFence(VulkanGraphicsFence fence)
+    {
+        return IsDisposed || _fences.Remove(fence, _fencesMutex);
+    }
+
+    internal bool RemovePipelineSignature(VulkanGraphicsPipelineSignature pipelineSignature)
+    {
+        return IsDisposed || _pipelineSignatures.Remove(pipelineSignature, _pipelineSignaturesMutex);
+    }
+
+    internal bool RemoveRenderPass(VulkanGraphicsRenderPass renderPass)
+    {
+        return IsDisposed || _renderPasses.Remove(renderPass, _renderPassesMutex);
+    }
+
+    internal bool RemoveShader(VulkanGraphicsShader shader)
+    {
+        return IsDisposed || _shaders.Remove(shader, _shadersMutex);
+    }
+
+    internal bool RemoveTexture(VulkanGraphicsTexture texture)
+    {
+        return IsDisposed || _textures.Remove(texture, _texturesMutex);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -594,25 +496,27 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal void  SetVkObjectName(VkObjectType vkObjectType, void* vkObjectHandle, string name, [CallerArgumentExpression("vkObjectHandle")] string component = "")
-        => SetVkObjectName(vkObjectType, (ulong)vkObjectHandle, name, component);
-
-    private GraphicsMemoryBudget GetMemoryBudgetInternal(uint vkMemoryTypeIndex, ref MemoryBudgetInfo memoryBudgetInfo)
+    internal void SetVkObjectName(VkObjectType vkObjectType, void* vkObjectHandle, string name, [CallerArgumentExpression("vkObjectHandle")] string component = "")
     {
-        // This method should only be called under the reader lock
+        SetVkObjectName(vkObjectType, (ulong)vkObjectHandle, name, component);
+    }
 
+    private GraphicsMemoryBudget GetMemoryBudgetNoLock(VulkanGraphicsMemoryManager memoryManager, in MemoryBudgetInfo memoryBudgetInfo)
+    {
         var estimatedMemoryBudget = 0UL;
         var estimatedMemoryUsage = 0UL;
         var totalFreeMemoryRegionSize = 0UL;
         var totalSize = 0UL;
         var totalSizeAtLastUpdate = 0UL;
 
+        var vkMemoryTypeIndex = memoryManager.VkMemoryTypeIndex;
+
         estimatedMemoryBudget = memoryBudgetInfo.VkPhysicalDeviceMemoryBudgetProperties.heapBudget[vkMemoryTypeIndex];
         estimatedMemoryUsage = memoryBudgetInfo.VkPhysicalDeviceMemoryBudgetProperties.heapUsage[vkMemoryTypeIndex];
 
-        totalFreeMemoryRegionSize = GetTotalFreeMemoryRegionSize(vkMemoryTypeIndex);
-        totalSize = GetTotalSize(vkMemoryTypeIndex);
-        totalSizeAtLastUpdate = memoryBudgetInfo.GetTotalSizeAtLastUpdate(vkMemoryTypeIndex);
+        totalFreeMemoryRegionSize = GetTotalFreeMemoryRegionByteLength(vkMemoryTypeIndex);
+        totalSize = GetTotalByteLength(vkMemoryTypeIndex);
+        totalSizeAtLastUpdate = memoryBudgetInfo.GetTotalByteLengthAtLastUpdate(vkMemoryTypeIndex);
 
         if ((estimatedMemoryUsage + totalSize) > totalSizeAtLastUpdate)
         {
@@ -624,14 +528,14 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
         }
 
         return new GraphicsMemoryBudget {
-            EstimatedMemoryBudget = estimatedMemoryBudget,
-            EstimatedMemoryUsage = estimatedMemoryUsage,
-            TotalFreeMemoryRegionSize = totalFreeMemoryRegionSize,
-            TotalSize = totalSize,
+            EstimatedMemoryByteBudget = estimatedMemoryBudget,
+            EstimatedMemoryByteUsage = estimatedMemoryUsage,
+            TotalFreeMemoryRegionByteLength = totalFreeMemoryRegionSize,
+            TotalByteLength = totalSize,
         };
     }
 
-    private int GetMemoryManagerIndex(GraphicsResourceCpuAccess cpuAccess, uint vkMemoryTypeBits)
+    private int GetMemoryManagerIndex(GraphicsCpuAccess cpuAccess, uint vkMemoryTypeBits)
     {
         var isVkPhysicalDeviceTypeIntegratedGpu = Adapter.VkPhysicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU;
         var canBeMultiInstance = false;
@@ -642,21 +546,21 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
 
         switch (cpuAccess)
         {
-            case GraphicsResourceCpuAccess.None:
+            case GraphicsCpuAccess.None:
             {
                 vkPreferredMemoryPropertyFlags |= isVkPhysicalDeviceTypeIntegratedGpu ? default : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
                 canBeMultiInstance = true;
                 break;
             }
 
-            case GraphicsResourceCpuAccess.Read:
+            case GraphicsCpuAccess.Read:
             {
                 vkRequiredMemoryPropertyFlags |= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
                 vkPreferredMemoryPropertyFlags |= VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
                 break;
             }
 
-            case GraphicsResourceCpuAccess.Write:
+            case GraphicsCpuAccess.Write:
             {
                 vkRequiredMemoryPropertyFlags |= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
                 vkPreferredMemoryPropertyFlags |= isVkPhysicalDeviceTypeIntegratedGpu ? default : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
@@ -716,18 +620,35 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
         return index;
     }
 
+    private ulong GetTotalFreeMemoryRegionByteLength(uint vkMemoryTypeIndex)
+    {
+        Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
+        return _memoryManagers[vkMemoryTypeIndex].TotalFreeMemoryRegionByteLength;
+    }
+
+    private ulong GetTotalOperationCount(uint vkMemoryTypeIndex)
+    {
+        Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
+        return _memoryManagers[vkMemoryTypeIndex].OperationCount;
+    }
+
+    private ulong GetTotalByteLength(uint vkMemoryTypeIndex)
+    {
+        Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
+        return _memoryManagers[vkMemoryTypeIndex].ByteLength;
+    }
+
     private void UpdateMemoryBudgetInfo(ref MemoryBudgetInfo memoryBudgetInfo, ulong totalOperationCount)
     {
         using var writerLock = new DisposableWriterLock(memoryBudgetInfo.RWLock, isExternallySynchronized: false);
-        UpdateMemoryBudgetInfoInternal(ref memoryBudgetInfo, totalOperationCount);
+        UpdateMemoryBudgetInfoNoLock(ref memoryBudgetInfo, totalOperationCount);
     }
 
-    private void UpdateMemoryBudgetInfoInternal(ref MemoryBudgetInfo memoryBudgetInfo, ulong totalOperationCount)
+    private void UpdateMemoryBudgetInfoNoLock(ref MemoryBudgetInfo memoryBudgetInfo, ulong totalOperationCount)
     {
-        // This method should only be called under the writer lock
-
         var vkPhysicalDeviceMemoryBudgetProperties = new VkPhysicalDeviceMemoryBudgetPropertiesEXT {
             sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT,
+            pNext = null,
         };
 
         if (Adapter.TryGetVkPhysicalDeviceMemoryBudgetProperties(&vkPhysicalDeviceMemoryBudgetProperties))
@@ -739,26 +660,8 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
 
         for (var memoryManagerIndex = 0u; memoryManagerIndex < _memoryManagers.Length; memoryManagerIndex++)
         {
-            memoryBudgetInfo.SetTotalFreeMemoryRegionSizeAtLastUpdate(memoryManagerIndex, GetTotalFreeMemoryRegionSize(memoryManagerIndex));
-            memoryBudgetInfo.SetTotalSizeAtLastUpdate(memoryManagerIndex, GetTotalSize(memoryManagerIndex));
+            memoryBudgetInfo.SetTotalFreeMemoryRegionByteLengthAtLastUpdate(memoryManagerIndex, GetTotalFreeMemoryRegionByteLength(memoryManagerIndex));
+            memoryBudgetInfo.SetTotalByteLengthAtLastUpdate(memoryManagerIndex, GetTotalByteLength(memoryManagerIndex));
         }
-    }
-
-    private ulong GetTotalOperationCount(uint vkMemoryTypeIndex)
-    {
-        Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
-        return _memoryManagers[vkMemoryTypeIndex].OperationCount;
-    }
-
-    private ulong GetTotalFreeMemoryRegionSize(uint vkMemoryTypeIndex)
-    {
-        Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
-        return _memoryManagers[vkMemoryTypeIndex].TotalFreeMemoryRegionSize;
-    }
-
-    private ulong GetTotalSize(uint vkMemoryTypeIndex)
-    {
-        Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
-        return _memoryManagers[vkMemoryTypeIndex].Size;
     }
 }

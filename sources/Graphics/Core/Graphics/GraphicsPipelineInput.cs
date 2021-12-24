@@ -1,22 +1,25 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System;
-using static TerraFX.Utilities.UnsafeUtilities;
-
 namespace TerraFX.Graphics;
 
-/// <summary>A graphics pipeline input which describes an input to a stage of the graphics pipeline.</summary>
-public readonly unsafe struct GraphicsPipelineInput
+/// <summary>Describes a graphics pipeline input.</summary>
+public readonly struct GraphicsPipelineInput
 {
-    private readonly UnmanagedArray<GraphicsPipelineInputElement> _elements;
+    /// <summary>Gets the binding index of the pipeline input.</summary>
+    public uint BindingIndex { get; init; }
 
-    /// <summary>Initializes a new instance of the <see cref="GraphicsPipelineInput" /> struct.</summary>
-    /// <param name="elements">The elements that make up the pipeline input.</param>
-    public GraphicsPipelineInput(ReadOnlySpan<GraphicsPipelineInputElement> elements)
-    {
-        _elements = elements.ToUnmanagedArray();
-    }
+    /// <summary>Gets the alignment, in bytes, of the pipeline input.</summary>
+    public uint ByteAlignment { get; init; }
 
-    /// <summary>Gets the elements that make up the pipeline input.</summary>
-    public UnmanagedReadOnlySpan<GraphicsPipelineInputElement> Elements => _elements;
+    /// <summary>Gets the length, in bytes, of the pipeline input.</summary>
+    public uint ByteLength { get; init; }
+
+    /// <summary>Gets the format of the pipeline input.</summary>
+    public GraphicsFormat Format { get; init; }
+
+    /// <summary>Gets the kind of the pipeline input.</summary>
+    public GraphicsPipelineInputKind Kind { get; init; }
+
+    /// <summary>Gets the shader kind(s) for which the pipeline input is visible.</summary>
+    public GraphicsShaderVisibility ShaderVisibility { get; init; }
 }

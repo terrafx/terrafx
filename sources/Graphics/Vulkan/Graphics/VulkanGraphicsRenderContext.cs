@@ -2,9 +2,10 @@
 
 using System;
 using System.Threading;
-using TerraFX.Advanced;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Numerics;
+using static TerraFX.Interop.Vulkan.VkCommandBufferLevel;
 using static TerraFX.Interop.Vulkan.VkDescriptorType;
 using static TerraFX.Interop.Vulkan.VkImageLayout;
 using static TerraFX.Interop.Vulkan.VkIndexType;
@@ -23,47 +24,53 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
 {
-    private readonly VulkanGraphicsFence _fence;
-    private readonly VkCommandBuffer _vkCommandBuffer;
-    private readonly VkCommandPool _vkCommandPool;
+    private VkCommandBuffer _vkCommandBuffer;
+    private VkCommandPool _vkCommandPool;
+
     private readonly uint _vkMaxVertexInputBindings;
 
     private VulkanGraphicsRenderPass? _renderPass;
 
-    internal VulkanGraphicsRenderContext(VulkanGraphicsDevice device)
-        : base(device)
+    internal VulkanGraphicsRenderContext(VulkanGraphicsRenderCommandQueue renderCommandQueue) : base(renderCommandQueue)
     {
-        _fence = device.CreateFence(isSignalled: true);
+        // No need for a ContextPool.AddComputeContext(this) as it will be done by the underlying pool
 
-        var vkCommandPool = CreateVkCommandPool(device);
-        _vkCommandPool = vkCommandPool;
+        ContextInfo.Fence = Device.CreateFence(isSignalled: true);
 
-        _vkCommandBuffer = CreateVkCommandBuffer(device, vkCommandPool);
+        _vkCommandPool = CreateVkCommandPool();
+        _vkCommandBuffer = CreateVkCommandBuffer();
+
         _vkMaxVertexInputBindings = Adapter.VkPhysicalDeviceProperties.limits.maxVertexInputBindings;
 
-        static VkCommandBuffer CreateVkCommandBuffer(VulkanGraphicsDevice device, VkCommandPool vkCommandPool)
+        SetNameUnsafe(Name);
+
+        VkCommandBuffer CreateVkCommandBuffer()
         {
             VkCommandBuffer vkCommandBuffer;
 
             var vkCommandBufferAllocateInfo = new VkCommandBufferAllocateInfo {
                 sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-                commandPool = vkCommandPool,
+                pNext = null,
+                commandPool = _vkCommandPool,
+                level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
                 commandBufferCount = 1,
             };
-            ThrowExternalExceptionIfNotSuccess(vkAllocateCommandBuffers(device.VkDevice, &vkCommandBufferAllocateInfo, &vkCommandBuffer));
+            ThrowExternalExceptionIfNotSuccess(vkAllocateCommandBuffers(Device.VkDevice, &vkCommandBufferAllocateInfo, &vkCommandBuffer));
 
             return vkCommandBuffer;
         }
 
-        static VkCommandPool CreateVkCommandPool(VulkanGraphicsDevice device)
+        VkCommandPool CreateVkCommandPool()
         {
             VkCommandPool vkCommandPool;
 
             var commandPoolCreateInfo = new VkCommandPoolCreateInfo {
                 sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-                queueFamilyIndex = device.VkGraphicsCommandQueueFamilyIndex,
+                pNext = null,
+                flags = 0,
+                queueFamilyIndex = CommandQueue.VkQueueFamilyIndex,
             };
-            ThrowExternalExceptionIfNotSuccess(vkCreateCommandPool(device.VkDevice, &commandPoolCreateInfo, pAllocator: null, &vkCommandPool));
+            ThrowExternalExceptionIfNotSuccess(vkCreateCommandPool(Device.VkDevice, &commandPoolCreateInfo, pAllocator: null, &vkCommandPool));
 
             return vkCommandPool;
         }
@@ -75,11 +82,14 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
+    /// <inheritdoc cref="GraphicsCommandQueueObject{TGraphicsContext}.CommandQueue" />
+    public new VulkanGraphicsRenderCommandQueue CommandQueue => base.CommandQueue.As<VulkanGraphicsRenderCommandQueue>();
+
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
-    /// <inheritdoc />
-    public override VulkanGraphicsFence Fence => _fence;
+    /// <inheritdoc cref="GraphicsContext{TGraphicsContext}.Fence" />
+    public new VulkanGraphicsFence Fence => base.Fence.As<VulkanGraphicsFence>();
 
     /// <inheritdoc />
     public override uint MaxBoundVertexBufferViewCount => _vkMaxVertexInputBindings;
@@ -91,24 +101,10 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the <see cref="Interop.Vulkan.VkCommandBuffer" /> used by the context.</summary>
-    public VkCommandBuffer VkCommandBuffer
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkCommandBuffer;
-        }
-    }
+    public VkCommandBuffer VkCommandBuffer => _vkCommandBuffer;
 
     /// <summary>Gets the <see cref="Interop.Vulkan.VkCommandPool" /> used by the context.</summary>
-    public VkCommandPool VkCommandPool
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkCommandPool;
-        }
-    }
+    public VkCommandPool VkCommandPool => _vkCommandPool;
 
     /// <inheritdoc />
     public override void BeginRenderPass(GraphicsRenderPass renderPass, ColorRgba renderTargetClearColor)
@@ -127,7 +123,7 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
         var swapchain = renderPass.Swapchain;
 
         ref readonly var vkSurfaceCapabilities = ref swapchain.VkSurfaceCapabilities;
-        var renderTarget = swapchain.RenderTarget;
+        var renderTarget = swapchain.CurrentRenderTarget;
 
         var vkRenderPassBeginInfo = new VkRenderPassBeginInfo {
             sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
@@ -154,8 +150,8 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     {
         ThrowIfNull(indexBufferView);
 
-        var indexType = (indexBufferView.Stride == 2) ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32;
-        vkCmdBindIndexBuffer(VkCommandBuffer, indexBufferView.Resource.VkBuffer, indexBufferView.Offset, indexType);
+        var indexType = (indexBufferView.BytesPerElement == 2) ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32;
+        vkCmdBindIndexBuffer(VkCommandBuffer, indexBufferView.Resource.VkBuffer, indexBufferView.ByteOffset, indexType);
     }
 
     /// <inheritdoc />
@@ -170,17 +166,17 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
-    public override void BindPipelineResourceViews(GraphicsPipelineResourceViewSet pipelineResourceViews)
-        => BindPipeline((VulkanGraphicsPipelineResourceViewSet)pipelineResourceViews);
+    public override void BindPipelineDescriptorSet(GraphicsPipelineDescriptorSet pipelineResourceViews)
+        => BindPipeline((VulkanGraphicsPipelineDescriptorSet)pipelineResourceViews);
 
-    /// <inheritdoc cref="BindPipelineResourceViews(GraphicsPipelineResourceViewSet)" />
-    public void BindPipeline(VulkanGraphicsPipelineResourceViewSet pipelineResourceViews)
+    /// <inheritdoc cref="BindPipelineDescriptorSet(GraphicsPipelineDescriptorSet)" />
+    public void BindPipeline(VulkanGraphicsPipelineDescriptorSet pipelineDescriptorSet)
     {
-        ThrowIfNull(pipelineResourceViews);
-        var pipeline = pipelineResourceViews.Pipeline;
+        ThrowIfNull(pipelineDescriptorSet);
+        var pipeline = pipelineDescriptorSet.Pipeline;
 
-        var vkDescriptorSet = pipelineResourceViews.VkDescriptorSet;
-        var resourceViews = pipelineResourceViews.ResourceViews;
+        var vkDescriptorSet = pipelineDescriptorSet.VkDescriptorSet;
+        var resourceViews = pipelineDescriptorSet.ResourceViews;
 
         for (var index = 0; index < resourceViews.Length; index++)
         {
@@ -192,8 +188,8 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
             {
                 var vkDescriptorBufferInfo = new VkDescriptorBufferInfo {
                     buffer = vulkanGraphicsBufferView.Resource.VkBuffer,
-                    offset = vulkanGraphicsBufferView.Offset,
-                    range = vulkanGraphicsBufferView.Size,
+                    offset = vulkanGraphicsBufferView.ByteOffset,
+                    range = vulkanGraphicsBufferView.ByteLength,
                 };
 
                 vkWriteDescriptorSet = new VkWriteDescriptorSet {
@@ -205,11 +201,11 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
                     pBufferInfo = &vkDescriptorBufferInfo,
                 };
             }
-            else if (resourceView is VulkanGraphicsTextureView vulkanGraphicsTextureView)
+            else if (resourceView is VulkanGraphicsTextureView textureView)
             {
                 var vkDescriptorImageInfo = new VkDescriptorImageInfo {
-                    sampler = vulkanGraphicsTextureView.Resource.VkSampler,
-                    imageView = vulkanGraphicsTextureView.VkImageView,
+                    sampler = textureView.Resource.VkSampler,
+                    imageView = textureView.VkImageView,
                     imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                 };
 
@@ -239,7 +235,7 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
         ThrowIfNull(vertexBufferView);
 
         var vkVertexBuffer = vertexBufferView.Resource.VkBuffer;
-        var vkVertexBufferOffset = (ulong)vertexBufferView.Offset;
+        var vkVertexBufferOffset = (ulong)vertexBufferView.ByteOffset;
 
         vkCmdBindVertexBuffers(VkCommandBuffer, firstBinding: bindingSlot, bindingCount: 1, &vkVertexBuffer, &vkVertexBufferOffset);
     }
@@ -306,36 +302,6 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
         }
 
         vkCmdEndRenderPass(VkCommandBuffer);
-    }
-
-    /// <inheritdoc />
-    public override void Flush()
-    {
-        var vkCommandBuffer = VkCommandBuffer;
-        ThrowExternalExceptionIfNotSuccess(vkEndCommandBuffer(vkCommandBuffer));
-
-        var vkSubmitInfo = new VkSubmitInfo {
-            sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-            commandBufferCount = 1,
-            pCommandBuffers = &vkCommandBuffer,
-        };
-
-        var fence = Fence;
-        ThrowExternalExceptionIfNotSuccess(vkQueueSubmit(Device.VkCommandQueue, submitCount: 1, &vkSubmitInfo, fence.VkFence));
-        fence.Wait();
-    }
-
-    /// <inheritdoc />
-    public override void Reset()
-    {
-        Fence.Reset();
-
-        ThrowExternalExceptionIfNotSuccess(vkResetCommandPool(Device.VkDevice, VkCommandPool, 0));
-
-        var vkCommandBufferBeginInfo = new VkCommandBufferBeginInfo {
-            sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-        };
-        ThrowExternalExceptionIfNotSuccess(vkBeginCommandBuffer(VkCommandBuffer, &vkCommandBufferBeginInfo));
     }
 
     /// <inheritdoc />
@@ -427,18 +393,34 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
+    protected override void CloseUnsafe()
+    {
+        ThrowExternalExceptionIfNotSuccess(vkEndCommandBuffer(VkCommandBuffer));
+    }
+
+    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
+        if (isDisposing)
+        {
+            var fence = ContextInfo.Fence;
+            fence.Wait();
+            fence.Reset();
+
+            fence.Dispose();
+            ContextInfo.Fence = null!;
+        }
+
         var vkDevice = Device.VkDevice;
         var vkCommandPool = _vkCommandPool;
 
         DisposeVkCommandBuffer(vkDevice, vkCommandPool, _vkCommandBuffer);
-        DisposeVkCommandPool(vkDevice, vkCommandPool);
+        _vkCommandBuffer = VkCommandBuffer.NULL;
 
-        if (isDisposing)
-        {
-            _fence?.Dispose();
-        }
+        DisposeVkCommandPool(vkDevice, vkCommandPool);
+        _vkCommandPool = VkCommandPool.NULL;
+
+        _ = CommandQueue.RemoveRenderContext(this);
 
         static void DisposeVkCommandBuffer(VkDevice vkDevice, VkCommandPool vkCommandPool, VkCommandBuffer vkCommandBuffer)
         {
@@ -458,7 +440,31 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     }
 
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override void ExecuteUnsafe()
+    {
+        CommandQueue.ExecuteContextUnsafe(this);
+    }
+
+    /// <inheritdoc />
+    protected override void ResetUnsafe()
+    {
+        var fence = Fence;
+        fence.Wait();
+        fence.Reset();
+
+        ThrowExternalExceptionIfNotSuccess(vkResetCommandPool(Device.VkDevice, VkCommandPool, 0));
+
+        var vkCommandBufferBeginInfo = new VkCommandBufferBeginInfo {
+            sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+            pNext = null,
+            flags = 0,
+            pInheritanceInfo = null,
+        };
+        ThrowExternalExceptionIfNotSuccess(vkBeginCommandBuffer(VkCommandBuffer, &vkCommandBufferBeginInfo));
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameUnsafe(string value)
     {
         Device.SetVkObjectName(VK_OBJECT_TYPE_COMMAND_BUFFER, VkCommandBuffer, value);
         Device.SetVkObjectName(VK_OBJECT_TYPE_COMMAND_POOL, VkCommandPool, value);
@@ -470,7 +476,7 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
         {
             var vertexBufferView = (VulkanGraphicsBufferView)vertexBufferViews[index];
             vkVertexBuffers[index] = vertexBufferView.Resource.VkBuffer;
-            vkVertexBufferOffsets[index] = vertexBufferView.Offset;
+            vkVertexBufferOffsets[index] = vertexBufferView.ByteOffset;
         }
 
         vkCmdBindVertexBuffers(VkCommandBuffer, firstBindingSlot, bindingCount: (uint)vertexBufferViews.Length, vkVertexBuffers, vkVertexBufferOffsets);

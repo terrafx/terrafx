@@ -1,9 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System;
-using TerraFX.Advanced;
-using TerraFX.Interop.DirectX;
-using static TerraFX.Utilities.MemoryUtilities;
+using TerraFX.Graphics.Advanced;
 using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
@@ -11,16 +8,22 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsShader : GraphicsShader
 {
-    private readonly D3D12_SHADER_BYTECODE _d3d12ShaderBytecode;
-
-    internal D3D12GraphicsShader(D3D12GraphicsDevice device, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
-        : base(device, kind, entryPointName)
+    internal D3D12GraphicsShader(D3D12GraphicsDevice device, in GraphicsShaderCreateOptions createOptions) : base(device)
     {
-        _d3d12ShaderBytecode.pShaderBytecode = Allocate((uint)bytecode.Length);
-        _d3d12ShaderBytecode.BytecodeLength = (uint)bytecode.Length;
+        device.AddShader(this);
 
-        var destination = new Span<byte>(_d3d12ShaderBytecode.pShaderBytecode, bytecode.Length);
-        bytecode.CopyTo(destination);
+        if (createOptions.TakeBytecodeOwnership)
+        {
+            ShaderInfo.Bytecode = createOptions.Bytecode;
+        }
+        else
+        {
+            ShaderInfo.Bytecode = new UnmanagedArray<byte>(createOptions.Bytecode.Length, createOptions.Bytecode.Alignment);
+            createOptions.Bytecode.CopyTo(ShaderInfo.Bytecode);
+        }
+
+        ShaderInfo.EntryPointName = createOptions.EntryPointName;
+        ShaderInfo.Kind = createOptions.ShaderKind;
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsShader" /> class.</summary>
@@ -28,12 +31,6 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
 
     /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
-
-    /// <inheritdoc />
-    public override UnmanagedReadOnlySpan<byte> Bytecode => new UnmanagedReadOnlySpan<byte>((byte*)_d3d12ShaderBytecode.pShaderBytecode, _d3d12ShaderBytecode.BytecodeLength);
-
-    /// <summary>Gets the underlying <see cref="D3D12_SHADER_BYTECODE" /> for the shader.</summary>
-    public ref readonly D3D12_SHADER_BYTECODE D3D12ShaderBytecode => ref _d3d12ShaderBytecode;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
@@ -44,11 +41,13 @@ public sealed unsafe class D3D12GraphicsShader : GraphicsShader
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        Free(_d3d12ShaderBytecode.pShaderBytecode);
+        ShaderInfo.Bytecode.Dispose();
+
+        _ = Device.RemoveShader(this);
     }
 
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override void SetNameUnsafe(string value)
     {
     }
 }

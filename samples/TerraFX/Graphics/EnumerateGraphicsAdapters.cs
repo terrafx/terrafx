@@ -24,8 +24,8 @@ public sealed class EnumerateGraphicsAdapters : Sample
             foreach (var graphicsAdapter in graphicsService.Adapters)
             {
                 Console.WriteLine($"    Name: {graphicsAdapter.Name}");
-                Console.WriteLine($"        Device ID: {graphicsAdapter.DeviceId}");
-                Console.WriteLine($"        Vendor ID: {graphicsAdapter.VendorId}");
+                Console.WriteLine($"        Device ID: {graphicsAdapter.PciDeviceId}");
+                Console.WriteLine($"        Vendor ID: {graphicsAdapter.PciVendorId}");
             }
         }
         application.RequestExit();

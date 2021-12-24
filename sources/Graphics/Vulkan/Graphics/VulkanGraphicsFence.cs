@@ -1,16 +1,12 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System;
-using System.Threading;
-using TerraFX.Advanced;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using static TerraFX.Interop.Vulkan.VkFenceCreateFlags;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkResult;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
-using static TerraFX.Runtime.Configuration;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
@@ -20,21 +16,26 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsFence : GraphicsFence
 {
-    private readonly VkFence _vkFence;
+    private VkFence _vkFence;
 
-    internal VulkanGraphicsFence(VulkanGraphicsDevice device, bool isSignalled)
-        : base(device)
+    internal VulkanGraphicsFence(VulkanGraphicsDevice device, in GraphicsFenceCreateOptions createOptions) : base(device)
     {
-        _vkFence = CreateVkFence(device, isSignalled ? VK_FENCE_CREATE_SIGNALED_BIT : 0);
+        device.AddFence(this);
 
-        static VkFence CreateVkFence(VulkanGraphicsDevice device, VkFenceCreateFlags vkFenceCreateFlags)
+        FenceInfo.IsSignalled = createOptions.IsSignalled;
+
+        _vkFence = CreateVkFence(in createOptions);
+
+        SetNameUnsafe(Name);
+
+        VkFence CreateVkFence(in GraphicsFenceCreateOptions createOptions)
         {
             VkFence vkFence;
 
             var vkFenceCreateInfo = new VkFenceCreateInfo {
                 sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
                 pNext = null,
-                flags = vkFenceCreateFlags,
+                flags = createOptions.IsSignalled ? VK_FENCE_CREATE_SIGNALED_BIT : 0,
             };
             ThrowExternalExceptionIfNotSuccess(vkCreateFence(device.VkDevice, &vkFenceCreateInfo, pAllocator: null, &vkFence));
 
@@ -55,44 +56,15 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkFence" /> for the fence.</summary>
-    public VkFence VkFence
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkFence;
-        }
-    }
-
-    /// <inheritdoc />
-    public override bool IsSignalled => vkGetFenceStatus(Device.VkDevice, VkFence) == VK_SUCCESS;
-
-    /// <inheritdoc />
-    public override void Reset()
-    {
-        var vulkanFence = VkFence;
-        ThrowExternalExceptionIfNotSuccess(vkResetFences(Device.VkDevice, fenceCount: 1, &vulkanFence));
-    }
-
-    /// <inheritdoc />
-    public override bool TryWait(int millisecondsTimeout = -1)
-    {
-        Assert(AssertionsEnabled && (millisecondsTimeout >= Timeout.Infinite));
-        return TryWait(unchecked((ulong)millisecondsTimeout));
-    }
-
-    /// <inheritdoc />
-    public override bool TryWait(TimeSpan timeout)
-    {
-        var millisecondsTimeout = (long)timeout.TotalMilliseconds;
-        Assert(AssertionsEnabled && (millisecondsTimeout >= Timeout.Infinite));
-        return TryWait(unchecked((ulong)millisecondsTimeout));
-    }
+    public VkFence VkFence => _vkFence;
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         DisposeVkFence(Device.VkDevice, _vkFence);
+        _vkFence = VkFence.NULL;
+
+        _ = Device.RemoveFence(this);
 
         static void DisposeVkFence(VkDevice vkDevice, VkFence vkFence)
         {
@@ -104,30 +76,35 @@ public sealed unsafe class VulkanGraphicsFence : GraphicsFence
     }
 
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override void ResetUnsafe()
+    {
+        var vkFence = VkFence;
+        ThrowExternalExceptionIfNotSuccess(vkResetFences(Device.VkDevice, fenceCount: 1, &vkFence));
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameUnsafe(string value)
     {
         Device.SetVkObjectName(VK_OBJECT_TYPE_FENCE, VkFence, value);
     }
 
-    private bool TryWait(ulong millisecondsTimeout)
+    /// <inheritdoc />
+    protected override bool TryWaitUnsafe(uint millisecondsTimeout)
     {
-        var fenceSignalled = IsSignalled;
+        var isSignalled = false;
 
-        if (!fenceSignalled)
+        var vulkanFence = VkFence;
+        var result = vkWaitForFences(Device.VkDevice, fenceCount: 1, &vulkanFence, waitAll: VK_TRUE, millisecondsTimeout);
+
+        if (result == VK_SUCCESS)
         {
-            var vulkanFence = VkFence;
-            var result = vkWaitForFences(Device.VkDevice, fenceCount: 1, &vulkanFence, waitAll: VK_TRUE, millisecondsTimeout);
-
-            if (result == VK_SUCCESS)
-            {
-                fenceSignalled = true;
-            }
-            else if (result != VK_TIMEOUT)
-            {
-                ThrowExternalException(nameof(vkWaitForFences), (int)result);
-            }
+            isSignalled = true;
+        }
+        else if (result != VK_TIMEOUT)
+        {
+            ThrowExternalException(nameof(vkWaitForFences), (int)result);
         }
 
-        return fenceSignalled;
+        return isSignalled;
     }
 }

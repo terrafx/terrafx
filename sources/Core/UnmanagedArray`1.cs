@@ -32,7 +32,7 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
     /// <param name="alignment">The alignment, in bytes, of the items in the array or <c>zero</c> to use the system default.</param>
     /// <param name="zero"><c>true</c> if the items in the array should be zeroed; otherwise, <c>false</c>.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not zero or a <c>power of two</c>.</exception>
-    public UnmanagedArray(nuint length, nuint alignment = 0, bool zero = true)
+    public UnmanagedArray(nuint length, nuint alignment = 0, bool zero = false)
     {
         if (alignment == 0)
         {

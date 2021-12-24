@@ -32,9 +32,9 @@ public partial class D3D12GraphicsDevice : GraphicsDevice
 
         public ulong TotalOperationCountAtLastUpdate;
 
-        private fixed ulong _totalFreeMemoryRegionSizeAtLastUpdate[MaxMemoryManagerKinds];
+        private fixed ulong _totalFreeMemoryRegionByteLengthAtLastUpdate[MaxMemoryManagerKinds];
 
-        private fixed ulong _totalSizeAtLastUpdate[MaxMemoryManagerKinds];
+        private fixed ulong _totalByteLengthAtLastUpdate[MaxMemoryManagerKinds];
 
         public MemoryBudgetInfo()
         {
@@ -45,45 +45,45 @@ public partial class D3D12GraphicsDevice : GraphicsDevice
 
             for (var index = 0; index < MaxMemoryManagerKinds; index++)
             {
-                _totalFreeMemoryRegionSizeAtLastUpdate[index] = 0;
-                _totalSizeAtLastUpdate[index] = 0;
+                _totalFreeMemoryRegionByteLengthAtLastUpdate[index] = 0;
+                _totalByteLengthAtLastUpdate[index] = 0;
             }
         }
 
         public void Dispose() => RWLock.Dispose();
 
-        public ulong GetTotalAllocatedMemoryRegionSizeAtLastUpdate(int memoryManagerKindIndex)
+        public ulong GetTotalAllocatedMemoryRegionByteLengthAtLastUpdate(int memoryManagerKindIndex)
         {
             Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
 
-            var totalSizeAtLastUpdate = _totalSizeAtLastUpdate[memoryManagerKindIndex];
-            var totalFreeMemoryRegionSizeAtLastUpdate = _totalFreeMemoryRegionSizeAtLastUpdate[memoryManagerKindIndex];
+            var totalSizeAtLastUpdate = _totalByteLengthAtLastUpdate[memoryManagerKindIndex];
+            var totalFreeMemoryRegionSizeAtLastUpdate = _totalFreeMemoryRegionByteLengthAtLastUpdate[memoryManagerKindIndex];
 
             return totalSizeAtLastUpdate - totalFreeMemoryRegionSizeAtLastUpdate;
         }
 
-        public ulong GetTotalFreeMemoryRegionSizeAtLastUpdate(int memoryManagerKindIndex)
+        public ulong GetTotalFreeMemoryRegionByteLengthAtLastUpdate(int memoryManagerKindIndex)
         {
             Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
-            return _totalFreeMemoryRegionSizeAtLastUpdate[memoryManagerKindIndex];
+            return _totalFreeMemoryRegionByteLengthAtLastUpdate[memoryManagerKindIndex];
         }
 
-        public ulong GetTotalSizeAtLastUpdate(int memoryManagerKindIndex)
+        public ulong GetTotalByteLengthAtLastUpdate(int memoryManagerKindIndex)
         {
             Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
-            return _totalSizeAtLastUpdate[memoryManagerKindIndex];
+            return _totalByteLengthAtLastUpdate[memoryManagerKindIndex];
         }
 
-        public void SetTotalFreeMemoryRegionSizeAtLastUpdate(int memoryManagerKindIndex, ulong value)
+        public void SetTotalFreeMemoryRegionByteLengthAtLastUpdate(int memoryManagerKindIndex, ulong value)
         {
             Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
-            _totalFreeMemoryRegionSizeAtLastUpdate[memoryManagerKindIndex] = value;
+            _totalFreeMemoryRegionByteLengthAtLastUpdate[memoryManagerKindIndex] = value;
         }
 
         public void SetTotalSizeAtLastUpdate(int memoryManagerKindIndex, ulong value)
         {
             Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
-            _totalSizeAtLastUpdate[memoryManagerKindIndex] = value;
+            _totalByteLengthAtLastUpdate[memoryManagerKindIndex] = value;
         }
     }
 }

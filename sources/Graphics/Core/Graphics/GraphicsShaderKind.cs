@@ -13,8 +13,4 @@ public enum GraphicsShaderKind
 
     /// <summary>Defines a pixel shader which can transform pixels for a graphics device.</summary>
     Pixel,
-
-    /// <inheritdoc cref="Pixel" />
-    /// <remarks>This is an alternative name for <see cref="Pixel" />.</remarks>
-    Fragment = Pixel,
 }

@@ -1,13 +1,16 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using TerraFX.Advanced;
 using TerraFX.Collections;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12;
+using static TerraFX.Interop.DirectX.D3D12_RESOURCE_FLAGS;
+using static TerraFX.Interop.DirectX.D3D12_RESOURCE_STATES;
+using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -17,70 +20,124 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
 {
-    private readonly ValueList<D3D12GraphicsBufferView> _bufferViews;
+    private readonly D3D12_RESOURCE_STATES _defaultResourceState;
+
+    private ID3D12Resource* _d3d12Resource;
+    private readonly uint _d3d12ResourceVersion;
+
+    private ulong _gpuVirtualAddress;
+
+    private GraphicsMemoryAllocator _memoryAllocator;
+    private D3D12GraphicsMemoryHeap _memoryHeap;
+
+    private ValueList<D3D12GraphicsBufferView> _bufferViews;
     private readonly ValueMutex _bufferViewsMutex;
-    private readonly ID3D12Resource* _d3d12Resource;
-    private readonly D3D12_RESOURCE_DESC _d3d12ResourceDesc;
-    private readonly ulong _d3d12ResourceGpuVirtualAddress;
-    private readonly D3D12_RESOURCE_STATES _d3d12ResourceState;
-    private readonly ValueMutex _mapMutex;
-    private readonly GraphicsMemoryAllocator _memoryAllocator;
-    private readonly D3D12GraphicsMemoryHeap _memoryHeap;
 
-    private volatile void* _mappedAddress;
     private volatile uint _mappedCount;
+    private readonly ValueMutex _mappedMutex;
 
-    internal D3D12GraphicsBuffer(D3D12GraphicsDevice device, in CreateInfo createInfo)
-        : base(device, in createInfo.MemoryRegion, createInfo.CpuAccess, createInfo.Kind)
+    internal D3D12GraphicsBuffer(D3D12GraphicsDevice device, in GraphicsBufferCreateOptions createOptions) : base(device)
     {
-        var d3d12Resource = createInfo.D3D12Resource;
+        device.AddBuffer(this);
 
+        BufferInfo.Kind = createOptions.Kind;
+
+        _defaultResourceState = createOptions.CpuAccess switch {
+            GraphicsCpuAccess.Read => D3D12_RESOURCE_STATE_COPY_DEST,
+            GraphicsCpuAccess.Write => D3D12_RESOURCE_STATE_GENERIC_READ,
+            _ => D3D12_RESOURCE_STATE_COMMON,
+        };
+
+        _d3d12Resource = CreateD3D12Resource(in createOptions, out _d3d12ResourceVersion);
+        _gpuVirtualAddress = _d3d12Resource->GetGPUVirtualAddress();
+
+        var memoryAllocatorCreateOptions = new GraphicsMemoryAllocatorCreateOptions {
+            ByteLength = MemoryRegion.ByteLength,
+            IsDedicated = false,
+            OnFree = default,
+        };
+
+        if (createOptions.CreateMemorySuballocator.IsNotNull)
+        {
+            _memoryAllocator = createOptions.CreateMemorySuballocator.Invoke(this, in memoryAllocatorCreateOptions);
+        }
+        else
+        {
+            _memoryAllocator = GraphicsMemoryAllocator.CreateDefault(this, in memoryAllocatorCreateOptions);
+        }
+
+        _memoryHeap = MemoryRegion.MemoryAllocator.DeviceObject.As<D3D12GraphicsMemoryHeap>();
+
+        _bufferViews = new ValueList<D3D12GraphicsBufferView>();
         _bufferViewsMutex = new ValueMutex();
-        _d3d12Resource = d3d12Resource;
-        _d3d12ResourceDesc = d3d12Resource->GetDesc();
-        _d3d12ResourceGpuVirtualAddress = d3d12Resource->GetGPUVirtualAddress();
-        _d3d12ResourceState = createInfo.D3D12ResourceState;
-        _mapMutex = new ValueMutex();
-        _memoryAllocator = createInfo.CreateMemoryAllocator.Invoke(this, default, createInfo.MemoryRegion.Size, false);
-        _memoryHeap = createInfo.MemoryRegion.Allocator.DeviceObject.As<D3D12GraphicsMemoryHeap>();
+
+        _mappedCount = 0;
+        _mappedMutex = new ValueMutex();
+
+        SetNameUnsafe(Name);
+
+        ID3D12Resource* CreateD3D12Resource(in GraphicsBufferCreateOptions createOptions, out uint d3d12ResourceVersion)
+        {
+            ID3D12Resource* d3d12Resource;
+
+            var d3d12Device = device.D3D12Device;
+            var cpuAccess = createOptions.CpuAccess;
+
+            var d3d12ResourceDesc = D3D12_RESOURCE_DESC.Buffer(
+                createOptions.ByteLength,
+                D3D12_RESOURCE_FLAG_NONE,
+                D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT
+            );
+            var d3d12ResourceAllocationInfo = d3d12Device->GetResourceAllocationInfo(visibleMask: 0, numResourceDescs: 1, &d3d12ResourceDesc);
+
+            ResourceInfo.CpuAccess = cpuAccess;
+            ResourceInfo.MappedAddress = null;
+
+            var memoryManager = device.GetMemoryManager(cpuAccess, GraphicsResourceKind.Buffer);
+
+            var allocationOptions = new GraphicsMemoryAllocationOptions {
+                ByteLength = (nuint)d3d12ResourceAllocationInfo.SizeInBytes,
+                ByteAlignment = (nuint)d3d12ResourceAllocationInfo.Alignment,
+                AllocationFlags = createOptions.AllocationFlags,
+            };
+            var memoryRegion = memoryManager.Allocate(in allocationOptions);
+            ResourceInfo.MemoryRegion = memoryRegion;
+
+            var d3d12Heap = ResourceInfo.MemoryRegion.MemoryAllocator.DeviceObject.As<D3D12GraphicsMemoryHeap>().D3D12Heap;
+            ThrowExternalExceptionIfFailed(d3d12Device->CreatePlacedResource(
+                d3d12Heap,
+                memoryRegion.ByteOffset,
+                &d3d12ResourceDesc,
+                _defaultResourceState,
+                pOptimizedClearValue: null,
+                __uuidof<ID3D12Resource>(),
+                (void**)&d3d12Resource
+            ));
+
+            return GetLatestD3D12Resource(d3d12Resource, out d3d12ResourceVersion);
+        }
     }
 
     /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsBuffer" /> class.</summary>
-    ~D3D12GraphicsBuffer() => Dispose(isDisposing: true);
+    ~D3D12GraphicsBuffer() => Dispose(isDisposing: false);
 
     /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
-    /// <inheritdoc />
-    public override int Count => _bufferViews.Count;
-
     /// <summary>Gets the underlying <see cref="ID3D12Resource" /> for the buffer.</summary>
-    public ID3D12Resource* D3D12Resource
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _d3d12Resource;
-        }
-    }
+    public ID3D12Resource* D3D12Resource => _d3d12Resource;
 
-    /// <summary>Gets the <see cref="D3D12_RESOURCE_DESC" /> for <see cref="D3D12Resource" />.</summary>
-    public ref readonly D3D12_RESOURCE_DESC D3D12ResourceDesc => ref _d3d12ResourceDesc;
-
-    /// <summary>Gets the GPU virtual address for <see cref="D3D12Resource" />.</summary>
-    public ulong D3D12ResourceGpuVirtualAddress => _d3d12ResourceGpuVirtualAddress;
+    /// <summary>Gets the interface version of <see cref="D3D12Resource" />.</summary>
+    public uint D3D12ResourceVersion => _d3d12ResourceVersion;
 
     /// <summary>Gets the default resource state for <see cref="D3D12Resource" />.</summary>
-    public D3D12_RESOURCE_STATES D3D12ResourceState => _d3d12ResourceState;
+    public D3D12_RESOURCE_STATES DefaultResourceState => _defaultResourceState;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
 
-    /// <inheritdoc />
-    public override bool IsMapped => _mappedCount != 0;
-
-    /// <inheritdoc />
-    public override unsafe void* MappedAddress => _mappedAddress;
+    /// <summary>Gets the GPU virtual address for <see cref="D3D12Resource" />.</summary>
+    public ulong GpuVirtualAddress => _gpuVirtualAddress;
 
     /// <summary>Gets the memory heap in which the buffer exists.</summary>
     public D3D12GraphicsMemoryHeap MemoryHeap => _memoryHeap;
@@ -89,218 +146,236 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
     /// <inheritdoc />
-    public override void DisposeAllViews()
-    {
-        using var mutex = new DisposableMutex(_bufferViewsMutex, isExternallySynchronized: false);
-        DisposeAllViewsInternal();
-    }
-
-    /// <inheritdoc />
-    public override IEnumerator<D3D12GraphicsBufferView> GetEnumerator() => _bufferViews.GetEnumerator();
-
-    /// <inheritdoc />
-    public override bool TryCreateView(uint count, uint stride, [NotNullWhen(true)] out GraphicsBufferView? bufferView)
-    {
-        ThrowIfDisposed();
-
-        nuint size = stride;
-        size *= count;
-        nuint alignment = 0;
-
-        if (Kind == GraphicsBufferKind.Index)
-        {
-            if (stride is not 2 and not 4)
-            {
-                ThrowForInvalidKind(Kind);
-            }
-            alignment = stride;
-        }
-        else if (Kind == GraphicsBufferKind.Constant)
-        {
-            alignment = D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT;
-        }
-        else if (Kind == GraphicsBufferKind.Default)
-        {
-            alignment = D3D12_TEXTURE_DATA_PLACEMENT_ALIGNMENT;
-        }
-
-        var succeeded = _memoryAllocator.TryAllocate(size, alignment, out var memoryRegion);
-        bufferView = succeeded ? new D3D12GraphicsBufferView(this, in memoryRegion, stride) : null;
-
-        return succeeded;
-    }
-
-    /// <inheritdoc />
-    public override void Unmap()
-    {
-        using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
-        UnmapInternal();
-    }
-
-    /// <inheritdoc />
-    public override void UnmapAndWrite()
-    {
-        using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
-        UnmapAndWriteInternal();
-    }
-
-    /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        _bufferViewsMutex.Dispose();
-        _mapMutex.Dispose();
-
-        DisposeAllViewsInternal();
-
         if (isDisposing)
         {
+            DisposeAllViewsUnsafe();
+            _bufferViews.Clear();
+
             _memoryAllocator.Clear();
+
+            _memoryAllocator = null!;
+            _memoryHeap = null!;
         }
+        _bufferViewsMutex.Dispose();
 
         ReleaseIfNotNull(_d3d12Resource);
-        MemoryRegion.Dispose();
+        _d3d12Resource = null;
+
+        _gpuVirtualAddress = 0;
+
+        ResourceInfo.MappedAddress = null;
+        _mappedCount = 0;
+        _mappedMutex.Dispose();
+
+        ResourceInfo.MemoryRegion.Dispose();
+
+        _ = Device.RemoveBuffer(this);
     }
 
     /// <inheritdoc />
-    protected override byte* Map()
+    protected override void DisposeAllViewsUnsafe()
     {
-        using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
-        return MapInternal();
+        for (var index = _bufferViews.Count - 1; index >= 0; index--)
+        {
+            var bufferView = _bufferViews.GetReferenceUnsafe(index);
+            bufferView.Dispose();
+        }
     }
 
     /// <inheritdoc />
-    protected override byte* MapForRead()
+    protected override byte* MapUnsafe()
     {
-        using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
-        return MapForReadInternal();
+        using var mutex = new DisposableMutex(_mappedMutex, isExternallySynchronized: false);
+        return MapNoMutex();
     }
 
     /// <inheritdoc />
-    protected override byte* MapForRead(nuint offset, nuint size)
+    protected override byte* MapForReadUnsafe()
     {
-        using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
-        return MapForReadInternal(offset, size);
+        using var mutex = new DisposableMutex(_mappedMutex, isExternallySynchronized: false);
+        return MapForReadNoMutex();
     }
 
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override byte* MapForReadUnsafe(nuint byteStart, nuint byteLength)
+    {
+        using var mutex = new DisposableMutex(_mappedMutex, isExternallySynchronized: false);
+        return MapForReadNoMutex(byteStart, byteLength);
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameUnsafe(string value)
     {
         D3D12Resource->SetD3D12Name(value);
     }
 
     /// <inheritdoc />
-    protected override void UnmapAndWrite(nuint offset, nuint size)
+    protected override bool TryCreateBufferViewUnsafe(in GraphicsBufferViewCreateOptions createOptions, [NotNullWhen(true)] out GraphicsBufferView? bufferView)
     {
-        using var mutex = new DisposableMutex(_mapMutex, isExternallySynchronized: false);
-        UnmapAndWriteInternal(offset, size);
-    }
+        nuint byteLength = createOptions.BytesPerElement;
+        byteLength *= createOptions.ElementCount;
+        nuint byteAlignment = 0;
 
-    internal void AddView(D3D12GraphicsBufferView bufferView)
-    {
-        using var mutex = new DisposableMutex(_bufferViewsMutex, isExternallySynchronized: false);
-        _bufferViews.Add(bufferView);
-    }
-
-    internal bool RemoveView(D3D12GraphicsBufferView bufferView)
-    {
-        using var mutex = new DisposableMutex(_bufferViewsMutex, isExternallySynchronized: false);
-        return _bufferViews.Remove(bufferView);
-    }
-
-    private void DisposeAllViewsInternal()
-    {
-        // This method should only be called under a mutex
-
-        foreach (var bufferView in _bufferViews)
+        if (Kind == GraphicsBufferKind.Index)
         {
-            bufferView.Dispose();
+            byteAlignment = createOptions.BytesPerElement;
+        }
+        else if (Kind == GraphicsBufferKind.Constant)
+        {
+            byteAlignment = D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT;
+        }
+        else if (Kind == GraphicsBufferKind.Default)
+        {
+            byteAlignment = D3D12_TEXTURE_DATA_PLACEMENT_ALIGNMENT;
         }
 
-        _bufferViews.Clear();
+        var succeeded = _memoryAllocator.TryAllocate(byteLength, byteAlignment, out var memoryRegion);
+        bufferView = succeeded ? new D3D12GraphicsBufferView(this, in createOptions, in memoryRegion) : null;
+
+        return succeeded;
     }
 
-    private byte* MapInternal()
+    /// <inheritdoc />
+    protected override void UnmapUnsafe()
     {
-        // This method should only be called under a mutex
+        using var mutex = new DisposableMutex(_mappedMutex, isExternallySynchronized: false);
+        UnmapNoMutex();
+    }
 
+    /// <inheritdoc />
+    protected override void UnmapAndWriteUnsafe()
+    {
+        using var mutex = new DisposableMutex(_mappedMutex, isExternallySynchronized: false);
+        UnmapAndWriteNoMutex();
+    }
+
+    /// <inheritdoc />
+    protected override void UnmapAndWriteUnsafe(nuint byteStart, nuint byteLength)
+    {
+        using var mutex = new DisposableMutex(_mappedMutex, isExternallySynchronized: false);
+        UnmapAndWriteNoMutex(byteStart, byteLength);
+    }
+
+    internal void AddBufferView(D3D12GraphicsBufferView bufferView)
+    {
+        _bufferViews.Add(bufferView, _bufferViewsMutex);
+    }
+
+    internal byte* MapView(nuint byteStart)
+    {
+        return MapUnsafe() + byteStart;
+    }
+
+    internal byte* MapViewForRead(nuint byteStart, nuint byteLength)
+    {
+        return MapForReadUnsafe(byteStart, byteLength) + byteStart;
+    }
+
+    internal bool RemoveBufferView(D3D12GraphicsBufferView bufferView)
+    {
+        return IsDisposed || _bufferViews.Remove(bufferView, _bufferViewsMutex);
+    }
+
+    internal void UnmapView()
+    {
+        UnmapUnsafe();
+    }
+
+    internal void UnmapViewAndWrite(nuint byteStart, nuint byteLength)
+    {
+        UnmapAndWriteUnsafe(byteStart, byteLength);
+    }
+
+    private byte* MapNoMutex()
+    {
         _ = Interlocked.Increment(ref _mappedCount);
         var readRange = default(D3D12_RANGE);
 
         void* mappedAddress;
         ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, &mappedAddress));
-        _mappedAddress = mappedAddress;
 
+        ResourceInfo.MappedAddress = mappedAddress;
         return (byte*)mappedAddress;
     }
 
-    private byte* MapForReadInternal()
+    private byte* MapForReadNoMutex()
     {
-        // This method should only be called under a mutex
-
         _ = Interlocked.Increment(ref _mappedCount);
 
         void* mappedAddress;
         ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, pReadRange: null, &mappedAddress));
-        _mappedAddress = mappedAddress;
 
+        ResourceInfo.MappedAddress = mappedAddress;
         return (byte*)mappedAddress;
     }
 
-    private byte* MapForReadInternal(nuint offset, nuint size)
+    private byte* MapForReadNoMutex(nuint byteStart, nuint byteLength)
     {
-        // This method should only be called under a mutex
-
         _ = Interlocked.Increment(ref _mappedCount);
 
         var readRange = new D3D12_RANGE {
-            Begin = offset,
-            End = offset + size,
+            Begin = byteStart,
+            End = byteStart + byteLength,
         };
 
         void* mappedAddress;
         ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, &mappedAddress));
-        _mappedAddress = mappedAddress;
 
+        ResourceInfo.MappedAddress = mappedAddress;
         return (byte*)mappedAddress;
     }
 
-    private void UnmapInternal()
+    private void UnmapNoMutex()
     {
-        // This method should only be called under a mutex
+        var mappedCount = Interlocked.Decrement(ref _mappedCount);
 
-        if (Interlocked.Decrement(ref _mappedCount) == uint.MaxValue)
+        if (mappedCount == uint.MaxValue)
         {
             ThrowForInvalidState(nameof(IsMapped));
+        }
+        else if (mappedCount == 0)
+        {
+            ResourceInfo.MappedAddress = null;
         }
 
         var writtenRange = default(D3D12_RANGE);
         D3D12Resource->Unmap(Subresource: 0, &writtenRange);
     }
 
-    private void UnmapAndWriteInternal()
+    private void UnmapAndWriteNoMutex()
     {
-        // This method should only be called under a mutex
+        var mappedCount = Interlocked.Decrement(ref _mappedCount);
 
-        if (Interlocked.Decrement(ref _mappedCount) == uint.MaxValue)
+        if (mappedCount == uint.MaxValue)
         {
             ThrowForInvalidState(nameof(IsMapped));
+        }
+        else if (mappedCount == 0)
+        {
+            ResourceInfo.MappedAddress = null;
         }
 
         D3D12Resource->Unmap(Subresource: 0, null);
     }
 
-    private void UnmapAndWriteInternal(nuint offset, nuint size)
+    private void UnmapAndWriteNoMutex(nuint byteStart, nuint byteLength)
     {
-        // This method should only be called under a mutex
+        var mappedCount = Interlocked.Decrement(ref _mappedCount);
 
-        if (Interlocked.Decrement(ref _mappedCount) == uint.MaxValue)
+        if (mappedCount == uint.MaxValue)
         {
             ThrowForInvalidState(nameof(IsMapped));
         }
+        else if (mappedCount == 0)
+        {
+            ResourceInfo.MappedAddress = null;
+        }
 
         var writtenRange = new D3D12_RANGE {
-            Begin = offset,
-            End = offset + size,
+            Begin = byteStart,
+            End = byteStart + byteLength,
         };
         D3D12Resource->Unmap(Subresource: 0, &writtenRange);
     }

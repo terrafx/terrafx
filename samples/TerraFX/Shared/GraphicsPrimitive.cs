@@ -1,8 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Advanced;
 using TerraFX.Graphics;
+using TerraFX.Graphics.Advanced;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Samples;
@@ -11,7 +11,7 @@ namespace TerraFX.Samples;
 public sealed class GraphicsPrimitive : GraphicsPipelineObject
 {
     private readonly GraphicsBufferView? _indexBufferView;
-    private readonly GraphicsPipelineResourceViewSet? _pipelineResourceViews;
+    private readonly GraphicsPipelineDescriptorSet? _pipelineDescriptorSet;
     private readonly GraphicsBufferView _vertexBufferView;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsPrimitive" /> class.</summary>
@@ -19,19 +19,18 @@ public sealed class GraphicsPrimitive : GraphicsPipelineObject
     /// <param name="vertexBufferView">The vertex buffer view for the primitive.</param>
     /// <param name="indexBufferView">The index buffer view for the primitive or <c>null</c> if none exists.</param>
     /// <param name="resourceViews">The resource views for the primitive or <c>empty</c> if none exists.</param>
-    public GraphicsPrimitive(GraphicsPipeline pipeline, GraphicsBufferView vertexBufferView, GraphicsBufferView? indexBufferView = null, ReadOnlySpan<GraphicsResourceView> resourceViews = default)
-        : base(pipeline)
+    public GraphicsPrimitive(GraphicsPipeline pipeline, GraphicsBufferView vertexBufferView, GraphicsBufferView? indexBufferView = null, ReadOnlySpan<GraphicsResourceView> resourceViews = default) : base(pipeline)
     {
         _indexBufferView = indexBufferView;
-        _pipelineResourceViews = !resourceViews.IsEmpty ? pipeline.CreateResourceViews(resourceViews) : null;
+        _pipelineDescriptorSet = !resourceViews.IsEmpty ? pipeline.CreateDescriptorSet(resourceViews) : null;
         _vertexBufferView = vertexBufferView;
     }
 
     /// <summary>Gets the index buffer view for the primitive or <c>null</c> if none exists.</summary>
     public GraphicsBufferView? IndexBufferView => _indexBufferView;
 
-    /// <summary>Gets the pipeline resource views for the primitive or <c>null</c> if none exists.</summary>
-    public GraphicsPipelineResourceViewSet? PipelineResourceViews => _pipelineResourceViews;
+    /// <summary>Gets the pipeline descriptor set for the primitive or <c>null</c> if none exists.</summary>
+    public GraphicsPipelineDescriptorSet? PipelineDescriptorSet => _pipelineDescriptorSet;
 
     /// <summary>Gets the vertex buffer view for the primitive.</summary>
     public GraphicsBufferView VertexBufferView => _vertexBufferView;
@@ -46,9 +45,9 @@ public sealed class GraphicsPrimitive : GraphicsPipelineObject
 
         renderContext.BindPipeline(Pipeline);
 
-        if (PipelineResourceViews is GraphicsPipelineResourceViewSet pipelineResourceViews)
+        if (PipelineDescriptorSet is GraphicsPipelineDescriptorSet pipelineDescriptorSet)
         {
-            renderContext.BindPipelineResourceViews(pipelineResourceViews);
+            renderContext.BindPipelineDescriptorSet(pipelineDescriptorSet);
         }
 
         var vertexBufferView = VertexBufferView;
@@ -57,11 +56,11 @@ public sealed class GraphicsPrimitive : GraphicsPipelineObject
         if (IndexBufferView is GraphicsBufferView indexBufferView)
         {
             renderContext.BindIndexBufferView(indexBufferView);
-            renderContext.DrawIndexed(indicesPerInstance: (uint)(indexBufferView.Size / indexBufferView.Stride), instanceCount);
+            renderContext.DrawIndexed(indicesPerInstance: (uint)(indexBufferView.ByteLength / indexBufferView.BytesPerElement), instanceCount);
         }
         else
         {
-            renderContext.Draw(verticesPerInstance: (uint)(vertexBufferView.Size / vertexBufferView.Stride), instanceCount);
+            renderContext.Draw(verticesPerInstance: (uint)(vertexBufferView.ByteLength / vertexBufferView.BytesPerElement), instanceCount);
         }
     }
 
@@ -73,13 +72,13 @@ public sealed class GraphicsPrimitive : GraphicsPipelineObject
 
         _indexBufferView?.Dispose();
 
-        if (_pipelineResourceViews is not null)
+        if (_pipelineDescriptorSet is not null)
         {
-            foreach (var resourceView in _pipelineResourceViews.ResourceViews)
+            foreach (var resourceView in _pipelineDescriptorSet.ResourceViews)
             {
                 resourceView.Dispose();
             }
-            _pipelineResourceViews?.Dispose();
+            _pipelineDescriptorSet?.Dispose();
         }
 
         _vertexBufferView?.Dispose();
@@ -88,7 +87,7 @@ public sealed class GraphicsPrimitive : GraphicsPipelineObject
     }
 
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override void SetNameUnsafe(string value)
     {
     }
 }

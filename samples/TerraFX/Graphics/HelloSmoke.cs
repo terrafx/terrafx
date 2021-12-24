@@ -50,7 +50,7 @@ public sealed class HelloSmoke : HelloWindow
 
         var graphicsDevice = GraphicsDevice;
 
-        _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsResourceCpuAccess.Write);
+        _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsCpuAccess.Write);
         _indexBuffer = graphicsDevice.CreateIndexBuffer(64 * 1024);
 
         if (_isQuickAndDirty)
@@ -65,15 +65,17 @@ public sealed class HelloSmoke : HelloWindow
         _uploadBuffer = graphicsDevice.CreateUploadBuffer(128 * 1024 * 1024);
         _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
-        var graphicsCopyContext = graphicsDevice.RentCopyContext();
+        var copyCommandQueue = graphicsDevice.CopyCommandQueue;
+        var copyContext = copyCommandQueue.RentContext();
         {
-            graphicsCopyContext.Reset();
-            _quadPrimitive = CreateQuadPrimitive(graphicsCopyContext);
-
-            graphicsCopyContext.Flush();
-            graphicsDevice.WaitForIdle();
+            copyContext.Reset();
+            {
+                _quadPrimitive = CreateQuadPrimitive(copyContext);
+            }
+            copyContext.Close();
+            copyContext.Execute();
         }
-        graphicsDevice.ReturnContext(graphicsCopyContext);
+        copyCommandQueue.ReturnContext(copyContext);
 
         _uploadBuffer.DisposeAllViews();
     }
@@ -89,7 +91,7 @@ public sealed class HelloSmoke : HelloWindow
         }
         _texturePosition = dydz;
 
-        var constantBufferView = _quadPrimitive.PipelineResourceViews![1].As<GraphicsBufferView>();
+        var constantBufferView = _quadPrimitive.PipelineDescriptorSet!.ResourceViews[1].As<GraphicsBufferView>();
         var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
         {
             // Shaders take transposed matrices, so we want to set X.W
@@ -109,30 +111,30 @@ public sealed class HelloSmoke : HelloWindow
         base.Draw(graphicsRenderContext);
     }
 
-    private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsCopyContext graphicsCopyContext)
+    private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsCopyContext copyContext)
     {
-        var graphicsRenderPass = GraphicsRenderPass;
-        var graphicsSurface = graphicsRenderPass.Surface;
+        var renderPass = RenderPass;
+        var surface = renderPass.Surface;
 
-        var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Smoke", "main", "main");
+        var graphicsPipeline = CreateGraphicsPipeline(renderPass, "Smoke", "main", "main");
 
         var constantBuffer = _constantBuffer;
         var uploadBuffer = _uploadBuffer;
 
         return new GraphicsPrimitive(
             graphicsPipeline,
-            CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
-            CreateIndexBufferView(graphicsCopyContext, _indexBuffer, uploadBuffer),
+            CreateVertexBufferView(copyContext, _vertexBuffer, uploadBuffer, aspectRatio: surface.PixelWidth / surface.PixelHeight),
+            CreateIndexBufferView(copyContext, _indexBuffer, uploadBuffer),
             new GraphicsResourceView[3] {
-                CreateConstantBufferView(graphicsCopyContext, constantBuffer),
-                CreateConstantBufferView(graphicsCopyContext, constantBuffer),
-                CreateTexture3DView(graphicsCopyContext, _texture3D, uploadBuffer, _isQuickAndDirty),
+                CreateConstantBufferView(copyContext, constantBuffer),
+                CreateConstantBufferView(copyContext, constantBuffer),
+                CreateTexture3DView(copyContext, _texture3D, uploadBuffer, _isQuickAndDirty),
             }
         );
 
-        static GraphicsBufferView CreateConstantBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer constantBuffer)
+        static GraphicsBufferView CreateConstantBufferView(GraphicsCopyContext copyContext, GraphicsBuffer constantBuffer)
         {
-            var constantBufferView = constantBuffer.CreateView<Matrix4x4>(1);
+            var constantBufferView = constantBuffer.CreateBufferView<Matrix4x4>(1);
             var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
             {
                 constantBufferSpan[0] = Matrix4x4.Identity;
@@ -141,9 +143,9 @@ public sealed class HelloSmoke : HelloWindow
             return constantBufferView;
         }
 
-        static GraphicsBufferView CreateIndexBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer indexBuffer, GraphicsBuffer uploadBuffer)
+        static GraphicsBufferView CreateIndexBufferView(GraphicsCopyContext copyContext, GraphicsBuffer indexBuffer, GraphicsBuffer uploadBuffer)
         {
-            var uploadBufferView = uploadBuffer.CreateView<ushort>(6);
+            var uploadBufferView = uploadBuffer.CreateBufferView<ushort>(6);
             var indexBufferSpan = uploadBufferView.Map<ushort>();
             {
                 // clockwise when looking at the triangle from the outside
@@ -158,35 +160,35 @@ public sealed class HelloSmoke : HelloWindow
             }
             uploadBufferView.UnmapAndWrite();
 
-            var indexBufferView = indexBuffer.CreateView<ushort>(6);
-            graphicsCopyContext.Copy(indexBufferView, uploadBufferView);
+            var indexBufferView = indexBuffer.CreateBufferView<ushort>(6);
+            copyContext.Copy(indexBufferView, uploadBufferView);
             return indexBufferView;
         }
 
-        static GraphicsTextureView CreateTexture3DView(GraphicsCopyContext graphicsCopyContext, GraphicsTexture texture3D, GraphicsBuffer uploadBuffer, bool isQuickAndDirty)
+        static GraphicsTextureView CreateTexture3DView(GraphicsCopyContext copyContext, GraphicsTexture texture3D, GraphicsBuffer uploadBuffer, bool isQuickAndDirty)
         {
-            var uploadBufferView = uploadBuffer.CreateView<byte>(checked((uint)texture3D.Size));
+            var uploadBufferView = uploadBuffer.CreateBufferView<byte>(checked((uint)texture3D.ByteLength));
             var textureDataSpan = uploadBufferView.Map<byte>();
             {
                 var random = new Random(Seed: 20170526);
                 var isOnBlurring = true;
 
-                var width = texture3D.Width;
+                var width = texture3D.PixelWidth;
 
-                var height = texture3D.Height;
-                var rowPitch = texture3D.RowPitch;
+                var height = texture3D.PixelHeight;
+                var bytesPerRow = texture3D.BytesPerRow;
 
-                var depth = texture3D.Depth;
-                var slicePitch = texture3D.SlicePitch;
+                var depth = texture3D.PixelDepth;
+                var bytesPerLayer = texture3D.BytesPerLayer;
 
                 // start with random speckles
                 for (var z = 0u; z < depth; z++)
                 {
-                    var sliceIndex = z * slicePitch;
+                    var layerIndex = z * bytesPerLayer;
 
                     for (var y = 0u; y < height; y++)
                     {
-                        var rowIndex = sliceIndex + (y * rowPitch);
+                        var rowIndex = layerIndex + (y * bytesPerRow);
                         var row = (uint*)textureDataSpan.GetPointer(rowIndex);
 
                         for (var x = 0u; x < width; x++)
@@ -231,11 +233,11 @@ public sealed class HelloSmoke : HelloWindow
 
                     for (var z = 0u; z < depth; z++)
                     {
-                        var sliceIndex = z * slicePitch;
+                        var layerIndex = z * bytesPerLayer;
 
                         for (var y = 0u; y < height; y++)
                         {
-                            var rowIndex = sliceIndex + (y * rowPitch);
+                            var rowIndex = layerIndex + (y * bytesPerRow);
                             var row = (uint*)textureDataSpan.GetPointer(rowIndex);
 
                             for (var x = 1u; x < width; x++)
@@ -260,16 +262,16 @@ public sealed class HelloSmoke : HelloWindow
 
                     for (var z = 0u; z < depth; z++)
                     {
-                        var sliceIndex = z * slicePitch;
+                        var layerIndex = z * bytesPerLayer;
 
                         for (var x = 0u; x < width; x++)
                         {
                             for (var y = 1u; y < height; y++)
                             {
-                                var rowIndex = sliceIndex + (y * rowPitch);
+                                var rowIndex = layerIndex + (y * bytesPerRow);
                                 var row = (uint*)textureDataSpan.GetPointer(rowIndex);
 
-                                var previousRowIndex = rowIndex - rowPitch;
+                                var previousRowIndex = rowIndex - bytesPerRow;
                                 var previousRow = (uint*)textureDataSpan.GetPointer(previousRowIndex);
 
                                 if ((row[x] & 0xFF) < falloffFactor * (previousRow[x] & 0xFF))
@@ -281,25 +283,25 @@ public sealed class HelloSmoke : HelloWindow
 
                             for (var y = 0u; y <= 0; y++)
                             {
-                                var rowIndex = sliceIndex + (y * rowPitch);
+                                var rowIndex = layerIndex + (y * bytesPerRow);
                                 var row = (uint*)textureDataSpan.GetPointer(rowIndex);
 
-                                var previousRowOfNextSliceIndex = rowIndex + slicePitch - rowPitch;
-                                var previousRowOfNextSlice = (uint*)textureDataSpan.GetPointer(previousRowOfNextSliceIndex);
+                                var previousRowOfNextLayerIndex = rowIndex + bytesPerLayer - bytesPerRow;
+                                var previousRowOfNextLayer = (uint*)textureDataSpan.GetPointer(previousRowOfNextLayerIndex);
 
-                                if ((row[x] & 0xFF) < falloffFactor * (previousRowOfNextSlice[x] & 0xFF))
+                                if ((row[x] & 0xFF) < falloffFactor * (previousRowOfNextLayer[x] & 0xFF))
                                 {
-                                    uint value = (byte)(falloffFactor * (previousRowOfNextSlice[x] & 0xFF));
+                                    uint value = (byte)(falloffFactor * (previousRowOfNextLayer[x] & 0xFF));
                                     row[x] = value | (value << 8) | (value << 16) | (value << 24);
                                 }
                             }
 
                             for (var y = 1u; y < height; y++)
                             {
-                                var rowIndex = sliceIndex + (y * rowPitch);
+                                var rowIndex = layerIndex + (y * bytesPerRow);
                                 var row = (uint*)textureDataSpan.GetPointer(rowIndex);
 
-                                var previousRowIndex = rowIndex - rowPitch;
+                                var previousRowIndex = rowIndex - bytesPerRow;
                                 var previousRow = (uint*)textureDataSpan.GetPointer(previousRowIndex);
 
                                 if ((row[x] & 0xFF) < falloffFactor * (previousRow[x] & 0xFF))
@@ -311,10 +313,10 @@ public sealed class HelloSmoke : HelloWindow
 
                             for (var y = height - 2; y != uint.MaxValue; y = unchecked(y - 1))
                             {
-                                var rowIndex = sliceIndex + (y * rowPitch);
+                                var rowIndex = layerIndex + (y * bytesPerRow);
                                 var row = (uint*)textureDataSpan.GetPointer(rowIndex);
 
-                                var nextRowIndex = rowIndex + rowPitch;
+                                var nextRowIndex = rowIndex + bytesPerRow;
                                 var nextRow = (uint*)textureDataSpan.GetPointer(nextRowIndex);
 
                                 if ((row[x] & 0xFF) < falloffFactor * (nextRow[x] & 0xFF))
@@ -326,25 +328,25 @@ public sealed class HelloSmoke : HelloWindow
 
                             for (var y = height - 1; y >= height - 1; y--)
                             {
-                                var rowIndex = sliceIndex + (y * rowPitch);
+                                var rowIndex = layerIndex + (y * bytesPerRow);
                                 var row = (uint*)textureDataSpan.GetPointer(rowIndex);
 
-                                var nextRowOfPreviousSliceIndex = rowIndex + rowPitch - slicePitch;
-                                var nextRowOfPreviousSlice = (uint*)textureDataSpan.GetPointer(nextRowOfPreviousSliceIndex);
+                                var nextRowOfPreviousLayerIndex = rowIndex + bytesPerRow - bytesPerLayer;
+                                var nextRowOfPreviousLayer = (uint*)textureDataSpan.GetPointer(nextRowOfPreviousLayerIndex);
 
-                                if ((row[x] & 0xFF) < falloffFactor * (nextRowOfPreviousSlice[x] & 0xFF))
+                                if ((row[x] & 0xFF) < falloffFactor * (nextRowOfPreviousLayer[x] & 0xFF))
                                 {
-                                    uint value = (byte)(falloffFactor * (nextRowOfPreviousSlice[x] & 0xFF));
+                                    uint value = (byte)(falloffFactor * (nextRowOfPreviousLayer[x] & 0xFF));
                                     row[x] = value | (value << 8) | (value << 16) | (value << 24);
                                 }
                             }
 
                             for (var y = height - 2; y != uint.MaxValue; y = unchecked(y - 1))
                             {
-                                var rowIndex = sliceIndex + (y * rowPitch);
+                                var rowIndex = layerIndex + (y * bytesPerRow);
                                 var row = (uint*)textureDataSpan.GetPointer(rowIndex);
 
-                                var nextRowIndex = rowIndex + rowPitch;
+                                var nextRowIndex = rowIndex + bytesPerRow;
                                 var nextRow = (uint*)textureDataSpan.GetPointer(nextRowIndex);
 
                                 if ((row[x] & 0xFF) < falloffFactor * (nextRow[x] & 0xFF))
@@ -364,15 +366,15 @@ public sealed class HelloSmoke : HelloWindow
                             {
                                 for (var z = 1u; z < depth; z++)
                                 {
-                                    var sliceIndex = z * slicePitch;
+                                    var layerIndex = z * bytesPerLayer;
 
-                                    var rowIndex = sliceIndex + (y * rowPitch);
+                                    var rowIndex = layerIndex + (y * bytesPerRow);
                                     var row = (uint*)textureDataSpan.GetPointer(rowIndex);
 
-                                    var sameRowOfPreviousSliceIndex = rowIndex - slicePitch;
-                                    var sameRowOfPreviousSlice = (uint*)textureDataSpan.GetPointer(sameRowOfPreviousSliceIndex);
+                                    var sameRowOfPreviousLayerIndex = rowIndex - bytesPerLayer;
+                                    var sameRowOfPreviousLayer = (uint*)textureDataSpan.GetPointer(sameRowOfPreviousLayerIndex);
 
-                                    if ((row[x] & 0xFF) < falloffFactor * (sameRowOfPreviousSlice[x] & 0xFF))
+                                    if ((row[x] & 0xFF) < falloffFactor * (sameRowOfPreviousLayer[x] & 0xFF))
                                     {
                                         uint value = (byte)(falloffFactor * (row[x - 1] & 0xFF));
                                         row[x] = value | (value << 8) | (value << 16) | (value << 24);
@@ -384,12 +386,12 @@ public sealed class HelloSmoke : HelloWindow
                             {
                                 for (var z = depth - 1u; z != uint.MaxValue; z = unchecked(z - 1))
                                 {
-                                    var sliceIndex = z * slicePitch;
+                                    var layerIndex = z * bytesPerLayer;
 
-                                    var rowIndex = sliceIndex + (y * rowPitch);
+                                    var rowIndex = layerIndex + (y * bytesPerRow);
                                     var row = (uint*)textureDataSpan.GetPointer(rowIndex);
 
-                                    if ((row[x] & 0xFF) < falloffFactor * (row[x + slicePitch] & 0xFF))
+                                    if ((row[x] & 0xFF) < falloffFactor * (row[x + bytesPerLayer] & 0xFF))
                                     {
                                         uint value = (byte)(falloffFactor * (row[x + 1] & 0xFF));
                                         row[x] = value | (value << 8) | (value << 16) | (value << 24);
@@ -403,13 +405,13 @@ public sealed class HelloSmoke : HelloWindow
             uploadBufferView.UnmapAndWrite();
 
             var texture3DView = texture3D.CreateView(0, 1);
-            graphicsCopyContext.Copy(texture3DView, uploadBufferView);
+            copyContext.Copy(texture3DView, uploadBufferView);
             return texture3DView;
         }
 
-        static GraphicsBufferView CreateVertexBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
+        static GraphicsBufferView CreateVertexBufferView(GraphicsCopyContext copyContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
         {
-            var uploadBufferView = uploadBuffer.CreateView<Texture3DVertex>(4);
+            var uploadBufferView = uploadBuffer.CreateBufferView<Texture3DVertex>(4);
             var vertexBufferSpan = uploadBufferView.Map<Texture3DVertex>();
             {
                 var y = 1.0f;
@@ -437,37 +439,61 @@ public sealed class HelloSmoke : HelloWindow
             }
             uploadBufferView.UnmapAndWrite();
 
-            var vertexBufferView = vertexBuffer.CreateView<Texture3DVertex>(4);
-            graphicsCopyContext.Copy(vertexBufferView, uploadBufferView);
+            var vertexBufferView = vertexBuffer.CreateBufferView<Texture3DVertex>(4);
+            copyContext.Copy(vertexBufferView, uploadBufferView);
             return vertexBufferView;
         }
 
-        GraphicsPipeline CreateGraphicsPipeline(GraphicsRenderPass graphicsRenderPass, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
+        GraphicsPipeline CreateGraphicsPipeline(GraphicsRenderPass renderPass, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
         {
-            var graphicsDevice = graphicsRenderPass.Device;
+            var graphicsDevice = renderPass.Device;
 
-            var signature = CreateGraphicsPipelineSignature(graphicsDevice);
-            var vertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint);
-            var pixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint);
+            var pipelineCreateOptions = new GraphicsPipelineCreateOptions {
+                Signature = CreateGraphicsPipelineSignature(graphicsDevice),
+                PixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint),
+                VertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint),
+            };
 
-            return graphicsRenderPass.CreatePipeline(signature, vertexShader, pixelShader);
+            return renderPass.CreatePipeline(in pipelineCreateOptions);
         }
 
         static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)
         {
-            var inputs = new GraphicsPipelineInput[1] {
-                new GraphicsPipelineInput(
-                    new GraphicsPipelineInputElement[2] {
-                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Position, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
-                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.TextureCoordinate, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
-                    }
-                ),
+            var inputs = new UnmanagedArray<GraphicsPipelineInput>(2) {
+                [0] = new GraphicsPipelineInput {
+                    BindingIndex = 0,
+                    ByteAlignment = 4,
+                    ByteLength = 12,
+                    Format = GraphicsFormat.R32G32B32_SFLOAT,
+                    Kind = GraphicsPipelineInputKind.Position,
+                    ShaderVisibility = GraphicsShaderVisibility.Vertex,
+                },
+                [1] = new GraphicsPipelineInput {
+                    BindingIndex = 1,
+                    ByteAlignment = 4,
+                    ByteLength = 12,
+                    Format = GraphicsFormat.R32G32B32_SFLOAT,
+                    Kind = GraphicsPipelineInputKind.TextureCoordinate,
+                    ShaderVisibility = GraphicsShaderVisibility.Vertex,
+                },
             };
 
-            var resources = new GraphicsPipelineResourceInfo[3] {
-                new GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                new GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                new GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
+            var resources = new UnmanagedArray<GraphicsPipelineResource>(3) {
+                [0] = new GraphicsPipelineResource {
+                    BindingIndex = 0,
+                    Kind = GraphicsPipelineResourceKind.ConstantBuffer,
+                    ShaderVisibility = GraphicsShaderVisibility.Vertex,
+                },
+                [1] = new GraphicsPipelineResource {
+                    BindingIndex = 1,
+                    Kind = GraphicsPipelineResourceKind.ConstantBuffer,
+                    ShaderVisibility = GraphicsShaderVisibility.Vertex,
+                },
+                [2] = new GraphicsPipelineResource {
+                    BindingIndex = 2,
+                    Kind = GraphicsPipelineResourceKind.Texture,
+                    ShaderVisibility = GraphicsShaderVisibility.Pixel,
+                },
             };
 
             return graphicsDevice.CreatePipelineSignature(inputs, resources);

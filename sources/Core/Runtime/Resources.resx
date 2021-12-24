@@ -175,7 +175,7 @@
     <value>Transitioning the state from '{0}' to '{1}' failed</value>
   </data>
   <data name="UnmanagedMethodFailedMessage" xml:space="preserve">
-    <value>'{0}' failed with an error code of '{1}'</value>
+    <value>'{0}' failed with an error code of '{1:X8}'</value>
   </data>
   <data name="UnsupportedValueMessage" xml:space="preserve">
     <value>'{0}' has an unsupported value of '{1}'</value>

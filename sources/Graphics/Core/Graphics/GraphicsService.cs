@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using TerraFX.Advanced;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AppContextUtilities;
@@ -27,8 +26,7 @@ public abstract class GraphicsService : DisposableObject
     );
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsService" /> class.</summary>
-    /// <param name="name">The name of the object or <c>null</c> to use <see cref="MemberInfo.Name" />.</param>
-    protected GraphicsService(string? name = null) : base(name)
+    protected GraphicsService() : base(name: null)
     {
     }
 

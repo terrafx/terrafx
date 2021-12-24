@@ -1,6 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using TerraFX.Advanced;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using static TerraFX.Interop.Vulkan.VkComponentSwizzle;
 using static TerraFX.Interop.Vulkan.VkImageAspectFlags;
@@ -16,27 +16,29 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
 {
-    private readonly VkFramebuffer _vkFramebuffer;
-    private readonly VkImageView _vkFramebufferImageView;
+    private VkFramebuffer _vkFramebuffer;
+    private VkImageView _vkFramebufferImageView;
 
-    internal VulkanGraphicsRenderTarget(VulkanGraphicsSwapchain swapchain, uint index)
-        : base(swapchain, index)
+    internal VulkanGraphicsRenderTarget(VulkanGraphicsSwapchain swapchain, int index) : base(swapchain)
     {
-        var vkFramebufferImageView = CreateVkFramebufferImageView(swapchain, index);
-        _vkFramebufferImageView = vkFramebufferImageView;
+        RenderTargetInfo.Index = index;
 
-        var vkFramebuffer = CreateVkFramebuffer(swapchain, vkFramebufferImageView);
-        _vkFramebuffer = vkFramebuffer;
+        _vkFramebufferImageView = CreateVkFramebufferImageView();
+        _vkFramebuffer = CreateVkFramebuffer();
 
-        static VkFramebuffer CreateVkFramebuffer(VulkanGraphicsSwapchain swapchain, VkImageView vkImageView)
+        VkFramebuffer CreateVkFramebuffer()
         {
-            ref readonly var vkSurfaceCapabilities = ref swapchain.VkSurfaceCapabilities;
+            ref readonly var vkSurfaceCapabilities = ref Swapchain.VkSurfaceCapabilities;
+
+            var vkFramebufferImageView = _vkFramebufferImageView;
 
             var vkFramebufferCreateInfo = new VkFramebufferCreateInfo {
                 sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-                renderPass = swapchain.RenderPass.VkRenderPass,
+                pNext = null,
+                flags = 0,
+                renderPass = RenderPass.VkRenderPass,
                 attachmentCount = 1,
-                pAttachments = &vkImageView,
+                pAttachments = &vkFramebufferImageView,
                 width = vkSurfaceCapabilities.currentExtent.width,
                 height = vkSurfaceCapabilities.currentExtent.height,
                 layers = 1,
@@ -47,11 +49,13 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
             return vkFramebuffer;
         }
 
-        static VkImageView CreateVkFramebufferImageView(VulkanGraphicsSwapchain swapchain, uint index)
+        VkImageView CreateVkFramebufferImageView()
         {
             var vkImageViewCreateInfo = new VkImageViewCreateInfo {
                 sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-                image = swapchain.VkSwapchainImages[index],
+                pNext = null,
+                flags = 0,
+                image = swapchain.VkSwapchainImages[(uint)RenderTargetInfo.Index],
                 viewType = VK_IMAGE_VIEW_TYPE_2D,
                 format = swapchain.RenderTargetFormat.AsVkFormat(),
                 components = new VkComponentMapping {
@@ -62,7 +66,9 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
                 },
                 subresourceRange = new VkImageSubresourceRange {
                     aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+                    baseMipLevel = 0,
                     levelCount = 1,
+                    baseArrayLayer = 0,
                     layerCount = 1,
                 },
             };
@@ -92,24 +98,10 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
     public new VulkanGraphicsSwapchain Swapchain => base.Swapchain.As<VulkanGraphicsSwapchain>();
 
     /// <summary>Gets the <see cref="VkFramebuffer"/> for the render target.</summary>
-    public VkFramebuffer VkFramebuffer
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkFramebuffer;
-        }
-    }
+    public VkFramebuffer VkFramebuffer => _vkFramebuffer;
 
     /// <summary>Gets the <see cref="VkImageView" /> used by <see cref="VkFramebuffer" />.</summary>
-    public VkImageView VkFramebufferImageView
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkFramebufferImageView;
-        }
-    }
+    public VkImageView VkFramebufferImageView => _vkFramebufferImageView;
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
@@ -117,8 +109,10 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
         var vkDevice = Device.VkDevice;
 
         CleanupVkFramebuffer(vkDevice, _vkFramebuffer);
-        CleanupVkFramebufferImageView(vkDevice, _vkFramebufferImageView);
+        _vkFramebuffer = VkFramebuffer.NULL;
 
+        CleanupVkFramebufferImageView(vkDevice, _vkFramebufferImageView);
+        _vkFramebufferImageView = VkImageView.NULL;
 
         static void CleanupVkFramebuffer(VkDevice vkDevice, VkFramebuffer vkFramebuffer)
         {
@@ -138,7 +132,7 @@ public sealed unsafe class VulkanGraphicsRenderTarget : GraphicsRenderTarget
     }
 
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override void SetNameUnsafe(string value)
     {
         Device.SetVkObjectName(VK_OBJECT_TYPE_FRAMEBUFFER, VkFramebuffer, value);
         Device.SetVkObjectName(VK_OBJECT_TYPE_IMAGE_VIEW, VkFramebufferImageView, value);
