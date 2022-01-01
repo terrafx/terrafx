@@ -1,12 +1,10 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.	
 
-using System;
 using System.Runtime.CompilerServices;
 using TerraFX.Graphics;
 using TerraFX.Interop.Vulkan;
 using static TerraFX.Interop.Vulkan.VkFormat;
 using static TerraFX.Interop.Vulkan.VkResult;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -14,7 +12,7 @@ namespace TerraFX.Utilities;
 
 internal static unsafe partial class VulkanUtilities
 {
-    private static readonly VkFormat[] s_vkFormatMap = new VkFormat[] {
+    private static readonly VkFormat[] s_vkFormatMap = new VkFormat[(int)GraphicsFormat.COUNT__] {
         VK_FORMAT_UNDEFINED,                    // Unknown
 
         VK_FORMAT_R32G32B32A32_SFLOAT,          // R32G32B32A32_SFLOAT
@@ -120,11 +118,7 @@ internal static unsafe partial class VulkanUtilities
     };
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static VkFormat AsVkFormat(this GraphicsFormat format)
-    {
-        Assert(AssertionsEnabled && (s_vkFormatMap.Length == Enum.GetValues<GraphicsFormat>().Length));
-        return s_vkFormatMap[(uint)format];
-    }
+    public static VkFormat AsVkFormat(this GraphicsFormat format) => s_vkFormatMap[(uint)format];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowExternalExceptionIfNotSuccess(VkResult value, [CallerArgumentExpression("value")] string? valueExpression = null)

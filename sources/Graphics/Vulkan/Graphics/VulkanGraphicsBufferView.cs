@@ -1,6 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using TerraFX.Advanced;
+using TerraFX.Graphics.Advanced;
 using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
@@ -8,10 +8,16 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe partial class VulkanGraphicsBufferView : GraphicsBufferView
 {
-    internal VulkanGraphicsBufferView(VulkanGraphicsBuffer buffer, in GraphicsMemoryRegion memoryRegion, uint stride)
-        : base(buffer, in memoryRegion, stride)
+    internal VulkanGraphicsBufferView(VulkanGraphicsBuffer buffer, in GraphicsBufferViewCreateOptions createOptions, in GraphicsMemoryRegion memoryRegion) : base(buffer)
     {
-        buffer.AddView(this);
+        buffer.AddBufferView(this);
+
+        ResourceViewInfo.ByteOffset = memoryRegion.ByteOffset;
+        ResourceViewInfo.ByteLength = memoryRegion.ByteLength;
+        ResourceViewInfo.BytesPerElement = createOptions.BytesPerElement;
+
+        BufferViewInfo.Kind = buffer.Kind;
+        BufferViewInfo.MemoryRegion = memoryRegion;
     }
 
     /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsBufferView" /> class.</summary>
@@ -23,7 +29,7 @@ public sealed unsafe partial class VulkanGraphicsBufferView : GraphicsBufferView
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
-    /// <inheritdoc cref="GraphicsResourceView.Resource" />
+    /// <inheritdoc cref="GraphicsResourceObject.Resource" />
     public new VulkanGraphicsBuffer Resource => base.Resource.As<VulkanGraphicsBuffer>();
 
     /// <inheritdoc cref="GraphicsServiceObject.Service" />
@@ -32,15 +38,49 @@ public sealed unsafe partial class VulkanGraphicsBufferView : GraphicsBufferView
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        if (isDisposing)
-        {
-            _ = Resource.RemoveView(this);
-        }
-        MemoryRegion.Dispose();
+        BufferViewInfo.MemoryRegion.Dispose();
+
+        _ = Resource.RemoveBufferView(this);
     }
 
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override unsafe byte* MapUnsafe()
     {
+        return Resource.MapView(ByteOffset);
+    }
+
+    /// <inheritdoc />
+    protected override unsafe byte* MapForReadUnsafe()
+    {
+        return Resource.MapViewForRead(ByteOffset, ByteLength);
+    }
+
+    /// <inheritdoc />
+    protected override unsafe byte* MapForReadUnsafe(nuint byteStart, nuint byteLength)
+    {
+        return Resource.MapViewForRead(ByteOffset + byteStart, byteLength);
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameUnsafe(string value)
+    {
+    }
+
+    /// <inheritdoc />
+    protected override void UnmapUnsafe()
+    {
+        Resource.UnmapView();
+    }
+
+    /// <inheritdoc />
+    protected override void UnmapAndWriteUnsafe()
+    {
+        Resource.UnmapViewAndWrite(ByteOffset, ByteLength);
+    }
+
+    /// <inheritdoc />
+    protected override void UnmapAndWriteUnsafe(nuint byteStart, nuint byteLength)
+    {
+        Resource.UnmapViewAndWrite(ByteOffset + byteStart, byteLength);
     }
 }

@@ -230,7 +230,7 @@ public static unsafe class UnsafeUtilities
             return UnmanagedArray<T>.Empty;
         }
 
-        var destination = new UnmanagedArray<T>(length, alignment, zero: false);
+        var destination = new UnmanagedArray<T>(length, alignment);
         CopyBlock(ref destination.GetReferenceUnsafe(0), in span.GetReference(), SizeOf<T>() * length);
         return destination;
     }
@@ -251,7 +251,7 @@ public static unsafe class UnsafeUtilities
             return UnmanagedArray<T>.Empty;
         }
 
-        var destination = new UnmanagedArray<T>(length, alignment, zero: false);
+        var destination = new UnmanagedArray<T>(length, alignment);
         CopyBlock(ref destination.GetReferenceUnsafe(0), in span.GetReference(), SizeOf<T>() * length);
         return destination;
     }

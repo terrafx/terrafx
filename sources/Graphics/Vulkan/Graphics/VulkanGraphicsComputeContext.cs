@@ -1,7 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using TerraFX.Advanced;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
+using static TerraFX.Interop.Vulkan.VkCommandBufferLevel;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
@@ -13,40 +14,47 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
 {
-    private readonly VulkanGraphicsFence _fence;
-    private readonly VkCommandBuffer _vkCommandBuffer;
-    private readonly VkCommandPool _vkCommandPool;
+    private VkCommandBuffer _vkCommandBuffer;
+    private VkCommandPool _vkCommandPool;
 
-    internal VulkanGraphicsComputeContext(VulkanGraphicsDevice device)
-        : base(device)
+    internal VulkanGraphicsComputeContext(VulkanGraphicsComputeCommandQueue computeCommandQueue) : base(computeCommandQueue)
     {
-        var vkCommandPool = CreateVkCommandPool(device);
-        _vkCommandPool = vkCommandPool;
+        // No need for a ContextPool.AddComputeContext(this) as it will be done by the underlying pool
 
-        _vkCommandBuffer = CreateVkCommandBuffer(device, vkCommandPool);
-        _fence = device.CreateFence(isSignalled: true);
+        ContextInfo.Fence = Device.CreateFence(isSignalled: true);
 
-        static VkCommandBuffer CreateVkCommandBuffer(VulkanGraphicsDevice device, VkCommandPool vkCommandPool)
+        _vkCommandPool = CreateVkCommandPool();
+        _vkCommandBuffer = CreateVkCommandBuffer();
+
+        SetNameUnsafe(Name);
+
+        VkCommandBuffer CreateVkCommandBuffer()
         {
             VkCommandBuffer vkCommandBuffer;
 
             var vkCommandBufferAllocateInfo = new VkCommandBufferAllocateInfo {
                 sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-                commandPool = vkCommandPool,
+                pNext = null,
+                commandPool = _vkCommandPool,
+                level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
                 commandBufferCount = 1,
             };
-            ThrowExternalExceptionIfNotSuccess(vkAllocateCommandBuffers(device.VkDevice, &vkCommandBufferAllocateInfo, &vkCommandBuffer));
+            ThrowExternalExceptionIfNotSuccess(vkAllocateCommandBuffers(Device.VkDevice, &vkCommandBufferAllocateInfo, &vkCommandBuffer));
 
             return vkCommandBuffer;
         }
 
-        static VkCommandPool CreateVkCommandPool(VulkanGraphicsDevice device)
+        VkCommandPool CreateVkCommandPool()
         {
             VkCommandPool vkCommandPool;
 
+            var device = Device;
+
             var commandPoolCreateInfo = new VkCommandPoolCreateInfo {
                 sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-                queueFamilyIndex = device.VkComputeCommandQueueFamilyIndex,
+                pNext = null,
+                flags = 0,
+                queueFamilyIndex = CommandQueue.VkQueueFamilyIndex,
             };
             ThrowExternalExceptionIfNotSuccess(vkCreateCommandPool(device.VkDevice, &commandPoolCreateInfo, pAllocator: null, &vkCommandPool));
 
@@ -60,78 +68,53 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
     /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
+    /// <inheritdoc cref="GraphicsCommandQueueObject{TGraphicsContext}.CommandQueue" />
+    public new VulkanGraphicsComputeCommandQueue CommandQueue => base.CommandQueue.As<VulkanGraphicsComputeCommandQueue>();
+
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
-    /// <inheritdoc />
-    public override VulkanGraphicsFence Fence => _fence;
+    /// <inheritdoc cref="GraphicsContext{TGraphicsContext}.Fence" />
+    public new VulkanGraphicsFence Fence => base.Fence.As<VulkanGraphicsFence>();
 
     /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the <see cref="Interop.Vulkan.VkCommandBuffer" /> used by the context.</summary>
-    public VkCommandBuffer VkCommandBuffer
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkCommandBuffer;
-        }
-    }
+    public VkCommandBuffer VkCommandBuffer => _vkCommandBuffer;
 
     /// <summary>Gets the <see cref="Interop.Vulkan.VkCommandPool" /> used by the context.</summary>
-    public VkCommandPool VkCommandPool
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkCommandPool;
-        }
-    }
+    public VkCommandPool VkCommandPool => _vkCommandPool;
 
     /// <inheritdoc />
-    public override void Flush()
+    protected override void CloseUnsafe()
     {
-        var vkCommandBuffer = VkCommandBuffer;
-        ThrowExternalExceptionIfNotSuccess(vkEndCommandBuffer(vkCommandBuffer));
-
-        var vkSubmitInfo = new VkSubmitInfo {
-            sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-            commandBufferCount = 1,
-            pCommandBuffers = &vkCommandBuffer,
-        };
-
-        var fence = Fence;
-        ThrowExternalExceptionIfNotSuccess(vkQueueSubmit(Device.VkCommandQueue, submitCount: 1, &vkSubmitInfo, fence.VkFence));
-        fence.Wait();
-    }
-
-    /// <inheritdoc />
-    public override void Reset()
-    {
-        Fence.Reset();
-
-        ThrowExternalExceptionIfNotSuccess(vkResetCommandPool(Device.VkDevice, VkCommandPool, 0));
-
-        var vkCommandBufferBeginInfo = new VkCommandBufferBeginInfo {
-            sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-        };
-        ThrowExternalExceptionIfNotSuccess(vkBeginCommandBuffer(VkCommandBuffer, &vkCommandBufferBeginInfo));
+        ThrowExternalExceptionIfNotSuccess(vkEndCommandBuffer(VkCommandBuffer));
     }
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
+        if (isDisposing)
+        {
+            var fence = ContextInfo.Fence;
+            fence.Wait();
+            fence.Reset();
+
+            fence.Dispose();
+            ContextInfo.Fence = null!;
+        }
+
         var vkDevice = Device.VkDevice;
         var vkCommandPool = _vkCommandPool;
 
         DisposeVkCommandBuffer(vkDevice, vkCommandPool, _vkCommandBuffer);
-        DisposeVkCommandPool(vkDevice, vkCommandPool);
+        _vkCommandBuffer = VkCommandBuffer.NULL;
 
-        if (isDisposing)
-        {
-            _fence?.Dispose();
-        }
+        DisposeVkCommandPool(vkDevice, vkCommandPool);
+        _vkCommandPool = VkCommandPool.NULL;
+
+        _ = CommandQueue.RemoveComputeContext(this);
 
         static void DisposeVkCommandBuffer(VkDevice vkDevice, VkCommandPool vkCommandPool, VkCommandBuffer vkCommandBuffer)
         {
@@ -151,7 +134,31 @@ public sealed unsafe class VulkanGraphicsComputeContext : GraphicsComputeContext
     }
 
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override void ExecuteUnsafe()
+    {
+        CommandQueue.ExecuteContextUnsafe(this);
+    }
+
+    /// <inheritdoc />
+    protected override void ResetUnsafe()
+    {
+        var fence = Fence;
+        fence.Wait();
+        fence.Reset();
+
+        ThrowExternalExceptionIfNotSuccess(vkResetCommandPool(Device.VkDevice, VkCommandPool, 0));
+
+        var vkCommandBufferBeginInfo = new VkCommandBufferBeginInfo {
+            sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+            pNext = null,
+            flags = 0,
+            pInheritanceInfo = null,
+        };
+        ThrowExternalExceptionIfNotSuccess(vkBeginCommandBuffer(VkCommandBuffer, &vkCommandBufferBeginInfo));
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameUnsafe(string value)
     {
         Device.SetVkObjectName(VK_OBJECT_TYPE_COMMAND_BUFFER, VkCommandBuffer, value);
         Device.SetVkObjectName(VK_OBJECT_TYPE_COMMAND_POOL, VkCommandPool, value);

@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Linq;
 
 namespace TerraFX.Utilities;
 
@@ -223,6 +224,30 @@ public static unsafe class AppContextUtilities
     {
         var data = AppContext.GetData(name);
         return data is string value ? value : defaultValue;
+    }
+
+    /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>
+    /// <param name="name">The name of the app context data to get.</param>
+    /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="name" />.</param>
+    /// <returns>The value of the app context data associated with <paramref name="name"/> or <paramref name="defaultValue" /> if none exists.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
+    public static string[] GetAppContextData(string name, string[] defaultValue)
+    {
+        var data = AppContext.GetData(name);
+
+        if (data is not string[] value)
+        {
+            if (data is string stringValue)
+            {
+                value = stringValue.Split(';', StringSplitOptions.RemoveEmptyEntries);
+            }
+            else
+            {
+                value = defaultValue;
+            }
+        }
+
+        return value.Distinct().ToArray();
     }
 
     /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>

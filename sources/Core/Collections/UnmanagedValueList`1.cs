@@ -37,7 +37,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     {
         if (capacity != 0)
         {
-            _items = new UnmanagedArray<T>(capacity, alignment, zero: false);
+            _items = new UnmanagedArray<T>(capacity, alignment);
         }
         else
         {
@@ -59,7 +59,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     {
         if (span.Length != 0)
         {
-            var items = new UnmanagedArray<T>(span.Length, alignment, zero: false);
+            var items = new UnmanagedArray<T>(span.Length, alignment);
             CopyArrayUnsafe(items.GetPointerUnsafe(0), span.GetPointerUnsafe(0), span.Length);
             _items = items;
         }
@@ -79,7 +79,8 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     /// <param name="array">The array that is used to populate the list.</param>
     /// <param name="takeOwnership"><c>true</c> if the list should take ownership of the array; otherwise, <c>false</c>.</param>
     /// <exception cref="ArgumentNullException"><paramref name="array" /> is <c>null</c>.</exception>
-    public UnmanagedValueList(UnmanagedArray<T> array, bool takeOwnership = false)
+    /// <remarks>By default ownership of <paramref name="array" /> is given to the value list.</remarks>
+    public UnmanagedValueList(UnmanagedArray<T> array, bool takeOwnership = true)
     {
         ThrowIfNull(array);
 
@@ -89,7 +90,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         }
         else
         {
-            var items = new UnmanagedArray<T>(array.Length, array.Alignment, zero: false);
+            var items = new UnmanagedArray<T>(array.Length, array.Alignment);
             CopyArrayUnsafe(items.GetPointerUnsafe(0), array.GetPointerUnsafe(0), array.Length);
             _items = items;
         }
@@ -207,7 +208,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
             var newCapacity = Max(capacity, currentCapacity * 2);
             var alignment = !items.IsNull ? items.Alignment : 0;
 
-            var newItems = new UnmanagedArray<T>(newCapacity, alignment, zero: false);
+            var newItems = new UnmanagedArray<T>(newCapacity, alignment);
 
             CopyTo(newItems);
             items.Dispose();
@@ -346,7 +347,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
             var items = _items;
 
             var alignment = !items.IsNull ? items.Alignment : 0;
-            var newItems = new UnmanagedArray<T>(count, alignment, zero: false);
+            var newItems = new UnmanagedArray<T>(count, alignment);
 
             CopyTo(newItems);
             items.Dispose();

@@ -86,6 +86,42 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Acos(float value) => MathF.Acos(value);
 
+    // <summary>Rounds a given address down to the nearest alignment.</summary>
+    /// <param name="address">The address to be aligned.</param>
+    /// <param name="alignment">The target alignment, which should be a power of two.</param>
+    /// <returns><paramref name="address" /> rounded down to the specified <paramref name="alignment" />.</returns>
+    /// <remarks>This method does not account for an <paramref name="alignment" /> which is not a <c>power of two</c>.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static uint AlignDown(uint address, uint alignment)
+    {
+        Assert(AssertionsEnabled && IsPow2(alignment));
+        return address & ~(alignment - 1);
+    }
+
+    /// <summary>Rounds a given address down to the nearest alignment.</summary>
+    /// <param name="address">The address to be aligned.</param>
+    /// <param name="alignment">The target alignment, which should be a power of two.</param>
+    /// <returns><paramref name="address" /> rounded down to the specified <paramref name="alignment" />.</returns>
+    /// <remarks>This method does not account for an <paramref name="alignment" /> which is not a <c>power of two</c>.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ulong AlignDown(ulong address, ulong alignment)
+    {
+        Assert(AssertionsEnabled && IsPow2(alignment));
+        return address & ~(alignment - 1);
+    }
+
+    /// <summary>Rounds a given address down to the nearest alignment.</summary>
+    /// <param name="address">The address to be aligned.</param>
+    /// <param name="alignment">The target alignment, which should be a power of two.</param>
+    /// <returns><paramref name="address" /> rounded down to the specified <paramref name="alignment" />.</returns>
+    /// <remarks>This method does not account for an <paramref name="alignment" /> which is not a <c>power of two</c>.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static nuint AlignDown(nuint address, nuint alignment)
+    {
+        Assert(AssertionsEnabled && IsPow2(alignment));
+        return address & ~(alignment - 1);
+    }
+
     /// <summary>Rounds a given address up to the nearest alignment.</summary>
     /// <param name="address">The address to be aligned.</param>
     /// <param name="alignment">The target alignment, which should be a power of two.</param>

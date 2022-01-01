@@ -8,12 +8,15 @@ namespace TerraFX.Graphics;
 [Flags]
 public enum GraphicsShaderVisibility
 {
-    /// <summary>Defines visibility to all shaders.</summary>
-    All = 0,
+    /// <summary>Defines visibility to no shaders.</summary>
+    None = 0,
 
     /// <summary>Defines vertex shader visibility.</summary>
     Vertex = 1,
 
     /// <summary>Defines pixel shader visibility.</summary>
     Pixel = 2,
+
+    /// <summary>Defines visibility to all shaders.</summary>
+    All = Vertex | Pixel,
 }

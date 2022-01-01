@@ -1,20 +1,25 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Numerics;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
 
 /// <summary>Represents a graphics context, which can be used for executing render commands.</summary>
-public abstract unsafe class GraphicsRenderContext : GraphicsContext
+public abstract unsafe class GraphicsRenderContext : GraphicsContext<GraphicsRenderContext>
 {
     /// <summary>Initializes a new instance of the <see cref="GraphicsRenderContext" /> class.</summary>
-    /// <param name="device">The device for which the render context is being created.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
-    protected GraphicsRenderContext(GraphicsDevice device)
-        : base(device, GraphicsContextKind.Render)
+    /// <param name="renderCommandQueue">The render command queue for which the render context is being created.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="renderCommandQueue" /> is <c>null</c>.</exception>
+    protected GraphicsRenderContext(GraphicsRenderCommandQueue renderCommandQueue) : base(renderCommandQueue)
     {
+        ContextInfo.Kind = GraphicsContextKind.Render;
     }
+
+    /// <inheritdoc cref="GraphicsCommandQueueObject{TGraphicsContext}.CommandQueue" />
+    public new GraphicsRenderCommandQueue CommandQueue => base.CommandQueue.As<GraphicsRenderCommandQueue>();
 
     /// <summary>Gets the maximum number of vertex buffer views that can be bound at one time.</summary>
     public abstract uint MaxBoundVertexBufferViewCount { get; }
@@ -40,10 +45,10 @@ public abstract unsafe class GraphicsRenderContext : GraphicsContext
     /// <exception cref="ArgumentNullException"><paramref name="pipeline" /> is <c>null</c>.</exception>
     public abstract void BindPipeline(GraphicsPipeline pipeline);
 
-    /// <summary>Binds a pipeline resource view set to the context.</summary>
-    /// <param name="pipelineResourceViewSet">The pipeline resource view set to bind.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="pipelineResourceViewSet" /> is <c>null</c>.</exception>
-    public abstract void BindPipelineResourceViews(GraphicsPipelineResourceViewSet pipelineResourceViewSet);
+    /// <summary>Binds a pipeline descriptor set to the context.</summary>
+    /// <param name="pipelineDescriptorSet">The pipeline descriptor set to bind.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="pipelineDescriptorSet" /> is <c>null</c>.</exception>
+    public abstract void BindPipelineDescriptorSet(GraphicsPipelineDescriptorSet pipelineDescriptorSet);
 
     /// <summary>Binds a vertex buffer view to the context.</summary>
     /// <param name="vertexBufferView">The vertex buffer view to bind.</param>

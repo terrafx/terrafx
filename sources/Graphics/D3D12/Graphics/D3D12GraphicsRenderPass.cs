@@ -1,6 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using TerraFX.Advanced;
+using TerraFX.Graphics.Advanced;
 using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
@@ -8,12 +8,19 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsRenderPass : GraphicsRenderPass
 {
-    private readonly D3D12GraphicsSwapchain _swapchain;
-
-    internal D3D12GraphicsRenderPass(D3D12GraphicsDevice device, IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0)
-        : base(device, surface, renderTargetFormat)
+    internal D3D12GraphicsRenderPass(D3D12GraphicsDevice device, in GraphicsRenderPassCreateOptions createOptions) : base(device)
     {
-        _swapchain = new D3D12GraphicsSwapchain(this, surface, renderTargetFormat, minimumRenderTargetCount);
+        device.AddRenderPass(this);
+
+        RenderPassInfo.RenderTargetFormat = createOptions.RenderTargetFormat;
+        RenderPassInfo.Surface = createOptions.Surface;
+
+        var swapchainCreateOptions = new D3D12GraphicsSwapchainCreateOptions {
+            MinimumRenderTargetCount = createOptions.MinimumRenderTargetCount,
+            RenderTargetFormat = createOptions.RenderTargetFormat,
+            Surface = createOptions.Surface,
+        };
+        RenderPassInfo.Swapchain = new D3D12GraphicsSwapchain(this, in swapchainCreateOptions);
     }
 
     /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
@@ -25,17 +32,13 @@ public sealed unsafe class D3D12GraphicsRenderPass : GraphicsRenderPass
     /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
 
-    /// <inheritdoc />
-    public override D3D12GraphicsSwapchain Swapchain => _swapchain;
+    /// <inheritdoc cref="GraphicsSwapchainObject.Swapchain" />
+    public new D3D12GraphicsSwapchain Swapchain => base.Swapchain.As<D3D12GraphicsSwapchain>();
 
     /// <inheritdoc />
-    public override D3D12GraphicsPipeline CreatePipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null)
-        => CreatePipeline((D3D12GraphicsPipelineSignature)signature, (D3D12GraphicsShader?)vertexShader, (D3D12GraphicsShader?)pixelShader);
-
-    private D3D12GraphicsPipeline CreatePipeline(D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
+    protected override D3D12GraphicsPipeline CreatePipelineUnsafe(in GraphicsPipelineCreateOptions createOptions)
     {
-        ThrowIfDisposed();
-        return new D3D12GraphicsPipeline(this, signature, vertexShader, pixelShader);
+        return new D3D12GraphicsPipeline(this, in createOptions);
     }
 
     /// <inheritdoc />
@@ -43,11 +46,15 @@ public sealed unsafe class D3D12GraphicsRenderPass : GraphicsRenderPass
     {
         if (isDisposing)
         {
-            _swapchain?.Dispose();
+            RenderPassInfo.Swapchain.Dispose();
+            RenderPassInfo.Swapchain = null!;
         }
+
+        _ = Device.RemoveRenderPass(this);
     }
+
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override void SetNameUnsafe(string value)
     {
     }
 }

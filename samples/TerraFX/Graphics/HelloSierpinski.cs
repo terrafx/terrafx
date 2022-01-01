@@ -55,21 +55,23 @@ public class HelloSierpinski : HelloWindow
 
         var verticeCount = 2 * 12 * (nuint)MathF.Pow(4, _recursionDepth);
 
-        _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsResourceCpuAccess.Write);
+        _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsCpuAccess.Write);
         _indexBuffer = graphicsDevice.CreateIndexBuffer(verticeCount * SizeOf<uint>());
         _texture3D = graphicsDevice.CreateTexture3D(GraphicsFormat.R8G8B8A8_UNORM, 256, 256, 256);
         _uploadBuffer = graphicsDevice.CreateUploadBuffer(128 * 1024 * 1024);
         _vertexBuffer = graphicsDevice.CreateVertexBuffer(verticeCount * SizeOf<PosNormTex3DVertex>());
 
-        var graphicsCopyContext = graphicsDevice.RentCopyContext();
+        var copyCommandQueue = graphicsDevice.CopyCommandQueue;
+        var copyContext = copyCommandQueue.RentContext();
         {
-            graphicsCopyContext.Reset();
-            _sierpinskiPrimitive = CreateSierpinskiPrimitive(graphicsCopyContext);
-
-            graphicsCopyContext.Flush();
-            graphicsDevice.WaitForIdle();
+            copyContext.Reset();
+            {
+                _sierpinskiPrimitive = CreateSierpinskiPrimitive(copyContext);
+            }
+            copyContext.Close();
+            copyContext.Execute();
         }
-        graphicsDevice.ReturnContext(graphicsCopyContext);
+        copyCommandQueue.ReturnContext(copyContext);
 
         _uploadBuffer.DisposeAllViews();
     }
@@ -88,7 +90,7 @@ public class HelloSierpinski : HelloWindow
         var sin = MathF.Sin(radians);
         var cos = MathF.Cos(radians);
 
-        var constantBufferView = _sierpinskiPrimitive.PipelineResourceViews![1].As<GraphicsBufferView>();
+        var constantBufferView = _sierpinskiPrimitive.PipelineDescriptorSet!.ResourceViews[1].As<GraphicsBufferView>();
         var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
         {
             // Shaders take transposed matrices, so we want to mirror along the diagonal
@@ -108,12 +110,12 @@ public class HelloSierpinski : HelloWindow
         base.Draw(graphicsRenderContext);
     }
 
-    private unsafe GraphicsPrimitive CreateSierpinskiPrimitive(GraphicsCopyContext graphicsCopyContext)
+    private unsafe GraphicsPrimitive CreateSierpinskiPrimitive(GraphicsCopyContext copyContext)
     {
-        var graphicsRenderPass = GraphicsRenderPass;
-        var graphicsSurface = graphicsRenderPass.Surface;
+        var renderPass = RenderPass;
+        var surface = renderPass.Surface;
 
-        var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "Sierpinski", "main", "main");
+        var graphicsPipeline = CreateGraphicsPipeline(renderPass, "Sierpinski", "main", "main");
 
         var constantBuffer = _constantBuffer;
         var uploadBuffer = _uploadBuffer;
@@ -123,12 +125,12 @@ public class HelloSierpinski : HelloWindow
 
         var sierpinskiPrimitive = new GraphicsPrimitive(
             graphicsPipeline,
-            CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, in vertices, in normals),
-            CreateIndexBufferView(graphicsCopyContext, _indexBuffer, uploadBuffer, in indices),
+            CreateVertexBufferView(copyContext, _vertexBuffer, uploadBuffer, in vertices, in normals),
+            CreateIndexBufferView(copyContext, _indexBuffer, uploadBuffer, in indices),
             new GraphicsResourceView[3] {
-                CreateConstantBufferView(graphicsCopyContext, constantBuffer),
-                CreateConstantBufferView(graphicsCopyContext, constantBuffer),
-                CreateTexture3DView(graphicsCopyContext, _texture3D, uploadBuffer),
+                CreateConstantBufferView(copyContext, constantBuffer),
+                CreateConstantBufferView(copyContext, constantBuffer),
+                CreateTexture3DView(copyContext, _texture3D, uploadBuffer),
             }
         );
 
@@ -138,9 +140,9 @@ public class HelloSierpinski : HelloWindow
 
         return sierpinskiPrimitive;
 
-        static GraphicsBufferView CreateConstantBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer constantBuffer)
+        static GraphicsBufferView CreateConstantBufferView(GraphicsCopyContext copyContext, GraphicsBuffer constantBuffer)
         {
-            var constantBufferView = constantBuffer.CreateView<Matrix4x4>(1);
+            var constantBufferView = constantBuffer.CreateBufferView<Matrix4x4>(1);
             var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
             {
                 constantBufferSpan[0] = Matrix4x4.Identity;
@@ -149,40 +151,40 @@ public class HelloSierpinski : HelloWindow
             return constantBufferView;
         }
 
-        static GraphicsBufferView CreateIndexBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer indexBuffer, GraphicsBuffer uploadBuffer, in UnmanagedValueList<uint> indices)
+        static GraphicsBufferView CreateIndexBufferView(GraphicsCopyContext copyContext, GraphicsBuffer indexBuffer, GraphicsBuffer uploadBuffer, in UnmanagedValueList<uint> indices)
         {
-            var uploadBufferView = uploadBuffer.CreateView<uint>(checked((uint)indices.Count));
+            var uploadBufferView = uploadBuffer.CreateBufferView<uint>(checked((uint)indices.Count));
             var indexBufferSpan = uploadBufferView.Map<uint>();
             {
                 indices.CopyTo(indexBufferSpan);
             }
             uploadBufferView.UnmapAndWrite();
 
-            var indexBufferView = indexBuffer.CreateView<uint>(checked((uint)indices.Count));
-            graphicsCopyContext.Copy(indexBufferView, uploadBufferView);
+            var indexBufferView = indexBuffer.CreateBufferView<uint>(checked((uint)indices.Count));
+            copyContext.Copy(indexBufferView, uploadBufferView);
             return indexBufferView;
         }
 
-        static GraphicsTextureView CreateTexture3DView(GraphicsCopyContext graphicsCopyContext, GraphicsTexture texture3D, GraphicsBuffer uploadBuffer)
+        static GraphicsTextureView CreateTexture3DView(GraphicsCopyContext copyContext, GraphicsTexture texture3D, GraphicsBuffer uploadBuffer)
         {
-            var uploadBufferView = uploadBuffer.CreateView<byte>(checked((uint)texture3D.Size));
+            var uploadBufferView = uploadBuffer.CreateBufferView<byte>(checked((uint)texture3D.ByteLength));
             var textureDataSpan = uploadBufferView.Map<byte>();
             {
-                var width = texture3D.Width;
+                var width = texture3D.PixelWidth;
 
-                var height = texture3D.Height;
-                var rowPitch = texture3D.RowPitch;
+                var height = texture3D.PixelHeight;
+                var bytesPerRow = texture3D.BytesPerRow;
 
-                var depth = texture3D.Depth;
-                var slicePitch = texture3D.SlicePitch;
+                var depth = texture3D.PixelDepth;
+                var bytesPerLayer = texture3D.BytesPerLayer;
 
                 for (var z = 0u; z < depth; z++)
                 {
-                    var sliceIndex = z * slicePitch;
+                    var layerIndex = z * bytesPerLayer;
 
                     for (var y = 0u; y < height; y++)
                     {
-                        var rowIndex = sliceIndex + (y * rowPitch);
+                        var rowIndex = layerIndex + (y * bytesPerRow);
                         var row = (uint*)textureDataSpan.GetPointer(rowIndex);
 
                         for (var x = 0u; x < width; x++)
@@ -200,13 +202,13 @@ public class HelloSierpinski : HelloWindow
             uploadBufferView.UnmapAndWrite();
 
             var texture3DView = texture3D.CreateView(0, 1);
-            graphicsCopyContext.Copy(texture3DView, uploadBufferView);
+            copyContext.Copy(texture3DView, uploadBufferView);
             return texture3DView;
         }
 
-        static GraphicsBufferView CreateVertexBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, in UnmanagedValueList<Vector3> vertices, in UnmanagedValueList<Vector3> normals)
+        static GraphicsBufferView CreateVertexBufferView(GraphicsCopyContext copyContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, in UnmanagedValueList<Vector3> vertices, in UnmanagedValueList<Vector3> normals)
         {
-            var uploadBufferView = uploadBuffer.CreateView<PosNormTex3DVertex>(checked((uint)vertices.Count));
+            var uploadBufferView = uploadBuffer.CreateBufferView<PosNormTex3DVertex>(checked((uint)vertices.Count));
             var vertexBufferSpan = uploadBufferView.Map<PosNormTex3DVertex>();
             {
                 // assumes the vertices are in a box from (-1,-1,-1) to (1,1,1)
@@ -229,38 +231,69 @@ public class HelloSierpinski : HelloWindow
             }
             uploadBufferView.UnmapAndWrite();
 
-            var vertexBufferView = vertexBuffer.CreateView<PosNormTex3DVertex>(checked((uint)vertices.Count));
-            graphicsCopyContext.Copy(vertexBufferView, uploadBufferView);
+            var vertexBufferView = vertexBuffer.CreateBufferView<PosNormTex3DVertex>(checked((uint)vertices.Count));
+            copyContext.Copy(vertexBufferView, uploadBufferView);
             return vertexBufferView;
         }
 
-        GraphicsPipeline CreateGraphicsPipeline(GraphicsRenderPass graphicsRenderPass, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
+        GraphicsPipeline CreateGraphicsPipeline(GraphicsRenderPass renderPass, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
         {
-            var graphicsDevice = graphicsRenderPass.Device;
+            var graphicsDevice = renderPass.Device;
 
-            var signature = CreateGraphicsPipelineSignature(graphicsDevice);
-            var vertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint);
-            var pixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint);
+            var pipelineCreateOptions = new GraphicsPipelineCreateOptions {
+                Signature = CreateGraphicsPipelineSignature(graphicsDevice),
+                PixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint),
+                VertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint),
+            };
 
-            return graphicsRenderPass.CreatePipeline(signature, vertexShader, pixelShader);
+            return renderPass.CreatePipeline(in pipelineCreateOptions);
         }
 
         static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)
         {
-            var inputs = new GraphicsPipelineInput[1] {
-                new GraphicsPipelineInput(
-                    new GraphicsPipelineInputElement[3] {
-                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Position, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
-                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Normal, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
-                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.TextureCoordinate, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
-                    }
-                ),
+            var inputs = new UnmanagedArray<GraphicsPipelineInput>(3) {
+                [0] = new GraphicsPipelineInput {
+                    BindingIndex = 0,
+                    ByteAlignment = 4,
+                    ByteLength = 12,
+                    Format = GraphicsFormat.R32G32B32_SFLOAT,
+                    Kind = GraphicsPipelineInputKind.Position,
+                    ShaderVisibility = GraphicsShaderVisibility.Vertex,
+                },
+                [1] = new GraphicsPipelineInput {
+                    BindingIndex = 1,
+                    ByteAlignment = 4,
+                    ByteLength = 12,
+                    Format = GraphicsFormat.R32G32B32_SFLOAT,
+                    Kind = GraphicsPipelineInputKind.Normal,
+                    ShaderVisibility = GraphicsShaderVisibility.Vertex,
+                },
+                [2] = new GraphicsPipelineInput {
+                    BindingIndex = 2,
+                    ByteAlignment = 4,
+                    ByteLength = 12,
+                    Format = GraphicsFormat.R32G32B32_SFLOAT,
+                    Kind = GraphicsPipelineInputKind.TextureCoordinate,
+                    ShaderVisibility = GraphicsShaderVisibility.Vertex,
+                },
             };
 
-            var resources = new GraphicsPipelineResourceInfo[3] {
-                new GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                new GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                new GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
+            var resources = new UnmanagedArray<GraphicsPipelineResource>(3) {
+                [0] = new GraphicsPipelineResource {
+                    BindingIndex = 0,
+                    Kind = GraphicsPipelineResourceKind.ConstantBuffer,
+                    ShaderVisibility = GraphicsShaderVisibility.Vertex,
+                },
+                [1] = new GraphicsPipelineResource {
+                    BindingIndex = 1,
+                    Kind = GraphicsPipelineResourceKind.ConstantBuffer,
+                    ShaderVisibility = GraphicsShaderVisibility.Vertex,
+                },
+                [2] = new GraphicsPipelineResource {
+                    BindingIndex = 2,
+                    Kind = GraphicsPipelineResourceKind.Texture,
+                    ShaderVisibility = GraphicsShaderVisibility.Pixel,
+                },
             };
 
             return graphicsDevice.CreatePipelineSignature(inputs, resources);

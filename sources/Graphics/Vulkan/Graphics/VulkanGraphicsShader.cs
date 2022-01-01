@@ -1,7 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System;
-using TerraFX.Advanced;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkStructureType;
@@ -14,37 +13,45 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsShader : GraphicsShader
 {
-    private readonly UnmanagedArray<byte> _bytecode;
-    private readonly VkShaderModule _vkShaderModule;
+    private VkShaderModule _vkShaderModule;
 
-    internal VulkanGraphicsShader(VulkanGraphicsDevice device, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
-        : base(device, kind, entryPointName)
+    internal VulkanGraphicsShader(VulkanGraphicsDevice device, in GraphicsShaderCreateOptions createOptions) : base(device)
     {
-        _bytecode = GetBytecode(bytecode);
-        _vkShaderModule = CreateVkShaderModule(device, _bytecode);
+        device.AddShader(this);
 
-        static VkShaderModule CreateVkShaderModule(VulkanGraphicsDevice device, UnmanagedReadOnlySpan<byte> bytecode)
+        if (createOptions.TakeBytecodeOwnership)
+        {
+            ShaderInfo.Bytecode = createOptions.Bytecode;
+        }
+        else
+        {
+            ShaderInfo.Bytecode = new UnmanagedArray<byte>(createOptions.Bytecode.Length, createOptions.Bytecode.Alignment);
+            createOptions.Bytecode.CopyTo(ShaderInfo.Bytecode);
+        }
+
+        ShaderInfo.EntryPointName = createOptions.EntryPointName;
+        ShaderInfo.Kind = createOptions.ShaderKind;
+
+        _vkShaderModule = CreateVkShaderModule();
+
+        SetNameUnsafe(Name);
+
+        VkShaderModule CreateVkShaderModule()
         {
             VkShaderModule vkShaderModule;
 
+            var bytecode = ShaderInfo.Bytecode;
+
             var vkShaderModuleCreateInfo = new VkShaderModuleCreateInfo {
                 sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
+                pNext = null,
+                flags = 0,
                 codeSize = bytecode.Length,
                 pCode = (uint*)bytecode.GetPointerUnsafe(0),
             };
             ThrowExternalExceptionIfNotSuccess(vkCreateShaderModule(device.VkDevice, &vkShaderModuleCreateInfo, pAllocator: null, &vkShaderModule));
 
             return vkShaderModule;
-        }
-
-        static UnmanagedArray<byte> GetBytecode(ReadOnlySpan<byte> source)
-        {
-            var bytecode = new UnmanagedArray<byte>((uint)source.Length, zero: false);
-
-            var destination = new Span<byte>(bytecode.GetPointerUnsafe(0), source.Length);
-            source.CopyTo(destination);
-
-            return bytecode;
         }
     }
 
@@ -54,9 +61,6 @@ public sealed unsafe class VulkanGraphicsShader : GraphicsShader
     /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
-    /// <inheritdoc />
-    public override UnmanagedReadOnlySpan<byte> Bytecode => _bytecode;
-
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
@@ -64,20 +68,17 @@ public sealed unsafe class VulkanGraphicsShader : GraphicsShader
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkShaderModule" /> for the shader.</summary>
-    public VkShaderModule VkShaderModule
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkShaderModule;
-        }
-    }
+    public VkShaderModule VkShaderModule => _vkShaderModule;
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
         DisposeVkShaderModule(Device.VkDevice, _vkShaderModule);
-        _bytecode.Dispose();
+        _vkShaderModule = VkShaderModule.NULL;
+
+        ShaderInfo.Bytecode.Dispose();
+
+        _ = Device.RemoveShader(this);
 
         static void DisposeVkShaderModule(VkDevice vkDevice, VkShaderModule vkShaderModule)
         {
@@ -89,7 +90,7 @@ public sealed unsafe class VulkanGraphicsShader : GraphicsShader
     }
 
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override void SetNameUnsafe(string value)
     {
         Device.SetVkObjectName(VK_OBJECT_TYPE_SHADER_MODULE, VkShaderModule, value);
     }

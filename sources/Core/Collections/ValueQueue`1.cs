@@ -87,7 +87,8 @@ public partial struct ValueQueue<T> : IEnumerable<T>
     /// <param name="array">The array that is used to populate the queue.</param>
     /// <param name="takeOwnership"><c>true</c> if the queue should take ownership of the array; otherwise, <c>false</c>.</param>
     /// <exception cref="ArgumentNullException"><paramref name="array" /> is <c>null</c>.</exception>
-    public ValueQueue(T[] array, bool takeOwnership = false)
+    /// <remarks>By default ownership of <paramref name="array" /> is given to the value queue.</remarks>
+    public ValueQueue(T[] array, bool takeOwnership = true)
     {
         ThrowIfNull(array);
 

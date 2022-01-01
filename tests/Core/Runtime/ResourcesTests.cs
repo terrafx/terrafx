@@ -220,7 +220,7 @@ public static class ResourcesTests
     }
 
     /// <summary>Provides validation of the <see cref="Resources.UnmanagedMethodFailedMessage" /> property.</summary>
-    [TestCase("en", "'{0}' failed with an error code of '{1}'")]
+    [TestCase("en", "'{0}' failed with an error code of '{1:X8}'")]
     public static void UnmanagedMethodFailedMessageTest(string cultureName, string expectedMessage)
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);

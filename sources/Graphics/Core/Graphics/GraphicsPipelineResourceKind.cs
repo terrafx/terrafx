@@ -2,15 +2,15 @@
 
 namespace TerraFX.Graphics;
 
-/// <summary>Defines the kind of a graphics pipeline resource.</summary>
+/// <summary>Defines a graphics pipeline resource kind.</summary>
 public enum GraphicsPipelineResourceKind
 {
-    /// <summary>Defines an unknown graphics pipeline resource kind.</summary>
+    /// <summary>An unknown resource kind.</summary>
     Unknown,
 
-    /// <summary>Defines a constant buffer graphics pipeline resource.</summary>
+    /// <summary>A constant buffer pipeline resource.</summary>
     ConstantBuffer,
 
-    /// <summary>Defines a texture graphics pipeline resource.</summary>
+    /// <summary>A texture pipeline resource.</summary>
     Texture,
 }

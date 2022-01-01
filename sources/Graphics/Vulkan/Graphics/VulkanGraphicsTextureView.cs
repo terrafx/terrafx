@@ -1,6 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using TerraFX.Advanced;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using static TerraFX.Interop.Vulkan.VkComponentSwizzle;
 using static TerraFX.Interop.Vulkan.VkImageAspectFlags;
@@ -9,6 +9,7 @@ using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.GraphicsUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
@@ -17,23 +18,63 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe partial class VulkanGraphicsTextureView : GraphicsTextureView
 {
-    private readonly VkImageView _vkImageView;
+    private VkImageView _vkImageView;
 
-    internal VulkanGraphicsTextureView(VulkanGraphicsTexture texture, in GraphicsTextureViewInfo textureViewInfo)
-        : base(texture, in textureViewInfo)
+    internal VulkanGraphicsTextureView(VulkanGraphicsTexture texture, in GraphicsTextureViewCreateOptions createOptions) : base(texture)
     {
-        texture.AddView(this);
-        _vkImageView = CreateVkImageView(Device, in textureViewInfo, texture.VkImage);
+        texture.AddTextureView(this);
 
-        static VkImageView CreateVkImageView(VulkanGraphicsDevice device, in GraphicsTextureViewInfo textureViewInfo, VkImage vkImage)
+        _vkImageView = CreateVkImageView(in createOptions);
+
+        var mipLevelStart = createOptions.MipLevelStart;
+
+        var pixelWidth = texture.PixelWidth >> mipLevelStart;
+        var pixelHeight = texture.PixelHeight >> mipLevelStart;
+        var pixelDepth = (ushort)(texture.PixelDepth >> mipLevelStart);
+
+        var bytesPerLayer = texture.BytesPerLayer >> mipLevelStart;
+        var bytesPerRow = texture.BytesPerRow >> mipLevelStart;
+
+        var byteLength = texture.ByteLength;
+        var byteOffset = (nuint)0;
+
+        for (var index = 0; index < mipLevelStart; index++)
+        {
+            var oldByteLength = byteLength;
+            byteLength >>= 1;
+            byteOffset += oldByteLength - byteLength;
+        }
+
+        var pixelFormat = texture.PixelFormat;
+
+        ResourceViewInfo.ByteLength = byteLength;
+        ResourceViewInfo.ByteOffset = byteOffset;
+        ResourceViewInfo.BytesPerElement = pixelFormat.GetSize();
+
+        TextureViewInfo.BytesPerLayer = bytesPerLayer;
+        TextureViewInfo.BytesPerRow = bytesPerRow;
+        TextureViewInfo.MipLevelCount = createOptions.MipLevelCount;
+        TextureViewInfo.MipLevelStart = createOptions.MipLevelStart;
+        TextureViewInfo.PixelDepth = pixelDepth;
+        TextureViewInfo.PixelFormat = pixelFormat;
+        TextureViewInfo.PixelHeight = pixelHeight;
+        TextureViewInfo.PixelWidth = pixelWidth;
+        TextureViewInfo.Kind = texture.Kind;
+
+        SetNameUnsafe(Name);
+
+        VkImageView CreateVkImageView(in GraphicsTextureViewCreateOptions createOptions)
         {
             VkImageView vkImageView;
 
+            var resource = Resource;
             var vkImageViewCreateInfo = new VkImageViewCreateInfo {
                 sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-                image = vkImage,
-                viewType = GetVkImageViewType(textureViewInfo.Kind),
-                format = textureViewInfo.Format.AsVkFormat(),
+                pNext = null,
+                flags = 0,
+                image = resource.VkImage,
+                viewType = GetVkImageViewType(resource.Kind),
+                format = resource.PixelFormat.AsVkFormat(),
                 components = new VkComponentMapping {
                     r = VK_COMPONENT_SWIZZLE_IDENTITY,
                     g = VK_COMPONENT_SWIZZLE_IDENTITY,
@@ -42,22 +83,22 @@ public sealed unsafe partial class VulkanGraphicsTextureView : GraphicsTextureVi
                 },
                 subresourceRange = new VkImageSubresourceRange {
                     aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-                    baseMipLevel = textureViewInfo.MipLevelIndex,
-                    levelCount = textureViewInfo.MipLevelCount,
+                    baseMipLevel = createOptions.MipLevelStart,
+                    levelCount = createOptions.MipLevelCount,
                     baseArrayLayer = 0,
                     layerCount = 1,
                 },
             };
-            ThrowExternalExceptionIfNotSuccess(vkCreateImageView(device.VkDevice, &vkImageViewCreateInfo, pAllocator: null, &vkImageView));
 
+            ThrowExternalExceptionIfNotSuccess(vkCreateImageView(Device.VkDevice, &vkImageViewCreateInfo, pAllocator: null, &vkImageView));
             return vkImageView;
         }
 
-        static VkImageViewType GetVkImageViewType(GraphicsTextureKind kind)
+        static VkImageViewType GetVkImageViewType(GraphicsTextureKind textureKind)
         {
             VkImageViewType vkImageType = 0;
 
-            switch (kind)
+            switch (textureKind)
             {
                 case GraphicsTextureKind.OneDimensional:
                 {
@@ -79,7 +120,7 @@ public sealed unsafe partial class VulkanGraphicsTextureView : GraphicsTextureVi
 
                 default:
                 {
-                    ThrowForInvalidKind(kind);
+                    ThrowForInvalidKind(textureKind);
                     break;
                 }
             }
@@ -97,30 +138,22 @@ public sealed unsafe partial class VulkanGraphicsTextureView : GraphicsTextureVi
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
-    /// <inheritdoc cref="GraphicsResourceView.Resource" />
+    /// <inheritdoc cref="GraphicsResourceObject.Resource" />
     public new VulkanGraphicsTexture Resource => base.Resource.As<VulkanGraphicsTexture>();
 
     /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the underlying <see cref="Interop.Vulkan.VkImageView" /> for the buffer.</summary>
-    public VkImageView VkImageView
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkImageView;
-        }
-    }
+    public VkImageView VkImageView => _vkImageView;
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        if (isDisposing)
-        {
-            _ = Resource.RemoveView(this);
-        }
         DisposeVkImageView(Device.VkDevice, _vkImageView);
+        _vkImageView = VkImageView.NULL;
+
+        _ = Resource.RemoveTextureView(this);
 
         static void DisposeVkImageView(VkDevice vkDevice, VkImageView vkImageView)
         {
@@ -132,8 +165,44 @@ public sealed unsafe partial class VulkanGraphicsTextureView : GraphicsTextureVi
     }
 
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override unsafe byte* MapUnsafe()
+    {
+        return Resource.MapView(ByteOffset);
+    }
+
+    /// <inheritdoc />
+    protected override unsafe byte* MapForReadUnsafe()
+    {
+        return Resource.MapViewForRead(ByteOffset, ByteLength);
+    }
+
+    /// <inheritdoc />
+    protected override unsafe byte* MapForReadUnsafe(nuint byteStart, nuint byteLength)
+    {
+        return Resource.MapViewForRead(ByteOffset + byteStart, byteLength);
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameUnsafe(string value)
     {
         Device.SetVkObjectName(VK_OBJECT_TYPE_IMAGE_VIEW, VkImageView, value);
+    }
+
+    /// <inheritdoc />
+    protected override void UnmapUnsafe()
+    {
+        Resource.UnmapView();
+    }
+
+    /// <inheritdoc />
+    protected override void UnmapAndWriteUnsafe()
+    {
+        Resource.UnmapViewAndWrite(ByteOffset, ByteLength);
+    }
+
+    /// <inheritdoc />
+    protected override void UnmapAndWriteUnsafe(nuint byteStart, nuint byteLength)
+    {
+        Resource.UnmapViewAndWrite(ByteOffset + byteStart, byteLength);
     }
 }

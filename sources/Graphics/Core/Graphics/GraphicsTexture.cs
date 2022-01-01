@@ -1,57 +1,92 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Advanced;
+using System.Runtime.CompilerServices;
+using TerraFX.Graphics.Advanced;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
 public abstract class GraphicsTexture : GraphicsResource
 {
-    private readonly GraphicsTextureInfo _textureInfo;
+    /// <summary>The information for the graphics texture.</summary>
+    protected GraphicsTextureInfo TextureInfo;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsTexture" /> class.</summary>
     /// <param name="device">The device for which the texture was created.</param>
-    /// <param name="memoryRegion">The memory region in which the resource resides.</param>
-    /// <param name="cpuAccess">The CPU access capabilitites of the resource.</param>
-    /// <param name="textureInfo">The texture info that describes the texture.</param>
     /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c></exception>
-    protected GraphicsTexture(GraphicsDevice device, in GraphicsMemoryRegion memoryRegion, GraphicsResourceCpuAccess cpuAccess, in GraphicsTextureInfo textureInfo)
-        : base(device, in memoryRegion, cpuAccess)
+    protected GraphicsTexture(GraphicsDevice device) : base(device)
     {
-        _textureInfo = textureInfo;
+        ResourceInfo.Kind = GraphicsResourceKind.Texture;
     }
 
-    /// <summary>Gets the depth, in pixels, of the texture.</summary>
-    public ushort Depth => _textureInfo.Depth;
+    /// <summary>Gets number of bytes per layer of the texture.</summary>
+    public uint BytesPerLayer => TextureInfo.BytesPerLayer;
 
-    /// <summary>Gets the format of the texture.</summary>
-    public GraphicsFormat Format => _textureInfo.Format;
-
-    /// <summary>Gets the height, in pixels, of the texture.</summary>
-    public uint Height => _textureInfo.Height;
+    /// <summary>Gets number of bytes per row of the texture.</summary>
+    public uint BytesPerRow => TextureInfo.BytesPerRow;
 
     /// <summary>Gets the texture kind.</summary>
-    public GraphicsTextureKind Kind => _textureInfo.Kind;
+    public new GraphicsTextureKind Kind => TextureInfo.Kind;
 
     /// <summary>Gets the number of mip levels in the graphics texture.</summary>
-    public ushort MipLevelCount => _textureInfo.MipLevelCount;
+    public ushort MipLevelCount => TextureInfo.MipLevelCount;
 
-    /// <summary>Gets the row pitch, in bytes, of the texture.</summary>
-    public uint RowPitch => _textureInfo.RowPitch;
+    /// <summary>Gets the depth, in pixels, of the texture.</summary>
+    public ushort PixelDepth => TextureInfo.PixelDepth;
 
-    /// <summary>Gets the slice pitch, in bytes, of the texture.</summary>
-    public uint SlicePitch => _textureInfo.SlicePitch;
+    /// <summary>Gets the format of pixels in the texture.</summary>
+    public GraphicsFormat PixelFormat => TextureInfo.PixelFormat;
+
+    /// <summary>Gets the height, in pixels, of the texture.</summary>
+    public uint PixelHeight => TextureInfo.PixelHeight;
 
     /// <summary>Gets the width, in pixels, of the texture.</summary>
-    public uint Width => _textureInfo.Width;
+    public uint PixelWidth => TextureInfo.PixelWidth;
 
     /// <summary>Creates a view of the texture.</summary>
-    /// <param name="mipLevelIndex">The index of the first mip level in the graphics texture view.</param>
-    /// <param name="mipLevelCount">The number of mip levels in the graphics texture view.</param>
-    /// <returns>The created view.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="mipLevelIndex" /> is greater than or equal to <see cref="MipLevelCount" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="mipLevelIndex" /> plus <paramref name="mipLevelCount" /> is greater than <see cref="MipLevelCount" />.</exception>
+    /// <param name="mipLevelStart">The index of the first mip level of the texture view.</param>
+    /// <param name="mipLevelCount">The number of mip levels in the texture view.</param>
+    /// <returns>The created texture view.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="mipLevelStart" /> is greater than or equal to <see cref="MipLevelCount" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="mipLevelStart" /> + <paramref name="mipLevelCount" /> is greater than <see cref="MipLevelCount" />.</exception>
     /// <exception cref="ObjectDisposedException">The texture has been disposed.</exception>
-    public abstract GraphicsTextureView CreateView(ushort mipLevelIndex, ushort mipLevelCount);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public GraphicsTextureView CreateView(ushort mipLevelStart, ushort mipLevelCount)
+    {
+        ThrowIfDisposed();
+
+        ThrowIfNotInBounds(mipLevelStart, MipLevelCount);
+        ThrowIfNotInInsertBounds(mipLevelCount, MipLevelCount - mipLevelStart);
+
+        var createOptions = new GraphicsTextureViewCreateOptions {
+            MipLevelCount = mipLevelCount,
+            MipLevelStart = mipLevelStart,
+        };
+        return CreateViewUnsafe(in createOptions);
+    }
+
+    /// <summary>Creates a view of the texture.</summary>
+    /// <param name="createOptions">The options to use when creating the texture view.</param>
+    /// <returns>The created texture view.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><see cref="GraphicsTextureViewCreateOptions.MipLevelStart" /> is greater than or equal to <see cref="MipLevelCount" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><see cref="GraphicsTextureViewCreateOptions.MipLevelStart" /> + <see cref="GraphicsTextureViewCreateOptions.MipLevelCount" /> is greater than <see cref="MipLevelCount" />.</exception>
+    /// <exception cref="ObjectDisposedException">The texture has been disposed.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public GraphicsTextureView CreateView(in GraphicsTextureViewCreateOptions createOptions)
+    {
+        ThrowIfDisposed();
+
+        ThrowIfNotInBounds(createOptions.MipLevelStart, MipLevelCount);
+        ThrowIfNotInInsertBounds(createOptions.MipLevelCount, MipLevelCount - createOptions.MipLevelStart);
+
+        return CreateViewUnsafe(in createOptions);
+    }
+
+    /// <summary>Creates a view of the texture.</summary>
+    /// <param name="createOptions">The options to use when creating the texture view.</param>
+    /// <returns>The created texture view.</returns>
+    /// <remarks>This method is unsafe because it does not perform most parameter or state validation.</remarks>
+    protected abstract GraphicsTextureView CreateViewUnsafe(in GraphicsTextureViewCreateOptions createOptions);
 }

@@ -234,4 +234,7 @@ public enum GraphicsFormat
 
     /// <summary>A 4-component, 16-bit, format that uses a 4-bit unsigned normalized integer for each component.</summary>
     B4G4R4A4_UNORM,
+
+    /// <summary>INTERNAL USE ONLY: The number of enumeration values currently defined.</summary>
+    COUNT__
 }

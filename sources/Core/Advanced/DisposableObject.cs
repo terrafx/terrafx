@@ -44,7 +44,7 @@ public abstract class DisposableObject : IDisposable
     public void SetName(string? value)
     {
         _name = value ?? GetType().Name;
-        SetNameInternal(_name);
+        SetNameUnsafe(_name);
     }
 
     /// <inheritdoc />
@@ -60,7 +60,8 @@ public abstract class DisposableObject : IDisposable
 
     /// <summary>Sets the name of the object.</summary>
     /// <param name="value">The new name of the object.</param>
-    protected abstract void SetNameInternal(string value);
+    /// <remarks>This method is unsafe because it does not perform most parameter or state validation.</remarks>
+    protected abstract void SetNameUnsafe(string value);
 
     /// <summary>Throws an exception if the object has been disposed.</summary>
     /// <exception cref="ObjectDisposedException">The object has been disposed.</exception>

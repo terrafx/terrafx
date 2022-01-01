@@ -1,12 +1,15 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Advanced;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 using TerraFX.Numerics;
+using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_FLAGS;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_TYPE;
 using static TerraFX.Interop.DirectX.DXGI;
+using static TerraFX.Interop.DirectX.DXGI_ALPHA_MODE;
+using static TerraFX.Interop.DirectX.DXGI_SCALING;
 using static TerraFX.Interop.DirectX.DXGI_SWAP_EFFECT;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.D3D12Utilities;
@@ -18,48 +21,65 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
 {
-    private readonly ID3D12DescriptorHeap* _d3d12RtvDescriptorHeap;
-    private readonly IDXGISwapChain3* _dxgiSwapchain;
-    private readonly D3D12GraphicsRenderTarget[] _renderTargets;
-    private readonly GraphicsFormat _renderTargetFormat;
+    private readonly uint _minimumRenderTargetCount;
+    private DXGI_SWAP_CHAIN_DESC1 _dxgiSwapchainDesc;
 
-    private uint _renderTargetIndex;
+    private ID3D12DescriptorHeap* _d3d12RtvDescriptorHeap;
+    private readonly uint _d3d12RtvDescriptorHeapVersion;
 
-    internal D3D12GraphicsSwapchain(D3D12GraphicsRenderPass renderPass, IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0)
-        : base(renderPass, surface)
+    private IDXGISwapChain1* _dxgiSwapchain;
+    private readonly uint _dxgiSwapchainVersion;
+
+    internal D3D12GraphicsSwapchain(D3D12GraphicsRenderPass renderPass, in D3D12GraphicsSwapchainCreateOptions createOptions) : base(renderPass)
     {
-        var renderTargetCount = minimumRenderTargetCount;
+        _minimumRenderTargetCount = createOptions.MinimumRenderTargetCount;
 
-        var dxgiSwapchain = CreateDxgiSwapchain(renderPass, surface, ref renderTargetCount, renderTargetFormat);
-        _dxgiSwapchain = dxgiSwapchain;
+        SwapchainInfo.Fence = Device.CreateFence(isSignalled: false);
+        SwapchainInfo.RenderTargetFormat = createOptions.RenderTargetFormat;
+        SwapchainInfo.RenderTargets = Array.Empty<D3D12GraphicsRenderTarget>();
+        SwapchainInfo.Surface = createOptions.Surface;
 
-        _d3d12RtvDescriptorHeap = CreateD3D12RtvDescriptorHeap(renderPass, renderTargetCount);        
-        _renderTargets = new D3D12GraphicsRenderTarget[renderTargetCount];
+        _dxgiSwapchain = CreateDxgiSwapchain(out var renderTargetCount, out _dxgiSwapchainVersion);
+        _d3d12RtvDescriptorHeap = CreateD3D12RtvDescriptorHeap(out _d3d12RtvDescriptorHeapVersion);
 
-        _renderTargetFormat = renderTargetFormat;
-        _renderTargetIndex = GetRenderTargetIndex(dxgiSwapchain, Fence);
+        SwapchainInfo.RenderTargets = new GraphicsRenderTarget[renderTargetCount];
+        InitializeRenderTargets();
 
-        InitializeRenderTargets(this, _renderTargets);
+        SetNameUnsafe(Name);
+        SwapchainInfo.CurrentRenderTargetIndex = GetCurrentRenderTargetIndex();
+
         Surface.SizeChanged += OnGraphicsSurfaceSizeChanged;
 
-        static IDXGISwapChain3* CreateDxgiSwapchain(D3D12GraphicsRenderPass renderPass, IGraphicsSurface surface, ref uint renderTargetCount, GraphicsFormat renderTargetFormat)
+        IDXGISwapChain1* CreateDxgiSwapchain(out uint renderTargetCount, out uint dxgiSwapchainVersion)
         {
-            IDXGISwapChain3* dxgiSwapchain;
-            var surfaceHandle = (HWND)surface.Handle;
+            IDXGISwapChain1* dxgiSwapchain;
 
-            if (renderTargetCount == 0)
+            var minimumRenderTargetCount = _minimumRenderTargetCount;
+
+            if (minimumRenderTargetCount < 2)
             {
-                renderTargetCount = 2;
+                // DirectX 12 requires at least 2 backbuffers for the flip model swapchains
+                minimumRenderTargetCount = 2;
             }
 
+            ThrowIfNotInInsertBounds(minimumRenderTargetCount, DXGI_MAX_SWAP_CHAIN_BUFFERS);
+            renderTargetCount = minimumRenderTargetCount;
+
+            var surface = Surface;
+            var surfaceHandle = (HWND)surface.Handle;
+
             var dxgiSwapchainDesc = new DXGI_SWAP_CHAIN_DESC1 {
-                Width = (uint)surface.Width,
-                Height = (uint)surface.Height,
-                Format = renderTargetFormat.AsDxgiFormat(),
+                Width = (uint)surface.PixelWidth,
+                Height = (uint)surface.PixelHeight,
+                Format = RenderTargetFormat.AsDxgiFormat(),
+                Stereo = BOOL.FALSE,
                 SampleDesc = new DXGI_SAMPLE_DESC(count: 1, quality: 0),
                 BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
                 BufferCount = renderTargetCount,
+                Scaling = DXGI_SCALING_NONE,
                 SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL,
+                AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED,
+                Flags = 0,
             };
 
             var dxgiFactory = renderPass.Service.DxgiFactory;
@@ -69,13 +89,13 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
                 case GraphicsSurfaceKind.Win32:
                 {
                     ThrowExternalExceptionIfFailed(dxgiFactory->CreateSwapChainForHwnd(
-                        (IUnknown*)renderPass.Device.D3D12DirectCommandQueue,
+                        (IUnknown*)Device.RenderCommandQueue.D3D12CommandQueue,
                         surfaceHandle,
                         &dxgiSwapchainDesc,
                         pFullscreenDesc: null,
                         pRestrictToOutput: null,
-                        (IDXGISwapChain1**)&dxgiSwapchain)
-                    );
+                        &dxgiSwapchain
+                    ));
                     break;
                 }
 
@@ -87,23 +107,28 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
                 }
             }
 
+            ThrowExternalExceptionIfFailed(dxgiSwapchain->GetDesc1(&dxgiSwapchainDesc));
+            _dxgiSwapchainDesc = dxgiSwapchainDesc;
+
             // Fullscreen transitions are not currently supported
             ThrowExternalExceptionIfFailed(dxgiFactory->MakeWindowAssociation(surfaceHandle, DXGI_MWA_NO_ALT_ENTER));
 
-            return dxgiSwapchain;
+            return GetLatestDxgiSwapchain(dxgiSwapchain, out dxgiSwapchainVersion);
         }
 
-        static ID3D12DescriptorHeap* CreateD3D12RtvDescriptorHeap(D3D12GraphicsRenderPass renderPass, uint renderTargetCount)
+        ID3D12DescriptorHeap* CreateD3D12RtvDescriptorHeap(out uint d3d12RtvDescriptorHeapVersion)
         {
             ID3D12DescriptorHeap* d3d12RtvDescriptorHeap;
 
             var d3d12RtvDescriptorHeapDesc = new D3D12_DESCRIPTOR_HEAP_DESC {
                 Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV,
-                NumDescriptors = renderTargetCount,
+                NumDescriptors = _dxgiSwapchainDesc.BufferCount,
+                Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE,
+                NodeMask = 0,
             };
             ThrowExternalExceptionIfFailed(renderPass.Device.D3D12Device->CreateDescriptorHeap(&d3d12RtvDescriptorHeapDesc, __uuidof<ID3D12DescriptorHeap>(), (void**)&d3d12RtvDescriptorHeap));
 
-            return d3d12RtvDescriptorHeap;
+            return GetLatestD3D12DescriptorHeap(d3d12RtvDescriptorHeap, out d3d12RtvDescriptorHeapVersion);
         }
     }
 
@@ -113,29 +138,26 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
+    /// <inheritdoc cref="GraphicsSwapchain.CurrentRenderTarget" />
+    public new D3D12GraphicsRenderTarget CurrentRenderTarget => base.CurrentRenderTarget.As<D3D12GraphicsRenderTarget>();
+
     /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> used by the swapchain for render target resources.</summary>
-    public ID3D12DescriptorHeap* D3D12RtvDescriptorHeap
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _d3d12RtvDescriptorHeap;
-        }
-    }
+    public ID3D12DescriptorHeap* D3D12RtvDescriptorHeap => _d3d12RtvDescriptorHeap;
+
+    /// <summary>Gets the interface version of <see cref="D3D12RtvDescriptorHeap" />.</summary>
+    public uint D3D12RtvDescriptorHeapVersion => _d3d12RtvDescriptorHeapVersion;
 
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new D3D12GraphicsDevice Device => base.Device.As<D3D12GraphicsDevice>();
 
-    /// <summary>Gets the <see cref="IDXGISwapChain3" /> for the swapchain.</summary>
-    /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-    public IDXGISwapChain3* DxgiSwapchain
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _dxgiSwapchain;
-        }
-    }
+    /// <summary>Gets the <see cref="IDXGISwapChain1" /> for the swapchain.</summary>
+    public IDXGISwapChain1* DxgiSwapchain => _dxgiSwapchain;
+
+    /// <summary>Gets the <see cref="DXGI_SWAP_CHAIN_DESC1" /> for <see cref="DxgiSwapchain" /></summary>
+    public ref readonly DXGI_SWAP_CHAIN_DESC1 DxgiSwapchainDesc => ref _dxgiSwapchainDesc;
+
+    /// <summary>Gets the interface version of <see cref="DxgiSwapchain" />.</summary>
+    public uint DxgiSwapchainVersion => _dxgiSwapchainVersion;
 
     /// <inheritdoc cref="GraphicsSwapchain.Fence" />
     public new D3D12GraphicsFence Fence => base.Fence.As<D3D12GraphicsFence>();
@@ -143,80 +165,63 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     /// <inheritdoc cref="GraphicsRenderPassObject.RenderPass" />
     public new D3D12GraphicsRenderPass RenderPass => base.RenderPass.As<D3D12GraphicsRenderPass>();
 
-    /// <inheritdoc />
-    public override D3D12GraphicsRenderTarget RenderTarget => _renderTargets.GetReference(_renderTargetIndex);
-
-    /// <inheritdoc />
-    public override uint RenderTargetCount => (uint)_renderTargets.Length;
-
-    /// <inheritdoc />
-    public override GraphicsFormat RenderTargetFormat => _renderTargetFormat;
-
-    /// <inheritdoc />
-    public override uint RenderTargetIndex => _renderTargetIndex;
-
     /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new D3D12GraphicsService Service => base.Service.As<D3D12GraphicsService>();
-
-    private static void CleanupRenderTargets(D3D12GraphicsRenderTarget[] renderTargets)
-    {
-        for (var index = 0; index < renderTargets.Length; index++)
-        {
-            renderTargets[index].Dispose();
-            renderTargets[index] = null!;
-        }
-    }
-
-    private static void InitializeRenderTargets(D3D12GraphicsSwapchain swapchain, D3D12GraphicsRenderTarget[] renderTargets)
-    {
-        for (var index = 0; index < renderTargets.Length; index++)
-        {
-            renderTargets[index] = new D3D12GraphicsRenderTarget(swapchain, (uint)index);
-        }
-    }
-
-    /// <inheritdoc />
-    public override D3D12GraphicsRenderTarget GetRenderTarget(uint index)
-    {
-        ThrowIfNotInBounds(index, (uint)_renderTargets.Length);
-        return _renderTargets[index];
-    }
-
-    /// <inheritdoc />
-    public override void Present()
-    {
-        var fence = Fence;
-        fence.Wait();
-        fence.Reset();
-
-        var dxgiSwapchain = DxgiSwapchain;
-        ThrowExternalExceptionIfFailed(dxgiSwapchain->Present(SyncInterval: 1, Flags: 0));
-
-        _renderTargetIndex = GetRenderTargetIndex(dxgiSwapchain, fence);
-    }
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
+        if (isDisposing)
+        {
+            var fence = SwapchainInfo.Fence;
+            fence.Wait();
+            fence.Reset();
+
+            fence.Dispose();
+            SwapchainInfo.Fence = null!;
+
+            CleanupRenderTargets();
+            SwapchainInfo.RenderTargets = null!;
+        }
+
+        ReleaseIfNotNull(_d3d12RtvDescriptorHeap);
+        _d3d12RtvDescriptorHeap = null;
+
+        ReleaseIfNotNull(_dxgiSwapchain);
+        _dxgiSwapchain = null;
+    }
+
+    /// <inheritdoc />
+    protected override void PresentUnsafe()
+    {
         var fence = Fence;
         fence.Wait();
         fence.Reset();
 
-        CleanupRenderTargets(_renderTargets);
-
-        ReleaseIfNotNull(_d3d12RtvDescriptorHeap);
-        ReleaseIfNotNull(_dxgiSwapchain);
-
-        if (isDisposing)
-        {
-            Fence?.Dispose();
-        }
+        ThrowExternalExceptionIfFailed(DxgiSwapchain->Present(SyncInterval: 1, Flags: 0));
+        SwapchainInfo.CurrentRenderTargetIndex = GetCurrentRenderTargetIndex();
     }
 
-    private uint GetRenderTargetIndex(IDXGISwapChain3* dxgiSwapchain, D3D12GraphicsFence fence)
+    private int GetCurrentRenderTargetIndex()
     {
-        Device.Signal(fence);
-        return dxgiSwapchain->GetCurrentBackBufferIndex();
+        Device.RenderCommandQueue.SignalFence(Fence);
+
+        if (_dxgiSwapchainVersion >= 3)
+        {
+            var dxgiSwapchain3 = (IDXGISwapChain3*)_dxgiSwapchain;
+            return (int)dxgiSwapchain3->GetCurrentBackBufferIndex();
+        }
+        else
+        {
+            var currentRenderTargetIndex = SwapchainInfo.CurrentRenderTargetIndex;
+            currentRenderTargetIndex += 1;
+
+            if (currentRenderTargetIndex > SwapchainInfo.RenderTargets.Length)
+            {
+                currentRenderTargetIndex = 0;
+            }
+            return currentRenderTargetIndex;
+        }
     }
 
     private void OnGraphicsSurfaceSizeChanged(object? sender, PropertyChangedEventArgs<Vector2> eventArgs)
@@ -225,20 +230,52 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
         fence.Wait();
         fence.Reset();
 
-        var renderTargets = _renderTargets;
-        CleanupRenderTargets(renderTargets);
+        CleanupRenderTargets();
 
         var dxgiSwapchain = DxgiSwapchain;
-        ThrowExternalExceptionIfFailed(dxgiSwapchain->ResizeBuffers((uint)renderTargets.Length, (uint)eventArgs.CurrentValue.X, (uint)eventArgs.CurrentValue.Y, _renderTargetFormat.AsDxgiFormat(), SwapChainFlags: 0));
-        _renderTargetIndex = GetRenderTargetIndex(dxgiSwapchain, fence);
 
-        InitializeRenderTargets(this, renderTargets);
+        ThrowExternalExceptionIfFailed(dxgiSwapchain->ResizeBuffers(
+            (uint)SwapchainInfo.RenderTargets.Length,
+            (uint)eventArgs.CurrentValue.X,
+            (uint)eventArgs.CurrentValue.Y,
+            SwapchainInfo.RenderTargetFormat.AsDxgiFormat(),
+            SwapChainFlags: 0
+        ));
+
+        DXGI_SWAP_CHAIN_DESC1 dxgiSwapchainDesc;
+        ThrowExternalExceptionIfFailed(dxgiSwapchain->GetDesc1(&dxgiSwapchainDesc));
+        _dxgiSwapchainDesc = dxgiSwapchainDesc;
+
+        SwapchainInfo.CurrentRenderTargetIndex = GetCurrentRenderTargetIndex();
+
+        InitializeRenderTargets();
     }
 
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override void SetNameUnsafe(string value)
     {
         DxgiSwapchain->SetDxgiName(value);
         D3D12RtvDescriptorHeap->SetD3D12Name(value);
+    }
+
+    private void CleanupRenderTargets()
+    {
+        var renderTargets = SwapchainInfo.RenderTargets;
+
+        for (var index = 0; index < renderTargets.Length; index++)
+        {
+            renderTargets[index].Dispose();
+            renderTargets[index] = null!;
+        }
+    }
+
+    private void InitializeRenderTargets()
+    {
+        var renderTargets = SwapchainInfo.RenderTargets;
+
+        for (var index = 0; index < renderTargets.Length; index++)
+        {
+            renderTargets[index] = new D3D12GraphicsRenderTarget(this, index);
+        }
     }
 }

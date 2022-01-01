@@ -51,20 +51,22 @@ public sealed class HelloTextureTransform : HelloWindow
 
         var graphicsDevice = GraphicsDevice;
 
-        _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsResourceCpuAccess.Write);
+        _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsCpuAccess.Write);
         _texture2D = graphicsDevice.CreateTexture2D(GraphicsFormat.R8G8B8A8_UNORM, 256, 256);
         _uploadBuffer = graphicsDevice.CreateUploadBuffer(1 * 1024 * 1024);
         _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
-        var graphicsCopyContext = graphicsDevice.RentCopyContext();
+        var copyCommandQueue = graphicsDevice.CopyCommandQueue;
+        var copyContext = copyCommandQueue.RentContext();
         {
-            graphicsCopyContext.Reset();
-            _trianglePrimitive = CreateTrianglePrimitive(graphicsCopyContext);
-
-            graphicsCopyContext.Flush();
-            graphicsDevice.WaitForIdle();
+            copyContext.Reset();
+            {
+                _trianglePrimitive = CreateTrianglePrimitive(copyContext);
+            }
+            copyContext.Close();
+            copyContext.Execute();
         }
-        graphicsDevice.ReturnContext(graphicsCopyContext);
+        copyCommandQueue.ReturnContext(copyContext);
 
         _uploadBuffer.DisposeAllViews();
     }
@@ -83,7 +85,7 @@ public sealed class HelloTextureTransform : HelloWindow
         var x = 0.5f * MathF.Cos(radians);
         var y = 0.5f * MathF.Sin(radians);
 
-        var constantBufferView = _trianglePrimitive.PipelineResourceViews![1].As<GraphicsBufferView>();
+        var constantBufferView = _trianglePrimitive.PipelineDescriptorSet!.ResourceViews[1].As<GraphicsBufferView>();
         var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
         {
             // Shaders take transposed matrices, so we want to set X.W
@@ -103,29 +105,29 @@ public sealed class HelloTextureTransform : HelloWindow
         base.Draw(graphicsRenderContext);
     }
 
-    private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsCopyContext graphicsCopyContext)
+    private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsCopyContext copyContext)
     {
-        var graphicsRenderPass = GraphicsRenderPass;
-        var graphicsSurface = graphicsRenderPass.Surface;
+        var renderPass = RenderPass;
+        var surface = renderPass.Surface;
 
-        var graphicsPipeline = CreateGraphicsPipeline(graphicsRenderPass, "TextureTransform", "main", "main");
+        var graphicsPipeline = CreateGraphicsPipeline(renderPass, "TextureTransform", "main", "main");
 
         var constantBuffer = _constantBuffer;
         var uploadBuffer = _uploadBuffer;
 
         return new GraphicsPrimitive(
             graphicsPipeline,
-            CreateVertexBufferView(graphicsCopyContext, _vertexBuffer, uploadBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height),
+            CreateVertexBufferView(copyContext, _vertexBuffer, uploadBuffer, aspectRatio: surface.PixelWidth / surface.PixelHeight),
             resourceViews: new GraphicsResourceView[3] {
-                CreateConstantBufferView(graphicsCopyContext, constantBuffer),
-                CreateConstantBufferView(graphicsCopyContext, constantBuffer),
-                CreateTexture2DView(graphicsCopyContext, _texture2D, uploadBuffer),
+                CreateConstantBufferView(copyContext, constantBuffer),
+                CreateConstantBufferView(copyContext, constantBuffer),
+                CreateTexture2DView(copyContext, _texture2D, uploadBuffer),
             }
         );
 
-        static GraphicsBufferView CreateConstantBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer constantBuffer)
+        static GraphicsBufferView CreateConstantBufferView(GraphicsCopyContext copyContext, GraphicsBuffer constantBuffer)
         {
-            var constantBufferView = constantBuffer.CreateView<Matrix4x4>(1);
+            var constantBufferView = constantBuffer.CreateBufferView<Matrix4x4>(1);
             var constantBufferSpan = constantBufferView.Map<Matrix4x4>();
             {
                 constantBufferSpan[0] = Matrix4x4.Identity;
@@ -134,22 +136,22 @@ public sealed class HelloTextureTransform : HelloWindow
             return constantBufferView;
         }
 
-        static GraphicsTextureView CreateTexture2DView(GraphicsCopyContext graphicsCopyContext, GraphicsTexture texture2D, GraphicsBuffer uploadBuffer)
+        static GraphicsTextureView CreateTexture2DView(GraphicsCopyContext copyContext, GraphicsTexture texture2D, GraphicsBuffer uploadBuffer)
         {
-            var uploadBufferView = uploadBuffer.CreateView<byte>(checked((uint)texture2D.Size));
+            var uploadBufferView = uploadBuffer.CreateBufferView<byte>(checked((uint)texture2D.ByteLength));
             var textureDataSpan = uploadBufferView.Map<byte>();
             {
-                var width = texture2D.Width;
+                var width = texture2D.PixelWidth;
 
-                var height = texture2D.Height;
-                var rowPitch = texture2D.RowPitch;
+                var height = texture2D.PixelHeight;
+                var bytesPerRow = texture2D.BytesPerRow;
 
                 var cellWidth = width / 8;
                 var cellHeight = height / 8;
 
                 for (var y = 0u; y < height; y++)
                 {
-                    var rowIndex = y * rowPitch;
+                    var rowIndex = y * bytesPerRow;
                     var row = (uint*)textureDataSpan.GetPointer(rowIndex);
 
                     for (var x = 0u; x < width; x++)
@@ -168,13 +170,13 @@ public sealed class HelloTextureTransform : HelloWindow
             uploadBufferView.UnmapAndWrite();
 
             var texture2DView = texture2D.CreateView(0, 1);
-            graphicsCopyContext.Copy(texture2DView, uploadBufferView);
+            copyContext.Copy(texture2DView, uploadBufferView);
             return texture2DView;
         }
 
-        static GraphicsBufferView CreateVertexBufferView(GraphicsCopyContext graphicsCopyContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
+        static GraphicsBufferView CreateVertexBufferView(GraphicsCopyContext copyContext, GraphicsBuffer vertexBuffer, GraphicsBuffer uploadBuffer, float aspectRatio)
         {
-            var uploadBufferView = uploadBuffer.CreateView<TextureVertex>(3);
+            var uploadBufferView = uploadBuffer.CreateBufferView<TextureVertex>(3);
             var vertexBufferSpan = uploadBufferView.Map<TextureVertex>();
             {
                 vertexBufferSpan[0] = new TextureVertex {
@@ -194,37 +196,61 @@ public sealed class HelloTextureTransform : HelloWindow
             }
             uploadBufferView.UnmapAndWrite();
 
-            var vertexBufferView = vertexBuffer.CreateView<TextureVertex>(3);
-            graphicsCopyContext.Copy(vertexBufferView, uploadBufferView);
+            var vertexBufferView = vertexBuffer.CreateBufferView<TextureVertex>(3);
+            copyContext.Copy(vertexBufferView, uploadBufferView);
             return vertexBufferView;
         }
 
-        GraphicsPipeline CreateGraphicsPipeline(GraphicsRenderPass graphicsRenderPass, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
+        GraphicsPipeline CreateGraphicsPipeline(GraphicsRenderPass renderPass, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
         {
-            var graphicsDevice = graphicsRenderPass.Device;
+            var graphicsDevice = renderPass.Device;
 
-            var signature = CreateGraphicsPipelineSignature(graphicsDevice);
-            var vertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint);
-            var pixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint);
+            var pipelineCreateOptions = new GraphicsPipelineCreateOptions {
+                Signature = CreateGraphicsPipelineSignature(graphicsDevice),
+                PixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint),
+                VertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint),
+            };
 
-            return graphicsRenderPass.CreatePipeline(signature, vertexShader, pixelShader);
+            return renderPass.CreatePipeline(in pipelineCreateOptions);
         }
 
         static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)
         {
-            var inputs = new GraphicsPipelineInput[1] {
-            new GraphicsPipelineInput(
-                    new GraphicsPipelineInputElement[2] {
-                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.Position, GraphicsFormat.R32G32B32_SFLOAT, size: 12, alignment: 4),
-                        new GraphicsPipelineInputElement(GraphicsPipelineInputElementKind.TextureCoordinate, GraphicsFormat.R32G32_SFLOAT, size: 8, alignment: 4),
-                    }
-                ),
+            var inputs = new UnmanagedArray<GraphicsPipelineInput>(2) {
+                [0] = new GraphicsPipelineInput {
+                    BindingIndex = 0,
+                    ByteAlignment = 4,
+                    ByteLength = 12,
+                    Format = GraphicsFormat.R32G32B32_SFLOAT,
+                    Kind = GraphicsPipelineInputKind.Position,
+                    ShaderVisibility = GraphicsShaderVisibility.Vertex,
+                },
+                [1] = new GraphicsPipelineInput {
+                    BindingIndex = 1,
+                    ByteAlignment = 4,
+                    ByteLength = 8,
+                    Format = GraphicsFormat.R32G32_SFLOAT,
+                    Kind = GraphicsPipelineInputKind.TextureCoordinate,
+                    ShaderVisibility = GraphicsShaderVisibility.Vertex,
+                },
             };
 
-            var resources = new GraphicsPipelineResourceInfo[3] {
-                new GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                new GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
-                new GraphicsPipelineResourceInfo(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
+            var resources = new UnmanagedArray<GraphicsPipelineResource>(3) {
+                [0] = new GraphicsPipelineResource {
+                    BindingIndex = 0,
+                    Kind = GraphicsPipelineResourceKind.ConstantBuffer,
+                    ShaderVisibility = GraphicsShaderVisibility.Vertex,
+                },
+                [1] = new GraphicsPipelineResource {
+                    BindingIndex = 1,
+                    Kind = GraphicsPipelineResourceKind.ConstantBuffer,
+                    ShaderVisibility = GraphicsShaderVisibility.Vertex,
+                },
+                [2] = new GraphicsPipelineResource {
+                    BindingIndex = 2,
+                    Kind = GraphicsPipelineResourceKind.Texture,
+                    ShaderVisibility = GraphicsShaderVisibility.Pixel,
+                },
             };
 
             return graphicsDevice.CreatePipelineSignature(inputs, resources);

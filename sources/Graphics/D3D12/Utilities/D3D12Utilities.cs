@@ -8,7 +8,7 @@ using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.DirectX.DXGI_FORMAT;
-using static TerraFX.Runtime.Configuration;
+using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -19,7 +19,7 @@ namespace TerraFX.Utilities;
 
 internal static unsafe partial class D3D12Utilities
 {
-    private static readonly DXGI_FORMAT[] s_dxgiFormatMap = new DXGI_FORMAT[] {
+    private static readonly DXGI_FORMAT[] s_dxgiFormatMap = new DXGI_FORMAT[(int)GraphicsFormat.COUNT__] {
         DXGI_FORMAT_UNKNOWN,                    // Unknown
 
         DXGI_FORMAT_R32G32B32A32_FLOAT,         // R32G32B32A32_SFLOAT
@@ -125,23 +125,313 @@ internal static unsafe partial class D3D12Utilities
     };
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static DXGI_FORMAT AsDxgiFormat(this GraphicsFormat format)
+    public static DXGI_FORMAT AsDxgiFormat(this GraphicsFormat format) => s_dxgiFormatMap[(uint)format];
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CloseIfNotNull(HANDLE handle)
     {
-        Assert(AssertionsEnabled && (s_dxgiFormatMap.Length == Enum.GetValues<GraphicsFormat>().Length));
-        return s_dxgiFormatMap[(uint)format];
+        if (handle != HANDLE.NULL)
+        {
+            _ = CloseHandle(handle);
+        }
+    }
+
+    public static ID3D12CommandAllocator* GetLatestD3D12CommandAllocator(ID3D12CommandAllocator* d3d12CommandAllocator, out uint d3d12CommandAllocatorVersion)
+    {
+        ID3D12CommandAllocator* result;
+
+        d3d12CommandAllocatorVersion = 0;
+        result = d3d12CommandAllocator;
+
+        return result;
+    }
+
+    public static ID3D12CommandQueue* GetLatestD3D12CommandQueue(ID3D12CommandQueue* d3d12CommandQueue, out uint d3d12CommandQueueVersion)
+    {
+        ID3D12CommandQueue* result;
+
+        d3d12CommandQueueVersion = 0;
+        result = d3d12CommandQueue;
+
+        return result;
+    }
+
+    public static ID3D12DescriptorHeap* GetLatestD3D12DescriptorHeap(ID3D12DescriptorHeap* d3d12DescriptorHeap, out uint d3d12DescriptorHeapVersion)
+    {
+        ID3D12DescriptorHeap* result;
+
+        d3d12DescriptorHeapVersion = 0;
+        result = d3d12DescriptorHeap;
+
+        return result;
+    }
+
+    public static ID3D12Device* GetLatestD3D12Device(ID3D12Device* d3d12Device, out uint d3d12DeviceVersion)
+    {
+        ID3D12Device* result;
+
+        if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && d3d12Device->QueryInterface(__uuidof<ID3D12Device9>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12DeviceVersion = 9;
+            _ = d3d12Device->Release();
+        }
+        else if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && d3d12Device->QueryInterface(__uuidof<ID3D12Device8>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12DeviceVersion = 8;
+            _ = d3d12Device->Release();
+        }
+        else if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && d3d12Device->QueryInterface(__uuidof<ID3D12Device7>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12DeviceVersion = 7;
+            _ = d3d12Device->Release();
+        }
+        else if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && d3d12Device->QueryInterface(__uuidof<ID3D12Device6>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12DeviceVersion = 6;
+            _ = d3d12Device->Release();
+        }
+        else if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && d3d12Device->QueryInterface(__uuidof<ID3D12Device5>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12DeviceVersion = 5;
+            _ = d3d12Device->Release();
+        }
+        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device4>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12DeviceVersion = 4;
+            _ = d3d12Device->Release();
+        }
+        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device3>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12DeviceVersion = 3;
+            _ = d3d12Device->Release();
+        }
+        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device2>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12DeviceVersion = 2;
+            _ = d3d12Device->Release();
+        }
+        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device1>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12DeviceVersion = 1;
+            _ = d3d12Device->Release();
+        }
+        else
+        {
+            d3d12DeviceVersion = 0;
+            result = d3d12Device;
+        }
+
+        return result;
+    }
+
+    public static ID3D12Fence* GetLatestD3D12Fence(ID3D12Fence* d3d12Fence, out uint d3d12FenceVersion)
+    {
+        ID3D12Fence* result;
+
+        if (d3d12Fence->QueryInterface(__uuidof<ID3D12Fence1>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12FenceVersion = 1;
+            _ = d3d12Fence->Release();
+        }
+        else
+        {
+            d3d12FenceVersion = 0;
+            result = d3d12Fence;
+        }
+
+        return result;
+    }
+
+    public static ID3D12GraphicsCommandList* GetLatestD3D12GraphicsCommandList(ID3D12GraphicsCommandList* d3d12GraphicsCommandList, out uint d3d12GraphicsCommandListVersion)
+    {
+        ID3D12GraphicsCommandList* result;
+
+        if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList6>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12GraphicsCommandListVersion = 6;
+            _ = d3d12GraphicsCommandList->Release();
+        }
+        else if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList5>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12GraphicsCommandListVersion = 5;
+            _ = d3d12GraphicsCommandList->Release();
+        }
+        else if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList4>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12GraphicsCommandListVersion = 4;
+            _ = d3d12GraphicsCommandList->Release();
+        }
+        else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList3>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12GraphicsCommandListVersion = 3;
+            _ = d3d12GraphicsCommandList->Release();
+        }
+        else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList2>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12GraphicsCommandListVersion = 2;
+            _ = d3d12GraphicsCommandList->Release();
+        }
+        else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList1>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12GraphicsCommandListVersion = 1;
+            _ = d3d12GraphicsCommandList->Release();
+        }
+        else
+        {
+            d3d12GraphicsCommandListVersion = 0;
+            result = d3d12GraphicsCommandList;
+        }
+
+        return result;
+    }
+
+    public static ID3D12Heap* GetLatestD3D12Heap(ID3D12Heap* d3d12Heap, out uint d3d12HeapVersion)
+    {
+        ID3D12Heap* result;
+
+        if (d3d12Heap->QueryInterface(__uuidof<ID3D12Heap1>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12HeapVersion = 1;
+            _ = d3d12Heap->Release();
+        }
+        else
+        {
+            d3d12HeapVersion = 0;
+            result = d3d12Heap;
+        }
+
+        return result;
+    }
+
+    public static ID3D12PipelineState* GetLatestD3D12PipelineState(ID3D12PipelineState* d3d12PipelineState, out uint d3d12PipelineStateVersion)
+    {
+        ID3D12PipelineState* result;
+
+        d3d12PipelineStateVersion = 0;
+        result = d3d12PipelineState;
+
+        return result;
+    }
+
+    public static ID3D12Resource* GetLatestD3D12Resource(ID3D12Resource* d3d12Resource, out uint d3d12ResourceVersion)
+    {
+        ID3D12Resource* result;
+
+        if (d3d12Resource->QueryInterface(__uuidof<ID3D12Resource2>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12ResourceVersion = 2;
+            _ = d3d12Resource->Release();
+        }
+        else if (d3d12Resource->QueryInterface(__uuidof<ID3D12Resource1>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12ResourceVersion = 1;
+            _ = d3d12Resource->Release();
+        }
+        else
+        {
+            d3d12ResourceVersion = 0;
+            result = d3d12Resource;
+        }
+
+        return result;
+    }
+
+    public static IDXGIAdapter1* GetLatestDxgiAdapter(IDXGIAdapter1* dxgiAdapter, out uint dxgiAdapterVersion)
+    {
+        IDXGIAdapter1* result;
+
+        if (dxgiAdapter->QueryInterface(__uuidof<IDXGIAdapter4>(), (void**)&result).SUCCEEDED)
+        {
+            dxgiAdapterVersion = 4;
+            _ = dxgiAdapter->Release();
+        }
+        else if (dxgiAdapter->QueryInterface(__uuidof<IDXGIAdapter3>(), (void**)&result).SUCCEEDED)
+        {
+            dxgiAdapterVersion = 3;
+            _ = dxgiAdapter->Release();
+        }
+        else if (dxgiAdapter->QueryInterface(__uuidof<IDXGIAdapter2>(), (void**)&result).SUCCEEDED)
+        {
+            dxgiAdapterVersion = 2;
+            _ = dxgiAdapter->Release();
+        }
+        else
+        {
+            dxgiAdapterVersion = 1;
+            result = dxgiAdapter;
+        }
+
+        return result;
+    }
+
+    public static IDXGIFactory3* GetLatestDxgiFactory(IDXGIFactory3* dxgiFactory, out uint dxgiFactoryVersion)
+    {
+        IDXGIFactory3* result;
+
+        if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && dxgiFactory->QueryInterface(__uuidof<IDXGIFactory7>(), (void**)&result).SUCCEEDED)
+        {
+            dxgiFactoryVersion = 7;
+            _ = dxgiFactory->Release();
+        }
+        else if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17134, 0) && dxgiFactory->QueryInterface(__uuidof<IDXGIFactory6>(), (void**)&result).SUCCEEDED)
+        {
+            dxgiFactoryVersion = 6;
+            _ = dxgiFactory->Release();
+        }
+        else if (dxgiFactory->QueryInterface(__uuidof<IDXGIFactory5>(), (void**)&result).SUCCEEDED)
+        {
+            dxgiFactoryVersion = 5;
+            _ = dxgiFactory->Release();
+        }
+        else if (dxgiFactory->QueryInterface(__uuidof<IDXGIFactory4>(), (void**)&result).SUCCEEDED)
+        {
+            dxgiFactoryVersion = 4;
+            _ = dxgiFactory->Release();
+        }
+        else
+        {
+            dxgiFactoryVersion = 3;
+            result = dxgiFactory;
+        }
+
+        return result;
+    }
+
+    public static IDXGISwapChain1* GetLatestDxgiSwapchain(IDXGISwapChain1* dxgiSwapchain, out uint dxgiSwapchainVersion)
+    {
+        IDXGISwapChain1* result;
+
+        if (dxgiSwapchain->QueryInterface(__uuidof<IDXGISwapChain4>(), (void**)&result).SUCCEEDED)
+        {
+            dxgiSwapchainVersion = 4;
+            _ = dxgiSwapchain->Release();
+        }
+        else if (dxgiSwapchain->QueryInterface(__uuidof<IDXGISwapChain3>(), (void**)&result).SUCCEEDED)
+        {
+            dxgiSwapchainVersion = 3;
+            _ = dxgiSwapchain->Release();
+        }
+        else if (dxgiSwapchain->QueryInterface(__uuidof<IDXGISwapChain2>(), (void**)&result).SUCCEEDED)
+        {
+            dxgiSwapchainVersion = 2;
+            _ = dxgiSwapchain->Release();
+        }
+        else
+        {
+            dxgiSwapchainVersion = 1;
+            result = dxgiSwapchain;
+        }
+
+        return result;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ReleaseIfNotNull<TUnknown>(Pointer<TUnknown> unknown)
-        where TUnknown : unmanaged => ReleaseIfNotNull(unknown.Value);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ReleaseIfNotNull<TUnknown>(TUnknown* unknown)
-        where TUnknown : unmanaged
+        where TUnknown : unmanaged, IUnknown.Interface
     {
-        if (unknown != null)
+        if (unknown is not null)
         {
-            _ = ((IUnknown*)unknown)->Release();
+            _ = unknown->Release();
         }
     }
 

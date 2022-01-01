@@ -1,54 +1,248 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using TerraFX.Advanced;
+using TerraFX.Graphics.Advanced;
+using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
 
 /// <summary>A graphics resource bound to a graphics device.</summary>
-public abstract unsafe class GraphicsResource : GraphicsDeviceObject, IReadOnlyCollection<GraphicsResourceView>
+public abstract unsafe class GraphicsResource : GraphicsDeviceObject
 {
-    private readonly GraphicsResourceCpuAccess _cpuAccess;
-    private readonly GraphicsMemoryRegion _memoryRegion;
+    /// <summary>The information for the graphics resource.</summary>
+    protected GraphicsResourceInfo ResourceInfo;
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsResource" /> class.</summary>
     /// <param name="device">The device for which the resource was created.</param>
-    /// <param name="memoryRegion">The memory region in which the resource resides.</param>
-    /// <param name="cpuAccess">The CPU access capabilitites of the resource.</param>
     /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c></exception>
-    protected GraphicsResource(GraphicsDevice device, in GraphicsMemoryRegion memoryRegion, GraphicsResourceCpuAccess cpuAccess)
-        : base(device)
+    protected GraphicsResource(GraphicsDevice device) : base(device)
     {
-        _cpuAccess = cpuAccess;
-        _memoryRegion = memoryRegion;
     }
 
-    /// <summary>Gets the number of resource views in the resource.</summary>
-    public abstract int Count { get; }
+    /// <summary>Gets the length, in bytes, of the resource.</summary>
+    public nuint ByteLength => ResourceInfo.MemoryRegion.ByteLength;
 
     /// <summary>Gets the CPU access capabilitites of the resource.</summary>
-    public GraphicsResourceCpuAccess CpuAccess => _cpuAccess;
+    public GraphicsCpuAccess CpuAccess => ResourceInfo.CpuAccess;
 
     /// <summary>Gets <c>true</c> if the resource is mapped; otherwise, <c>false</c>.</summary>
-    public abstract bool IsMapped { get; }
+    public bool IsMapped => MappedAddress is not null;
+
+    /// <summary>Gets the resource kind.</summary>
+    public GraphicsResourceKind Kind => ResourceInfo.Kind;
 
     /// <summary>Gets the mapped address of the resouce or <c>null</c> if the resource is not currently mapped.</summary>
-    public abstract void* MappedAddress { get; }
+    public void* MappedAddress => ResourceInfo.MappedAddress;
 
     /// <summary>Gets the memory region in which the resource exists.</summary>
-    public ref readonly GraphicsMemoryRegion MemoryRegion => ref _memoryRegion;
+    public ref readonly GraphicsMemoryRegion MemoryRegion => ref ResourceInfo.MemoryRegion;
 
-    /// <summary>Gets the size, in bytes, of the resource.</summary>
-    public nuint Size => _memoryRegion.Size;
+    /// <summary>Maps the resource into CPU memory.</summary>
+    /// <typeparam name="T">The type of data contained by the resource.</typeparam>
+    /// <returns>An unmanaged span that represents the mapped resource.</returns>
+    /// <exception cref="ObjectDisposedException">The resource has been disposed.</exception>
+    public UnmanagedSpan<T> Map<T>()
+        where T : unmanaged
+    {
+        ThrowIfDisposed();
 
-    /// <summary>Disposes all resource views in the resource.</summary>
-    public abstract void DisposeAllViews();
+        var mappedAddress = MapUnsafe();
+        return new UnmanagedSpan<T>((T*)mappedAddress, ByteLength / SizeOf<T>());
+    }
 
-    /// <summary>Gets an enumerator that can be used to iterate through the resource views of the buffer.</summary>
-    /// <returns>An enumerator that can be used to iterate through the resource views of the buffer.</returns>
-    public abstract IEnumerator<GraphicsResourceView> GetEnumerator();
+    /// <summary>Maps the resource into CPU memory for reading.</summary>
+    /// <typeparam name="T">The type of data contained by the resource.</typeparam>
+    /// <returns>An unmanaged span that represents the mapped resource.</returns>
+    /// <exception cref="ObjectDisposedException">The resource has been disposed.</exception>
+    public UnmanagedSpan<T> MapForRead<T>()
+        where T : unmanaged
+    {
+        ThrowIfDisposed();
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        var mappedAddress = MapForReadUnsafe();
+        return new UnmanagedSpan<T>((T*)mappedAddress, ByteLength / SizeOf<T>());
+    }
+
+
+    /// <summary>Maps the buffer into CPU memory.</summary>
+    /// <typeparam name="T">The type of data contained by the buffer.</typeparam>
+    /// <param name="start">The index of the first element at which which the mapping should start.</param>
+    /// <returns>An unmanaged span that represents the mapped buffer.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="start" /> * sizeof(<typeparamref name="T" />) is greater than <see cref="GraphicsResource.ByteLength" />.</exception>
+    /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
+    public UnmanagedSpan<T> Map<T>(nuint start)
+        where T : unmanaged
+    {
+        ThrowIfDisposed();
+
+        var byteStart = SizeOf<T>() * start;
+        ThrowIfNotInBounds(byteStart, ByteLength);
+
+        var byteLength = ByteLength - byteStart;
+
+        var mappedAddress = MapUnsafe();
+        return new UnmanagedSpan<T>((T*)(mappedAddress + byteStart), byteLength / SizeOf<T>());
+    }
+
+    /// <summary>Maps the buffer into CPU memory.</summary>
+    /// <typeparam name="T">The type of data contained by the buffer.</typeparam>
+    /// <param name="start">The index of the first element at which which the mapping should start.</param>
+    /// <param name="length">The number of elements in the mapping.</param>
+    /// <returns>An unmanaged span that represents the mapped buffer.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="start" /> * sizeof(<typeparamref name="T" />) is greater than <see cref="GraphicsResource.ByteLength" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">(<paramref name="length" /> + <paramref name="start" />) * sizeof(<typeparamref name="T" />) is greater than <see cref="GraphicsResource.ByteLength" />.</exception>
+    /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
+    public UnmanagedSpan<T> Map<T>(nuint start, nuint length)
+        where T : unmanaged
+    {
+        ThrowIfDisposed();
+
+        var byteStart = SizeOf<T>() * start;
+        ThrowIfNotInBounds(byteStart, ByteLength);
+
+        var byteLength = SizeOf<T>() * length;
+        ThrowIfNotInInsertBounds(byteLength, ByteLength - byteStart);
+
+        var mappedAddress = MapUnsafe();
+        return new UnmanagedSpan<T>((T*)(mappedAddress + byteStart), byteLength / SizeOf<T>());
+    }
+
+    /// <summary>Maps the buffer into CPU memory for reading.</summary>
+    /// <typeparam name="T">The type of data contained by the buffer.</typeparam>
+    /// <param name="start">The index of the first element at which which the mapping should start.</param>
+    /// <returns>An unmanaged span that represents the mapped buffer.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="start" /> * sizeof(<typeparamref name="T" />) is greater than <see cref="GraphicsResource.ByteLength" />.</exception>
+    /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
+    public UnmanagedSpan<T> MapForRead<T>(nuint start)
+        where T : unmanaged
+    {
+        ThrowIfDisposed();
+
+        var byteStart = SizeOf<T>() * start;
+        ThrowIfNotInBounds(byteStart, ByteLength);
+
+        var byteLength = ByteLength - byteStart;
+
+        var mappedAddress = MapForReadUnsafe(byteStart, byteLength);
+        return new UnmanagedSpan<T>((T*)(mappedAddress + byteStart), byteLength / SizeOf<T>());
+    }
+
+    /// <summary>Maps the buffer into CPU memory for reading.</summary>
+    /// <typeparam name="T">The type of data contained by the buffer.</typeparam>
+    /// <param name="start">The index of the first element at which which the mapping should start.</param>
+    /// <param name="length">The number of elements in the mapping.</param>
+    /// <returns>An unmanaged span that represents the mapped buffer.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="start" /> * sizeof(<typeparamref name="T" />) is greater than <see cref="GraphicsResource.ByteLength" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">(<paramref name="length" /> + <paramref name="start" />) * sizeof(<typeparamref name="T" />) is greater than <see cref="GraphicsResource.ByteLength" />.</exception>
+    /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
+    public UnmanagedSpan<T> MapForRead<T>(nuint start, nuint length)
+        where T : unmanaged
+    {
+        ThrowIfDisposed();
+
+        var byteStart = SizeOf<T>() * start;
+        ThrowIfNotInBounds(byteStart, ByteLength);
+
+        var byteLength = SizeOf<T>() * length;
+        ThrowIfNotInInsertBounds(byteLength, ByteLength - byteStart);
+
+        var mappedAddress = MapForReadUnsafe();
+        return new UnmanagedSpan<T>((T*)(mappedAddress + byteStart), byteLength / SizeOf<T>());
+    }
+
+    /// <summary>Unmaps the resource from CPU memory.</summary>
+    /// <remarks>This overload should be used when no memory was written.</remarks>
+    /// <exception cref="InvalidOperationException">The resource is not already mapped.</exception>
+    /// <exception cref="ObjectDisposedException">The resource has been disposed.</exception>
+    public void Unmap()
+    {
+        ThrowIfDisposed();
+        UnmapUnsafe();
+    }
+
+    /// <summary>Unmaps the resource from CPU memory and writes the entire mapped region.</summary>
+    /// <remarks>This overload should be used when all memory was written.</remarks>
+    /// <exception cref="InvalidOperationException">The resource is not already mapped.</exception>
+    /// <exception cref="ObjectDisposedException">The resource has been disposed.</exception>
+    public void UnmapAndWrite()
+    {
+        ThrowIfDisposed();
+        UnmapAndWriteUnsafe();
+    }
+
+    /// <summary>Unmaps the buffer from CPU memory and writes a region of memory.</summary>
+    /// <typeparam name="T">The type of data contained by the buffer view.</typeparam>
+    /// <param name="start">The index of the first element at which which the mapping should start.</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="start" /> * sizeof(<typeparamref name="T" />) is greater than <see cref="GraphicsResource.ByteLength" />.</exception>
+    /// <exception cref="InvalidOperationException">The buffer is not already mapped.</exception>
+    /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
+    public void UnmapAndWrite<T>(nuint start)
+        where T : unmanaged
+    {
+        ThrowIfDisposed();
+
+        var byteStart = SizeOf<T>() * start;
+        ThrowIfNotInBounds(byteStart, ByteLength);
+
+        var byteLength = ByteLength - byteStart;
+
+        UnmapAndWriteUnsafe(byteStart, byteLength);
+    }
+
+    /// <summary>Unmaps the buffer from CPU memory and writes a region of memory.</summary>
+    /// <typeparam name="T">The type of data contained by the buffer view.</typeparam>
+    /// <param name="start">The index of the first element at which which the mapping should start.</param>
+    /// <param name="length">The number of elements in the mapping.</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="start" /> * sizeof(<typeparamref name="T" />) is greater than <see cref="GraphicsResource.ByteLength" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">(<paramref name="length" /> + <paramref name="start" />) * sizeof(<typeparamref name="T" />) is greater than <see cref="GraphicsResource.ByteLength" />.</exception>
+    /// <exception cref="InvalidOperationException">The buffer is not already mapped.</exception>
+    /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
+    public void UnmapAndWrite<T>(nuint start, nuint length)
+        where T : unmanaged
+    {
+        ThrowIfDisposed();
+
+        var byteStart = SizeOf<T>() * start;
+        ThrowIfNotInBounds(byteStart, ByteLength);
+
+        var byteLength = SizeOf<T>() * length;
+        ThrowIfNotInInsertBounds(byteLength, ByteLength - byteStart);
+
+        UnmapAndWriteUnsafe();
+    }
+
+    /// <summary>Maps the entire resource into CPU memory.</summary>
+    /// <returns>A pointer to the mapped resource.</returns>
+    /// <remarks>This method is unsafe because it does not perform most parameter or state validation.</remarks>
+    protected abstract byte* MapUnsafe();
+
+    /// <summary>Maps the entire resource into CPU memory for reading.</summary>
+    /// <returns>A pointer to the mapped resource.</returns>
+    /// <remarks>This method is unsafe because it does not perform most parameter or state validation.</remarks>
+    protected abstract byte* MapForReadUnsafe();
+
+    /// <summary>Maps the entire buffer into CPU memory and marks a region for reading.</summary>
+    /// <param name="byteStart">The index of the first byte at which which the memory to read will start.</param>
+    /// <param name="byteLength">The number of bytes in the memory region that will be read.</param>
+    /// <returns>A pointer to the mapped buffer.</returns>
+    /// <remarks>This method is unsafe because it does not perform most parameter or state validation.</remarks>
+    protected abstract byte* MapForReadUnsafe(nuint byteStart, nuint byteLength);
+
+    /// <summary>Unmaps the resource from CPU memory.</summary>
+    /// <exception cref="InvalidOperationException">The resource is not already mapped.</exception>
+    /// <remarks>This method is unsafe because it does not perform most parameter or state validation.</remarks>
+    protected abstract void UnmapUnsafe();
+
+    /// <summary>Unmaps the resource from CPU memory and marks the entire region as written.</summary>
+    /// <exception cref="InvalidOperationException">The resource is not already mapped.</exception>
+    /// <remarks>This method is unsafe because it does not perform most parameter or state validation.</remarks>
+    protected abstract void UnmapAndWriteUnsafe();
+
+    /// <summary>Unmaps the buffer into CPU memory and marks a region as written.</summary>
+    /// <param name="byteStart">The index of the first byte at which which the written memory starts.</param>
+    /// <param name="byteLength">The number of bytes in the written memory region.</param>
+    /// <exception cref="InvalidOperationException">The buffer is not already mapped.</exception>
+    /// <remarks>This method is unsafe because it does not perform most parameter or state validation.</remarks>
+    protected abstract void UnmapAndWriteUnsafe(nuint byteStart, nuint byteLength);
 }

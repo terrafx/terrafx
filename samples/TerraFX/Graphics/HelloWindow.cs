@@ -13,7 +13,7 @@ namespace TerraFX.Samples.Graphics;
 public class HelloWindow : Sample
 {
     private GraphicsDevice _graphicsDevice = null!;
-    private GraphicsRenderPass _graphicsRenderPass = null!;
+    private GraphicsRenderPass _renderPass = null!;
     private Window _window = null!;
     private TimeSpan _elapsedTime;
     private uint _secondsOfLastFpsUpdate;
@@ -25,13 +25,13 @@ public class HelloWindow : Sample
 
     public GraphicsDevice GraphicsDevice => _graphicsDevice;
 
-    public GraphicsRenderPass GraphicsRenderPass => _graphicsRenderPass;
+    public GraphicsRenderPass RenderPass => _renderPass;
 
     public Window Window => _window;
 
     public override void Cleanup()
     {
-        _graphicsRenderPass?.Dispose();
+        _renderPass?.Dispose();
         _graphicsDevice?.Dispose();
         _window?.Dispose();
 
@@ -75,11 +75,11 @@ public class HelloWindow : Sample
         var graphicsDevice = graphicsAdapter.CreateDevice();
         _graphicsDevice = graphicsDevice;
 
-        _graphicsRenderPass = graphicsDevice.CreateRenderPass(_window, GraphicsFormat.B8G8R8A8_UNORM);
+        _renderPass = graphicsDevice.CreateRenderPass(_window, GraphicsFormat.B8G8R8A8_UNORM);
         base.Initialize(application, timeout);
     }
 
-    protected virtual void Draw(GraphicsRenderContext graphicsRenderContext) { }
+    protected virtual void Draw(GraphicsRenderContext renderContext) { }
 
     protected virtual void Update(TimeSpan delta) { }
 
@@ -112,28 +112,32 @@ public class HelloWindow : Sample
         }
     }
 
-    protected void Present() => GraphicsRenderPass.Swapchain.Present();
+    protected void Present() => RenderPass.Swapchain.Present();
 
     protected void Render()
     {
-        var graphicsRenderContext = GraphicsDevice.RentRenderContext();
+        var renderCommandQueue = GraphicsDevice.RenderCommandQueue;
+        var renderContext = renderCommandQueue.RentContext();
         {
-            graphicsRenderContext.Reset();
-            graphicsRenderContext.BeginRenderPass(GraphicsRenderPass, Colors.CornflowerBlue);
+            renderContext.Reset();
             {
-                var surfaceSize = GraphicsRenderPass.Surface.Size;
+                renderContext.BeginRenderPass(RenderPass, Colors.CornflowerBlue);
+                {
+                    var surfaceSize = RenderPass.Surface.Size;
 
-                var viewport = BoundingBox.CreateFromSize(Vector3.Zero, Vector3.Create(surfaceSize, 1.0f));
-                graphicsRenderContext.SetViewport(viewport);
+                    var viewport = BoundingBox.CreateFromSize(Vector3.Zero, Vector3.Create(surfaceSize, 1.0f));
+                    renderContext.SetViewport(viewport);
 
-                var scissor = BoundingRectangle.CreateFromSize(Vector2.Zero, surfaceSize);
-                graphicsRenderContext.SetScissor(scissor);
+                    var scissor = BoundingRectangle.CreateFromSize(Vector2.Zero, surfaceSize);
+                    renderContext.SetScissor(scissor);
 
-                Draw(graphicsRenderContext);
+                    Draw(renderContext);
+                }
+                renderContext.EndRenderPass();
             }
-            graphicsRenderContext.EndRenderPass();
-            graphicsRenderContext.Flush();
+            renderContext.Close();
+            renderContext.Execute();
         }
-        GraphicsDevice.ReturnContext(graphicsRenderContext);
+        renderCommandQueue.ReturnContext(renderContext);
     }
 }

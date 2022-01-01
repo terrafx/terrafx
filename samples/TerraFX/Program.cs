@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -270,9 +271,17 @@ public static unsafe class Program
     private static void RunSample(Sample sample, TimeSpan timeout, Vector2? windowLocation, Vector2? windowSize)
     {
         Console.WriteLine($"Running: {sample.Name}");
-        var thread = new Thread(() => Run(sample, timeout, windowLocation, windowSize));
 
-        thread.Start();
-        thread.Join();
+        if (Debugger.IsAttached)
+        {
+            Run(sample, timeout, windowLocation, windowSize);
+        }
+        else
+        {
+            var thread = new Thread(() => Run(sample, timeout, windowLocation, windowSize));
+
+            thread.Start();
+            thread.Join();
+        }
     }
 }

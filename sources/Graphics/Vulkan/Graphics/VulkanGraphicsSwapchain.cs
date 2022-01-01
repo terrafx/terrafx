@@ -1,12 +1,16 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using TerraFX.Advanced;
+using System;
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Numerics;
+using static TerraFX.Interop.Vulkan.VkColorSpaceKHR;
 using static TerraFX.Interop.Vulkan.VkCompositeAlphaFlagsKHR;
+using static TerraFX.Interop.Vulkan.VkFormat;
 using static TerraFX.Interop.Vulkan.VkImageUsageFlags;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkPresentModeKHR;
+using static TerraFX.Interop.Vulkan.VkSharingMode;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.VkSurfaceTransformFlagsKHR;
 using static TerraFX.Interop.Vulkan.Vulkan;
@@ -19,47 +23,45 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
 {
-    private readonly GraphicsFormat _renderTargetFormat;
-    private readonly VkSurfaceKHR _vkSurface;
-
-    private VulkanGraphicsRenderTarget[] _renderTargets;
+    private readonly uint _minimumRenderTargetCount;
     private VkSurfaceCapabilitiesKHR _vkSurfaceCapabilities;
-    private UnmanagedArray<VkImage> _vkSwapchainImages;
+
+    private VkSurfaceKHR _vkSurface;
     private VkSwapchainKHR _vkSwapchain;
+    private UnmanagedArray<VkImage> _vkSwapchainImages;
 
-    private uint _renderTargetIndex;
-
-    internal VulkanGraphicsSwapchain(VulkanGraphicsRenderPass renderPass, IGraphicsSurface surface, GraphicsFormat renderTargetFormat, uint minimumRenderTargetCount = 0)
-        : base(renderPass, surface)
+    internal VulkanGraphicsSwapchain(VulkanGraphicsRenderPass renderPass, in VulkanGraphicsSwapchainCreateOptions createOptions) : base(renderPass)
     {
-        var renderTargetCount = minimumRenderTargetCount;
-        var device = renderPass.Device;
+        _minimumRenderTargetCount = createOptions.MinimumRenderTargetCount;
 
-        var vkSurface = CreateVkSurface(device, surface);
-        _vkSurface = vkSurface;
+        SwapchainInfo.Fence = Device.CreateFence(isSignalled: false);
+        SwapchainInfo.RenderTargetFormat = createOptions.RenderTargetFormat;
+        SwapchainInfo.RenderTargets = Array.Empty<VulkanGraphicsRenderTarget>();
+        SwapchainInfo.Surface = createOptions.Surface;
 
-        VkSurfaceCapabilitiesKHR vkSurfaceCapabilities;
-        var vkSwapchain = CreateVkSwapchain(device, vkSurface, surface.Size, ref renderTargetCount, renderTargetFormat, &vkSurfaceCapabilities);
+        _vkSurface = CreateVkSurface();
 
-        _vkSurfaceCapabilities = vkSurfaceCapabilities;
-        _vkSwapchain = vkSwapchain;
+        _vkSwapchain = CreateVkSwapchain();
+        _vkSwapchainImages = GetVkSwapchainImages();
 
-        var vkSwapchainImages = GetVkSwapchainImages(device, vkSwapchain, ref renderTargetCount);
-        _vkSwapchainImages = vkSwapchainImages;
+        SwapchainInfo.RenderTargets = new VulkanGraphicsRenderTarget[_vkSwapchainImages.Length];
+        InitializeRenderTargets();
 
-        _renderTargets = new VulkanGraphicsRenderTarget[renderTargetCount];
-        _renderTargetFormat = renderTargetFormat;
-        _renderTargetIndex = GetRenderTargetIndex(device, vkSwapchain, Fence);
+        SetNameUnsafe(Name);
+        SwapchainInfo.CurrentRenderTargetIndex = GetCurrentRenderTargetIndex();
 
-        InitializeRenderTargets(this, _renderTargets);
         Surface.SizeChanged += OnGraphicsSurfaceSizeChanged;
 
-        static VkSurfaceKHR CreateVkSurface(VulkanGraphicsDevice device, IGraphicsSurface surface)
+        VkSurfaceKHR CreateVkSurface()
         {
             VkSurfaceKHR vkSurface;
 
-            var service = device.Service;
+            var device = Device;
+            var service = Service;
+            var surface = Surface;
+
             var vkInstance = service.VkInstance;
+            ref readonly var vkInstanceManualImports = ref service.VkInstanceManualImports;
 
             switch (surface.Kind)
             {
@@ -67,11 +69,11 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
                 {
                     var vkSurfaceCreateInfo = new VkWin32SurfaceCreateInfoKHR {
                         sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
+                        pNext = null,
+                        flags = 0,
                         hinstance = surface.ContextHandle,
                         hwnd = surface.Handle,
                     };
-
-                    ref readonly var vkInstanceManualImports = ref service.VkInstanceManualImports;
                     ThrowIfNull(vkInstanceManualImports.vkCreateWin32SurfaceKHR);
 
                     ThrowExternalExceptionIfNotSuccess(vkInstanceManualImports.vkCreateWin32SurfaceKHR(vkInstance, &vkSurfaceCreateInfo, null, &vkSurface));
@@ -82,11 +84,11 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
                 {
                     var vkSurfaceCreateInfo = new VkXlibSurfaceCreateInfoKHR {
                         sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
+                        pNext = null,
+                        flags = 0,
                         dpy = surface.ContextHandle,
                         window = (nuint)(nint)surface.Handle,
                     };
-
-                    ref readonly var vkInstanceManualImports = ref service.VkInstanceManualImports;
                     ThrowIfNull(vkInstanceManualImports.vkCreateXlibSurfaceKHR);
 
                     ThrowExternalExceptionIfNotSuccess(vkInstanceManualImports.vkCreateXlibSurfaceKHR(vkInstance, &vkSurfaceCreateInfo, null, &vkSurface));
@@ -102,7 +104,7 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
             }
 
             VkBool32 supported;
-            ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceSupportKHR(device.Adapter.VkPhysicalDevice, device.VkGraphicsCommandQueueFamilyIndex, vkSurface, &supported));
+            ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceSupportKHR(device.Adapter.VkPhysicalDevice, device.RenderCommandQueue.VkQueueFamilyIndex, vkSurface, &supported));
 
             if (!supported)
             {
@@ -118,6 +120,9 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
     /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new VulkanGraphicsAdapter Adapter => base.Adapter.As<VulkanGraphicsAdapter>();
 
+    /// <inheritdoc cref="GraphicsSwapchain.CurrentRenderTarget" />
+    public new VulkanGraphicsRenderTarget CurrentRenderTarget => base.CurrentRenderTarget.As<VulkanGraphicsRenderTarget>();
+
     /// <inheritdoc cref="GraphicsDeviceObject.Device" />
     public new VulkanGraphicsDevice Device => base.Device.As<VulkanGraphicsDevice>();
 
@@ -127,211 +132,43 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
     /// <inheritdoc cref="GraphicsRenderPassObject.RenderPass" />
     public new VulkanGraphicsRenderPass RenderPass => base.RenderPass.As<VulkanGraphicsRenderPass>();
 
-    /// <inheritdoc />
-    public override VulkanGraphicsRenderTarget RenderTarget => _renderTargets.GetReference(_renderTargetIndex);
-
-    /// <inheritdoc />
-    public override uint RenderTargetCount => (uint)_renderTargets.Length;
-
-    /// <inheritdoc />
-    public override GraphicsFormat RenderTargetFormat => _renderTargetFormat;
-
-    /// <inheritdoc />
-    public override uint RenderTargetIndex => _renderTargetIndex;
-
     /// <inheritdoc cref="GraphicsServiceObject.Service" />
     public new VulkanGraphicsService Service => base.Service.As<VulkanGraphicsService>();
 
     /// <summary>Gets the <see cref="VkSurfaceKHR" /> used by the device.</summary>
-    public VkSurfaceKHR VkSurface
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkSurface;
-        }
-    }
+    public VkSurfaceKHR VkSurface => _vkSurface;
 
     /// <summary>Gets the <see cref="VkSurfaceCapabilitiesKHR" /> for <see cref="VkSurface" /></summary>
     public ref readonly VkSurfaceCapabilitiesKHR VkSurfaceCapabilities => ref _vkSurfaceCapabilities;
 
     /// <summary>Gets the <see cref="VkSwapchainKHR" /> used by the device.</summary>
-    public VkSwapchainKHR VkSwapchain
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkSwapchain;
-        }
-    }
+    public VkSwapchainKHR VkSwapchain => _vkSwapchain;
 
     /// <summary>Gets a readonly span of the <see cref="VkImage" />s used by <see cref="VkSwapchain" />.</summary>
-    public UnmanagedReadOnlySpan<VkImage> VkSwapchainImages
-    {
-        get
-        {
-            AssertNotDisposed();
-            return _vkSwapchainImages;
-        }
-    }
-
-    private static void CleanupRenderTargets(VulkanGraphicsRenderTarget[] renderTargets)
-    {
-        for (var index = 0; index < renderTargets.Length; index++)
-        {
-            renderTargets[index].Dispose();
-            renderTargets[index] = null!;
-        }
-    }
-
-    private static void CleanupVkSwapchain(VkDevice vkDevice, VkSwapchainKHR vkSwapchain)
-    {
-        if (vkSwapchain != VkSwapchainKHR.NULL)
-        {
-            vkDestroySwapchainKHR(vkDevice, vkSwapchain, pAllocator: null);
-        }
-    }
-
-    private static VkSwapchainKHR CreateVkSwapchain(VulkanGraphicsDevice device, VkSurfaceKHR vkSurface, Vector2 surfaceSize, ref uint renderTargetCount, GraphicsFormat renderTargetFormat, VkSurfaceCapabilitiesKHR* vkSurfaceCapabilities)
-    {
-        VkSwapchainKHR vkSwapchain;
-
-        var vkPhysicalDevice = device.Adapter.VkPhysicalDevice;
-        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vkPhysicalDevice, vkSurface, vkSurfaceCapabilities));
-
-        uint vkPresentModeCount;
-        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfacePresentModesKHR(vkPhysicalDevice, vkSurface, &vkPresentModeCount, pPresentModes: null));
-
-        var vkPresentModes = stackalloc VkPresentModeKHR[(int)vkPresentModeCount];
-        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfacePresentModesKHR(vkPhysicalDevice, vkSurface, &vkPresentModeCount, vkPresentModes));
-
-        if (renderTargetCount < vkSurfaceCapabilities->minImageCount)
-        {
-            renderTargetCount = vkSurfaceCapabilities->minImageCount;
-        }
-
-        if (vkSurfaceCapabilities->maxImageCount != 0)
-        {
-            ThrowIfNotInInsertBounds(renderTargetCount, vkSurfaceCapabilities->maxImageCount);
-        }
-
-        var vkSwapchainCreateInfo = new VkSwapchainCreateInfoKHR {
-            sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-            surface = vkSurface,
-            minImageCount = renderTargetCount,
-            imageExtent = vkSurfaceCapabilities->currentExtent,
-            imageArrayLayers = 1,
-            imageUsage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-            preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
-            compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
-            presentMode = VK_PRESENT_MODE_FIFO_KHR,
-            clipped = VK_TRUE,
-        };
-
-        if ((vkSurfaceCapabilities->supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) == 0)
-        {
-            vkSwapchainCreateInfo.preTransform = vkSurfaceCapabilities->currentTransform;
-        }
-
-        uint vkSurfaceFormatCount;
-        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, vkSurface, &vkSurfaceFormatCount, pSurfaceFormats: null));
-
-        var vkSurfaceFormats = stackalloc VkSurfaceFormatKHR[(int)vkSurfaceFormatCount];
-        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, vkSurface, &vkSurfaceFormatCount, vkSurfaceFormats));
-
-        var vkFormat = renderTargetFormat.AsVkFormat();
-
-        for (uint i = 0; i < vkSurfaceFormatCount; i++)
-        {
-            if (vkSurfaceFormats[i].format == vkFormat)
-            {
-                vkSwapchainCreateInfo.imageFormat = vkSurfaceFormats[i].format;
-                vkSwapchainCreateInfo.imageColorSpace = vkSurfaceFormats[i].colorSpace;
-                break;
-            }
-        }
-
-        ThrowExternalExceptionIfNotSuccess(vkCreateSwapchainKHR(device.VkDevice, &vkSwapchainCreateInfo, pAllocator: null, &vkSwapchain));
-        return vkSwapchain;
-    }
-
-    private static uint GetRenderTargetIndex(VulkanGraphicsDevice device, VkSwapchainKHR vkSwapchain, VulkanGraphicsFence fence)
-    {
-        uint renderTargetIndex;
-        ThrowExternalExceptionIfNotSuccess(vkAcquireNextImageKHR(device.VkDevice, vkSwapchain, timeout: ulong.MaxValue, VkSemaphore.NULL, fence.VkFence, &renderTargetIndex));
-        return renderTargetIndex;
-    }
-
-    private static UnmanagedArray<VkImage> GetVkSwapchainImages(VulkanGraphicsDevice device, VkSwapchainKHR vkSwapchain, ref uint renderTargetCount)
-    {
-        var vkDevice = device.VkDevice;
-
-        uint vkSwapchainImageCount;
-        ThrowExternalExceptionIfNotSuccess(vkGetSwapchainImagesKHR(vkDevice, vkSwapchain, &vkSwapchainImageCount, pSwapchainImages: null));
-
-        var vkSwapchainImages = new UnmanagedArray<VkImage>(vkSwapchainImageCount);
-        ThrowExternalExceptionIfNotSuccess(vkGetSwapchainImagesKHR(vkDevice, vkSwapchain, &vkSwapchainImageCount, vkSwapchainImages.GetPointerUnsafe(0)));
-
-        renderTargetCount = vkSwapchainImageCount;
-        return vkSwapchainImages;
-    }
-
-    private static void InitializeRenderTargets(VulkanGraphicsSwapchain swapchain, VulkanGraphicsRenderTarget[] renderTargets)
-    {
-        for (var index = 0; index < renderTargets.Length; index++)
-        {
-            renderTargets[index] = new VulkanGraphicsRenderTarget(swapchain, (uint)index);
-        }
-    }
-
-    /// <inheritdoc />
-    public override VulkanGraphicsRenderTarget GetRenderTarget(uint index)
-    {
-        ThrowIfNotInBounds(index, (uint)_renderTargets.Length);
-        return _renderTargets[index];
-    }
-
-    /// <inheritdoc />
-    public override void Present()
-    {
-        ThrowIfDisposed();
-
-        var fence = Fence;
-        fence.Wait();
-        fence.Reset();
-
-        var device = Device;
-
-        var renderTargetIndex = RenderTargetIndex;
-        var vkSwapchain = VkSwapchain;
-
-        var vkPresentInfo = new VkPresentInfoKHR {
-            sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
-            swapchainCount = 1,
-            pSwapchains = &vkSwapchain,
-            pImageIndices = &renderTargetIndex,
-        };
-        ThrowExternalExceptionIfNotSuccess(vkQueuePresentKHR(device.VkCommandQueue, &vkPresentInfo));
-
-        _renderTargetIndex = GetRenderTargetIndex(device, vkSwapchain, fence);
-    }
+    public UnmanagedReadOnlySpan<VkImage> VkSwapchainImages => _vkSwapchainImages;
 
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        var fence = Fence;
-        fence.Wait();
-        fence.Reset();
-
-        CleanupRenderTargets(_renderTargets);
-
-        CleanupVkSwapchain(Device.VkDevice, _vkSwapchain);
-        DisposeVkSurface(Service.VkInstance, _vkSurface);
-
         if (isDisposing)
         {
+            var fence = SwapchainInfo.Fence;
+            fence.Wait();
+            fence.Reset();
+
             Fence?.Dispose();
+            SwapchainInfo.Fence = null!;
+
+            CleanupRenderTargets();
+            SwapchainInfo.RenderTargets = null!;
         }
+        _vkSwapchainImages.Dispose();
+
+        DisposeVkSwapchain(Device.VkDevice, _vkSwapchain);
+        _vkSwapchain = VkSwapchainKHR.NULL;
+
+        DisposeVkSurface(Service.VkInstance, _vkSurface);
+        _vkSurface = VkSurfaceKHR.NULL;
 
         static void DisposeVkSurface(VkInstance vkInstance, VkSurfaceKHR vkSurface)
         {
@@ -340,13 +177,175 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
                 vkDestroySurfaceKHR(vkInstance, vkSurface, pAllocator: null);
             }
         }
+
+        static void DisposeVkSwapchain(VkDevice vkDevice, VkSwapchainKHR vkSwapchain)
+        {
+            if (vkSwapchain != VkSwapchainKHR.NULL)
+            {
+                vkDestroySwapchainKHR(vkDevice, vkSwapchain, pAllocator: null);
+            }
+        }
     }
 
     /// <inheritdoc />
-    protected override void SetNameInternal(string value)
+    protected override void PresentUnsafe()
+    {
+        var fence = Fence;
+        fence.Wait();
+        fence.Reset();
+
+        var device = Device;
+
+        var renderTargetIndex = (uint)CurrentRenderTargetIndex;
+        var vkSwapchain = VkSwapchain;
+
+        var vkPresentInfo = new VkPresentInfoKHR {
+            sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+            pNext = null,
+            waitSemaphoreCount = 0,
+            pWaitSemaphores = null,
+            swapchainCount = 1,
+            pSwapchains = &vkSwapchain,
+            pImageIndices = &renderTargetIndex,
+            pResults = null,
+        };
+
+        ThrowExternalExceptionIfNotSuccess(vkQueuePresentKHR(device.RenderCommandQueue.VkQueue, &vkPresentInfo));
+        SwapchainInfo.CurrentRenderTargetIndex = GetCurrentRenderTargetIndex();
+    }
+
+    /// <inheritdoc />
+    protected override void SetNameUnsafe(string value)
     {
         Device.SetVkObjectName(VK_OBJECT_TYPE_SURFACE_KHR, VkSurface, value);
         Device.SetVkObjectName(VK_OBJECT_TYPE_SWAPCHAIN_KHR, VkSwapchain, value);
+    }
+
+    private void CleanupRenderTargets()
+    {
+        var renderTargets = SwapchainInfo.RenderTargets;
+
+        for (var index = 0; index < renderTargets.Length; index++)
+        {
+            renderTargets[index].Dispose();
+            renderTargets[index] = null!;
+        }
+    }
+
+    private VkSwapchainKHR CreateVkSwapchain()
+    {
+        VkSwapchainKHR vkSwapchain;
+
+        var vkPhysicalDevice = Adapter.VkPhysicalDevice;
+        var vkSurface = _vkSurface;
+
+        VkSurfaceCapabilitiesKHR vkSurfaceCapabilities;
+        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vkPhysicalDevice, vkSurface, &vkSurfaceCapabilities));
+        _vkSurfaceCapabilities = vkSurfaceCapabilities;
+
+        var minimumRenderTargetCount = _minimumRenderTargetCount;
+
+        if (minimumRenderTargetCount < vkSurfaceCapabilities.minImageCount)
+        {
+            minimumRenderTargetCount = vkSurfaceCapabilities.minImageCount;
+        }
+
+        if (vkSurfaceCapabilities.maxImageCount != 0)
+        {
+            ThrowIfNotInInsertBounds(minimumRenderTargetCount, vkSurfaceCapabilities.maxImageCount);
+        }
+
+        uint vkPresentModeCount;
+        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfacePresentModesKHR(vkPhysicalDevice, vkSurface, &vkPresentModeCount, pPresentModes: null));
+
+        var vkPresentModes = stackalloc VkPresentModeKHR[(int)vkPresentModeCount];
+        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfacePresentModesKHR(vkPhysicalDevice, vkSurface, &vkPresentModeCount, vkPresentModes));
+
+        var vkOldSwapchain = _vkSwapchain;
+
+        var vkSwapchainCreateInfo = new VkSwapchainCreateInfoKHR {
+            sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+            pNext = null,
+            flags = 0,
+            surface = vkSurface,
+            minImageCount = minimumRenderTargetCount,
+            imageFormat = VK_FORMAT_UNDEFINED,
+            imageColorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,
+            imageExtent = vkSurfaceCapabilities.currentExtent,
+            imageArrayLayers = 1,
+            imageUsage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+            imageSharingMode = VK_SHARING_MODE_EXCLUSIVE,
+            queueFamilyIndexCount = 0,
+            pQueueFamilyIndices = null,
+            preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
+            compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+            presentMode = VK_PRESENT_MODE_FIFO_KHR,
+            clipped = VK_TRUE,
+            oldSwapchain = vkOldSwapchain,
+        };
+
+        if ((vkSurfaceCapabilities.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) == 0)
+        {
+            vkSwapchainCreateInfo.preTransform = vkSurfaceCapabilities.currentTransform;
+        }
+
+        uint vkSurfaceFormatCount;
+        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, vkSurface, &vkSurfaceFormatCount, pSurfaceFormats: null));
+
+        var vkSurfaceFormats = stackalloc VkSurfaceFormatKHR[(int)vkSurfaceFormatCount];
+        ThrowExternalExceptionIfNotSuccess(vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, vkSurface, &vkSurfaceFormatCount, vkSurfaceFormats));
+
+        var vkFormat = SwapchainInfo.RenderTargetFormat.AsVkFormat();
+
+        for (var index = 0u; index < vkSurfaceFormatCount; index++)
+        {
+            if (vkSurfaceFormats[index].format == vkFormat)
+            {
+                vkSwapchainCreateInfo.imageFormat = vkSurfaceFormats[index].format;
+                vkSwapchainCreateInfo.imageColorSpace = vkSurfaceFormats[index].colorSpace;
+                break;
+            }
+        }
+
+        var vkDevice = Device.VkDevice;
+        ThrowExternalExceptionIfNotSuccess(vkCreateSwapchainKHR(vkDevice, &vkSwapchainCreateInfo, pAllocator: null, &vkSwapchain));
+
+        if (vkOldSwapchain != VkSwapchainKHR.NULL)
+        {
+            vkDestroySwapchainKHR(vkDevice, vkOldSwapchain, pAllocator: null);
+        }
+        return vkSwapchain;
+    }
+
+    private int GetCurrentRenderTargetIndex()
+    {
+        uint renderTargetIndex;
+        ThrowExternalExceptionIfNotSuccess(vkAcquireNextImageKHR(Device.VkDevice, VkSwapchain, timeout: ulong.MaxValue, VkSemaphore.NULL, Fence.VkFence, &renderTargetIndex));
+        return (int)renderTargetIndex;
+    }
+
+    private UnmanagedArray<VkImage> GetVkSwapchainImages()
+    {
+        var vkDevice = Device.VkDevice;
+        var vkSwapchain = _vkSwapchain;
+
+        uint vkSwapchainImageCount;
+        ThrowExternalExceptionIfNotSuccess(vkGetSwapchainImagesKHR(vkDevice, vkSwapchain, &vkSwapchainImageCount, pSwapchainImages: null));
+
+        var vkSwapchainImages = new UnmanagedArray<VkImage>(vkSwapchainImageCount);
+        ThrowExternalExceptionIfNotSuccess(vkGetSwapchainImagesKHR(vkDevice, vkSwapchain, &vkSwapchainImageCount, vkSwapchainImages.GetPointerUnsafe(0)));
+
+        return vkSwapchainImages;
+    }
+
+    private void InitializeRenderTargets()
+    {
+        var renderTargets = SwapchainInfo.RenderTargets;
+
+        for (var index = 0; index < renderTargets.Length; index++)
+        {
+            renderTargets[index] = new VulkanGraphicsRenderTarget(this, index);
+        }
     }
 
     private void OnGraphicsSurfaceSizeChanged(object? sender, PropertyChangedEventArgs<Vector2> eventArgs)
@@ -355,32 +354,18 @@ public sealed unsafe class VulkanGraphicsSwapchain : GraphicsSwapchain
         fence.Wait();
         fence.Reset();
 
-        var device = Device;
-        var vkDevice = device.VkDevice;
+        CleanupRenderTargets();
 
-        var renderTargets = _renderTargets;
-        CleanupRenderTargets(renderTargets);
+        _vkSwapchain = CreateVkSwapchain();
+        _vkSwapchainImages = GetVkSwapchainImages();
 
-        CleanupVkSwapchain(vkDevice, _vkSwapchain);
-
-        var renderTargetCount = (uint)_renderTargets.Length;
-        var renderTargetFormat = _renderTargetFormat;
-
-        VkSurfaceCapabilitiesKHR vkSurfaceCapabilities;
-        var vkSwapchain = CreateVkSwapchain(device, VkSurface, eventArgs.CurrentValue, ref renderTargetCount, renderTargetFormat, &vkSurfaceCapabilities);
-
-        _vkSwapchain = vkSwapchain;
-        _vkSurfaceCapabilities = vkSurfaceCapabilities;
-
-        var vkSwapchainImages = GetVkSwapchainImages(device, vkSwapchain, ref renderTargetCount);
-        _vkSwapchainImages = vkSwapchainImages;
-
-        if (renderTargetCount != (uint)_renderTargets.Length)
+        if ((uint)SwapchainInfo.RenderTargets.Length != _vkSwapchainImages.Length)
         {
-            _renderTargets = new VulkanGraphicsRenderTarget[renderTargetCount];
+            SwapchainInfo.RenderTargets = new VulkanGraphicsRenderTarget[_vkSwapchainImages.Length];
         }
-        InitializeRenderTargets(this, _renderTargets);
+        InitializeRenderTargets();
 
-        _renderTargetIndex = GetRenderTargetIndex(device, vkSwapchain, fence);
+        SetNameUnsafe(Name);
+        SwapchainInfo.CurrentRenderTargetIndex = GetCurrentRenderTargetIndex();
     }
 }
