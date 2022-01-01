@@ -74,7 +74,7 @@ public static class ExceptionUtilitiesTests
             Throws.InstanceOf<ExternalException>()
                   .And.Property(nameof(ExternalException.ErrorCode)).EqualTo(-1)
                   .And.Message.Contains("'method'")
-                  .And.Message.Contains($"'{-1}'")
+                  .And.Message.Contains($"'{-1:X8}'")
         );
     }
 

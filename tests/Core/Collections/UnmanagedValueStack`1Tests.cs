@@ -317,7 +317,7 @@ public static class UnmanagedValueStackTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true))
+        using (var valueStack = new UnmanagedValueStack<int>(array))
         {
             using (var destination = new UnmanagedArray<int>(3))
             {
@@ -353,7 +353,7 @@ public static class UnmanagedValueStackTests
                 );
             }
 
-            using (var destination = new UnmanagedArray<int>(6))
+            using (var destination = new UnmanagedArray<int>(6, zero: true))
             {
                 valueStack.CopyTo(destination);
 
