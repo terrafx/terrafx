@@ -13,6 +13,7 @@ using static TerraFX.Interop.DirectX.D3D12_RESOURCE_STATES;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
@@ -84,7 +85,7 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
             var cpuAccess = createOptions.CpuAccess;
 
             var d3d12ResourceDesc = D3D12_RESOURCE_DESC.Buffer(
-                createOptions.ByteLength,
+                AlignUp(createOptions.ByteLength, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT),
                 D3D12_RESOURCE_FLAG_NONE,
                 D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT
             );
@@ -221,10 +222,12 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
         if (Kind == GraphicsBufferKind.Index)
         {
             byteAlignment = createOptions.BytesPerElement;
+            byteLength = AlignUp(byteLength, createOptions.BytesPerElement);
         }
         else if (Kind == GraphicsBufferKind.Constant)
         {
             byteAlignment = D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT;
+            byteLength = AlignUp(byteLength, D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT);
         }
         else if (Kind == GraphicsBufferKind.Default)
         {

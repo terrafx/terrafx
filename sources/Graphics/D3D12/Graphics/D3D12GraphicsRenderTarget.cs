@@ -26,17 +26,17 @@ public sealed unsafe class D3D12GraphicsRenderTarget : GraphicsRenderTarget
 
         ID3D12Resource* CreateD3D12RtvResource(out uint d3d12RtvResourceVersion)
         {
-            var d3d12RtvDesc = new D3D12_RENDER_TARGET_VIEW_DESC {
+            var d3d12RenderTargetViewDesc = new D3D12_RENDER_TARGET_VIEW_DESC {
                 Format = swapchain.RenderTargetFormat.AsDxgiFormat(),
                 ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D,
             };
 
-            d3d12RtvDesc.Texture2D = new D3D12_TEX2D_RTV();
+            d3d12RenderTargetViewDesc.Texture2D = new D3D12_TEX2D_RTV();
 
             ID3D12Resource* d3d12RtvResource;
             ThrowExternalExceptionIfFailed(swapchain.DxgiSwapchain->GetBuffer((uint)RenderTargetInfo.Index, __uuidof<ID3D12Resource>(), (void**)&d3d12RtvResource));
 
-            swapchain.Device.D3D12Device->CreateRenderTargetView(d3d12RtvResource, &d3d12RtvDesc, _d3d12RtvDescriptorHandle);
+            swapchain.Device.D3D12Device->CreateRenderTargetView(d3d12RtvResource, &d3d12RenderTargetViewDesc, _d3d12RtvDescriptorHandle);
             return GetLatestD3D12Resource(d3d12RtvResource, out d3d12RtvResourceVersion);
         }
 

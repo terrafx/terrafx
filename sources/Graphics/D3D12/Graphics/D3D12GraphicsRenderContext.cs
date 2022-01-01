@@ -187,18 +187,9 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
 
         for (var index = 0; index < resourceViews.Length; index++)
         {
-            var resourceView = resourceViews[index];
-
-            if (resourceView is D3D12GraphicsBufferView d3d12GraphicsBufferView)
-            {
-                d3d12GraphicsCommandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), d3d12GraphicsBufferView.GpuVirtualAddress);
-            }
-            else if (resourceView is D3D12GraphicsTextureView d3d12GraphicsTextureView)
-            {
-                var gpuDescriptorHandleForHeapStart = d3d12CbvSrvUavDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
-                d3d12GraphicsCommandList->SetGraphicsRootDescriptorTable(unchecked((uint)index), gpuDescriptorHandleForHeapStart.Offset(rootDescriptorTableIndex, cbvSrvUavDescriptorHandleIncrementSize));
-                rootDescriptorTableIndex++;
-            }
+            var gpuDescriptorHandleForHeapStart = d3d12CbvSrvUavDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+            d3d12GraphicsCommandList->SetGraphicsRootDescriptorTable(unchecked((uint)index), gpuDescriptorHandleForHeapStart.Offset(rootDescriptorTableIndex, cbvSrvUavDescriptorHandleIncrementSize));
+            rootDescriptorTableIndex++;
         }
     }
 

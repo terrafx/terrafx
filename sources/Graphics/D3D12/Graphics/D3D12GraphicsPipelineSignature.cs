@@ -2,6 +2,7 @@
 
 using TerraFX.Interop.DirectX;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_RANGE_TYPE;
+using static TerraFX.Interop.DirectX.D3D12_FEATURE;
 using static TerraFX.Interop.DirectX.D3D12_ROOT_SIGNATURE_FLAGS;
 using static TerraFX.Interop.DirectX.D3D12_SHADER_VISIBILITY;
 using static TerraFX.Interop.DirectX.D3D_ROOT_SIGNATURE_VERSION;
@@ -53,22 +54,28 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
         {
             ID3D12RootSignature* d3d12RootSignature = null;
 
-            var d3d12RootSignatureDesc = new D3D12_ROOT_SIGNATURE_DESC {
-                NumParameters = 0,
-                pParameters = null,
-                pStaticSamplers = null,
-                Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT,
+            var d3d12Device = device.D3D12Device;
+
+            var d3d12FeatureDataRootSignature = new D3D12_FEATURE_DATA_ROOT_SIGNATURE {
+                HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_1,
             };
+
+            if (d3d12Device->CheckFeatureSupport(D3D12_FEATURE_ROOT_SIGNATURE, &d3d12FeatureDataRootSignature, SizeOf<D3D12_FEATURE_DATA_ROOT_SIGNATURE>()).FAILED)
+            {
+                d3d12FeatureDataRootSignature.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_0;
+            }
+
+            var d3d12DescriptorRanges = UnmanagedArray<D3D12_DESCRIPTOR_RANGE1>.Empty;
+            var d3d12RootParameters = UnmanagedArray<D3D12_ROOT_PARAMETER1>.Empty;
+            var d3d12StaticSamplerDescs = UnmanagedArray<D3D12_STATIC_SAMPLER_DESC>.Empty;
 
             var resources = createOptions.Resources;
 
             if (resources.Length != 0)
             {
-                var d3d12RootParameterCount = 0;
-                var d3d12StaticSamplerDescCount = 0;
-
-                var d3d12RootParametersIndex = 0;
-                var d3d12StaticSamplerDescsIndex = 0;
+                var d3d12DescriptorRangeCount = 0u;
+                var d3d12RootParameterCount = 0u;
+                var d3d12StaticSamplerDescCount = 0u;
 
                 for (nuint index = 0; index < resources.Length; index++)
                 {
@@ -78,12 +85,14 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
                     {
                         case GraphicsPipelineResourceKind.ConstantBuffer:
                         {
+                            d3d12DescriptorRangeCount++;
                             d3d12RootParameterCount++;
                             break;
                         }
 
                         case GraphicsPipelineResourceKind.Texture:
                         {
+                            d3d12DescriptorRangeCount++;
                             d3d12RootParameterCount++;
                             d3d12StaticSamplerDescCount++;
                             break;
@@ -97,9 +106,13 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
                     }
                 }
 
-                var d3d12RootParameters = stackalloc D3D12_ROOT_PARAMETER[d3d12RootParameterCount];
-                var d3d12StaticSamplerDescs = stackalloc D3D12_STATIC_SAMPLER_DESC[d3d12StaticSamplerDescCount];
-                var d3d12DescriptorRanges = stackalloc D3D12_DESCRIPTOR_RANGE[d3d12StaticSamplerDescCount];
+                d3d12DescriptorRanges = new UnmanagedArray<D3D12_DESCRIPTOR_RANGE1>(d3d12DescriptorRangeCount);
+                d3d12RootParameters = new UnmanagedArray<D3D12_ROOT_PARAMETER1>(d3d12RootParameterCount);
+                d3d12StaticSamplerDescs = new UnmanagedArray<D3D12_STATIC_SAMPLER_DESC>(d3d12StaticSamplerDescCount);
+
+                var d3d12DescriptorRangeIndex = 0u;
+                var d3d12RootParametersIndex = 0u;
+                var d3d12StaticSamplerDescsIndex = 0u;
 
                 for (nuint index = 0; index < resources.Length; index++)
                 {
@@ -109,12 +122,19 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
                     {
                         case GraphicsPipelineResourceKind.ConstantBuffer:
                         {
-                            d3d12RootParameters[d3d12RootParametersIndex].InitAsConstantBufferView(
-                                resource.BindingIndex,
-                                registerSpace: 0,
+                            d3d12DescriptorRanges[d3d12DescriptorRangeIndex].Init(
+                                D3D12_DESCRIPTOR_RANGE_TYPE_CBV,
+                                numDescriptors: 1,
+                                baseShaderRegister: resource.BindingIndex
+                            );
+
+                            d3d12RootParameters[d3d12RootParametersIndex].InitAsDescriptorTable(
+                                numDescriptorRanges: 1,
+                                d3d12DescriptorRanges.GetPointerUnsafe(d3d12DescriptorRangeIndex),
                                 GetD3D12ShaderVisiblity(resource.ShaderVisibility)
                             );
 
+                            d3d12DescriptorRangeIndex++;
                             d3d12RootParametersIndex++;
                             break;
                         }
@@ -123,7 +143,7 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
                         {
                             var shaderVisibility = GetD3D12ShaderVisiblity(resource.ShaderVisibility);
 
-                            d3d12DescriptorRanges[d3d12StaticSamplerDescsIndex] = new D3D12_DESCRIPTOR_RANGE(
+                            d3d12DescriptorRanges[d3d12DescriptorRangeIndex].Init(
                                 D3D12_DESCRIPTOR_RANGE_TYPE_SRV,
                                 numDescriptors: 1,
                                 baseShaderRegister: resource.BindingIndex
@@ -131,15 +151,16 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
 
                             d3d12RootParameters[d3d12RootParametersIndex].InitAsDescriptorTable(
                                 numDescriptorRanges: 1,
-                                &d3d12DescriptorRanges[d3d12StaticSamplerDescsIndex],
+                                d3d12DescriptorRanges.GetPointerUnsafe(d3d12DescriptorRangeIndex),
                                 shaderVisibility
                             );
 
-                            d3d12StaticSamplerDescs[d3d12StaticSamplerDescsIndex] = new D3D12_STATIC_SAMPLER_DESC(
+                            d3d12StaticSamplerDescs[d3d12StaticSamplerDescsIndex].Init(
                                 shaderRegister: resource.BindingIndex,
                                 shaderVisibility: shaderVisibility
                             );
 
+                            d3d12DescriptorRangeIndex++;
                             d3d12RootParametersIndex++;
                             d3d12StaticSamplerDescsIndex++;
                             break;
@@ -152,20 +173,27 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
                         }
                     }
                 }
-
-                d3d12RootSignatureDesc.NumParameters = unchecked((uint)d3d12RootParameterCount);
-                d3d12RootSignatureDesc.pParameters = d3d12RootParameters;
-
-                d3d12RootSignatureDesc.NumStaticSamplers = unchecked((uint)d3d12StaticSamplerDescCount);
-                d3d12RootSignatureDesc.pStaticSamplers = d3d12StaticSamplerDescs;
             }
+
+            D3D12_VERSIONED_ROOT_SIGNATURE_DESC.Init_1_1(
+                out var d3d12VersionedRootSignatureDesc,
+                (uint)d3d12RootParameters.Length,
+                d3d12RootParameters.GetPointerUnsafe(0),
+                (uint)d3d12StaticSamplerDescs.Length,
+                d3d12StaticSamplerDescs.GetPointerUnsafe(0),
+                D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
+            );
 
             ID3DBlob* d3dRootSignatureBlob;
             ID3DBlob* d3dRootSignatureErrorBlob;
 
-            ThrowExternalExceptionIfFailed(D3D12SerializeRootSignature(&d3d12RootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &d3dRootSignatureBlob, &d3dRootSignatureErrorBlob));
+            ThrowExternalExceptionIfFailed(D3D12SerializeVersionedRootSignature(&d3d12VersionedRootSignatureDesc, d3d12FeatureDataRootSignature.HighestVersion, &d3dRootSignatureBlob, &d3dRootSignatureErrorBlob));
 
-            var result = device.D3D12Device->CreateRootSignature(0, d3dRootSignatureBlob->GetBufferPointer(), d3dRootSignatureBlob->GetBufferSize(), __uuidof<ID3D12RootSignature>(), (void**)&d3d12RootSignature);
+            var result = d3d12Device->CreateRootSignature(0, d3dRootSignatureBlob->GetBufferPointer(), d3dRootSignatureBlob->GetBufferSize(), __uuidof<ID3D12RootSignature>(), (void**)&d3d12RootSignature);
+
+            d3d12DescriptorRanges.Dispose();
+            d3d12RootParameters.Dispose();
+            d3d12StaticSamplerDescs.Dispose();
 
             ReleaseIfNotNull(d3dRootSignatureBlob);
             ReleaseIfNotNull(d3dRootSignatureErrorBlob);

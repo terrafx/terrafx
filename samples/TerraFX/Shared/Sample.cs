@@ -76,21 +76,27 @@ public abstract class Sample : IDisposable
             {
                 var compileFlags = 0u;
 
-#if DEBUG
-                // Enable better shader debugging with the graphics debugging tools.
-                compileFlags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-#endif
+                if (GraphicsService.EnableDebugMode)
+                {
+                    // Enable better shader debugging with the graphics debugging tools.
+                    compileFlags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+                }
+                else
+                {
+                    compileFlags |= D3DCOMPILE_OPTIMIZATION_LEVEL3;
+                }
+
                 ID3DBlob* d3dShaderBlob = null;
-                ID3DBlob* pError = null;
+                ID3DBlob* d3dShaderErrorBlob = null;
 
                 try
                 {
-                    var result = D3DCompileFromFile((ushort*)assetPath, pDefines: null, D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).GetPointer(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &pError);
+                    var result = D3DCompileFromFile((ushort*)assetPath, pDefines: null, D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).GetPointer(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &d3dShaderErrorBlob);
 
                     if (FAILED(result))
                     {
                         // todo: var span = TerraFX.Utilities.InteropUtilities.MarshalUtf8ToReadOnlySpan((sbyte*)pError->GetBufferPointer(), (int)pError->GetBufferSize());
-                        var errorMsg = System.Text.Encoding.UTF8.GetString((byte*)pError->GetBufferPointer(), (int)pError->GetBufferSize());
+                        var errorMsg = System.Text.Encoding.UTF8.GetString((byte*)d3dShaderErrorBlob->GetBufferPointer(), (int)d3dShaderErrorBlob->GetBufferSize());
                         Console.WriteLine(errorMsg);
                         ThrowExternalException(nameof(D3DCompileFromFile), result);
                     }
@@ -121,11 +127,12 @@ public abstract class Sample : IDisposable
                 {
                     if (d3dShaderBlob != null)
                     {
-                        d3dShaderBlob->Release();
+                        _ = d3dShaderBlob->Release();
                     }
-                    if (pError != null)
+
+                    if (d3dShaderErrorBlob != null)
                     {
-                        pError->Release();
+                        _ = d3dShaderErrorBlob->Release();
                     }
                 }
             }
@@ -138,10 +145,15 @@ public abstract class Sample : IDisposable
 
             var additionalArgs = string.Empty;
 
-#if DEBUG
+            if (GraphicsService.EnableDebugMode)
+            {
                 // Enable better shader debugging with the graphics debugging tools.
                 additionalArgs += $" -g -O0";
-#endif
+            }
+            else
+            {
+                additionalArgs += $" -O";
+            }
 
             var glslcProcessStartInfo = new ProcessStartInfo {
                 Arguments = $"-fshader-stage={GetVulkanShaderStage(kind)} -o \"{assetOutput}\" -std=450core --target-env=vulkan1.0 --target-spv=spv1.0 -x glsl{additionalArgs} {assetPath}",

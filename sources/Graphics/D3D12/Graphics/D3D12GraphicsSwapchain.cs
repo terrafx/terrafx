@@ -24,6 +24,9 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     private readonly uint _minimumRenderTargetCount;
     private DXGI_SWAP_CHAIN_DESC1 _dxgiSwapchainDesc;
 
+    private ID3D12DescriptorHeap* _d3d12DsvDescriptorHeap;
+    private readonly uint _d3d12DsvDescriptorHeapVersion;
+
     private ID3D12DescriptorHeap* _d3d12RtvDescriptorHeap;
     private readonly uint _d3d12RtvDescriptorHeapVersion;
 
@@ -40,6 +43,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
         SwapchainInfo.Surface = createOptions.Surface;
 
         _dxgiSwapchain = CreateDxgiSwapchain(out var renderTargetCount, out _dxgiSwapchainVersion);
+        _d3d12DsvDescriptorHeap = CreateD3D12DsvDescriptorHeap(out _d3d12DsvDescriptorHeapVersion);
         _d3d12RtvDescriptorHeap = CreateD3D12RtvDescriptorHeap(out _d3d12RtvDescriptorHeapVersion);
 
         SwapchainInfo.RenderTargets = new GraphicsRenderTarget[renderTargetCount];
@@ -116,6 +120,21 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
             return GetLatestDxgiSwapchain(dxgiSwapchain, out dxgiSwapchainVersion);
         }
 
+        ID3D12DescriptorHeap* CreateD3D12DsvDescriptorHeap(out uint d3d12DsvDescriptorHeapVersion)
+        {
+            ID3D12DescriptorHeap* d3d12DsvDescriptorHeap;
+
+            var d3d12DsvDescriptorHeapDesc = new D3D12_DESCRIPTOR_HEAP_DESC {
+                Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV,
+                NumDescriptors = _dxgiSwapchainDesc.BufferCount + 1,
+                Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE,
+                NodeMask = 0,
+            };
+            ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateDescriptorHeap(&d3d12DsvDescriptorHeapDesc, __uuidof<ID3D12DescriptorHeap>(), (void**)&d3d12DsvDescriptorHeap));
+
+            return GetLatestD3D12DescriptorHeap(d3d12DsvDescriptorHeap, out d3d12DsvDescriptorHeapVersion);
+        }
+
         ID3D12DescriptorHeap* CreateD3D12RtvDescriptorHeap(out uint d3d12RtvDescriptorHeapVersion)
         {
             ID3D12DescriptorHeap* d3d12RtvDescriptorHeap;
@@ -126,7 +145,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
                 Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE,
                 NodeMask = 0,
             };
-            ThrowExternalExceptionIfFailed(renderPass.Device.D3D12Device->CreateDescriptorHeap(&d3d12RtvDescriptorHeapDesc, __uuidof<ID3D12DescriptorHeap>(), (void**)&d3d12RtvDescriptorHeap));
+            ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateDescriptorHeap(&d3d12RtvDescriptorHeapDesc, __uuidof<ID3D12DescriptorHeap>(), (void**)&d3d12RtvDescriptorHeap));
 
             return GetLatestD3D12DescriptorHeap(d3d12RtvDescriptorHeap, out d3d12RtvDescriptorHeapVersion);
         }
@@ -141,7 +160,13 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     /// <inheritdoc cref="GraphicsSwapchain.CurrentRenderTarget" />
     public new D3D12GraphicsRenderTarget CurrentRenderTarget => base.CurrentRenderTarget.As<D3D12GraphicsRenderTarget>();
 
-    /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> used by the swapchain for render target resources.</summary>
+    /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> used by the swapchain for depth-stencil views.</summary>
+    public ID3D12DescriptorHeap* D3D12DsvDescriptorHeap => _d3d12DsvDescriptorHeap;
+
+    /// <summary>Gets the interface version of <see cref="D3D12DsvDescriptorHeap" />.</summary>
+    public uint D3D12DsvDescriptorHeapVersion => _d3d12DsvDescriptorHeapVersion;
+
+    /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> used by the swapchain for render target views.</summary>
     public ID3D12DescriptorHeap* D3D12RtvDescriptorHeap => _d3d12RtvDescriptorHeap;
 
     /// <summary>Gets the interface version of <see cref="D3D12RtvDescriptorHeap" />.</summary>
