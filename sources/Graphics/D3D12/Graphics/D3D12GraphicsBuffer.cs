@@ -6,11 +6,13 @@ using TerraFX.Advanced;
 using TerraFX.Collections;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
+using TerraFX.Interop.Windows;
 using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12;
 using static TerraFX.Interop.DirectX.D3D12_RESOURCE_FLAGS;
 using static TerraFX.Interop.DirectX.D3D12_RESOURCE_STATES;
 using static TerraFX.Interop.Windows.Windows;
+using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
@@ -23,7 +25,7 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
 {
     private readonly D3D12_RESOURCE_STATES _defaultResourceState;
 
-    private ID3D12Resource* _d3d12Resource;
+    private ComPtr<ID3D12Resource> _d3d12Resource;
     private readonly uint _d3d12ResourceVersion;
 
     private ulong _gpuVirtualAddress;
@@ -49,8 +51,10 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
             _ => D3D12_RESOURCE_STATE_COMMON,
         };
 
-        _d3d12Resource = CreateD3D12Resource(in createOptions, out _d3d12ResourceVersion);
-        _gpuVirtualAddress = _d3d12Resource->GetGPUVirtualAddress();
+        var d3d12Resource = CreateD3D12Resource(in createOptions, out _d3d12ResourceVersion);
+        _d3d12Resource = d3d12Resource;
+
+        _gpuVirtualAddress = d3d12Resource->GetGPUVirtualAddress();
 
         var memoryAllocatorCreateOptions = new GraphicsMemoryAllocatorCreateOptions {
             ByteLength = MemoryRegion.ByteLength,
@@ -152,7 +156,6 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
         if (isDisposing)
         {
             DisposeAllViewsUnsafe();
-            _bufferViews.Clear();
 
             _memoryAllocator.Clear();
 
@@ -161,8 +164,7 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
         }
         _bufferViewsMutex.Dispose();
 
-        ReleaseIfNotNull(_d3d12Resource);
-        _d3d12Resource = null;
+        _ = _d3d12Resource.Reset();
 
         _gpuVirtualAddress = 0;
 
@@ -176,14 +178,7 @@ public sealed unsafe partial class D3D12GraphicsBuffer : GraphicsBuffer
     }
 
     /// <inheritdoc />
-    protected override void DisposeAllViewsUnsafe()
-    {
-        for (var index = _bufferViews.Count - 1; index >= 0; index--)
-        {
-            var bufferView = _bufferViews.GetReferenceUnsafe(index);
-            bufferView.Dispose();
-        }
-    }
+    protected override void DisposeAllViewsUnsafe() => _bufferViews.Dispose();
 
     /// <inheritdoc />
     protected override byte* MapUnsafe()

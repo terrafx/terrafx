@@ -12,6 +12,7 @@ using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkSharingMode;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
+using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -171,7 +172,6 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
         if (isDisposing)
         {
             DisposeAllViewsUnsafe();
-            _bufferViews.Clear();
 
             _memoryAllocator.Clear();
 
@@ -203,11 +203,7 @@ public sealed unsafe partial class VulkanGraphicsBuffer : GraphicsBuffer
     /// <inheritdoc />
     protected override void DisposeAllViewsUnsafe()
     {
-        for (var index = _bufferViews.Count - 1; index >= 0; index--)
-        {
-            var bufferView = _bufferViews.GetReferenceUnsafe(index);
-            bufferView.Dispose();
-        }
+        _bufferViews.Dispose();
     }
 
     /// <inheritdoc />

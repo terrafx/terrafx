@@ -18,6 +18,7 @@ using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -27,7 +28,7 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
 {
-    private ID3D12Device* _d3d12Device;
+    private ComPtr<ID3D12Device> _d3d12Device;
     private readonly uint _d3d12DeviceVersion;
 
     private readonly uint _cbvSrvUavDescriptorSize;
@@ -61,7 +62,8 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     {
         adapter.AddDevice(this);
 
-        _d3d12Device = CreateD3D12Device(out _d3d12DeviceVersion);
+        var d3d12Device = CreateD3D12Device(out _d3d12DeviceVersion);
+        _d3d12Device = d3d12Device;
 
         _buffers = new ValueList<D3D12GraphicsBuffer>();
         _buffersMutex = new ValueMutex();
@@ -85,10 +87,10 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
         DeviceInfo.CopyQueue = new D3D12GraphicsCopyCommandQueue(this);
         DeviceInfo.RenderQueue = new D3D12GraphicsRenderCommandQueue(this);
 
-        _cbvSrvUavDescriptorSize = _d3d12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-        _dsvDescriptorSize = _d3d12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
-        _rtvDescriptorSize = _d3d12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-        _samplerDescriptorSize = _d3d12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER);
+        _cbvSrvUavDescriptorSize = d3d12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+        _dsvDescriptorSize = d3d12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+        _rtvDescriptorSize = d3d12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+        _samplerDescriptorSize = d3d12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER);
 
         _memoryManagers = CreateMemoryManagers(createOptions.CreateMemoryAllocator);
 
@@ -110,7 +112,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
 
             D3D12_FEATURE_DATA_D3D12_OPTIONS d3d12Options;
 
-            if (_d3d12Device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12Options, SizeOf<D3D12_FEATURE_DATA_D3D12_OPTIONS>()).SUCCEEDED && (d3d12Options.ResourceHeapTier >= D3D12_RESOURCE_HEAP_TIER_2))
+            if (_d3d12Device.Get()->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12Options, SizeOf<D3D12_FEATURE_DATA_D3D12_OPTIONS>()).SUCCEEDED && (d3d12Options.ResourceHeapTier >= D3D12_RESOURCE_HEAP_TIER_2))
             {
                 memoryManagers = new D3D12GraphicsMemoryManager[MaxMemoryManagerKinds];
 
@@ -251,40 +253,11 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
     {
         if (isDisposing)
         {
-            for (var index = _buffers.Count - 1; index >= 0; index--)
-            {
-                var buffer = _buffers.GetReferenceUnsafe(index);
-                buffer.Dispose();
-            }
-            _buffers.Clear();
-
-            for (var index = _pipelineSignatures.Count - 1; index >= 0; index--)
-            {
-                var pipelineSignature = _pipelineSignatures.GetReferenceUnsafe(index);
-                pipelineSignature.Dispose();
-            }
-            _pipelineSignatures.Clear();
-
-            for (var index = _renderPasses.Count - 1; index >= 0; index--)
-            {
-                var renderPass = _renderPasses.GetReferenceUnsafe(index);
-                renderPass.Dispose();
-            }
-            _renderPasses.Clear();
-
-            for (var index = _shaders.Count - 1; index >= 0; index--)
-            {
-                var shader = _shaders.GetReferenceUnsafe(index);
-                shader.Dispose();
-            }
-            _shaders.Clear();
-
-            for (var index = _textures.Count - 1; index >= 0; index--)
-            {
-                var texture = _textures.GetReferenceUnsafe(index);
-                texture.Dispose();
-            }
-            _textures.Clear();
+            _buffers.Dispose();
+            _pipelineSignatures.Dispose();
+            _renderPasses.Dispose();
+            _shaders.Dispose();
+            _textures.Dispose();
 
             DeviceInfo.ComputeQueue.Dispose();
             DeviceInfo.CopyQueue.Dispose();
@@ -295,17 +268,10 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
                 memoryManager.Dispose();
             }
 
-            for (var index = _fences.Count - 1; index >= 0; index--)
-            {
-                var fence = _fences.GetReferenceUnsafe(index);
-                fence.Dispose();
-            }
-            _fences.Clear();
+            _fences.Dispose();
         }
 
-        ReleaseIfNotNull(_d3d12Device);
-        _d3d12Device = null;
-
+        _ = _d3d12Device.Reset();
         _ = Adapter.RemoveDevice(this);
     }
 

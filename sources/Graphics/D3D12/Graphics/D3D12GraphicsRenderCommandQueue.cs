@@ -3,10 +3,12 @@
 using TerraFX.Collections;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
+using TerraFX.Interop.Windows;
 using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_COMMAND_QUEUE_FLAGS;
 using static TerraFX.Interop.Windows.Windows;
+using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
@@ -15,7 +17,7 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsRenderCommandQueue : GraphicsRenderCommandQueue
 {
-    private ID3D12CommandQueue* _d3d12CommandQueue;
+    private ComPtr<ID3D12CommandQueue> _d3d12CommandQueue;
     private readonly uint _d3d12CommandQueueVersion;
 
     private ValuePool<D3D12GraphicsRenderContext> _renderContexts;
@@ -76,19 +78,14 @@ public sealed unsafe class D3D12GraphicsRenderCommandQueue : GraphicsRenderComma
     {
         if (isDisposing)
         {
-            foreach (var renderContext in _renderContexts)
-            {
-                renderContext.Dispose();
-            }
-            _renderContexts.Clear();
+            _renderContexts.Dispose();
 
             _waitForIdleFence.Dispose();
             _waitForIdleFence = null!;
         }
         _renderContextsMutex.Dispose();
 
-        ReleaseIfNotNull(_d3d12CommandQueue);
-        _d3d12CommandQueue = null;
+        _ = _d3d12CommandQueue.Reset();
     }
 
     /// <inheritdoc />

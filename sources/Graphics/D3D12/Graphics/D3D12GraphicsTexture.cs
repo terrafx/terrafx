@@ -4,12 +4,14 @@ using System.Threading;
 using TerraFX.Collections;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
+using TerraFX.Interop.Windows;
 using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12;
 using static TerraFX.Interop.DirectX.D3D12_RESOURCE_FLAGS;
 using static TerraFX.Interop.DirectX.D3D12_RESOURCE_STATES;
 using static TerraFX.Interop.DirectX.D3D12_TEXTURE_LAYOUT;
 using static TerraFX.Interop.Windows.Windows;
+using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -21,7 +23,7 @@ public sealed unsafe partial class D3D12GraphicsTexture : GraphicsTexture
 {
     private readonly D3D12_RESOURCE_STATES _defaultResourceState;
 
-    private ID3D12Resource* _d3d12Resource;
+    private ComPtr<ID3D12Resource> _d3d12Resource;
     private readonly uint _d3d12ResourceVersion;
 
     private readonly UnmanagedArray<D3D12_PLACED_SUBRESOURCE_FOOTPRINT> _d3d12PlacedSubresourceFootprints;
@@ -142,7 +144,7 @@ public sealed unsafe partial class D3D12GraphicsTexture : GraphicsTexture
         {
             var mipLevelCount = TextureInfo.MipLevelCount;
             var d3d12PlacedSubresourceFootprints = new UnmanagedArray<D3D12_PLACED_SUBRESOURCE_FOOTPRINT>(mipLevelCount);
-            var d3d12ResourceDesc = _d3d12Resource->GetDesc();
+            var d3d12ResourceDesc = _d3d12Resource.Get()->GetDesc();
 
             Device.D3D12Device->GetCopyableFootprints(
                 &d3d12ResourceDesc,
@@ -197,13 +199,7 @@ public sealed unsafe partial class D3D12GraphicsTexture : GraphicsTexture
     {
         if (isDisposing)
         {
-            for (var index = _textureViews.Count - 1; index >= 0; index--)
-            {
-                var textureView = _textureViews.GetReferenceUnsafe(index);
-                textureView.Dispose();
-            }
-            _textureViews.Clear();
-
+            _textureViews.Dispose();
             _memoryHeap = null!;
         }
         _textureViewsMutex.Dispose();
@@ -216,8 +212,7 @@ public sealed unsafe partial class D3D12GraphicsTexture : GraphicsTexture
         ResourceInfo.MappedAddress = null;
         ResourceInfo.MemoryRegion.Dispose();
 
-        ReleaseIfNotNull(_d3d12Resource);
-        _d3d12Resource = null;
+        _ = _d3d12Resource.Reset();
 
         _ = Device.RemoveTexture(this);
     }

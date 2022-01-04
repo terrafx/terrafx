@@ -24,13 +24,13 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
     private readonly uint _minimumRenderTargetCount;
     private DXGI_SWAP_CHAIN_DESC1 _dxgiSwapchainDesc;
 
-    private ID3D12DescriptorHeap* _d3d12DsvDescriptorHeap;
+    private ComPtr<ID3D12DescriptorHeap> _d3d12DsvDescriptorHeap;
     private readonly uint _d3d12DsvDescriptorHeapVersion;
 
-    private ID3D12DescriptorHeap* _d3d12RtvDescriptorHeap;
+    private ComPtr<ID3D12DescriptorHeap> _d3d12RtvDescriptorHeap;
     private readonly uint _d3d12RtvDescriptorHeapVersion;
 
-    private IDXGISwapChain1* _dxgiSwapchain;
+    private ComPtr<IDXGISwapChain1> _dxgiSwapchain;
     private readonly uint _dxgiSwapchainVersion;
 
     internal D3D12GraphicsSwapchain(D3D12GraphicsRenderPass renderPass, in D3D12GraphicsSwapchainCreateOptions createOptions) : base(renderPass)
@@ -209,11 +209,8 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
             SwapchainInfo.RenderTargets = null!;
         }
 
-        ReleaseIfNotNull(_d3d12RtvDescriptorHeap);
-        _d3d12RtvDescriptorHeap = null;
-
-        ReleaseIfNotNull(_dxgiSwapchain);
-        _dxgiSwapchain = null;
+        _ = _d3d12RtvDescriptorHeap.Reset();
+        _ = _dxgiSwapchain.Reset();
     }
 
     /// <inheritdoc />
@@ -233,7 +230,7 @@ public sealed unsafe class D3D12GraphicsSwapchain : GraphicsSwapchain
 
         if (_dxgiSwapchainVersion >= 3)
         {
-            var dxgiSwapchain3 = (IDXGISwapChain3*)_dxgiSwapchain;
+            var dxgiSwapchain3 = (IDXGISwapChain3*)DxgiSwapchain;
             return (int)dxgiSwapchain3->GetCurrentBackBufferIndex();
         }
         else

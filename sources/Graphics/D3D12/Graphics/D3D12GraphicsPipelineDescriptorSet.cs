@@ -2,6 +2,7 @@
 
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
+using TerraFX.Interop.Windows;
 using static TerraFX.Interop.DirectX.D3D12;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_FLAGS;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_TYPE;
@@ -16,10 +17,10 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsPipelineDescriptorSet : GraphicsPipelineDescriptorSet
 {
-    private ID3D12DescriptorHeap* _d3d12CbvSrvUavDescriptorHeap;
+    private ComPtr<ID3D12DescriptorHeap> _d3d12CbvSrvUavDescriptorHeap;
     private readonly uint _d3d12CbvSrvUavDescriptorHeapVersion;
 
-    private ID3D12DescriptorHeap* _d3d12SamplerDescriptorHeap;
+    private ComPtr<ID3D12DescriptorHeap> _d3d12SamplerDescriptorHeap;
     private readonly uint _d3d12SamplerDescriptorHeapVersion;
 
     internal D3D12GraphicsPipelineDescriptorSet(D3D12GraphicsPipeline pipeline, in GraphicsPipelineDescriptorSetCreateOptions createOptions) : base(pipeline)
@@ -215,11 +216,8 @@ public sealed unsafe class D3D12GraphicsPipelineDescriptorSet : GraphicsPipeline
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        ReleaseIfNotNull(_d3d12CbvSrvUavDescriptorHeap);
-        _d3d12CbvSrvUavDescriptorHeap = null;
-
-        ReleaseIfNotNull(_d3d12SamplerDescriptorHeap);
-        _d3d12SamplerDescriptorHeap = null;
+        _ = _d3d12CbvSrvUavDescriptorHeap.Reset();
+        _ = _d3d12SamplerDescriptorHeap.Reset();
     }
 
     /// <inheritdoc />

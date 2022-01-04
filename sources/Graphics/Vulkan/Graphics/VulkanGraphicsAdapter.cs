@@ -4,11 +4,12 @@ using TerraFX.Collections;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
-using TerraFX.Utilities;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
 
@@ -123,12 +124,7 @@ public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     {
         if (isDisposing)
         {
-            for (var index = _devices.Count - 1; index >= 0; index--)
-            {
-                var device = _devices.GetReferenceUnsafe(index);
-                device.Dispose();
-            }
-            _devices.Clear();
+            _devices.Dispose();
         }
         _devicesMutex.Dispose();
 

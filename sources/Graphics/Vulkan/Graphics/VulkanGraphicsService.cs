@@ -15,6 +15,7 @@ using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.VkValidationFeatureEnableEXT;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Utilities.AppContextUtilities;
+using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -72,7 +73,7 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
 
     private readonly VkInstanceManualImports _vkInstanceManualImports;
 
-    private readonly ValueList<VulkanGraphicsAdapter> _adapters;
+    private ValueList<VulkanGraphicsAdapter> _adapters;
 
     /// <summary>Initializes a new instance of the <see cref="VulkanGraphicsService" /> class.</summary>
     public VulkanGraphicsService()
@@ -360,12 +361,7 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
     {
         if (isDisposing)
         {
-            for (var index = _adapters.Count - 1; index >= 0; index--)
-            {
-                var adapter = _adapters.GetReferenceUnsafe(index);
-                adapter.Dispose();
-            }
-            _adapters.Clear();
+            _adapters.Dispose();
         }
 
         var vkInstance = _vkInstance;

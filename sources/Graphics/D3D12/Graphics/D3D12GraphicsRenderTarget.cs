@@ -2,6 +2,7 @@
 
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
+using TerraFX.Interop.Windows;
 using static TerraFX.Interop.DirectX.D3D12_RTV_DIMENSION;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.D3D12Utilities;
@@ -14,7 +15,7 @@ public sealed unsafe class D3D12GraphicsRenderTarget : GraphicsRenderTarget
 {
     private readonly D3D12_CPU_DESCRIPTOR_HANDLE _d3d12RtvDescriptorHandle;
 
-    private ID3D12Resource* _d3d12RtvResource;
+    private ComPtr<ID3D12Resource> _d3d12RtvResource;
     private readonly uint _d3d12RtvResourceVersion;
 
     internal D3D12GraphicsRenderTarget(D3D12GraphicsSwapchain swapchain, int index) : base(swapchain)
@@ -77,8 +78,7 @@ public sealed unsafe class D3D12GraphicsRenderTarget : GraphicsRenderTarget
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        ReleaseIfNotNull(_d3d12RtvResource);
-        _d3d12RtvResource = null;
+        _ = _d3d12RtvResource.Reset();
     }
 
     /// <inheritdoc />

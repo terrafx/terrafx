@@ -10,7 +10,6 @@ using TerraFX.Collections;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
-using TerraFX.Utilities;
 using static TerraFX.Interop.Vulkan.VkMemoryHeapFlags;
 using static TerraFX.Interop.Vulkan.VkMemoryPropertyFlags;
 using static TerraFX.Interop.Vulkan.VkObjectType;
@@ -20,6 +19,7 @@ using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -320,40 +320,11 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     {
         if (isDisposing)
         {
-            for (var index = _buffers.Count - 1; index >= 0; index--)
-            {
-                var buffer = _buffers.GetReferenceUnsafe(index);
-                buffer.Dispose();
-            }
-            _buffers.Clear();
-
-            for (var index = _pipelineSignatures.Count - 1; index >= 0; index--)
-            {
-                var pipelineSignature = _pipelineSignatures.GetReferenceUnsafe(index);
-                pipelineSignature.Dispose();
-            }
-            _pipelineSignatures.Clear();
-
-            for (var index = _renderPasses.Count - 1; index >= 0; index--)
-            {
-                var renderPass = _renderPasses.GetReferenceUnsafe(index);
-                renderPass.Dispose();
-            }
-            _renderPasses.Clear();
-
-            for (var index = _shaders.Count - 1; index >= 0; index--)
-            {
-                var shader = _shaders.GetReferenceUnsafe(index);
-                shader.Dispose();
-            }
-            _shaders.Clear();
-
-            for (var index = _textures.Count - 1; index >= 0; index--)
-            {
-                var texture = _textures.GetReferenceUnsafe(index);
-                texture.Dispose();
-            }
-            _textures.Clear();
+            _buffers.Dispose();
+            _pipelineSignatures.Dispose();
+            _renderPasses.Dispose();
+            _shaders.Dispose();
+            _textures.Dispose();
 
             DeviceInfo.ComputeQueue.Dispose();
             DeviceInfo.CopyQueue.Dispose();
@@ -364,12 +335,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
                 memoryManager.Dispose();
             }
 
-            for (var index = _fences.Count - 1; index >= 0; index--)
-            {
-                var fence = _fences.GetReferenceUnsafe(index);
-                fence.Dispose();
-            }
-            _fences.Clear();
+            _fences.Dispose();
         }
 
         DisposeVkDevice(_vkDevice);

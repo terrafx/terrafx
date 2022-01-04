@@ -4,10 +4,10 @@ using TerraFX.Collections;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.Vulkan;
 using TerraFX.Threading;
-using TerraFX.Utilities;
 using static TerraFX.Interop.Vulkan.VkObjectType;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
+using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VulkanUtilities;
 
@@ -73,11 +73,7 @@ public sealed unsafe class VulkanGraphicsCopyCommandQueue : GraphicsCopyCommandQ
     {
         if (isDisposing)
         {
-            foreach (var copyContext in _copyContexts)
-            {
-                copyContext.Dispose();
-            }
-            _copyContexts.Clear();
+            _copyContexts.Dispose();
         }
         _copyContextsMutex.Dispose();
 

@@ -289,7 +289,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         {
             nuint result = 0;
 
-            for (var index = memoryAllocators.Length; index-- != 0;)
+            for (var index = memoryAllocators.Length; index >= 0; index--)
             {
                 var memoryAllocatorByteLength = memoryAllocators[index].ByteLength;
 
@@ -429,10 +429,11 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
             {
                 // Something failed so free all already allocated regions
 
-                while (index-- != 0)
+                while (index >= 0)
                 {
                     FreeNoMutex(memoryRegions[index].MemoryAllocator, in memoryRegions[index]);
                     memoryRegions[index] = default;
+                    index--;
                 }
 
                 break;
@@ -465,7 +466,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
             var emptyMemoryAllocator = null as GraphicsMemoryAllocator;
             var minimumMemoryAllocatorCount = MinimumMemoryAllocatorCount;
 
-            for (var index = memoryAllocatorCount; index-- != 0;)
+            for (var index = memoryAllocatorCount; index >= 0; index--)
             {
                 var memoryAllocator = _memoryAllocators.GetReferenceUnsafe(index);
 

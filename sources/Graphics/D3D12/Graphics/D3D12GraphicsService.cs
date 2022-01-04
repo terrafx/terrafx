@@ -3,10 +3,12 @@
 using System.Collections.Generic;
 using TerraFX.Collections;
 using TerraFX.Interop.DirectX;
+using TerraFX.Interop.Windows;
 using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.DirectX.DXGI;
 using static TerraFX.Interop.DirectX.DXGI_DEBUG_RLO_FLAGS;
 using static TerraFX.Interop.Windows.Windows;
+using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -15,10 +17,10 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsService : GraphicsService
 {
-    private IDXGIFactory3* _dxgiFactory;
+    private ComPtr<IDXGIFactory3> _dxgiFactory;
     private readonly uint _dxgiFactoryVersion;
 
-    private readonly ValueList<D3D12GraphicsAdapter> _adapters;
+    private ValueList<D3D12GraphicsAdapter> _adapters;
 
     /// <summary>Initializes a new instance of the <see cref="D3D12GraphicsService" /> class.</summary>
     public D3D12GraphicsService()
@@ -43,7 +45,7 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
             var adapters = new ValueList<D3D12GraphicsAdapter>();
             var index = 0u;
 
-            var dxgiFactory = _dxgiFactory;
+            var dxgiFactory = _dxgiFactory.Get();
 
             do
             {
@@ -121,16 +123,10 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
     {
         if (isDisposing)
         {
-            for (var index = _adapters.Count - 1; index >= 0; index--)
-            {
-                var adapter = _adapters.GetReferenceUnsafe(index);
-                adapter.Dispose();
-            }
-            _adapters.Clear();
+            _adapters.Dispose();
         }
 
-        ReleaseIfNotNull(_dxgiFactory);
-        _dxgiFactory = null;
+        _ = _dxgiFactory.Reset();
 
         ReportLiveObjects();
 

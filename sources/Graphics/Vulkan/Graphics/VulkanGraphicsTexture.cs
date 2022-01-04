@@ -19,6 +19,7 @@ using static TerraFX.Interop.Vulkan.VkSamplerMipmapMode;
 using static TerraFX.Interop.Vulkan.VkSharingMode;
 using static TerraFX.Interop.Vulkan.VkStructureType;
 using static TerraFX.Interop.Vulkan.Vulkan;
+using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.GraphicsUtilities;
 using static TerraFX.Utilities.MathUtilities;
@@ -234,12 +235,7 @@ public sealed unsafe partial class VulkanGraphicsTexture : GraphicsTexture
     {
         if (isDisposing)
         {
-            for (var index = _textureViews.Count - 1; index >= 0; index--)
-            {
-                var textureView = _textureViews.GetReferenceUnsafe(index);
-                textureView.Dispose();
-            }
-            _textureViews.Clear();
+            _textureViews.Dispose();
 
             _memoryHeap = null!;
         }

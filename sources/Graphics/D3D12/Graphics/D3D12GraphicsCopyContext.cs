@@ -2,6 +2,7 @@
 
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
+using TerraFX.Interop.Windows;
 using static TerraFX.Interop.DirectX.D3D12_COMMAND_LIST_FLAGS;
 using static TerraFX.Interop.DirectX.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.Windows.Windows;
@@ -13,10 +14,10 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsCopyContext : GraphicsCopyContext
 {
-    private ID3D12CommandAllocator* _d3d12CommandAllocator;
+    private ComPtr<ID3D12CommandAllocator> _d3d12CommandAllocator;
     private readonly uint _d3d12CommandAllocatorVersion;
 
-    private ID3D12GraphicsCommandList* _d3d12GraphicsCommandList;
+    private ComPtr<ID3D12GraphicsCommandList> _d3d12GraphicsCommandList;
     private readonly uint _d3d12GraphicsCommandListVersion;
 
     internal D3D12GraphicsCopyContext(D3D12GraphicsCopyCommandQueue copyCommandQueue) : base(copyCommandQueue)
@@ -115,11 +116,8 @@ public sealed unsafe class D3D12GraphicsCopyContext : GraphicsCopyContext
             ContextInfo.Fence = null!;
         }
 
-        ReleaseIfNotNull(_d3d12GraphicsCommandList);
-        _d3d12GraphicsCommandList = null;
-
-        ReleaseIfNotNull(_d3d12CommandAllocator);
-        _d3d12CommandAllocator = null;
+        _ = _d3d12GraphicsCommandList.Reset();
+        _ = _d3d12CommandAllocator.Reset();
 
         _ = CommandQueue.RemoveCopyContext(this);
     }

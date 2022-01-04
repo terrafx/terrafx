@@ -23,10 +23,10 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
 {
-    private ID3D12CommandAllocator* _d3d12CommandAllocator;
+    private ComPtr<ID3D12CommandAllocator> _d3d12CommandAllocator;
     private readonly uint _d3d12CommandAllocatorVersion;
 
-    private ID3D12GraphicsCommandList* _d3d12GraphicsCommandList;
+    private ComPtr<ID3D12GraphicsCommandList> _d3d12GraphicsCommandList;
     private readonly uint _d3d12GraphicsCommandListVersion;
 
     private D3D12GraphicsRenderPass? _renderPass;
@@ -365,11 +365,8 @@ public sealed unsafe class D3D12GraphicsRenderContext : GraphicsRenderContext
             ContextInfo.Fence = null!;
         }
 
-        ReleaseIfNotNull(_d3d12GraphicsCommandList);
-        _d3d12GraphicsCommandList = null;
-
-        ReleaseIfNotNull(_d3d12CommandAllocator);
-        _d3d12CommandAllocator = null;
+        _ = _d3d12GraphicsCommandList.Reset();
+        _ = _d3d12CommandAllocator.Reset();
 
         _ = CommandQueue.RemoveRenderContext(this);
     }

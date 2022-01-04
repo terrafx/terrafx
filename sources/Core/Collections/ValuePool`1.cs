@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using TerraFX.Threading;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections;
@@ -127,6 +128,8 @@ public unsafe partial struct ValuePool<T> : IEnumerable<T>
         using var disposableMutex = new DisposableMutex(mutex, isExternallySynchronized: false);
         Return(item);
     }
+
+    internal ref T GetReferenceUnsafe(int index) => ref _items.GetReferenceUnsafe(index);
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

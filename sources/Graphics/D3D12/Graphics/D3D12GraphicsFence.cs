@@ -15,7 +15,7 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsFence : GraphicsFence
 {
-    private ID3D12Fence* _d3d12Fence;
+    private ComPtr<ID3D12Fence> _d3d12Fence;
     private readonly uint _d3d12FenceVersion;
 
     private HANDLE _signalEventHandle;
@@ -68,8 +68,7 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        ReleaseIfNotNull(_d3d12Fence);
-        _d3d12Fence = null;
+        _ = _d3d12Fence.Reset();
 
         CloseIfNotNull(_signalEventHandle);
         _signalEventHandle = HANDLE.NULL;
@@ -81,7 +80,7 @@ public sealed unsafe class D3D12GraphicsFence : GraphicsFence
     protected override void ResetUnsafe()
     {
         ThrowForLastErrorIfZero(ResetEvent(_signalEventHandle));
-        ThrowExternalExceptionIfFailed(_d3d12Fence->Signal(0));
+        ThrowExternalExceptionIfFailed(D3D12Fence->Signal(0));
     }
 
     /// <inheritdoc />

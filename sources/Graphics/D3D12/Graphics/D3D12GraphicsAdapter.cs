@@ -3,18 +3,20 @@
 using TerraFX.Collections;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
+using TerraFX.Interop.Windows;
 using TerraFX.Threading;
-using TerraFX.Utilities;
 using static TerraFX.Interop.DirectX.DXGI_MEMORY_SEGMENT_GROUP;
+using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.MarshalUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
 {
-    private IDXGIAdapter1* _dxgiAdapter;
+    private ComPtr<IDXGIAdapter1> _dxgiAdapter;
     private readonly uint _dxgiAdapterVersion;
 
     private ValueList<D3D12GraphicsDevice> _devices;
@@ -25,7 +27,7 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
         _dxgiAdapter = GetLatestDxgiAdapter(dxgiAdapter, out _dxgiAdapterVersion);
 
         DXGI_ADAPTER_DESC1 dxgiAdapterDesc;
-        ThrowExternalExceptionIfFailed(_dxgiAdapter->GetDesc1(&dxgiAdapterDesc));
+        ThrowExternalExceptionIfFailed(dxgiAdapter->GetDesc1(&dxgiAdapterDesc));
 
         AdapterInfo.Description = GetUtf16Span(dxgiAdapterDesc.Description, 128).GetString() ?? string.Empty;
         AdapterInfo.PciDeviceId = dxgiAdapterDesc.DeviceId;
@@ -92,17 +94,11 @@ public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
     {
         if (isDisposing)
         {
-            for (var index = _devices.Count - 1; index >= 0; index--)
-            {
-                var device = _devices.GetReferenceUnsafe(index);
-                device.Dispose();
-            }
-            _devices.Clear();
+            _devices.Dispose();
         }
         _devicesMutex.Dispose();
 
-        ReleaseIfNotNull(_dxgiAdapter);
-        _dxgiAdapter = null;
+        _ = _dxgiAdapter.Reset();
     }
 
     /// <inheritdoc />

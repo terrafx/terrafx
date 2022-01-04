@@ -3,7 +3,7 @@
 using System;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
-using TerraFX.Utilities;
+using TerraFX.Interop.Windows;
 using static TerraFX.Interop.DirectX.D3D12_INDEX_BUFFER_STRIP_CUT_VALUE;
 using static TerraFX.Interop.DirectX.D3D12_INPUT_CLASSIFICATION;
 using static TerraFX.Interop.DirectX.D3D12_PIPELINE_STATE_FLAGS;
@@ -19,7 +19,7 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
 {
-    private ID3D12PipelineState* _d3d12PipelineState;
+    private ComPtr<ID3D12PipelineState> _d3d12PipelineState;
     private readonly uint _d3d12PipelineStateVersion;
 
     internal D3D12GraphicsPipeline(D3D12GraphicsRenderPass renderPass, in GraphicsPipelineCreateOptions createOptions) : base(renderPass)
@@ -215,8 +215,7 @@ public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
             PipelineInfo.VertexShader = null!;
         }
 
-        ReleaseIfNotNull(_d3d12PipelineState);
-        _d3d12PipelineState = null;
+        _ = _d3d12PipelineState.Reset();
     }
 
     /// <inheritdoc />

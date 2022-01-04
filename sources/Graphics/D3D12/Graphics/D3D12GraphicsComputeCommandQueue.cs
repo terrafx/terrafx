@@ -3,10 +3,12 @@
 using TerraFX.Collections;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
+using TerraFX.Interop.Windows;
 using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_COMMAND_QUEUE_FLAGS;
 using static TerraFX.Interop.Windows.Windows;
+using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
@@ -15,7 +17,7 @@ namespace TerraFX.Graphics;
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsComputeCommandQueue : GraphicsComputeCommandQueue
 {
-    private ID3D12CommandQueue* _d3d12CommandQueue;
+    private ComPtr<ID3D12CommandQueue> _d3d12CommandQueue;
     private readonly uint _d3d12CommandQueueVersion;
 
     private ValuePool<D3D12GraphicsComputeContext> _computeContexts;
@@ -51,6 +53,9 @@ public sealed unsafe class D3D12GraphicsComputeCommandQueue : GraphicsComputeCom
         }
     }
 
+    /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsComputeCommandQueue" /> class.</summary>
+    ~D3D12GraphicsComputeCommandQueue() => Dispose(isDisposing: false);
+
     /// <inheritdoc cref="GraphicsAdapterObject.Adapter" />
     public new D3D12GraphicsAdapter Adapter => base.Adapter.As<D3D12GraphicsAdapter>();
 
@@ -76,19 +81,14 @@ public sealed unsafe class D3D12GraphicsComputeCommandQueue : GraphicsComputeCom
     {
         if (isDisposing)
         {
-            foreach (var computeContext in _computeContexts)
-            {
-                computeContext.Dispose();
-            }
-            _computeContexts.Clear();
+            _computeContexts.Dispose();
 
             _waitForIdleFence.Dispose();
             _waitForIdleFence = null!;
         }
         _computeContextsMutex.Dispose();
 
-        ReleaseIfNotNull(_d3d12CommandQueue);
-        _d3d12CommandQueue = null;
+        _ = _d3d12CommandQueue.Reset();
     }
 
     /// <inheritdoc />

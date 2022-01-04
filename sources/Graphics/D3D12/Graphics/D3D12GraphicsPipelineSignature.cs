@@ -12,13 +12,14 @@ using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using TerraFX.Graphics.Advanced;
+using TerraFX.Interop.Windows;
 
 namespace TerraFX.Graphics;
 
 /// <inheritdoc />
 public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSignature
 {
-    private readonly ID3D12RootSignature* _d3d12RootSignature;
+    private ComPtr<ID3D12RootSignature> _d3d12RootSignature;
 
     internal D3D12GraphicsPipelineSignature(D3D12GraphicsDevice device, in GraphicsPipelineSignatureCreateOptions createOptions) : base(device)
     {
@@ -249,8 +250,7 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing)
     {
-        ReleaseIfNotNull(_d3d12RootSignature);
-
+        _ = _d3d12RootSignature.Reset();
         _ = Device.RemovePipelineSignature(this);
     }
 
