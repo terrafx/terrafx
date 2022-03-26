@@ -22,8 +22,6 @@ namespace TerraFX.UI;
 /// <summary>Provides access to a Win32 based window subsystem.</summary>
 public sealed unsafe class Win32UIService : UIService
 {
-    private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.VulkanGraphicsService.RequiredExtensionNames";
-
     /// <summary>A <c>HINSTANCE</c> to the entry point module.</summary>
     public static readonly HINSTANCE EntryPointModule = GetModuleHandleW(lpModuleName: null);
 
@@ -63,10 +61,6 @@ public sealed unsafe class Win32UIService : UIService
 
     private Win32UIService()
     {
-        var vulkanRequiredExtensionNamesDataName = AppContext.GetData(VulkanRequiredExtensionNamesDataName) as string;
-        vulkanRequiredExtensionNamesDataName += ";VK_KHR_surface;VK_KHR_win32_surface";
-        AppDomain.CurrentDomain.SetData(VulkanRequiredExtensionNamesDataName, vulkanRequiredExtensionNamesDataName);
-
         _classAtom = CreateClassAtom();
         _dispatchers = new Dictionary<Thread, Win32UIDispatcher>();
         _dispatchersLock = new ValueReaderWriterLock();

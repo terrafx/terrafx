@@ -139,52 +139,8 @@ public abstract class Sample : IDisposable
         }
         else
         {
-            var assetName = $"{shaderName}{kind}.glsl";
-            var assetPath = GetAssetFullPath("Shaders", shaderName, assetName);
-            var assetOutput = Path.ChangeExtension(assetPath, "spirv");
-
-            var additionalArgs = string.Empty;
-
-            if (GraphicsService.EnableDebugMode)
-            {
-                // Enable better shader debugging with the graphics debugging tools.
-                additionalArgs += $" -g -O0";
-            }
-            else
-            {
-                additionalArgs += $" -O";
-            }
-
-            var glslcProcessStartInfo = new ProcessStartInfo {
-                Arguments = $"-fshader-stage={GetVulkanShaderStage(kind)} -o \"{assetOutput}\" -std=450core --target-env=vulkan1.0 --target-spv=spv1.0 -x glsl{additionalArgs} {assetPath}",
-                FileName = "glslc",
-                WorkingDirectory = Path.GetDirectoryName(assetPath)!,
-            };
-            Process.Start(glslcProcessStartInfo)!.WaitForExit();
-
-            using var fileReader = File.OpenRead(assetOutput);
-
-            var bytecode = new UnmanagedArray<byte>((nuint)fileReader.Length);
-            _ = fileReader.Read(bytecode.AsSpan());
-
-            switch (kind)
-            {
-                case GraphicsShaderKind.Pixel:
-                {
-                    return graphicsDevice.CreatePixelShader(bytecode, entryPointName);
-                }
-
-                case GraphicsShaderKind.Vertex:
-                {
-                    return graphicsDevice.CreateVertexShader(bytecode, entryPointName);
-                }
-
-                default:
-                {
-                    ThrowForInvalidKind(kind);
-                    return null!;
-                }
-            }
+            ThrowNotImplementedException();
+            return null!;
         }
 
         static ReadOnlySpan<sbyte> GetD3D12CompileTarget(GraphicsShaderKind graphicsShaderKind)
@@ -214,35 +170,6 @@ public abstract class Sample : IDisposable
             }
 
             return d3d12CompileTarget;
-        }
-
-        static string GetVulkanShaderStage(GraphicsShaderKind graphicsShaderKind)
-        {
-            string vulkanShaderStage;
-
-            switch (graphicsShaderKind)
-            {
-                case GraphicsShaderKind.Vertex:
-                {
-                    vulkanShaderStage = "vertex";
-                    break;
-                }
-
-                case GraphicsShaderKind.Pixel:
-                {
-                    vulkanShaderStage = "fragment";
-                    break;
-                }
-
-                default:
-                {
-                    ThrowNotImplementedException();
-                    vulkanShaderStage = string.Empty;
-                    break;
-                }
-            }
-
-            return vulkanShaderStage;
         }
     }
 

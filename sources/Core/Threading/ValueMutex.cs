@@ -1,9 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Interop.LibC;
 using TerraFX.Interop.Windows;
-using static TerraFX.Interop.LibC.LibC;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -13,7 +11,6 @@ namespace TerraFX.Threading;
 /// <summary>Defines a lightweight mutual exclusion lock suitable for use in multimedia based applications.</summary>
 public readonly unsafe partial struct ValueMutex : IDisposable
 {
-    // This is a SRWLOCK* on Windows and pthread_mutex_t* on Linux
     private readonly void* _value;
 
     /// <summary>Initializes a new instance of the <see cref="ValueMutex" /> struct.</summary>
@@ -23,12 +20,6 @@ public readonly unsafe partial struct ValueMutex : IDisposable
         {
             var value = Allocate<SRWLOCK>();
             InitializeSRWLock(value);
-            _value = value;
-        }
-        else if (OperatingSystem.IsLinux())
-        {
-            var value = Allocate<pthread_mutex_t>();
-            value[0] = PTHREAD_MUTEX_INITIALIZER();
             _value = value;
         }
         else
@@ -49,12 +40,6 @@ public readonly unsafe partial struct ValueMutex : IDisposable
             var value = (SRWLOCK*)_value;
             Free(value);
         }
-        else if (OperatingSystem.IsLinux())
-        {
-            var value = (pthread_mutex_t*)_value;
-            ThrowForLastErrorIfNotZero(pthread_mutex_destroy(value));
-            Free(value);
-        }
         else
         {
             ThrowNotImplementedException();
@@ -68,11 +53,6 @@ public readonly unsafe partial struct ValueMutex : IDisposable
         {
             var value = (SRWLOCK*)_value;
             AcquireSRWLockExclusive(value);
-        }
-        else if (OperatingSystem.IsLinux())
-        {
-            var value = (pthread_mutex_t*)_value;
-            ThrowForLastErrorIfNotZero(pthread_mutex_lock(value));
         }
         else
         {
@@ -89,11 +69,6 @@ public readonly unsafe partial struct ValueMutex : IDisposable
             var value = (SRWLOCK*)_value;
             return TryAcquireSRWLockExclusive(value) != 0; 
         }
-        else if (OperatingSystem.IsLinux())
-        {
-            var value = (pthread_mutex_t*)_value;
-            return pthread_mutex_trylock(value) == 0;
-        }
         else
         {
             ThrowNotImplementedException();
@@ -108,11 +83,6 @@ public readonly unsafe partial struct ValueMutex : IDisposable
         {
             var value = (SRWLOCK*)_value;
             ReleaseSRWLockExclusive(value);
-        }
-        else if (OperatingSystem.IsLinux())
-        {
-            var value = (pthread_mutex_t*)_value;
-            ThrowForLastErrorIfNotZero(pthread_mutex_unlock(value));
         }
         else
         {

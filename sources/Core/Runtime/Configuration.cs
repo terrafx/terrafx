@@ -28,10 +28,6 @@ public static class Configuration
     /// <remarks>This value is not configurable via an <see cref="AppContext" /> switch.</remarks>
     public static readonly bool IsRelease = !IsDebug;
 
-    /// <summary><c>true</c> if TerraFX is currently running on <c>Linux</c>; otherwise, <c>false</c>.</summary>
-    /// <remarks>This value is not configurable via an <see cref="AppContext" /> switch.</remarks>
-    public static readonly bool IsLinux = OperatingSystem.IsLinux();
-
     /// <summary><c>true</c> if TerraFX is currently running on <c>Windows</c>; otherwise, <c>false</c>.</summary>
     /// <remarks>This value is not configurable via an <see cref="AppContext" /> switch.</remarks>
     public static readonly bool IsWindows = OperatingSystem.IsWindows();

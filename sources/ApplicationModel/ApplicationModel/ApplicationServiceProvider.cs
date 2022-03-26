@@ -2,7 +2,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using TerraFX.Audio;
 using TerraFX.Graphics;
 using TerraFX.Threading;
 using TerraFX.UI;
@@ -25,10 +24,6 @@ public abstract class ApplicationServiceProvider : IDisposable, IServiceProvider
     /// <summary>Finalizes an instance of the <see cref="ApplicationServiceProvider" /> class.</summary>
     ~ApplicationServiceProvider()
         => Dispose(isDisposing: false);
-
-    /// <summary>Gets the audio service for the application.</summary>
-    /// <exception cref="ArgumentOutOfRangeException">An audio service is not available for the application.</exception>
-    public IAudioService AudioService => GetService<IAudioService>();
 
     /// <summary>Gets the graphics service for the application.</summary>
     /// <exception cref="ArgumentOutOfRangeException">A graphics service is not available for the application.</exception>

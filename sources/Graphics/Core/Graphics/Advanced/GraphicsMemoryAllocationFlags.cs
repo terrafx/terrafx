@@ -3,9 +3,6 @@
 // This file includes code based on the ALLOCATION_FLAGS enum from https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator/
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
-// This file includes code based on the VmaAllocationCreateFlagBits enum from https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
-// The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
-
 using System;
 
 namespace TerraFX.Graphics.Advanced;

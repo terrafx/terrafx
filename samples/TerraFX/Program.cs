@@ -10,7 +10,6 @@ using System.Runtime.Versioning;
 using System.Threading;
 using TerraFX.ApplicationModel;
 using TerraFX.Numerics;
-using TerraFX.Samples.Audio;
 using TerraFX.Samples.Graphics;
 using TerraFX.Samples.ServiceProviders;
 using TerraFX.Samples.UI;
@@ -19,14 +18,10 @@ namespace TerraFX.Samples;
 
 public static unsafe class Program
 {
-    internal static readonly ApplicationServiceProvider s_pulseAudioServiceProvider = new PulseAudioServiceProvider();
-
-    internal static readonly ApplicationServiceProvider s_uiServiceProvider = OperatingSystem.IsWindows() ? new Win32UIServiceProvider() : new XlibWindowServiceProvider();
+    internal static readonly ApplicationServiceProvider s_uiServiceProvider = new Win32UIServiceProvider();
 
     [SupportedOSPlatform("windows10.0")]
     internal static readonly ApplicationServiceProvider s_d3d12GraphicsServiceProvider = new D3D12GraphicsServiceProvider();
-
-    internal static readonly ApplicationServiceProvider s_vulkanGraphicsServiceProvider = new VulkanGraphicsServiceProvider(s_uiServiceProvider);
 
     [SupportedOSPlatform("windows10.0")]
     private static readonly Sample[] s_d3d12Samples = {
@@ -44,28 +39,6 @@ public static unsafe class Program
         new HelloSierpinskiQuad("D3D12.HelloSierpinskiQuad", 6, s_d3d12GraphicsServiceProvider),
     };
 
-    private static readonly Sample[] s_vulkanSamples = {
-        new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapters", s_vulkanGraphicsServiceProvider),
-        new HelloWindow("Vulkan.HelloWindow", s_vulkanGraphicsServiceProvider),
-        new HelloTriangle("Vulkan.HelloTriangle", s_vulkanGraphicsServiceProvider),
-        new HelloQuad("Vulkan.HelloQuad", s_vulkanGraphicsServiceProvider),
-        new HelloTransform("Vulkan.HelloTransform", s_vulkanGraphicsServiceProvider),
-        new HelloTexture("Vulkan.HelloTexture", s_vulkanGraphicsServiceProvider),
-        new HelloTextureTransform("Vulkan.HelloTextureTransform", s_vulkanGraphicsServiceProvider),
-        new HelloInstancing("Vulkan.HelloInstancing", s_vulkanGraphicsServiceProvider),
-        new HelloTexture3D("Vulkan.HelloTexture3D", s_vulkanGraphicsServiceProvider),
-        new HelloSmoke("Vulkan.HelloSmoke", true, s_vulkanGraphicsServiceProvider),
-        new HelloSierpinskiPyramid("Vulkan.HelloSierpinskiPyramid", 5, s_vulkanGraphicsServiceProvider),
-        new HelloSierpinskiQuad("Vulkan.HelloSierpinskiQuad", 6, s_vulkanGraphicsServiceProvider),
-    };
-
-    private static readonly Sample[] s_pulseAudioSamples = {
-        new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Sync", false, s_pulseAudioServiceProvider),
-        new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Async", true, s_pulseAudioServiceProvider),
-
-        new PlaySampleAudio("PulseAudio.PlaySampleAudio", s_pulseAudioServiceProvider),
-    };
-
     private static readonly Sample[] s_uiSamples = {
         new EmptyWindow("UI.EmptyWindow", s_uiServiceProvider),
     };
@@ -76,24 +49,8 @@ public static unsafe class Program
         {
             var samples = Enumerable.Empty<Sample>();
 
-            samples = samples.Concat(AudioSamples);
             samples = samples.Concat(GraphicsSamples);
             samples = samples.Concat(UISamples);
-
-            return samples;
-        }
-    }
-
-    private static IEnumerable<Sample> AudioSamples
-    {
-        get
-        {
-            var samples = Enumerable.Empty<Sample>();
-
-            if (OperatingSystem.IsLinux())
-            {
-                samples = samples.Concat(s_pulseAudioSamples);
-            }
 
             return samples;
         }
@@ -110,11 +67,6 @@ public static unsafe class Program
                 samples = samples.Concat(s_d3d12Samples);
             }
 
-            if (OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
-            {
-                samples = samples.Concat(s_vulkanSamples);
-            }
-
             return samples;
         }
     }
@@ -125,7 +77,7 @@ public static unsafe class Program
         {
             var samples = Enumerable.Empty<Sample>();
 
-            if (OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
+            if (OperatingSystem.IsWindows())
             {
                 samples = samples.Concat(s_uiSamples);
             }
@@ -250,16 +202,6 @@ public static unsafe class Program
             if (OperatingSystem.IsWindowsVersionAtLeast(10))
             {
                 s_d3d12GraphicsServiceProvider.Dispose();
-            }
-
-            if (OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
-            {
-                s_vulkanGraphicsServiceProvider.Dispose();
-            }
-
-            if (OperatingSystem.IsLinux())
-            {
-                s_pulseAudioServiceProvider.Dispose();
             }
         }
         else

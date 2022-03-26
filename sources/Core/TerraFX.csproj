@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TerraFX.Interop.Libc" />
     <PackageReference Include="TerraFX.Interop.Mimalloc" />
     <PackageReference Include="TerraFX.Interop.Windows" />
   </ItemGroup>
