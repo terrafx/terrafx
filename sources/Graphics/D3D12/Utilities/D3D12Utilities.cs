@@ -13,8 +13,6 @@ using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
-[assembly: SupportedOSPlatform("windows10.0")]
-
 namespace TerraFX.Utilities;
 
 internal static unsafe partial class D3D12Utilities

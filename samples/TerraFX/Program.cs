@@ -20,10 +20,8 @@ public static unsafe class Program
 {
     internal static readonly ApplicationServiceProvider s_uiServiceProvider = new Win32UIServiceProvider();
 
-    [SupportedOSPlatform("windows10.0")]
     internal static readonly ApplicationServiceProvider s_d3d12GraphicsServiceProvider = new D3D12GraphicsServiceProvider();
 
-    [SupportedOSPlatform("windows10.0")]
     private static readonly Sample[] s_d3d12Samples = {
         new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_d3d12GraphicsServiceProvider),
         new HelloWindow("D3D12.HelloWindow", s_d3d12GraphicsServiceProvider),
