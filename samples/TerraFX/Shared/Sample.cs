@@ -67,80 +67,72 @@ public abstract class Sample : IDisposable
 
     protected unsafe GraphicsShader CompileShader(GraphicsDevice graphicsDevice, GraphicsShaderKind kind, string shaderName, string entryPointName)
     {
-        if (OperatingSystem.IsWindowsVersionAtLeast(10) && (_serviceProvider == Program.s_d3d12GraphicsServiceProvider))
+        var assetName = $"{shaderName}{kind}.hlsl";
+
+        fixed (char* assetPath = GetAssetFullPath("Shaders", shaderName, assetName))
+        fixed (sbyte* entryPoint = entryPointName.GetUtf8Span())
         {
-            var assetName = $"{shaderName}{kind}.hlsl";
+            var compileFlags = 0u;
 
-            fixed (char* assetPath = GetAssetFullPath("Shaders", shaderName, assetName))
-            fixed (sbyte* entryPoint = entryPointName.GetUtf8Span())
+            if (GraphicsService.EnableDebugMode)
             {
-                var compileFlags = 0u;
+                // Enable better shader debugging with the graphics debugging tools.
+                compileFlags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+            }
+            else
+            {
+                compileFlags |= D3DCOMPILE_OPTIMIZATION_LEVEL3;
+            }
 
-                if (GraphicsService.EnableDebugMode)
+            ID3DBlob* d3dShaderBlob = null;
+            ID3DBlob* d3dShaderErrorBlob = null;
+
+            try
+            {
+                var result = D3DCompileFromFile((ushort*)assetPath, pDefines: null, D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).GetPointer(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &d3dShaderErrorBlob);
+
+                if (FAILED(result))
                 {
-                    // Enable better shader debugging with the graphics debugging tools.
-                    compileFlags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+                    // todo: var span = TerraFX.Utilities.InteropUtilities.MarshalUtf8ToReadOnlySpan((sbyte*)pError->GetBufferPointer(), (int)pError->GetBufferSize());
+                    var errorMsg = System.Text.Encoding.UTF8.GetString((byte*)d3dShaderErrorBlob->GetBufferPointer(), (int)d3dShaderErrorBlob->GetBufferSize());
+                    Console.WriteLine(errorMsg);
+                    ThrowExternalException(nameof(D3DCompileFromFile), result);
                 }
-                else
+
+                var bytecode = new UnmanagedArray<byte>(d3dShaderBlob->GetBufferSize());
+                new UnmanagedReadOnlySpan<byte>((byte*)d3dShaderBlob->GetBufferPointer(), bytecode.Length).CopyTo(bytecode);
+
+                switch (kind)
                 {
-                    compileFlags |= D3DCOMPILE_OPTIMIZATION_LEVEL3;
-                }
-
-                ID3DBlob* d3dShaderBlob = null;
-                ID3DBlob* d3dShaderErrorBlob = null;
-
-                try
-                {
-                    var result = D3DCompileFromFile((ushort*)assetPath, pDefines: null, D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).GetPointer(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &d3dShaderErrorBlob);
-
-                    if (FAILED(result))
+                    case GraphicsShaderKind.Pixel:
                     {
-                        // todo: var span = TerraFX.Utilities.InteropUtilities.MarshalUtf8ToReadOnlySpan((sbyte*)pError->GetBufferPointer(), (int)pError->GetBufferSize());
-                        var errorMsg = System.Text.Encoding.UTF8.GetString((byte*)d3dShaderErrorBlob->GetBufferPointer(), (int)d3dShaderErrorBlob->GetBufferSize());
-                        Console.WriteLine(errorMsg);
-                        ThrowExternalException(nameof(D3DCompileFromFile), result);
+                        return graphicsDevice.CreatePixelShader(bytecode, entryPointName);
                     }
 
-                    var bytecode = new UnmanagedArray<byte>(d3dShaderBlob->GetBufferSize());
-                    new UnmanagedReadOnlySpan<byte>((byte*)d3dShaderBlob->GetBufferPointer(), bytecode.Length).CopyTo(bytecode);
-
-                    switch (kind)
+                    case GraphicsShaderKind.Vertex:
                     {
-                        case GraphicsShaderKind.Pixel:
-                        {
-                            return graphicsDevice.CreatePixelShader(bytecode, entryPointName);
-                        }
-
-                        case GraphicsShaderKind.Vertex:
-                        {
-                            return graphicsDevice.CreateVertexShader(bytecode, entryPointName);
-                        }
-
-                        default:
-                        {
-                            ThrowForInvalidKind(kind);
-                            return null!;
-                        }
-                    }
-                }
-                finally
-                {
-                    if (d3dShaderBlob != null)
-                    {
-                        _ = d3dShaderBlob->Release();
+                        return graphicsDevice.CreateVertexShader(bytecode, entryPointName);
                     }
 
-                    if (d3dShaderErrorBlob != null)
+                    default:
                     {
-                        _ = d3dShaderErrorBlob->Release();
+                        ThrowForInvalidKind(kind);
+                        return null!;
                     }
                 }
             }
-        }
-        else
-        {
-            ThrowNotImplementedException();
-            return null!;
+            finally
+            {
+                if (d3dShaderBlob != null)
+                {
+                    _ = d3dShaderBlob->Release();
+                }
+
+                if (d3dShaderErrorBlob != null)
+                {
+                    _ = d3dShaderErrorBlob->Release();
+                }
+            }
         }
 
         static ReadOnlySpan<sbyte> GetD3D12CompileTarget(GraphicsShaderKind graphicsShaderKind)

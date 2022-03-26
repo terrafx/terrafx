@@ -168,27 +168,27 @@ internal static unsafe partial class D3D12Utilities
     {
         ID3D12Device* result;
 
-        if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && d3d12Device->QueryInterface(__uuidof<ID3D12Device9>(), (void**)&result).SUCCEEDED)
+        if (d3d12Device->QueryInterface(__uuidof<ID3D12Device9>(), (void**)&result).SUCCEEDED)
         {
             d3d12DeviceVersion = 9;
             _ = d3d12Device->Release();
         }
-        else if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && d3d12Device->QueryInterface(__uuidof<ID3D12Device8>(), (void**)&result).SUCCEEDED)
+        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device8>(), (void**)&result).SUCCEEDED)
         {
             d3d12DeviceVersion = 8;
             _ = d3d12Device->Release();
         }
-        else if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && d3d12Device->QueryInterface(__uuidof<ID3D12Device7>(), (void**)&result).SUCCEEDED)
+        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device7>(), (void**)&result).SUCCEEDED)
         {
             d3d12DeviceVersion = 7;
             _ = d3d12Device->Release();
         }
-        else if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && d3d12Device->QueryInterface(__uuidof<ID3D12Device6>(), (void**)&result).SUCCEEDED)
+        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device6>(), (void**)&result).SUCCEEDED)
         {
             d3d12DeviceVersion = 6;
             _ = d3d12Device->Release();
         }
-        else if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && d3d12Device->QueryInterface(__uuidof<ID3D12Device5>(), (void**)&result).SUCCEEDED)
+        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device5>(), (void**)&result).SUCCEEDED)
         {
             d3d12DeviceVersion = 5;
             _ = d3d12Device->Release();
@@ -244,17 +244,17 @@ internal static unsafe partial class D3D12Utilities
     {
         ID3D12GraphicsCommandList* result;
 
-        if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList6>(), (void**)&result).SUCCEEDED)
+        if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList6>(), (void**)&result).SUCCEEDED)
         {
             d3d12GraphicsCommandListVersion = 6;
             _ = d3d12GraphicsCommandList->Release();
         }
-        else if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList5>(), (void**)&result).SUCCEEDED)
+        else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList5>(), (void**)&result).SUCCEEDED)
         {
             d3d12GraphicsCommandListVersion = 5;
             _ = d3d12GraphicsCommandList->Release();
         }
-        else if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList4>(), (void**)&result).SUCCEEDED)
+        else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList4>(), (void**)&result).SUCCEEDED)
         {
             d3d12GraphicsCommandListVersion = 4;
             _ = d3d12GraphicsCommandList->Release();
@@ -366,12 +366,12 @@ internal static unsafe partial class D3D12Utilities
     {
         IDXGIFactory3* result;
 
-        if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763, 0) && dxgiFactory->QueryInterface(__uuidof<IDXGIFactory7>(), (void**)&result).SUCCEEDED)
+        if (dxgiFactory->QueryInterface(__uuidof<IDXGIFactory7>(), (void**)&result).SUCCEEDED)
         {
             dxgiFactoryVersion = 7;
             _ = dxgiFactory->Release();
         }
-        else if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17134, 0) && dxgiFactory->QueryInterface(__uuidof<IDXGIFactory6>(), (void**)&result).SUCCEEDED)
+        else if (dxgiFactory->QueryInterface(__uuidof<IDXGIFactory6>(), (void**)&result).SUCCEEDED)
         {
             dxgiFactoryVersion = 6;
             _ = dxgiFactory->Release();

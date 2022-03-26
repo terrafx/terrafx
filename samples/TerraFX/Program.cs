@@ -22,7 +22,7 @@ public static unsafe class Program
 
     internal static readonly ApplicationServiceProvider s_d3d12GraphicsServiceProvider = new D3D12GraphicsServiceProvider();
 
-    private static readonly Sample[] s_d3d12Samples = {
+    private static readonly Sample[] s_graphicsSamples = {
         new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_d3d12GraphicsServiceProvider),
         new HelloWindow("D3D12.HelloWindow", s_d3d12GraphicsServiceProvider),
         new HelloTriangle("D3D12.HelloTriangle", s_d3d12GraphicsServiceProvider),
@@ -54,35 +54,9 @@ public static unsafe class Program
         }
     }
 
-    private static IEnumerable<Sample> GraphicsSamples
-    {
-        get
-        {
-            var samples = Enumerable.Empty<Sample>();
+    private static IEnumerable<Sample> GraphicsSamples => s_graphicsSamples;
 
-            if (OperatingSystem.IsWindowsVersionAtLeast(10))
-            {
-                samples = samples.Concat(s_d3d12Samples);
-            }
-
-            return samples;
-        }
-    }
-
-    private static IEnumerable<Sample> UISamples
-    {
-        get
-        {
-            var samples = Enumerable.Empty<Sample>();
-
-            if (OperatingSystem.IsWindows())
-            {
-                samples = samples.Concat(s_uiSamples);
-            }
-
-            return samples;
-        }
-    }
+    private static IEnumerable<Sample> UISamples => s_uiSamples;
 
     public static void Main(string[] args)
     {
@@ -197,10 +171,7 @@ public static unsafe class Program
 
         if (ranAnySamples)
         {
-            if (OperatingSystem.IsWindowsVersionAtLeast(10))
-            {
-                s_d3d12GraphicsServiceProvider.Dispose();
-            }
+            s_d3d12GraphicsServiceProvider.Dispose();
         }
         else
         {

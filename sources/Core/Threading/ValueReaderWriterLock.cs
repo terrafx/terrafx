@@ -11,22 +11,14 @@ namespace TerraFX.Threading;
 /// <summary>Defines a lightweight reader-writer lock suitable for use in multimedia based applications.</summary>
 public readonly unsafe partial struct ValueReaderWriterLock : IDisposable
 {
-    private readonly void* _value;
+    private readonly SRWLOCK* _value;
 
     /// <summary>Initializes a new instance of the <see cref="ValueReaderWriterLock" /> struct.</summary>
     public ValueReaderWriterLock()
     {
-        if (OperatingSystem.IsWindows())
-        {
-            var value = Allocate<SRWLOCK>();
-            InitializeSRWLock(value);
-            _value = value;
-        }
-        else
-        {
-            ThrowNotImplementedException();
-            _value = null;
-        }
+        var value = Allocate<SRWLOCK>();
+        InitializeSRWLock(value);
+        _value = value;
     }
 
     /// <summary><c>true</c> if the reader-writer lock is <c>null</c>; otherwise, <c>false</c>.</summary>
@@ -35,102 +27,44 @@ public readonly unsafe partial struct ValueReaderWriterLock : IDisposable
     /// <inheritdoc />
     public void Dispose()
     {
-        if (OperatingSystem.IsWindows())
-        {
-            var value = (SRWLOCK*)_value;
-            Free(value);
-        }
-        else
-        {
-            ThrowNotImplementedException();
-        }
+        Free(_value);
     }
 
     /// <summary>Acquires a read lock on the mutex.</summary>
     public void AcquireReadLock()
     {
-        if (OperatingSystem.IsWindows())
-        {
-            var value = (SRWLOCK*)_value;
-            AcquireSRWLockShared(value);
-        }
-        else
-        {
-            ThrowNotImplementedException();
-        }
+        AcquireSRWLockShared(_value);
     }
 
     /// <summary>Acquires a write lock on the mutex.</summary>
     public void AcquireWriteLock()
     {
-        if (OperatingSystem.IsWindows())
-        {
-            var value = (SRWLOCK*)_value;
-            AcquireSRWLockExclusive(value);
-        }
-        else
-        {
-            ThrowNotImplementedException();
-        }
+        AcquireSRWLockExclusive(_value);
     }
 
     /// <summary>Attempts to acquire a read lock on the mutex.</summary>
     /// <returns><c>true</c> if the lock was succesfully acquired; otherwise, <c>false</c>.</returns>
     public bool TryAcquireReadLock()
     {
-        if (OperatingSystem.IsWindows())
-        {
-            var value = (SRWLOCK*)_value;
-            return TryAcquireSRWLockShared(value) != 0;
-        }
-        else
-        {
-            ThrowNotImplementedException();
-            return false;
-        }
+        return TryAcquireSRWLockShared(_value) != 0;
     }
 
     /// <summary>Attempts to acquire a write lock on the mutex.</summary>
     /// <returns><c>true</c> if the lock was succesfully acquired; otherwise, <c>false</c>.</returns>
     public bool TryAcquireWriteLock()
     {
-        if (OperatingSystem.IsWindows())
-        {
-            var value = (SRWLOCK*)_value;
-            return TryAcquireSRWLockExclusive(value) != 0; 
-        }
-        else
-        {
-            ThrowNotImplementedException();
-            return false;
-        }
+        return TryAcquireSRWLockExclusive(_value) != 0; 
     }
 
     /// <summary>Releases a read lock on the mutex.</summary>
     public void ReleaseReadLock()
     {
-        if (OperatingSystem.IsWindows())
-        {
-            var value = (SRWLOCK*)_value;
-            ReleaseSRWLockShared(value);
-        }
-        else
-        {
-            ThrowNotImplementedException();
-        }
+        ReleaseSRWLockShared(_value);
     }
 
     /// <summary>Releases a write lock on the mutex.</summary>
     public void ReleaseWriteLock()
     {
-        if (OperatingSystem.IsWindows())
-        {
-            var value = (SRWLOCK*)_value;
-            ReleaseSRWLockExclusive(value);
-        }
-        else
-        {
-            ThrowNotImplementedException();
-        }
+        ReleaseSRWLockExclusive(_value);
     }
 }
