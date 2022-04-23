@@ -16,8 +16,7 @@ public sealed class HelloTransform : HelloWindow
     private GraphicsBuffer _vertexBuffer = null!;
     private float _trianglePrimitiveTranslationX;
 
-    public HelloTransform(string name, ApplicationServiceProvider serviceProvider)
-        : base(name, serviceProvider)
+    public HelloTransform(string name) : base(name)
     {
     }
 

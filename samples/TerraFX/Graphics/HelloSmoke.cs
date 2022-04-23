@@ -20,8 +20,7 @@ public sealed class HelloSmoke : HelloWindow
     private GraphicsBuffer _vertexBuffer = null!;
     private float _texturePosition;
 
-    public HelloSmoke(string name, bool isQuickAndDirty, ApplicationServiceProvider serviceProvider)
-        : base(name, serviceProvider)
+    public HelloSmoke(string name, bool isQuickAndDirty) : base(name)
     {
         _isQuickAndDirty = isQuickAndDirty;
     }

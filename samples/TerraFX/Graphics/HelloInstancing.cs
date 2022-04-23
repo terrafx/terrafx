@@ -22,8 +22,7 @@ public sealed class HelloInstancing : HelloWindow
     private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
 
-    public HelloInstancing(string name, ApplicationServiceProvider serviceProvider)
-        : base(name, serviceProvider)
+    public HelloInstancing(string name) : base(name)
     {
         _rng = new Random(Seed: 20170526);
     }

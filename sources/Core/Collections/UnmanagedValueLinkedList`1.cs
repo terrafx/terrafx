@@ -10,8 +10,8 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.MemoryUtilities;
 
 namespace TerraFX.Collections;
 

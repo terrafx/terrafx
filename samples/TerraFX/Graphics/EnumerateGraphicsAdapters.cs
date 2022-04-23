@@ -8,8 +8,7 @@ namespace TerraFX.Samples.Graphics;
 
 public sealed class EnumerateGraphicsAdapters : Sample
 {
-    public EnumerateGraphicsAdapters(string name, ApplicationServiceProvider serviceProvider)
-        : base(name, serviceProvider)
+    public EnumerateGraphicsAdapters(string name) : base(name)
     {
     }
 
@@ -19,7 +18,7 @@ public sealed class EnumerateGraphicsAdapters : Sample
 
         var application = (Application)sender;
         {
-            var graphicsService = application.ServiceProvider.GraphicsService;
+            var graphicsService = application.GraphicsService;
 
             foreach (var graphicsAdapter in graphicsService.Adapters)
             {

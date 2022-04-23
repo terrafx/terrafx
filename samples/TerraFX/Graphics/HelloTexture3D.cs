@@ -25,8 +25,7 @@ public class HelloTexture3D : HelloWindow
     private GraphicsBuffer _vertexBuffer = null!;
     private float _texturePosition;
 
-    public HelloTexture3D(string name, ApplicationServiceProvider serviceProvider)
-        : base(name, serviceProvider)
+    public HelloTexture3D(string name) : base(name)
     {
     }
 

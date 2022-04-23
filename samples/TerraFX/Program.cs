@@ -6,39 +6,33 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Versioning;
 using System.Threading;
 using TerraFX.ApplicationModel;
 using TerraFX.Numerics;
 using TerraFX.Samples.Graphics;
-using TerraFX.Samples.ServiceProviders;
 using TerraFX.Samples.UI;
 
 namespace TerraFX.Samples;
 
 public static unsafe class Program
 {
-    internal static readonly ApplicationServiceProvider s_uiServiceProvider = new Win32UIServiceProvider();
-
-    internal static readonly ApplicationServiceProvider s_d3d12GraphicsServiceProvider = new D3D12GraphicsServiceProvider();
-
     private static readonly Sample[] s_graphicsSamples = {
-        new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_d3d12GraphicsServiceProvider),
-        new HelloWindow("D3D12.HelloWindow", s_d3d12GraphicsServiceProvider),
-        new HelloTriangle("D3D12.HelloTriangle", s_d3d12GraphicsServiceProvider),
-        new HelloQuad("D3D12.HelloQuad", s_d3d12GraphicsServiceProvider),
-        new HelloTransform("D3D12.HelloTransform", s_d3d12GraphicsServiceProvider),
-        new HelloTexture("D3D12.HelloTexture", s_d3d12GraphicsServiceProvider),
-        new HelloTextureTransform("D3D12.HelloTextureTransform", s_d3d12GraphicsServiceProvider),
-        new HelloInstancing("D3D12.HelloInstancing", s_d3d12GraphicsServiceProvider),
-        new HelloTexture3D("D3D12.HelloTexture3D", s_d3d12GraphicsServiceProvider),
-        new HelloSmoke("D3D12.HelloSmoke", true, s_d3d12GraphicsServiceProvider),
-        new HelloSierpinskiPyramid("D3D12.HelloSierpinskiPyramid", 5, s_d3d12GraphicsServiceProvider),
-        new HelloSierpinskiQuad("D3D12.HelloSierpinskiQuad", 6, s_d3d12GraphicsServiceProvider),
+        new EnumerateGraphicsAdapters("Graphics.EnumerateGraphicsAdapters"),
+        new HelloWindow("Graphics.HelloWindow"),
+        new HelloTriangle("Graphics.HelloTriangle"),
+        new HelloQuad("Graphics.HelloQuad"),
+        new HelloTransform("Graphics.HelloTransform"),
+        new HelloTexture("Graphics.HelloTexture"),
+        new HelloTextureTransform("Graphics.HelloTextureTransform"),
+        new HelloInstancing("Graphics.HelloInstancing"),
+        new HelloTexture3D("Graphics.HelloTexture3D"),
+        new HelloSmoke("Graphics.HelloSmoke", true),
+        new HelloSierpinskiPyramid("Graphics.HelloSierpinskiPyramid", 5),
+        new HelloSierpinskiQuad("Graphics.HelloSierpinskiQuad", 6),
     };
 
     private static readonly Sample[] s_uiSamples = {
-        new EmptyWindow("UI.EmptyWindow", s_uiServiceProvider),
+        new EmptyWindow("UI.EmptyWindow"),
     };
 
     private static IEnumerable<Sample> AllSamples
@@ -94,7 +88,7 @@ public static unsafe class Program
 
     private static void Run(Sample sample, TimeSpan timeout, Vector2? windowLocation, Vector2? windowSize)
     {
-        var application = new Application(sample.ServiceProvider);
+        using var application = new Application();
 
         if (sample is HelloWindow window)
         {
@@ -169,11 +163,7 @@ public static unsafe class Program
             }
         }
 
-        if (ranAnySamples)
-        {
-            s_d3d12GraphicsServiceProvider.Dispose();
-        }
-        else
+        if (!ranAnySamples)
         {
             PrintHelp();
         }

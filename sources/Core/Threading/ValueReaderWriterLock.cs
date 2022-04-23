@@ -3,7 +3,6 @@
 using System;
 using TerraFX.Interop.Windows;
 using static TerraFX.Interop.Windows.Windows;
-using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
 
 namespace TerraFX.Threading;

@@ -23,8 +23,7 @@ public sealed class HelloTextureTransform : HelloWindow
     private GraphicsBuffer _vertexBuffer = null!;
     private float _trianglePrimitiveTranslationAngle;
 
-    public HelloTextureTransform(string name, ApplicationServiceProvider serviceProvider)
-        : base(name, serviceProvider)
+    public HelloTextureTransform(string name) : base(name)
     {
     }
 

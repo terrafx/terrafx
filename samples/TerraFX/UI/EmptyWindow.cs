@@ -9,15 +9,14 @@ namespace TerraFX.Samples.UI;
 
 public sealed class EmptyWindow : Sample
 {
-    private Window _window = null!;
+    private UIWindow _window = null!;
     private TimeSpan _elapsedTime;
 
-    public EmptyWindow(string name, ApplicationServiceProvider serviceProvider)
-        : base(name, serviceProvider)
+    public EmptyWindow(string name) : base(name)
     {
     }
 
-    public Window Window => _window;
+    public UIWindow Window => _window;
 
     public override void Cleanup()
     {
@@ -29,7 +28,7 @@ public sealed class EmptyWindow : Sample
     {
         ExceptionUtilities.ThrowIfNull(application);
 
-        var uiService = application.ServiceProvider.UIService;
+        var uiService = application.UIService;
 
         _window = uiService.DispatcherForCurrentThread.CreateWindow();
         _window.SetTitle(Name);

@@ -19,8 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\sources\ApplicationModel\TerraFX.ApplicationModel.csproj" />
-    <ProjectReference Include="..\..\sources\Graphics\D3D12\TerraFX.Graphics.D3D12.csproj" />
-    <ProjectReference Include="..\..\sources\UI\Win32\TerraFX.UI.Win32.csproj" />
   </ItemGroup>
 
 </Project>

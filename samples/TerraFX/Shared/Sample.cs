@@ -1,7 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using TerraFX.ApplicationModel;
@@ -25,16 +24,14 @@ public abstract class Sample : IDisposable
 {
     private readonly string _assemblyPath;
     private readonly string _name;
-    private readonly ApplicationServiceProvider _serviceProvider;
     private TimeSpan _timeout;
 
-    protected Sample(string name, ApplicationServiceProvider serviceProvider)
+    protected Sample(string name)
     {
         var entryAssembly = Assembly.GetEntryAssembly()!;
         _assemblyPath = Path.GetDirectoryName(entryAssembly.Location)!;
 
         _name = name;
-        _serviceProvider = serviceProvider;
     }
 
     ~Sample() => Dispose(isDisposing: false);
@@ -44,8 +41,6 @@ public abstract class Sample : IDisposable
 
     // vs_5_0
     private static ReadOnlySpan<sbyte> D3D12CompileTarget_vs_5_0 => new sbyte[] { 0x76, 0x73, 0x5F, 0x35, 0x5F, 0x30, 0x00 };
-
-    public ApplicationServiceProvider ServiceProvider => _serviceProvider;
 
     public string Name => _name;
 

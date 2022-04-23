@@ -22,8 +22,7 @@ public class HelloSierpinski : HelloWindow
     private GraphicsBuffer _vertexBuffer = null!;
     private float _texturePosition;
 
-    public HelloSierpinski(string name, int recursionDepth, SierpinskiShape shape, ApplicationServiceProvider serviceProvider)
-        : base(name, serviceProvider)
+    public HelloSierpinski(string name, int recursionDepth, SierpinskiShape shape) : base(name)
     {
         _recursionDepth = recursionDepth;
         _sierpinskiShape = shape;
