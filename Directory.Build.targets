@@ -31,20 +31,11 @@
     <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 
+  <!-- Assembly attributes to include for every project -->
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.Versioning.SupportedOSPlatformAttribute">
       <_Parameter1>windows10.0.17763.0</_Parameter1>
     </AssemblyAttribute>
-  </ItemGroup>
-
-  <!-- Package versions for package references across all projects -->
-  <ItemGroup>
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
-    <PackageReference Update="NUnit" Version="3.13.3" />
-    <PackageReference Update="NUnit3TestAdapter" Version="4.2.1" />
-    <PackageReference Update="TerraFX.Interop.Mimalloc" Version="1.6.0-beta3.1460839352" />
-    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.22000-rc1" />
   </ItemGroup>
 
 </Project>
