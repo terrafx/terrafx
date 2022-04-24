@@ -7,16 +7,13 @@ using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Interop.DirectX;
 using static TerraFX.Interop.DirectX.D3D;
+using static TerraFX.Interop.DirectX.D3DCOMPILE;
 using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using GC = System.GC;
-
-#if DEBUG
-using static TerraFX.Interop.DirectX.D3DCOMPILE;
-#endif
 
 namespace TerraFX.Samples;
 
