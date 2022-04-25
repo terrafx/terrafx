@@ -23,8 +23,7 @@ public sealed class HelloTextureTransform : HelloWindow
     private GraphicsBuffer _vertexBuffer = null!;
     private float _trianglePrimitiveTranslationAngle;
 
-    public HelloTextureTransform(string name, ApplicationServiceProvider serviceProvider)
-        : base(name, serviceProvider)
+    public HelloTextureTransform(string name) : base(name)
     {
     }
 
@@ -119,13 +118,13 @@ public sealed class HelloTextureTransform : HelloWindow
             graphicsPipeline,
             CreateVertexBufferView(copyContext, _vertexBuffer, uploadBuffer, aspectRatio: surface.PixelWidth / surface.PixelHeight),
             resourceViews: new GraphicsResourceView[3] {
-                CreateConstantBufferView(copyContext, constantBuffer),
-                CreateConstantBufferView(copyContext, constantBuffer),
+                CreateConstantBufferView(constantBuffer),
+                CreateConstantBufferView(constantBuffer),
                 CreateTexture2DView(copyContext, _texture2D, uploadBuffer),
             }
         );
 
-        static GraphicsBufferView CreateConstantBufferView(GraphicsCopyContext copyContext, GraphicsBuffer constantBuffer)
+        static GraphicsBufferView CreateConstantBufferView(GraphicsBuffer constantBuffer)
         {
             var constantBufferView = constantBuffer.CreateBufferView<Matrix4x4>(1);
             var constantBufferSpan = constantBufferView.Map<Matrix4x4>();

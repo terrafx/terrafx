@@ -22,7 +22,7 @@ All scripts forward to a central build script: [scripts/build.ps1](../../scripts
 
 This means that any given script can run any of the total steps required. For example, `build.cmd` by default just specifies the `-build` command.  But if you specified `build.cmd -restore`, it would also run the `restore` command. The scripts are aware of command ordering requirements and will run them in the correct order (e.g. `restore` will always run before `build`).
 
-On Windows the arguments take a single dash (`-`) as the prefix and on Unix systems they take two (`--`).
+The arguments take a single dash (`-`) as the prefix.
 
 The available arguments can be seen via the `help` command, but are additionally listed below for reference:
 ```
@@ -55,5 +55,3 @@ That is, all of the existing well known commands "just work". This includes, but
  * `dotnet build`
  * `dotnet test`
  * `dotnet pack`
-
-On Unix, [TerraFX.Unix.slnf] should be used instead of [TerraFX.sln] as it excludes any projects that are incapable of building such as the WinForms support.

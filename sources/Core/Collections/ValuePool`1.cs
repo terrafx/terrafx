@@ -128,6 +128,8 @@ public unsafe partial struct ValuePool<T> : IEnumerable<T>
         Return(item);
     }
 
+    internal ref T GetReferenceUnsafe(int index) => ref _items.GetReferenceUnsafe(index);
+
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();

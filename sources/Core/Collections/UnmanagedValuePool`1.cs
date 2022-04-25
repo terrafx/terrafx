@@ -121,6 +121,8 @@ public unsafe partial struct UnmanagedValuePool<T> : IEnumerable<T>
         Return(item);
     }
 
+    internal ref T GetReferenceUnsafe(nuint index) => ref _items.GetReferenceUnsafe(index);
+
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();

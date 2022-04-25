@@ -14,8 +14,7 @@ public sealed class HelloTexture : HelloWindow
     private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
 
-    public HelloTexture(string name, ApplicationServiceProvider serviceProvider)
-        : base(name, serviceProvider)
+    public HelloTexture(string name) : base(name)
     {
     }
 

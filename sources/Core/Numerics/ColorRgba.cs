@@ -105,7 +105,7 @@ public readonly struct ColorRgba : IEquatable<ColorRgba>, IFormattable
     {
         var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
 
-        return new StringBuilder(9 + separator.Length * 3)
+        return new StringBuilder(9 + (separator.Length * 3))
             .Append('<')
             .Append(Red.ToString(format, formatProvider))
             .Append(separator)

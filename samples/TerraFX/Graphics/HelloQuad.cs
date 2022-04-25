@@ -14,8 +14,7 @@ public sealed class HelloQuad : HelloWindow
     private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
 
-    public HelloQuad(string name, ApplicationServiceProvider serviceProvider)
-        : base(name, serviceProvider)
+    public HelloQuad(string name) : base(name)
     {
     }
 

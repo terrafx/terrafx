@@ -14,12 +14,11 @@ public class HelloWindow : Sample
 {
     private GraphicsDevice _graphicsDevice = null!;
     private GraphicsRenderPass _renderPass = null!;
-    private Window _window = null!;
+    private UIWindow _window = null!;
     private TimeSpan _elapsedTime;
     private uint _secondsOfLastFpsUpdate;
 
-    public HelloWindow(string name, ApplicationServiceProvider serviceProvider)
-        : base(name, serviceProvider)
+    public HelloWindow(string name) : base(name)
     {
     }
 
@@ -27,7 +26,7 @@ public class HelloWindow : Sample
 
     public GraphicsRenderPass RenderPass => _renderPass;
 
-    public Window Window => _window;
+    public UIWindow Window => _window;
 
     public override void Cleanup()
     {
@@ -52,7 +51,7 @@ public class HelloWindow : Sample
     {
         ExceptionUtilities.ThrowIfNull(application);
 
-        var uiService = application.ServiceProvider.UIService;
+        var uiService = application.UIService;
 
         _window = uiService.DispatcherForCurrentThread.CreateWindow();
         _window.SetTitle(Name);
@@ -69,7 +68,7 @@ public class HelloWindow : Sample
 
         _window.Show();
 
-        var graphicsService = application.ServiceProvider.GraphicsService;
+        var graphicsService = application.GraphicsService;
         var graphicsAdapter = graphicsService.Adapters.First();
 
         var graphicsDevice = graphicsAdapter.CreateDevice();

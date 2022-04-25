@@ -22,8 +22,7 @@ public class HelloSierpinski : HelloWindow
     private GraphicsBuffer _vertexBuffer = null!;
     private float _texturePosition;
 
-    public HelloSierpinski(string name, int recursionDepth, SierpinskiShape shape, ApplicationServiceProvider serviceProvider)
-        : base(name, serviceProvider)
+    public HelloSierpinski(string name, int recursionDepth, SierpinskiShape shape) : base(name)
     {
         _recursionDepth = recursionDepth;
         _sierpinskiShape = shape;
@@ -128,8 +127,8 @@ public class HelloSierpinski : HelloWindow
             CreateVertexBufferView(copyContext, _vertexBuffer, uploadBuffer, in vertices, in normals),
             CreateIndexBufferView(copyContext, _indexBuffer, uploadBuffer, in indices),
             new GraphicsResourceView[3] {
-                CreateConstantBufferView(copyContext, constantBuffer),
-                CreateConstantBufferView(copyContext, constantBuffer),
+                CreateConstantBufferView(constantBuffer),
+                CreateConstantBufferView(constantBuffer),
                 CreateTexture3DView(copyContext, _texture3D, uploadBuffer),
             }
         );
@@ -140,7 +139,7 @@ public class HelloSierpinski : HelloWindow
 
         return sierpinskiPrimitive;
 
-        static GraphicsBufferView CreateConstantBufferView(GraphicsCopyContext copyContext, GraphicsBuffer constantBuffer)
+        static GraphicsBufferView CreateConstantBufferView(GraphicsBuffer constantBuffer)
         {
             var constantBufferView = constantBuffer.CreateBufferView<Matrix4x4>(1);
             var constantBufferSpan = constantBufferView.Map<Matrix4x4>();

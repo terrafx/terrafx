@@ -7,9 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Audio\Core\TerraFX.Audio.csproj" />
-    <ProjectReference Include="..\Graphics\Core\TerraFX.Graphics.csproj" />
-    <ProjectReference Include="..\UI\Core\TerraFX.UI.csproj" />
+    <ProjectReference Include="..\Graphics\TerraFX.Graphics.csproj" />
+    <ProjectReference Include="..\UI\TerraFX.UI.csproj" />
   </ItemGroup>
-
+  
 </Project>
