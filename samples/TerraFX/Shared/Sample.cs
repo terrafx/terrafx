@@ -6,6 +6,7 @@ using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Interop.DirectX;
+using TerraFX.Utilities;
 using static TerraFX.Interop.DirectX.D3D;
 using static TerraFX.Interop.DirectX.D3DCOMPILE;
 using static TerraFX.Interop.DirectX.DirectX;
@@ -88,7 +89,7 @@ public abstract class Sample : IDisposable
                     // todo: var span = TerraFX.Utilities.InteropUtilities.MarshalUtf8ToReadOnlySpan((sbyte*)pError->GetBufferPointer(), (int)pError->GetBufferSize());
                     var errorMsg = System.Text.Encoding.UTF8.GetString((byte*)d3dShaderErrorBlob->GetBufferPointer(), (int)d3dShaderErrorBlob->GetBufferSize());
                     Console.WriteLine(errorMsg);
-                    ThrowExternalException(nameof(D3DCompileFromFile), result);
+                    ExceptionUtilities.ThrowExternalException(nameof(D3DCompileFromFile), result);
                 }
 
                 var bytecode = new UnmanagedArray<byte>(d3dShaderBlob->GetBufferSize());
