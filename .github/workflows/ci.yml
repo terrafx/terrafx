@@ -8,19 +8,18 @@ on:
 
 jobs:
   windows-x64:
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: windows-latest
     strategy:
       matrix:
         architecture: [ x64 ]
         configuration: [ debug, release ]
-        os: [ windows ]
     steps:
     - uses: actions/checkout@v2
     - run: ./scripts/cibuild.cmd -configuration ${{ matrix.configuration }} -architecture ${{ matrix.architecture }}
       shell: cmd
     - uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.os }}_${{ matrix.configuration }}_${{ matrix.architecture }}
+        name: windows_${{ matrix.configuration }}_${{ matrix.architecture }}
         path: |
           ./artifacts/bin/**/*
           ./artifacts/log/**/*
@@ -28,12 +27,11 @@ jobs:
           ./artifacts/tst/**/*
         if-no-files-found: error
   windows-x64-fallback:
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: windows-latest
     strategy:
       matrix:
         architecture: [ x64 ]
         configuration: [ debug, release ]
-        os: [ windows ]
     steps:
     - uses: actions/checkout@v2
     - run: ./scripts/cibuild.cmd -configuration ${{ matrix.configuration }} -architecture ${{ matrix.architecture }}
@@ -42,7 +40,7 @@ jobs:
         COMPlus_EnableSSE41: 0
     - uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.os }}_${{ matrix.configuration }}_${{ matrix.architecture }}
+        name: windows_${{ matrix.configuration }}_${{ matrix.architecture }}
         path: |
           ./artifacts/bin/**/*
           ./artifacts/log/**/*
@@ -50,19 +48,18 @@ jobs:
           ./artifacts/tst/**/*
         if-no-files-found: error
   windows-x86:
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: windows-latest
     strategy:
       matrix:
         architecture: [ x86 ]
         configuration: [ debug, release ]
-        os: [ windows ]
     steps:
     - uses: actions/checkout@v2
     - run: ./scripts/cibuild.cmd -configuration ${{ matrix.configuration }} -architecture ${{ matrix.architecture }} /p:PlatformTarget=${{ matrix.architecture }}
       shell: cmd
     - uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.os }}_${{ matrix.configuration }}_x86
+        name: windows_${{ matrix.configuration }}_x86
         path: |
           ./artifacts/bin/**/*
           ./artifacts/log/**/*
@@ -117,7 +114,7 @@ jobs:
         path: ./artifacts
     - uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '5.0.x'
+        dotnet-version: '6.0.x'
         source-url: https://pkgs.terrafx.dev/index.json
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.AZURE_DEVOPS_PAT }}
@@ -133,5 +130,5 @@ jobs:
         path: ./artifacts
     - uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '5.0.x'
+        dotnet-version: '6.0.x'
     - run: dotnet nuget push "./artifacts/pkg/Release/*.nupkg" --source https://nuget.pkg.github.com/terrafx/index.json --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
