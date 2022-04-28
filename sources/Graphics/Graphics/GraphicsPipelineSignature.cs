@@ -3,6 +3,7 @@
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
+using TerraFX.Utilities;
 using static TerraFX.Interop.DirectX.D3D_ROOT_SIGNATURE_VERSION;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_RANGE_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_FEATURE;
@@ -207,7 +208,7 @@ public sealed unsafe class GraphicsPipelineSignature : GraphicsDeviceObject
 
             if (result.FAILED)
             {
-                ThrowExternalException(nameof(ID3D12Device.CreateRootSignature), result);
+                ExceptionUtilities.ThrowExternalException(nameof(ID3D12Device.CreateRootSignature), result);
             }
 
             return GetLatestD3D12RootSignature(d3d12RootSignature, out d3d12RootSignatureVersion);

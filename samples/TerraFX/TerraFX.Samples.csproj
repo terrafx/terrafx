@@ -3,18 +3,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="Assets\Shaders\**\*.hlsl" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="Assets\Shaders\**\*.glsl" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Assets\Shaders\Instancing\InstancingPixel.hlsl" />
-    <Content Remove="Assets\Shaders\Instancing\InstancingTypes.hlsl" />
-    <Content Remove="Assets\Shaders\Instancing\InstancingVertex.hlsl" />
   </ItemGroup>
 
   <ItemGroup>

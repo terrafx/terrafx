@@ -6,6 +6,7 @@ using TerraFX.Advanced;
 using TerraFX.Collections;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
+using TerraFX.Utilities;
 using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.DirectX.DXGI;
 using static TerraFX.Interop.DirectX.DXGI_DEBUG_RLO_FLAGS;
@@ -74,7 +75,7 @@ public sealed unsafe class GraphicsService : DisposableObject
                     if (result != DXGI_ERROR_NOT_FOUND)
                     {
                         ReleaseIfNotNull(dxgiAdapter1);
-                        ThrowExternalException(nameof(IDXGIFactory1.EnumAdapters1), result);
+                        ExceptionUtilities.ThrowExternalException(nameof(IDXGIFactory1.EnumAdapters1), result);
                     }
                     index = 0;
                 }

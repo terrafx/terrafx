@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using TerraFX.Graphics;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
+using TerraFX.Utilities;
 using static TerraFX.Interop.DirectX.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.DirectX.DXGI_FORMAT;
@@ -459,7 +460,7 @@ internal static unsafe partial class D3D12Utilities
         if (value.FAILED)
         {
             AssertNotNull(valueExpression);
-            ThrowExternalException(valueExpression, value);
+            ExceptionUtilities.ThrowExternalException(valueExpression, value);
         }
     }
 
