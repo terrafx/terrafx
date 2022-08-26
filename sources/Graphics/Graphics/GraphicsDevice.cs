@@ -123,9 +123,8 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
                 var createOptions = new GraphicsMemoryManagerCreateOptions {
                     CreateMemoryAllocator = memoryAllocatorCreateFunc,
                     D3D12HeapFlags = D3D12_HEAP_FLAG_NONE,
+                    D3D12HeapType = D3D12_HEAP_TYPE_DEFAULT
                 };
-
-                createOptions.D3D12HeapType = D3D12_HEAP_TYPE_DEFAULT;
                 memoryManagers[0] = new GraphicsMemoryManager(this, in createOptions);
 
                 createOptions.D3D12HeapType = D3D12_HEAP_TYPE_UPLOAD;
@@ -141,9 +140,8 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
                 var createOptions = new GraphicsMemoryManagerCreateOptions {
                     CreateMemoryAllocator = memoryAllocatorCreateFunc,
                     D3D12HeapType = D3D12_HEAP_TYPE_DEFAULT,
+                    D3D12HeapFlags = D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS,
                 };
-
-                createOptions.D3D12HeapFlags = D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS;
                 memoryManagers[0] = new GraphicsMemoryManager(this, in createOptions);
 
                 createOptions.D3D12HeapFlags = D3D12_HEAP_FLAG_ALLOW_ONLY_NON_RT_DS_TEXTURES;

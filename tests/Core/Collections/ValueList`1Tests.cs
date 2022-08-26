@@ -176,8 +176,9 @@ public static class ValueListTests
     [Test]
     public static void AddTest()
     {
-        var valueList = new ValueList<int>(new int[] { 1, 2, 3 });
-        valueList.Add(4);
+        var valueList = new ValueList<int>(new int[] { 1, 2, 3 }) {
+            4
+        };
 
         Assert.That(() => valueList,
             Has.Property("Capacity").EqualTo(6)
@@ -199,8 +200,9 @@ public static class ValueListTests
             Is.EqualTo(5)
         );
 
-        valueList = new ValueList<int>();
-        valueList.Add(6);
+        valueList = new ValueList<int> {
+            6
+        };
 
         Assert.That(() => valueList,
             Has.Property("Capacity").EqualTo(1)
