@@ -5,6 +5,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -67,6 +68,7 @@ public partial struct ValueLazy<T>
     /// <summary>Gets a reference to the underyling value for the instance.</summary>
     /// <remarks>This property is unsafe as it returns a reference to a struct field.</remarks>
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+    [UnscopedRef]
     public ref T ValueRef
     {
         get
@@ -78,7 +80,7 @@ public partial struct ValueLazy<T>
                 CreateValue();
             }
 
-            return ref MemoryMarshal.GetReference(MemoryMarshal.CreateSpan(ref _value, 1));
+            return ref _value;
         }
     }
 
