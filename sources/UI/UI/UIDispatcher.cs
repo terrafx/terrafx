@@ -125,14 +125,20 @@ public sealed unsafe class UIDispatcher : UIServiceObject
     internal bool RemoveWindow(HWND hWnd)
     {
         using var writerLock = new DisposableWriterLock(_windowsLock, isExternallySynchronized: false);
-        var result = _windows.Remove(hWnd);
+        return RemoveWindowNoLock(hWnd);
 
-        if (_windows.Count == 0)
+        bool RemoveWindowNoLock(HWND hWnd)
         {
-            RaiseExitRequested();
+            var result = _windows.Remove(hWnd);
+
+            if (_windows.Count == 0)
+            {
+                RaiseExitRequested();
+            }
+            return result;
         }
-        return result;
     }
+
     private UIWindow CreateWindowUnsafe()
     {
         return new UIWindow(this);

@@ -191,17 +191,15 @@ public sealed unsafe class UIService : DisposableObject
     {
         if (!TryGetDispatcher(thread, out var dispatcher))
         {
-            dispatcher = CreateDispatcher(this, thread);
+            using var writerLock = new DisposableWriterLock(_dispatchersLock, isExternallySynchronized: false);
+            dispatcher = CreateDispatcherNoLock(this, thread);
         }
         return dispatcher;
 
-        static UIDispatcher CreateDispatcher(UIService service, Thread thread)
+        static UIDispatcher CreateDispatcherNoLock(UIService service, Thread thread)
         {
             var dispatcher = new UIDispatcher(service, thread);
-
-            using var writerLock = new DisposableWriterLock(service._dispatchersLock, isExternallySynchronized: false);
             service._dispatchers.Add(thread, dispatcher);
-
             return dispatcher;
         }
     }
