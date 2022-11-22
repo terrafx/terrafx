@@ -4,13 +4,11 @@ using System.Runtime.CompilerServices;
 using TerraFX.Graphics;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
-using TerraFX.Utilities;
 using static TerraFX.Interop.DirectX.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.DirectX.DXGI_FORMAT;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Utilities;

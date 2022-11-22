@@ -15,7 +15,6 @@ using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AppContextUtilities;
 using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics;
 

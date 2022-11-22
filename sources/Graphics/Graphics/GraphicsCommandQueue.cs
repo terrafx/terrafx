@@ -8,7 +8,6 @@ using static TerraFX.Interop.DirectX.D3D12_COMMAND_QUEUE_FLAGS;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics;
 
