@@ -56,7 +56,7 @@ public class HelloTexture3D : HelloWindow
         _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsCpuAccess.Write);
         _indexBuffer = graphicsDevice.CreateIndexBuffer(64 * 1024);
         _texture3D = graphicsDevice.CreateTexture3D(GraphicsFormat.R8G8B8A8_UNORM, 64, 64, 64);
-        _uploadBuffer = graphicsDevice.CreateUploadBuffer(2 * 1024 * 1024);
+        _uploadBuffer = graphicsDevice.CreateUploadBuffer(3 * 1024 * 1024);
         _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 
         var copyCommandQueue = graphicsDevice.CopyCommandQueue;
