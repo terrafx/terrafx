@@ -76,7 +76,7 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
         _emptyMemoryAllocator = null;
         _memoryAllocators = new ValueList<GraphicsMemoryAllocator>();
 
-        for (var i = 0; i < MinimumMemoryAllocatorCount; ++i)
+        for (var index = 0; index < MinimumMemoryAllocatorCount; index++)
         {
             var memoryAllocatorByteLength = GetAdjustedMemoryAllocatorByteLength(MaximumSharedMemoryAllocatorByteLength);
             _ = AddMemoryAllocator(memoryAllocatorByteLength, isDedicated: false);
@@ -310,7 +310,7 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
             {
                 var previousMemoryAllocator = memoryAllocators[0];
 
-                for (var index = 1; index < memoryAllocators.Length; ++index)
+                for (var index = 1; index < memoryAllocators.Length; index++)
                 {
                     var currentMemoryAllocator = memoryAllocators[index];
 
@@ -346,7 +346,7 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
                 var memoryAllocators = _memoryAllocators.AsSpanUnsafe(0, _memoryAllocators.Count);
                 var largestMemoryAllocatorByteLength = GetLargestSharedMemoryAllocatorByteLength(memoryAllocators);
 
-                for (var index = 0; index < 3; ++index)
+                for (var index = 0; index < 3; index++)
                 {
                     var smallerMemoryAllocatorByteLength = memoryAllocatorByteLength / 2;
 
@@ -414,19 +414,6 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
         _memoryManagerInfo.TotalFreeMemoryRegionByteLength -= byteLength;
     }
 
-    private bool TrackAllocation(GraphicsMemoryAllocator memoryAllocator, nuint byteLength, nuint byteAlignment, out GraphicsMemoryRegion memoryRegion)
-    {
-        var succeeded = memoryAllocator.TryAllocate(byteLength, byteAlignment, out memoryRegion);
-
-        if (succeeded)
-        {
-            _memoryManagerInfo.OperationCount++;
-            _memoryManagerInfo.TotalFreeMemoryRegionByteLength -= memoryRegion.ByteLength;
-        }
-
-        return succeeded;
-    }
-
     private void TrackFree(in GraphicsMemoryRegion memoryRegion)
     {
         _memoryManagerInfo.OperationCount++;
@@ -460,20 +447,20 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
 
         var memoryAllocators = _memoryAllocators.AsSpanUnsafe(0, _memoryAllocators.Count);
 
-        var availableMemory = budget.EstimatedMemoryByteUsage < budget.EstimatedMemoryByteBudget ? budget.EstimatedMemoryByteBudget - budget.EstimatedMemoryByteUsage : 0;
-        var canCreateNewMemoryAllocator = !useExistingMemoryAllocator && memoryAllocators.Length < MaximumMemoryAllocatorCount && (memoryAllocationFlags.HasFlag(GraphicsMemoryAllocationFlags.CanExceedBudget) || availableMemory >= byteLengthWithMargins);
+        var availableMemory = budget.EstimatedMemoryByteUsage < budget.EstimatedMemoryByteBudget ? (budget.EstimatedMemoryByteBudget - budget.EstimatedMemoryByteUsage) : 0;
+        var canCreateNewMemoryAllocator = !useExistingMemoryAllocator && (memoryAllocators.Length < MaximumMemoryAllocatorCount) && (memoryAllocationFlags.HasFlag(GraphicsMemoryAllocationFlags.CanExceedBudget) || (availableMemory >= byteLengthWithMargins));
 
         // 1. Search existing memory allocators
         var byteAlignment = options.ByteAlignment;
 
-        if (!useDedicatedMemoryAllocator && byteLength <= MaximumSharedMemoryAllocatorByteLength)
+        if (!useDedicatedMemoryAllocator && (byteLength <= MaximumSharedMemoryAllocatorByteLength))
         {
-            for (var memoryAllocatorIndex = 0; memoryAllocatorIndex < memoryAllocators.Length; ++memoryAllocatorIndex)
+            for (var memoryAllocatorIndex = 0; memoryAllocatorIndex < memoryAllocators.Length; memoryAllocatorIndex++)
             {
                 var currentMemoryAllocator = memoryAllocators[memoryAllocatorIndex];
                 AssertNotNull(currentMemoryAllocator);
 
-                if (TrackAllocation(currentMemoryAllocator, byteLength, byteAlignment, out memoryRegion))
+                if (TryTrackAllocation(currentMemoryAllocator, byteLength, byteAlignment, out memoryRegion))
                 {
                     if (currentMemoryAllocator == _emptyMemoryAllocator)
                     {
@@ -501,7 +488,7 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
         }
 
         var memoryAllocator = AddMemoryAllocator(memoryAllocatorByteLength, isDedicated: useDedicatedMemoryAllocator);
-        return TrackAllocation(memoryAllocator, byteLength, byteAlignment, out memoryRegion);
+        return TryTrackAllocation(memoryAllocator, byteLength, byteAlignment, out memoryRegion);
     }
 
     private bool TryAllocateUnsafe(in GraphicsMemoryAllocationOptions allocationOptions, Span<GraphicsMemoryRegion> memoryRegions)
@@ -516,7 +503,7 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
 
         var succeeded = false;
 
-        for (var index = 0; index < memoryRegions.Length; ++index)
+        for (var index = 0; index < memoryRegions.Length; index++)
         {
             succeeded = TryAllocateNoMutex(in options, out memoryRegions[index]);
 
@@ -633,5 +620,18 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
         Assert(AssertionsEnabled && _memoryManagerInfo.ByteLength == byteLength);
 
         return true;
+    }
+
+    private bool TryTrackAllocation(GraphicsMemoryAllocator memoryAllocator, nuint byteLength, nuint byteAlignment, out GraphicsMemoryRegion memoryRegion)
+    {
+        var succeeded = memoryAllocator.TryAllocate(byteLength, byteAlignment, out memoryRegion);
+
+        if (succeeded)
+        {
+            _memoryManagerInfo.OperationCount++;
+            _memoryManagerInfo.TotalFreeMemoryRegionByteLength -= memoryRegion.ByteLength;
+        }
+
+        return succeeded;
     }
 }
