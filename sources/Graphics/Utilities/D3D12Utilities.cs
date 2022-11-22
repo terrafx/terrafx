@@ -177,7 +177,17 @@ internal static unsafe partial class D3D12Utilities
     {
         ID3D12Device* result;
 
-        if (d3d12Device->QueryInterface(__uuidof<ID3D12Device9>(), (void**)&result).SUCCEEDED)
+        if (d3d12Device->QueryInterface(__uuidof<ID3D12Device11>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12DeviceVersion = 11;
+            _ = d3d12Device->Release();
+        }
+        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device10>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12DeviceVersion = 10;
+            _ = d3d12Device->Release();
+        }
+        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device9>(), (void**)&result).SUCCEEDED)
         {
             d3d12DeviceVersion = 9;
             _ = d3d12Device->Release();
@@ -253,7 +263,17 @@ internal static unsafe partial class D3D12Utilities
     {
         ID3D12GraphicsCommandList* result;
 
-        if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList6>(), (void**)&result).SUCCEEDED)
+        if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList7>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12GraphicsCommandListVersion = 8;
+            _ = d3d12GraphicsCommandList->Release();
+        }
+        else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList8>(), (void**)&result).SUCCEEDED)
+        {
+            d3d12GraphicsCommandListVersion = 7;
+            _ = d3d12GraphicsCommandList->Release();
+        }
+        else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList6>(), (void**)&result).SUCCEEDED)
         {
             d3d12GraphicsCommandListVersion = 6;
             _ = d3d12GraphicsCommandList->Release();
