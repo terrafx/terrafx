@@ -131,7 +131,7 @@ public static unsafe class UnsafeUtilities
     public static Span<T> CreateSpan<T>(ref T reference, int length) => MemoryMarshal.CreateSpan(ref reference, length);
 
     /// <inheritdoc cref="MemoryMarshal.CreateReadOnlySpan{T}(ref T, int)" />
-    public static ReadOnlySpan<T> CreateReadOnlySpan<T>(in T reference, int length) => MemoryMarshal.CreateReadOnlySpan(ref AsRef(in reference), length);
+    public static ReadOnlySpan<T> CreateReadOnlySpan<T>(scoped in T reference, int length) => MemoryMarshal.CreateReadOnlySpan(ref AsRef(in reference), length);
 
     /// <summary>Returns a pointer to the element of the span at index zero.</summary>
     /// <typeparam name="T">The type of items in <paramref name="span" />.</typeparam>
