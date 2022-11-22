@@ -24,8 +24,7 @@ public sealed unsafe class GraphicsAdapter : GraphicsServiceObject
     private ComPtr<IDXGIAdapter1> _dxgiAdapter;
     private readonly uint _dxgiAdapterVersion;
 
-    private readonly uint _pciDeviceId;
-    private readonly uint _pciVendorId;
+    private readonly DXGI_ADAPTER_DESC1 _dxgiAdapterDesc;
 
     internal GraphicsAdapter(GraphicsService service, IDXGIAdapter1* dxgiAdapter) : base(service)
     {
@@ -36,8 +35,7 @@ public sealed unsafe class GraphicsAdapter : GraphicsServiceObject
         ThrowExternalExceptionIfFailed(dxgiAdapter->GetDesc1(&dxgiAdapterDesc));
 
         _description = GetUtf16Span(dxgiAdapterDesc.Description, 128).GetString() ?? string.Empty;
-        _pciDeviceId = dxgiAdapterDesc.DeviceId;
-        _pciVendorId = dxgiAdapterDesc.VendorId;
+        _dxgiAdapterDesc = dxgiAdapterDesc;
 
         SetName(_description);
 
@@ -52,14 +50,18 @@ public sealed unsafe class GraphicsAdapter : GraphicsServiceObject
     public string Description => _description;
 
     /// <summary>Gets the PCI Device ID (DID) for the adapter.</summary>
-    public uint PciDeviceId => _pciDeviceId;
+    public uint PciDeviceId => _dxgiAdapterDesc.DeviceId;
 
     /// <summary>Gets the PCI Vendor ID (VID) for the adapter.</summary>
-    public uint PciVendorId => _pciVendorId;
+    public uint PciVendorId => _dxgiAdapterDesc.VendorId;
 
     internal IDXGIAdapter1* DxgiAdapter => _dxgiAdapter;
 
     internal uint DxgiAdapterVersion => _dxgiAdapterVersion;
+
+    internal nuint DxgiDedicatedVideoMemory => _dxgiAdapterDesc.DedicatedVideoMemory;
+
+    internal nuint DxgiSharedSystemMemory => _dxgiAdapterDesc.SharedSystemMemory;
 
     /// <summary>Creates a new graphics device which utilizes the adapter.</summary>
     /// <exception cref="ObjectDisposedException">The adapter has been disposed.</exception>

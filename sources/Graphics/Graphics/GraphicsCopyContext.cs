@@ -51,8 +51,6 @@ public sealed unsafe class GraphicsCopyContext : GraphicsContext
         ThrowIfNull(destination);
         ThrowIfNull(source);
 
-        ThrowIfNotInInsertBounds(source.ByteLength, destination.ByteLength);
-
         CopyUnsafe(destination, source);
     }
 

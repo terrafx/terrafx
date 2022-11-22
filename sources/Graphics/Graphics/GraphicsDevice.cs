@@ -44,6 +44,9 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
     private readonly uint _d3d12RtvDescriptorSize;
     private readonly uint _d3d12SamplerDescriptorSize;
 
+    private readonly D3D12_RESOURCE_HEAP_TIER _d3d12ResourceHeapTier;
+    private readonly FeatureFlags _featureFlags;
+
     private ValueList<GraphicsFence> _fences;
     private readonly ValueMutex _fencesMutex;
 
@@ -96,6 +99,32 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
         _d3d12RtvDescriptorSize = d3d12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
         _d3d12SamplerDescriptorSize = d3d12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER);
 
+        var featureFlags = FeatureFlags.None;
+        var d3d12Options = new D3D12_FEATURE_DATA_D3D12_OPTIONS();
+
+        if (d3d12Device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12Options, SizeOf<D3D12_FEATURE_DATA_D3D12_OPTIONS>()).SUCCEEDED)
+        {
+            _d3d12ResourceHeapTier = d3d12Options.ResourceHeapTier;
+        }
+
+        var d3d12Architecture = new D3D12_FEATURE_DATA_ARCHITECTURE {
+            NodeIndex = 0,
+        };
+
+        if (d3d12Device->CheckFeatureSupport(D3D12_FEATURE_ARCHITECTURE, &d3d12Architecture, SizeOf<D3D12_FEATURE_DATA_ARCHITECTURE>()).SUCCEEDED)
+        {
+            if (d3d12Architecture.UMA != 0)
+            {
+                featureFlags |= FeatureFlags.Uma;
+            }
+
+            if (d3d12Architecture.CacheCoherentUMA != 0)
+            {
+                featureFlags |= FeatureFlags.CacheCoherentUma;
+            }
+        }
+
+        _featureFlags = featureFlags;
         _memoryManagers = CreateMemoryManagers(d3d12Device, createOptions.CreateMemoryAllocator);
 
         _memoryBudgetInfo = new MemoryBudgetInfo();
@@ -114,9 +143,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
         {
             GraphicsMemoryManager[] memoryManagers;
 
-            D3D12_FEATURE_DATA_D3D12_OPTIONS d3d12Options;
-
-            if (d3d12Device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12Options, SizeOf<D3D12_FEATURE_DATA_D3D12_OPTIONS>()).SUCCEEDED && (d3d12Options.ResourceHeapTier >= D3D12_RESOURCE_HEAP_TIER_2))
+            if (_d3d12ResourceHeapTier >= D3D12_RESOURCE_HEAP_TIER_2)
             {
                 memoryManagers = new GraphicsMemoryManager[MaxMemoryManagerKinds];
 
@@ -185,6 +212,12 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
 
     /// <summary>Gets the copy command queue for the device.</summary>
     public GraphicsCopyCommandQueue CopyCommandQueue => _copyQueue;
+
+    /// <summary>Gets <c>true</c> if the hardware is using a cache-coherent Unified Memory Architecture; otherwise, <c>false</c>.</summary>
+    public bool IsCacheCoherentUma => _featureFlags.HasFlag(FeatureFlags.CacheCoherentUma);
+
+    /// <summary>Gets <c>true</c> if the hardware is using a Unified Memory Architecture; otherwise, <c>false</c>.</summary>
+    public bool IsUma => _featureFlags.HasFlag(FeatureFlags.Uma);
 
     /// <summary>Gets the render command queue for the device.</summary>
     public GraphicsRenderCommandQueue RenderCommandQueue => _renderQueue;
@@ -960,8 +993,16 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
             case D3D12_HEAP_TYPE_UPLOAD:
             case D3D12_HEAP_TYPE_READBACK:
             {
-                estimatedMemoryBudget = memoryBudgetInfo.DxgiQueryNonLocalVideoMemoryInfo.Budget;
-                estimatedMemoryUsage = memoryBudgetInfo.DxgiQueryNonLocalVideoMemoryInfo.CurrentUsage;
+                if (IsUma)
+                {
+                    estimatedMemoryBudget = memoryBudgetInfo.DxgiQueryLocalVideoMemoryInfo.Budget;
+                    estimatedMemoryUsage = memoryBudgetInfo.DxgiQueryLocalVideoMemoryInfo.CurrentUsage;
+                }
+                else
+                {
+                    estimatedMemoryBudget = memoryBudgetInfo.DxgiQueryNonLocalVideoMemoryInfo.Budget;
+                    estimatedMemoryUsage = memoryBudgetInfo.DxgiQueryNonLocalVideoMemoryInfo.CurrentUsage;
+                }
 
                 var memoryManagerKindIndex = (int)(D3D12_HEAP_TYPE_UPLOAD - 1);
 
@@ -1027,6 +1068,24 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
         return memoryManagerIndex;
     }
 
+    private ulong GetTotalAllocatedMemoryRegionByteLength(int memoryManagerKindIndex)
+    {
+        Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
+
+        if (_memoryManagers.Length == MaxMemoryManagerKinds)
+        {
+            return _memoryManagers[memoryManagerKindIndex].TotalAllocatedMemoryRegionByteLength;
+        }
+        else
+        {
+            memoryManagerKindIndex *= 3;
+
+            return _memoryManagers[memoryManagerKindIndex + 2].TotalAllocatedMemoryRegionByteLength
+                 + _memoryManagers[memoryManagerKindIndex + 1].TotalAllocatedMemoryRegionByteLength
+                 + _memoryManagers[memoryManagerKindIndex + 0].TotalAllocatedMemoryRegionByteLength;
+        }
+    }
+
     private ulong GetTotalFreeMemoryRegionByteLength(int memoryManagerKindIndex)
     {
         Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
@@ -1039,9 +1098,9 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
         {
             memoryManagerKindIndex *= 3;
 
-            return _memoryManagers[memoryManagerKindIndex + 0].TotalFreeMemoryRegionByteLength
+            return _memoryManagers[memoryManagerKindIndex + 2].TotalFreeMemoryRegionByteLength
                  + _memoryManagers[memoryManagerKindIndex + 1].TotalFreeMemoryRegionByteLength
-                 + _memoryManagers[memoryManagerKindIndex + 2].TotalFreeMemoryRegionByteLength;
+                 + _memoryManagers[memoryManagerKindIndex + 0].TotalFreeMemoryRegionByteLength;
         }
     }
 
@@ -1057,9 +1116,9 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
         {
             memoryManagerKindIndex *= 3;
 
-            return _memoryManagers[memoryManagerKindIndex + 0].OperationCount
+            return _memoryManagers[memoryManagerKindIndex + 2].OperationCount
                  + _memoryManagers[memoryManagerKindIndex + 1].OperationCount
-                 + _memoryManagers[memoryManagerKindIndex + 2].OperationCount;
+                 + _memoryManagers[memoryManagerKindIndex + 0].OperationCount;
         }
     }
 
@@ -1075,9 +1134,9 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
         {
             memoryManagerKindIndex *= 3;
 
-            return _memoryManagers[memoryManagerKindIndex + 0].ByteLength
+            return _memoryManagers[memoryManagerKindIndex + 2].ByteLength
                  + _memoryManagers[memoryManagerKindIndex + 1].ByteLength
-                 + _memoryManagers[memoryManagerKindIndex + 2].ByteLength;
+                 + _memoryManagers[memoryManagerKindIndex + 0].ByteLength;
         }
     }
 
@@ -1089,20 +1148,51 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
 
     private void UpdateMemoryBudgetInfoNoLock(ref MemoryBudgetInfo memoryBudgetInfo, ulong totalOperationCount)
     {
+        var adapter = Adapter;
+
         DXGI_QUERY_VIDEO_MEMORY_INFO dxgiQueryLocalVideoMemoryInfo;
 
-        if (Adapter.TryQueryLocalVideoMemoryInfo(&dxgiQueryLocalVideoMemoryInfo))
+        if (!adapter.TryQueryLocalVideoMemoryInfo(&dxgiQueryLocalVideoMemoryInfo))
         {
-            memoryBudgetInfo.DxgiQueryLocalVideoMemoryInfo = dxgiQueryLocalVideoMemoryInfo;
+            dxgiQueryLocalVideoMemoryInfo = new DXGI_QUERY_VIDEO_MEMORY_INFO {
+                Budget = adapter.DxgiDedicatedVideoMemory,
+                CurrentUsage = GetTotalFreeMemoryRegionByteLength((int)(D3D12_HEAP_TYPE_DEFAULT - 1)),
+            };
+
+            if (IsUma)
+            {
+                dxgiQueryLocalVideoMemoryInfo.Budget += adapter.DxgiSharedSystemMemory;
+            }
+
+            // Fallback to an 80% heuristic for available budget
+
+            dxgiQueryLocalVideoMemoryInfo.Budget *= 8;
+            dxgiQueryLocalVideoMemoryInfo.Budget /= 10;
         }
 
         DXGI_QUERY_VIDEO_MEMORY_INFO dxgiQueryNonLocalVideoMemoryInfo;
 
-        if (Adapter.TryQueryNonLocalVideoMemoryInfo(&dxgiQueryNonLocalVideoMemoryInfo))
+        if (!adapter.TryQueryNonLocalVideoMemoryInfo(&dxgiQueryNonLocalVideoMemoryInfo))
         {
-            memoryBudgetInfo.DxgiQueryNonLocalVideoMemoryInfo = dxgiQueryNonLocalVideoMemoryInfo;
+            memoryBudgetInfo.DxgiQueryNonLocalVideoMemoryInfo = new DXGI_QUERY_VIDEO_MEMORY_INFO {
+                Budget = adapter.DxgiSharedSystemMemory,
+                CurrentUsage = GetTotalFreeMemoryRegionByteLength((int)(D3D12_HEAP_TYPE_UPLOAD - 1))
+                             + GetTotalFreeMemoryRegionByteLength((int)(D3D12_HEAP_TYPE_READBACK - 1)),
+            };
+
+            if (IsUma)
+            {
+                dxgiQueryNonLocalVideoMemoryInfo.Budget = 0;
+            }
+
+            // Fallback to an 80% heuristic for available budget
+
+            dxgiQueryNonLocalVideoMemoryInfo.Budget *= 8;
+            dxgiQueryNonLocalVideoMemoryInfo.Budget /= 10;
         }
 
+        memoryBudgetInfo.DxgiQueryLocalVideoMemoryInfo = dxgiQueryLocalVideoMemoryInfo;
+        memoryBudgetInfo.DxgiQueryNonLocalVideoMemoryInfo = dxgiQueryNonLocalVideoMemoryInfo;
         memoryBudgetInfo.TotalOperationCountAtLastUpdate = totalOperationCount;
 
         for (var memoryManagerKindIndex = 0; memoryManagerKindIndex < MaxMemoryManagerKinds; memoryManagerKindIndex++)

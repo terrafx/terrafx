@@ -77,7 +77,7 @@ public partial class GraphicsMemoryAllocator
 
                 if (freeMemoryRegionsByByteLength.Length > 0)
                 {
-                    for (var index = BinarySearchFirstMemoryRegionNodeWithSizeNotLessThan(byteLengthWithMargins); index < freeMemoryRegionsByByteLength.Length; ++index)
+                    for (var index = BinarySearchFirstMemoryRegionNodeWithSizeNotLessThan(byteLengthWithMargins); index < freeMemoryRegionsByByteLength.Length; index++)
                     {
                         var memoryRegionNode = freeMemoryRegionsByByteLength[index];
 
@@ -368,7 +368,7 @@ public partial class GraphicsMemoryAllocator
 
             if (memoryRegionNode.ValueRef.ByteLength >= MinimumFreeMemoryRegionByteLengthToRegister)
             {
-                for (var index = BinarySearchFirstMemoryRegionNodeWithSizeNotLessThan(memoryRegionNode.ValueRef.ByteLength); index < _freeMemoryRegionsByByteLength.Count; ++index)
+                for (var index = BinarySearchFirstMemoryRegionNodeWithSizeNotLessThan(memoryRegionNode.ValueRef.ByteLength); index < _freeMemoryRegionsByByteLength.Count; index++)
                 {
                     if (_freeMemoryRegionsByByteLength[index] == memoryRegionNode)
                     {
@@ -448,7 +448,7 @@ public partial class GraphicsMemoryAllocator
             nuint lastMemoryRegionSize = 0;
             var freeMemoryRegionsBySize = _freeMemoryRegionsByByteLength.AsSpanUnsafe(0, _freeMemoryRegionsByByteLength.Count);
 
-            for (var index = 0; index < freeMemoryRegionsBySize.Length; ++index)
+            for (var index = 0; index < freeMemoryRegionsBySize.Length; index++)
             {
                 ref readonly var memoryRegion = ref freeMemoryRegionsBySize[index].ValueRef;
 
