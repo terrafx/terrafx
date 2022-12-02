@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using TerraFX.Threading;
 using static TerraFX.Runtime.Configuration;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Utilities;
 
@@ -19,13 +20,14 @@ public static unsafe class AssertionUtilities
 
     /// <summary>Asserts that a condition is <c>true</c>.</summary>
     /// <param name="condition">The condition to assert.</param>
+    /// <param name="conditionExpression">The expression of the condition that caused the exception.</param>
     /// <exception cref="InvalidOperationException">TerraFX based assertions are disabled.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Assert([DoesNotReturnIf(false)] bool condition)
+    public static void Assert([DoesNotReturnIf(false)] bool condition, [CallerArgumentExpression("condition")] string? conditionExpression = null)
     {
         if (AssertionsEnabled && !condition)
         {
-            Fail();
+            Fail(conditionExpression);
         }
     }
 
@@ -34,6 +36,13 @@ public static unsafe class AssertionUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void AssertDisposing(VolatileState state)
         => Assert(AssertionsEnabled && (state == VolatileState.Disposing));
+
+    /// <summary>Asserts that <paramref name="value" /> is defined by <typeparamref name="TEnum" />.</summary>
+    /// <param name="value">The value to be checked if it is defined by <typeparamref name="TEnum" />.</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not defined by <typeparamref name="TEnum" />.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AssertIsDefined<TEnum>(TEnum value)
+        where TEnum : struct, Enum => Assert(!Enum.IsDefined(value));
 
     /// <summary>Asserts that the state is not <see cref="VolatileState.Disposed" /> or <see cref="VolatileState.Disposing" />.</summary>
     /// <param name="state">The state to assert.</param>
@@ -69,12 +78,12 @@ public static unsafe class AssertionUtilities
 
     /// <summary>Throws an <see cref="Exception" />.</summary>
     [DoesNotReturn]
-    public static void Fail()
+    public static void Fail(string? message = null)
     {
         if (BreakOnFailedAssert)
         {
             Debugger.Break();
         }
-        throw new Exception();
+        ThrowUnreachableException(message);
     }
 }

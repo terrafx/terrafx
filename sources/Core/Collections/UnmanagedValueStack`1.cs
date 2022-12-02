@@ -216,9 +216,8 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
         if (!TryPeek(index, out var item))
         {
             ThrowIfNotInBounds(index, Count);
-            Fail();
         }
-        return item;
+        return item!;
     }
 
     /// <summary>Pops the item from the top of the stack.</summary>

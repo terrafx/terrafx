@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' != 'net6.0'">
+    <Compile Remove="Shims/UnreachableException.cs" />
     <Compile Remove="Shims/UnscopedRefAttribute.cs" />
   </ItemGroup>
   

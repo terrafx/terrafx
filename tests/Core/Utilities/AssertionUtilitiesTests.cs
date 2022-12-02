@@ -1,5 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using System.Diagnostics;
 using System.Threading;
 using NUnit.Framework;
 using TerraFX.Runtime;
@@ -12,7 +13,7 @@ namespace TerraFX.UnitTests.Utilities;
 [TestFixture(TestOf = typeof(AssertionUtilities))]
 public static class AssertionUtilitiesTests
 {
-    /// <summary>Provides validation of the <see cref="AssertionUtilities.Assert(bool)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="AssertionUtilities.Assert(bool, string?)" /> method.</summary>
     [Test]
     public static void AssertTest()
     {
@@ -128,7 +129,7 @@ public static class AssertionUtilitiesTests
     public static unsafe void FailTest()
     {
         Assert.That(() => AssertionUtilities.Fail(),
-            Throws.Exception
+            Throws.InstanceOf<UnreachableException>()
         );
     }
 }

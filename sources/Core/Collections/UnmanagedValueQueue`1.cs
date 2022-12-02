@@ -308,9 +308,8 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
         if (!TryPeek(index, out var item))
         {
             ThrowIfNotInBounds(index, Count);
-            Fail();
         }
-        return item;
+        return item!;
     }
 
     /// <summary>Removes the first occurence of an item from the queue.</summary>
