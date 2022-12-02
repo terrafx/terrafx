@@ -21,35 +21,35 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
 {
     /// <summary><c>true</c> if the memory manager should be externally synchronized; otherwise, <c>false</c>.</summary>
     /// <remarks>This defaults to <c>false</c> causing the manager to be internally synchronized using a multimedia safe locking mechanism.</remarks>
-    public static readonly bool IsExternallySynchronized = GetAppContextData(
+    public static bool IsExternallySynchronized { get; } = GetAppContextData(
         $"{typeof(GraphicsMemoryManager).FullName}.{nameof(IsExternallySynchronized)}",
         defaultValue: false
     );
 
     /// <summary>The maximum number of allocators allowed in a memory manager.</summary>
     /// <remarks>This defaults to <see cref="uint.MaxValue"/> so that there is no maximum number of allocators.</remarks>
-    public static readonly uint MaximumMemoryAllocatorCount = GetAppContextData(
+    public static uint MaximumMemoryAllocatorCount { get; } = GetAppContextData(
         $"{typeof(GraphicsMemoryManager).FullName}.{nameof(MaximumMemoryAllocatorCount)}",
         defaultValue: uint.MaxValue
     );
 
     /// <summary>The maximum length, in bytes, of a shared allocator allowed in a memory manager.</summary>
     /// <remarks>This defaults to <c>256MB</c> which allows ~64k small textures, 4k buffers, or 64 MSAA textures per shared allocator.</remarks>
-    public static readonly uint MaximumSharedMemoryAllocatorByteLength = GetAppContextData(
+    public static uint MaximumSharedMemoryAllocatorByteLength { get; } = GetAppContextData(
         $"{typeof(GraphicsMemoryManager).FullName}.{nameof(MaximumSharedMemoryAllocatorByteLength)}",
         defaultValue: 256U * 1024U * 1024U
     );
 
     /// <summary>The minimum number of allocators allowed in the memory manager.</summary>
     /// <remarks>This defaults to <c>0</c> so that there is no minimum number of allocators.</remarks>
-    public static readonly uint MinimumMemoryAllocatorCount = GetAppContextData(
+    public static uint MinimumMemoryAllocatorCount { get; } = GetAppContextData(
         $"{typeof(GraphicsMemoryManager).FullName}.{nameof(MinimumMemoryAllocatorCount)}",
         defaultValue: 0U
     );
 
     /// <summary>The minimum length, in bytes, of an allocator allowed in a memory manager.</summary>
     /// <remarks>This defaults to <c>32MB</c> which is approx 1/8th the byte length of the default <see cref="MaximumSharedMemoryAllocatorByteLength" />.</remarks>
-    public static readonly uint MinimumMemoryAllocatorByteLength = GetAppContextData(
+    public static uint MinimumMemoryAllocatorByteLength { get; } = GetAppContextData(
         $"{typeof(GraphicsMemoryManager).FullName}.{nameof(MinimumMemoryAllocatorByteLength)}",
         defaultValue: 32U * 1024U * 1024U
     );

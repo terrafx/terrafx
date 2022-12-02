@@ -29,7 +29,7 @@ public partial struct UnmanagedArray<T>
         {
             get
             {
-                var count = Min(_array.Length, s_maxArrayLength);
+                var count = Min(_array.Length, MaxArrayLength);
                 var items = GC.AllocateUninitializedArray<T>((int)count);
 
                 fixed (T* pItems = items)

@@ -13,11 +13,11 @@ namespace TerraFX.Numerics;
 /// <summary>Defines an affine transformation.</summary>
 public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
 {
-    /// <summary>Defines a transform where all components are zero.</summary>
-    public static readonly AffineTransform Zero = Create(Quaternion.Zero, Vector3.Zero, Vector3.Zero);
+    /// <summary>Gets a transform where all components are zero.</summary>
+    public static AffineTransform Zero => Create(Quaternion.Zero, Vector3.Zero, Vector3.Zero);
 
-    /// <summary>Defines the identity transform.</summary>
-    public static readonly AffineTransform Identity = Create(Quaternion.Identity, Vector3.One, Vector3.Zero);
+    /// <summary>Gets the identity transform.</summary>
+    public static AffineTransform Identity => Create(Quaternion.Identity, Vector3.One, Vector3.Zero);
 
     private Quaternion _rotation;
     private Vector3 _scale;

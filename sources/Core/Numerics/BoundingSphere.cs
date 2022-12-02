@@ -12,7 +12,7 @@ namespace TerraFX.Numerics;
 public struct BoundingSphere : IEquatable<BoundingSphere>, IFormattable
 {
     /// <summary>Gets a bounding sphere with zero radius.</summary>
-    public static readonly BoundingSphere Zero = CreateFromRadius(Vector3.Zero, 0.0f);
+    public static BoundingSphere Zero => CreateFromRadius(Vector3.Zero, 0.0f);
 
     private Vector3 _center;
     private float _radius;

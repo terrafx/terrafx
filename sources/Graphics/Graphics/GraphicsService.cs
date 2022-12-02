@@ -21,16 +21,16 @@ namespace TerraFX.Graphics;
 /// <summary>Provides the base access required for interacting with a graphics subsystem.</summary>
 public sealed unsafe class GraphicsService : DisposableObject
 {
-    /// <summary><c>true</c> if debug mode should be enabled for the service; otherwise, <c>false</c>.</summary>
+    /// <summary>Gets <c>true</c> if debug mode should be enabled for the service; otherwise, <c>false</c>.</summary>
     /// <remarks>This defaults to <see cref="IsDebug" /> causing it to be enabled for debug builds and disabled for release builds by default.</remarks>
-    public static readonly bool EnableDebugMode = GetAppContextData(
+    public static bool EnableDebugMode { get; } = GetAppContextData(
         $"{typeof(GraphicsService).FullName}.{nameof(EnableDebugMode)}",
         defaultValue: IsDebug
     );
 
-    /// <summary><c>true</c> if GPU validation should be enabled for the service; otherwise, <c>false</c>.</summary>
+    /// <summary>Gets <c>true</c> if GPU validation should be enabled for the service; otherwise, <c>false</c>.</summary>
     /// <remarks>This defaults to <see cref="IsDebug" /> causing it to be enabled for debug builds and disabled for release builds by default.</remarks>
-    public static readonly bool EnableGpuValidation = GetAppContextData(
+    public static bool EnableGpuValidation { get; } = GetAppContextData(
         $"{typeof(GraphicsService).FullName}.{nameof(EnableGpuValidation)}",
         defaultValue: IsDebug
     );

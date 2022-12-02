@@ -18,14 +18,14 @@ public abstract unsafe partial class GraphicsMemoryAllocator
 {
     /// <summary>The minimum length, in bytes, of free memory regions to keep on either side of an allocated region.</summary>
     /// <remarks>This defaults to <c>0</c> so that no free regions are preserved around allocations.</remarks>
-    public static readonly uint MinimumAllocatedMemoryRegionMarginByteLength = GetAppContextData(
+    public static uint MinimumAllocatedMemoryRegionMarginByteLength { get; } = GetAppContextData(
         $"{typeof(GraphicsMemoryAllocator).FullName}.{nameof(MinimumAllocatedMemoryRegionMarginByteLength)}",
         defaultValue: 0U
     );
 
     /// <summary>The minimum length, in bytes, a free memory region should be for it to be registered as available.</summary>
     /// <remarks>This defaults to <c>4096</c> which is the minimum allocation byte length allowed for small resource textures on DirectX.</remarks>
-    public static readonly uint MinimumFreeMemoryRegionByteLengthToRegister = GetAppContextData(
+    public static uint MinimumFreeMemoryRegionByteLengthToRegister { get; } = GetAppContextData(
         $"{typeof(GraphicsMemoryAllocator).FullName}.{nameof(MinimumFreeMemoryRegionByteLengthToRegister)}",
         defaultValue: 4096U
     );
