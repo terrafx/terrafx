@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -30,6 +29,12 @@ public partial struct ValueQueue<T> : IEnumerable<T>
     private int _tail;
 
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
+    public ValueQueue()
+    {
+        _items = Array.Empty<T>();
+    }
+
+    /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the queue.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is <c>negative</c>.</exception>
     public ValueQueue(int capacity)
@@ -44,10 +49,6 @@ public partial struct ValueQueue<T> : IEnumerable<T>
         {
             _items = Array.Empty<T>();
         }
-
-        _count = 0;
-        _head = 0;
-        _tail = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>

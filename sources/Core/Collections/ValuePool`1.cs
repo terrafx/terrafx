@@ -20,6 +20,13 @@ public unsafe partial struct ValuePool<T> : IEnumerable<T>
     private ValueList<T> _items;
 
     /// <summary>Initializes a new instance of the <see cref="ValuePool{T}" /> struct.</summary>
+    public ValuePool()
+    {
+        _availableItems = ValueQueue<T>.Empty;
+        _items = ValueList<T>.Empty;
+    }
+
+    /// <summary>Initializes a new instance of the <see cref="ValuePool{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the pool.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is <c>negative</c>.</exception>
     public ValuePool(int capacity)

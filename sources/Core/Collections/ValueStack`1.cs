@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -28,6 +27,12 @@ public partial struct ValueStack<T> : IEnumerable<T>
     private int _count;
 
     /// <summary>Initializes a new instance of the <see cref="ValueStack{T}" /> struct.</summary>
+    public ValueStack()
+    {
+        _items = Array.Empty<T>();
+    }
+
+    /// <summary>Initializes a new instance of the <see cref="ValueStack{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the stack.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is <c>negative</c>.</exception>
     public ValueStack(int capacity)
@@ -42,8 +47,6 @@ public partial struct ValueStack<T> : IEnumerable<T>
         {
             _items = Array.Empty<T>();
         }
-
-        _count = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueStack{T}" /> struct.</summary>

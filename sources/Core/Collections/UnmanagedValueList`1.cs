@@ -26,8 +26,17 @@ namespace TerraFX.Collections;
 public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     where T : unmanaged
 {
+    /// <summary>Gets an empty list.</summary>
+    public static UnmanagedValueList<T> Empty => new UnmanagedValueList<T>();
+
     private UnmanagedArray<T> _items;
     private nuint _count;
+
+    /// <summary>Initializes a new instance of the <see cref="UnmanagedValueList{T}" /> struct.</summary>
+    public UnmanagedValueList()
+    {
+        _items = UnmanagedArray<T>.Empty;
+    }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueList{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the list.</param>
@@ -47,8 +56,6 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
             }
             _items = UnmanagedArray<T>.Empty;
         }
-
-        _count = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueList{T}" /> struct.</summary>
