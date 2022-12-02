@@ -23,6 +23,9 @@ namespace TerraFX.Collections;
 [DebuggerTypeProxy(typeof(ValueStack<>.DebugView))]
 public partial struct ValueStack<T> : IEnumerable<T>
 {
+    /// <summary>Gets an empty stack.</summary>
+    public static ValueStack<T> Empty => new ValueStack<T>();
+
     private T[] _items;
     private int _count;
 

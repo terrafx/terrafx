@@ -23,6 +23,9 @@ namespace TerraFX.Collections;
 [DebuggerTypeProxy(typeof(ValueQueue<>.DebugView))]
 public partial struct ValueQueue<T> : IEnumerable<T>
 {
+    /// <summary>Gets an empty queue.</summary>
+    public static ValueQueue<T> Empty => new ValueQueue<T>();
+
     private T[] _items;
     private int _count;
     private int _head;

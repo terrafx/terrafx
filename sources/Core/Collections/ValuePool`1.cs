@@ -16,6 +16,9 @@ namespace TerraFX.Collections;
 [DebuggerTypeProxy(typeof(ValuePool<>.DebugView))]
 public unsafe partial struct ValuePool<T> : IEnumerable<T>
 {
+    /// <summary>Gets an empty pool.</summary>
+    public static ValuePool<T> Empty => new ValuePool<T>();
+
     private ValueQueue<T> _availableItems;
     private ValueList<T> _items;
 
