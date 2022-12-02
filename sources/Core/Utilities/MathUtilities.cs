@@ -21,7 +21,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static short Abs(short value)
     {
-        Assert(AssertionsEnabled && (value != short.MinValue));
+        Assert(value != short.MinValue);
         var mask = value >> ((sizeof(short) * 8) - 1);
         return (short)((value + mask) ^ mask);
     }
@@ -33,7 +33,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Abs(int value)
     {
-        Assert(AssertionsEnabled && (value != int.MinValue));
+        Assert(value != int.MinValue);
         var mask = value >> ((sizeof(int) * 8) - 1);
         return (value + mask) ^ mask;
     }
@@ -45,7 +45,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe nint Abs(nint value)
     {
-        Assert(AssertionsEnabled && (value != nint.MinValue));
+        Assert(value != nint.MinValue);
         var mask = value >> ((sizeof(nint) * 8) - 1);
         return (value + mask) ^ mask;
     }
@@ -63,7 +63,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static sbyte Abs(sbyte value)
     {
-        Assert(AssertionsEnabled && (value != sbyte.MinValue));
+        Assert(value != sbyte.MinValue);
         var mask = value >> ((sizeof(int) * 8) - 1);
         return (sbyte)((value + mask) ^ mask);
     }
@@ -94,7 +94,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint AlignDown(uint address, uint alignment)
     {
-        Assert(AssertionsEnabled && IsPow2(alignment));
+        Assert(IsPow2(alignment));
         return address & ~(alignment - 1);
     }
 
@@ -106,7 +106,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong AlignDown(ulong address, ulong alignment)
     {
-        Assert(AssertionsEnabled && IsPow2(alignment));
+        Assert(IsPow2(alignment));
         return address & ~(alignment - 1);
     }
 
@@ -118,7 +118,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nuint AlignDown(nuint address, nuint alignment)
     {
-        Assert(AssertionsEnabled && IsPow2(alignment));
+        Assert(IsPow2(alignment));
         return address & ~(alignment - 1);
     }
 
@@ -130,7 +130,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint AlignUp(uint address, uint alignment)
     {
-        Assert(AssertionsEnabled && IsPow2(alignment));
+        Assert(IsPow2(alignment));
         return (address + (alignment - 1)) & ~(alignment - 1);
     }
 
@@ -142,7 +142,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong AlignUp(ulong address, ulong alignment)
     {
-        Assert(AssertionsEnabled && IsPow2(alignment));
+        Assert(IsPow2(alignment));
         return (address + (alignment - 1)) & ~(alignment - 1);
     }
 
@@ -154,7 +154,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nuint AlignUp(nuint address, nuint alignment)
     {
-        Assert(AssertionsEnabled && IsPow2(alignment));
+        Assert(IsPow2(alignment));
         return (address + (alignment - 1)) & ~(alignment - 1);
     }
 
@@ -191,7 +191,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte Clamp(byte value, byte min, byte max)
     {
-        Assert(AssertionsEnabled && (min <= max));
+        Assert(min <= max);
 
         // The compare order here is important.
         // It ensures we match HLSL behavior for the scenario where min is larger than max.
@@ -213,7 +213,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double Clamp(double value, double min, double max)
     {
-        Assert(AssertionsEnabled && (min <= max));
+        Assert(min <= max);
 
         // The compare order here is important.
         // It ensures we match HLSL behavior for the scenario where min is larger than max.
@@ -235,7 +235,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static short Clamp(short value, short min, short max)
     {
-        Assert(AssertionsEnabled && (min <= max));
+        Assert(min <= max);
 
         // The compare order here is important.
         // It ensures we match HLSL behavior for the scenario where min is larger than max.
@@ -257,7 +257,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Clamp(int value, int min, int max)
     {
-        Assert(AssertionsEnabled && (min <= max));
+        Assert(min <= max);
 
         // The compare order here is important.
         // It ensures we match HLSL behavior for the scenario where min is larger than max.
@@ -279,7 +279,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static long Clamp(long value, long min, long max)
     {
-        Assert(AssertionsEnabled && (min <= max));
+        Assert(min <= max);
 
         // The compare order here is important.
         // It ensures we match HLSL behavior for the scenario where min is larger than max.
@@ -301,7 +301,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nint Clamp(nint value, nint min, nint max)
     {
-        Assert(AssertionsEnabled && (min <= max));
+        Assert(min <= max);
 
         // The compare order here is important.
         // It ensures we match HLSL behavior for the scenario where min is larger than max.
@@ -323,7 +323,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static sbyte Clamp(sbyte value, sbyte min, sbyte max)
     {
-        Assert(AssertionsEnabled && (min <= max));
+        Assert(min <= max);
 
         // The compare order here is important.
         // It ensures we match HLSL behavior for the scenario where min is larger than max.
@@ -345,7 +345,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Clamp(float value, float min, float max)
     {
-        Assert(AssertionsEnabled && (min <= max));
+        Assert(min <= max);
 
         // The compare order here is important.
         // It ensures we match HLSL behavior for the scenario where min is larger than max.
@@ -367,7 +367,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ushort Clamp(ushort value, ushort min, ushort max)
     {
-        Assert(AssertionsEnabled && (min <= max));
+        Assert(min <= max);
 
         // The compare order here is important.
         // It ensures we match HLSL behavior for the scenario where min is larger than max.
@@ -389,7 +389,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint Clamp(uint value, uint min, uint max)
     {
-        Assert(AssertionsEnabled && (min <= max));
+        Assert(min <= max);
 
         // The compare order here is important.
         // It ensures we match HLSL behavior for the scenario where min is larger than max.
@@ -411,7 +411,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong Clamp(ulong value, ulong min, ulong max)
     {
-        Assert(AssertionsEnabled && (min <= max));
+        Assert(min <= max);
 
         // The compare order here is important.
         // It ensures we match HLSL behavior for the scenario where min is larger than max.
@@ -433,7 +433,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nuint Clamp(nuint value, nuint min, nuint max)
     {
-        Assert(AssertionsEnabled && (min <= max));
+        Assert(min <= max);
 
         // The compare order here is important.
         // It ensures we match HLSL behavior for the scenario where min is larger than max.
@@ -482,7 +482,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint DivideRoundingUp(uint dividend, uint divisor)
     {
-        Assert(AssertionsEnabled && (divisor != 0));
+        Assert(divisor != 0);
         return (dividend + divisor - 1) / divisor;
     }
 
@@ -494,7 +494,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong DivideRoundingUp(ulong dividend, ulong divisor)
     {
-        Assert(AssertionsEnabled && (divisor != 0));
+        Assert(divisor != 0);
         return (dividend + divisor - 1) / divisor;
     }
 
@@ -506,7 +506,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nuint DivideRoundingUp(nuint dividend, nuint divisor)
     {
-        Assert(AssertionsEnabled && (divisor != 0));
+        Assert(divisor != 0);
         return (dividend + divisor - 1) / divisor;
     }
 

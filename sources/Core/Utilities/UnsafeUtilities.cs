@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 
 namespace TerraFX.Utilities;
@@ -33,7 +32,7 @@ public static unsafe class UnsafeUtilities
         where TFrom : unmanaged
         where TTo : unmanaged
     {
-        Assert(AssertionsEnabled && (SizeOf<TFrom>() == SizeOf<TTo>()));
+        Assert(SizeOf<TFrom>() == SizeOf<TTo>());
         return MemoryMarshal.CreateSpan(ref Unsafe.As<TFrom, TTo>(ref MemoryMarshal.GetReference(span)), span.Length);
     }
 
@@ -43,7 +42,7 @@ public static unsafe class UnsafeUtilities
         where TFrom : unmanaged
         where TTo : unmanaged
     {
-        Assert(AssertionsEnabled && (SizeOf<TFrom>() == SizeOf<TTo>()));
+        Assert(SizeOf<TFrom>() == SizeOf<TTo>());
         return MemoryMarshal.CreateReadOnlySpan(ref Unsafe.As<TFrom, TTo>(ref MemoryMarshal.GetReference(span)), span.Length);
     }
 

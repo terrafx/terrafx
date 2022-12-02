@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using TerraFX.Threading;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
@@ -232,7 +231,7 @@ public partial struct ValueList<T> : IEnumerable<T>
     public ref T GetReferenceUnsafe(int index)
     {
         AssertNotNull(_items);
-        Assert(AssertionsEnabled && unchecked((uint)index <= (uint)Capacity));
+        Assert(unchecked((uint)index <= (uint)Capacity));
         return ref _items.GetReferenceUnsafe(index);
     }
 

@@ -8,7 +8,6 @@ using TerraFX.Advanced;
 using TerraFX.Collections;
 using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AppContextUtilities;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -399,7 +398,7 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
 
     private void RemoveMemoryAllocatorAt(int index)
     {
-        Assert(AssertionsEnabled && unchecked((uint)index <= _memoryAllocators.Count));
+        Assert(unchecked((uint)index <= _memoryAllocators.Count));
 
         var memoryAllocator = _memoryAllocators[index];
         memoryAllocator.DeviceObject.Dispose();
@@ -410,7 +409,7 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
         var byteLength = memoryAllocator.ByteLength;
         _memoryManagerInfo.ByteLength -= byteLength;
 
-        Assert(AssertionsEnabled && byteLength == memoryAllocator.TotalFreeMemoryRegionByteLength);
+        Assert(byteLength == memoryAllocator.TotalFreeMemoryRegionByteLength);
         _memoryManagerInfo.TotalFreeMemoryRegionByteLength -= byteLength;
     }
 
@@ -617,7 +616,7 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
         }
 
         _memoryManagerInfo.MinimumByteLength = minimumByteLength;
-        Assert(AssertionsEnabled && _memoryManagerInfo.ByteLength == byteLength);
+        Assert(_memoryManagerInfo.ByteLength == byteLength);
 
         return true;
     }

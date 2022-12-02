@@ -4,7 +4,6 @@
 // The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
 using System.Diagnostics.CodeAnalysis;
-using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Collections;
 

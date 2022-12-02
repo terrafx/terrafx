@@ -17,7 +17,6 @@ using static TerraFX.Interop.DirectX.D3D12_HEAP_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_RESOURCE_HEAP_TIER;
 using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.Windows.Windows;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
@@ -1051,8 +1050,8 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
             _ => -1,
         };
 
-        Assert(AssertionsEnabled && (memoryManagerIndex >= 0));
-        Assert(AssertionsEnabled && (resourceKind is GraphicsResourceKind.Buffer or GraphicsResourceKind.Texture));
+        Assert(memoryManagerIndex >= 0);
+        Assert(resourceKind is GraphicsResourceKind.Buffer or GraphicsResourceKind.Texture);
 
         if (_memoryManagers.Length != MaxMemoryManagerKinds)
         {
@@ -1070,7 +1069,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
 
     private ulong GetTotalAllocatedMemoryRegionByteLength(int memoryManagerKindIndex)
     {
-        Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
+        Assert((uint)memoryManagerKindIndex < MaxMemoryManagerKinds);
 
         if (_memoryManagers.Length == MaxMemoryManagerKinds)
         {
@@ -1088,7 +1087,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
 
     private ulong GetTotalFreeMemoryRegionByteLength(int memoryManagerKindIndex)
     {
-        Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
+        Assert((uint)memoryManagerKindIndex < MaxMemoryManagerKinds);
 
         if (_memoryManagers.Length == MaxMemoryManagerKinds)
         {
@@ -1106,7 +1105,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
 
     private ulong GetTotalOperationCount(int memoryManagerKindIndex)
     {
-        Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
+        Assert((uint)memoryManagerKindIndex < MaxMemoryManagerKinds);
 
         if (_memoryManagers.Length == MaxMemoryManagerKinds)
         {
@@ -1124,7 +1123,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
 
     private ulong GetTotalByteLength(int memoryManagerKindIndex)
     {
-        Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
+        Assert((uint)memoryManagerKindIndex < MaxMemoryManagerKinds);
 
         if (_memoryManagers.Length == MaxMemoryManagerKinds)
         {

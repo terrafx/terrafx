@@ -9,12 +9,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using TerraFX.Threading;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
-using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Collections;
 
@@ -238,7 +236,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     public T* GetPointerUnsafe(nuint index)
     {
         AssertNotNull(_items);
-        Assert(AssertionsEnabled && (index <= Capacity));
+        Assert(index <= Capacity);
         return _items.GetPointerUnsafe(index);
     }
 

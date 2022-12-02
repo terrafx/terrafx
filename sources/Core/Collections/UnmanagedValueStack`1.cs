@@ -10,7 +10,6 @@ using System.Diagnostics;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
-using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Collections;
 

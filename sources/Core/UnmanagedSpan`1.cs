@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -212,7 +211,7 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
     /// <remarks>This method is unsafe because it does not validate that <paramref name="index" /> is less than <see cref="Length" />.</remarks>
     public T* GetPointerUnsafe(nuint index)
     {
-        Assert(AssertionsEnabled && (index < Length));
+        Assert(index < Length);
         return _items + index;
     }
 

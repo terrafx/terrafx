@@ -7,7 +7,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -76,7 +75,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
         AssertNotNull(node->_next);
         InternalInsertNodeBefore(node->_next, result);
 
-        Assert(AssertionsEnabled && result->HasParent);
+        Assert(result->HasParent);
         return result;
     }
 
@@ -96,7 +95,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
         AssertNotNull(node->_next);
         InternalInsertNodeBefore(node->_next, newNode);
 
-        Assert(AssertionsEnabled && newNode->HasParent);
+        Assert(newNode->HasParent);
         return newNode;
     }
 
@@ -124,7 +123,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
             _first->_isFirstNode = true;
         }
 
-        Assert(AssertionsEnabled && result->HasParent);
+        Assert(result->HasParent);
         return result;
     }
 
@@ -152,7 +151,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
             _first->_isFirstNode = true;
         }
 
-        Assert(AssertionsEnabled && newNode->HasParent);
+        Assert(newNode->HasParent);
         return newNode;
     }
 
@@ -179,7 +178,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
             _first->_isFirstNode = true;
         }
 
-        Assert(AssertionsEnabled && result->HasParent);
+        Assert(result->HasParent);
         return result;
     }
 
@@ -207,7 +206,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
             _first->_isFirstNode = true;
         }
 
-        Assert(AssertionsEnabled && newNode->HasParent);
+        Assert(newNode->HasParent);
         return newNode;
     }
 
@@ -228,7 +227,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
             InternalInsertNodeBefore(_first, result);
         }
 
-        Assert(AssertionsEnabled && result->HasParent);
+        Assert(result->HasParent);
         return result;
     }
 
@@ -250,7 +249,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
             InternalInsertNodeBefore(_first, newNode);
         }
 
-        Assert(AssertionsEnabled && newNode->HasParent);
+        Assert(newNode->HasParent);
         return newNode;
     }
 
@@ -492,8 +491,8 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
 
     private void InternalInsertNodeToEmptyList(Node* newNode)
     {
-        Assert(AssertionsEnabled && (_first is null));
-        Assert(AssertionsEnabled && (_count == 0));
+        Assert(_first is null);
+        Assert(_count == 0);
 
         newNode->_next = newNode;
         newNode->_previous = newNode;
@@ -506,20 +505,14 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
 
     private void InternalRemoveNode(Node* node)
     {
-        if (AssertionsEnabled)
-        {
-            Assert(node->HasParent);
-            Assert(Contains(node));
-            Assert(_first is not null);
-        }
+        Assert(node->HasParent);
+        Assert(Contains(node));
+        Assert(_first is not null);
 
         if (node->_next == node)
         {
-            if (AssertionsEnabled)
-            {
-                Assert(_count == 1);
-                Assert(_first == node);
-            }
+            Assert(_count == 1);
+            Assert(_first == node);
 
             _first = null;
         }
@@ -558,7 +551,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
 
         if (node->HasParent)
         {
-            Assert(AssertionsEnabled && Contains(node));
+            Assert(Contains(node));
         }
         else
         {
