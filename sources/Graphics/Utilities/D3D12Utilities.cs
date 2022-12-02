@@ -507,7 +507,7 @@ internal static unsafe partial class D3D12Utilities
 
             fixed (char* pName = componentName)
             {
-                _ = self.SetPrivateData(AsReadonlyPointer(in WKPDID_D3DDebugObjectName), (uint)componentName.Length, (ushort*)pName);
+                _ = self.SetPrivateData(AsPointer(in WKPDID_D3DDebugObjectName), (uint)componentName.Length, (ushort*)pName);
             }
         }
     }

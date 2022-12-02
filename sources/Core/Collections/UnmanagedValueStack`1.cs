@@ -199,7 +199,7 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
     ///     <para>This method is because other operations may invalidate the backing array.</para>
     ///     <para>This method is because it does not validate that <paramref name="index" /> is less than <see cref="Count" />.</para>
     /// </remarks>
-    public ref T GetReferenceUnsafe(nuint index) => ref AsRef<T>(GetPointerUnsafe(index));
+    public ref T GetReferenceUnsafe(nuint index) => ref *GetPointerUnsafe(index);
 
     /// <summary>Peeks at the item at the top of the stack.</summary>
     /// <returns>The item at the top of the stack.</returns>

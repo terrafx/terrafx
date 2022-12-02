@@ -184,7 +184,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
 
         if (unchecked((uint)index < (uint)count))
         {
-            return ref _items.GetReference(count - (index + 1));
+            return ref _items.GetReferenceUnsafe(count - (index + 1));
         }
         else
         {

@@ -239,7 +239,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     {
         AssertNotNull(_items);
         Assert(AssertionsEnabled && (index <= Capacity));
-        return _items.GetPointer(index);
+        return _items.GetPointerUnsafe(index);
     }
 
     /// <summary>Gets a reference to the item at the specified index of the list.</summary>
@@ -249,7 +249,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     ///     <para>This method is because other operations may invalidate the backing array.</para>
     ///     <para>This method is because it does not validate that <paramref name="index" /> is less than <see cref="Capacity" />.</para>
     /// </remarks>
-    public ref T GetReferenceUnsafe(nuint index) => ref AsRef<T>(GetPointerUnsafe(index));
+    public ref T GetReferenceUnsafe(nuint index) => ref *GetPointerUnsafe(index);
 
     /// <summary>Inserts an item into list at the specified index.</summary>
     /// <param name="index">The zero-based index at which <paramref name="item" /> is inserted.</param>

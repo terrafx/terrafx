@@ -233,7 +233,7 @@ public partial struct ValueList<T> : IEnumerable<T>
     {
         AssertNotNull(_items);
         Assert(AssertionsEnabled && unchecked((uint)index <= (uint)Capacity));
-        return ref _items.GetReference(index);
+        return ref _items.GetReferenceUnsafe(index);
     }
 
     /// <summary>Gets the index of the first occurence of an item in the list.</summary>

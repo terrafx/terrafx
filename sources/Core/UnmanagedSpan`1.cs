@@ -114,13 +114,12 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
     /// <param name="index">The index of the item to get or set.</param>
     /// <returns>The item that exists at <paramref name="index" /> in the span.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is greater than or equal to <see cref="Length" />.</exception>
-    public ref T this[nuint index] => ref AsRef<T>(GetPointer(index));
+    public ref T this[nuint index] => ref *GetPointer(index);
 
     /// <summary>Implicitly converts the span to a readonly span.</summary>
     /// <param name="span">The span to convert.</param>
     /// <returns>A readonly span that covers the same memory as <paramref name="span" />.</returns>
-    public static implicit operator UnmanagedReadOnlySpan<T>(UnmanagedSpan<T> span)
-        => new UnmanagedReadOnlySpan<T>(span);
+    public static implicit operator UnmanagedReadOnlySpan<T>(UnmanagedSpan<T> span) => new UnmanagedReadOnlySpan<T>(span);
 
     /// <summary>Converts the unmanaged span to a span.</summary>
     /// <returns>A span that covers the unmanaged span.</returns>
@@ -220,13 +219,13 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
     /// <summary>Gets a reference to the item at the specified index of the span.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
     /// <returns>A reference to the item that exists at <paramref name="index" /> in the span.</returns>
-    public ref T GetReference(nuint index) => ref AsRef<T>(GetPointer(index));
+    public ref T GetReference(nuint index) => ref *GetPointer(index);
 
     /// <summary>Gets a reference to the item at the specified index of the span.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
     /// <returns>A reference to the item that exists at <paramref name="index" /> in the span.</returns>
     /// <remarks>This method is unsafe because it does not validate that <paramref name="index" /> is less than <see cref="Length" />.</remarks>
-    public ref T GetReferenceUnsafe(nuint index) => ref AsRef<T>(GetPointerUnsafe(index));
+    public ref T GetReferenceUnsafe(nuint index) => ref *GetPointerUnsafe(index);
 
     /// <summary>Slices the span so that it begins at the specified index.</summary>
     /// <param name="start">The index at which the span should start.</param>

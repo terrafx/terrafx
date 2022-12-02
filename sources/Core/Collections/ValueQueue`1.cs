@@ -279,11 +279,11 @@ public partial struct ValueQueue<T> : IEnumerable<T>
 
             if ((head < _tail) || (index < headLength))
             {
-                return ref _items.GetReference(head + index);
+                return ref _items.GetReferenceUnsafe(head + index);
             }
             else
             {
-                return ref _items.GetReference(index - headLength);
+                return ref _items.GetReferenceUnsafe(index - headLength);
             }
         }
         else

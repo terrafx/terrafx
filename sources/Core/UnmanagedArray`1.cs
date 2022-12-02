@@ -104,20 +104,17 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
     /// <param name="index">The index of the item to get or set.</param>
     /// <returns>The item that exists at <paramref name="index" /> in the array.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is greater than or equal to <see cref="Length" />.</exception>
-    public ref T this[nuint index]
-        => ref AsRef<T>(GetPointer(index));
+    public ref T this[nuint index] => ref *GetPointer(index);
 
     /// <summary>Implicitly converts the array to a span.</summary>
     /// <param name="array">The array to convert.</param>
     /// <returns>A span that covers the same memory as <paramref name="array" />.</returns>
-    public static implicit operator UnmanagedSpan<T>(UnmanagedArray<T> array)
-        => new UnmanagedSpan<T>(array);
+    public static implicit operator UnmanagedSpan<T>(UnmanagedArray<T> array) => new UnmanagedSpan<T>(array);
 
     /// <summary>Implicitly converts the array to a readonly span.</summary>
     /// <param name="array">The array to convert.</param>
     /// <returns>A readonly span that covers the same memory as <paramref name="array" />.</returns>
-    public static implicit operator UnmanagedReadOnlySpan<T>(UnmanagedArray<T> array)
-        => new UnmanagedReadOnlySpan<T>(array);
+    public static implicit operator UnmanagedReadOnlySpan<T>(UnmanagedArray<T> array) => new UnmanagedReadOnlySpan<T>(array);
 
     /// <inheritdoc />
     public void Dispose()
@@ -231,13 +228,13 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
     /// <summary>Gets a reference to the item at the specified index of the array.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
     /// <returns>A reference to the item that exists at <paramref name="index" /> in the array.</returns>
-    public ref T GetReference(nuint index) => ref AsRef<T>(GetPointer(index));
+    public ref T GetReference(nuint index) => ref *GetPointer(index);
 
     /// <summary>Gets a reference to the item at the specified index of the array.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
     /// <returns>A reference to the item that exists at <paramref name="index" /> in the array.</returns>
     /// <remarks>This method is unsafe because it does not validate that <paramref name="index" /> is less than <see cref="Length" />.</remarks>
-    public ref T GetReferenceUnsafe(nuint index) => ref AsRef<T>(GetPointerUnsafe(index));
+    public ref T GetReferenceUnsafe(nuint index) => ref *GetPointerUnsafe(index);
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

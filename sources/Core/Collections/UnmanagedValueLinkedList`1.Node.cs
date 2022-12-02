@@ -3,6 +3,7 @@
 // This file includes code based on the ICollectionDebugView<T> class from https://github.com/dotnet/runtime/
 // The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
+using System.Diagnostics.CodeAnalysis;
 using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Collections;
@@ -54,7 +55,8 @@ public partial struct UnmanagedValueLinkedList<T>
         }
 
         /// <summary>Gets a reference to the value held by the node.</summary>
-        public ref T ValueRef => ref AsRef<T>(AsPointer(ref _value));
+        [UnscopedRef]
+        public ref T ValueRef => ref _value;
 
         internal void Invalidate()
         {
