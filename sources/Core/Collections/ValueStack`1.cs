@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -24,8 +23,17 @@ namespace TerraFX.Collections;
 [DebuggerTypeProxy(typeof(ValueStack<>.DebugView))]
 public partial struct ValueStack<T> : IEnumerable<T>
 {
+    /// <summary>Gets an empty stack.</summary>
+    public static ValueStack<T> Empty => new ValueStack<T>();
+
     private T[] _items;
     private int _count;
+
+    /// <summary>Initializes a new instance of the <see cref="ValueStack{T}" /> struct.</summary>
+    public ValueStack()
+    {
+        _items = Array.Empty<T>();
+    }
 
     /// <summary>Initializes a new instance of the <see cref="ValueStack{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the stack.</param>
@@ -42,8 +50,6 @@ public partial struct ValueStack<T> : IEnumerable<T>
         {
             _items = Array.Empty<T>();
         }
-
-        _count = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueStack{T}" /> struct.</summary>
@@ -207,9 +213,8 @@ public partial struct ValueStack<T> : IEnumerable<T>
         if (!TryPeek(index, out var item))
         {
             ThrowIfNotInBounds(index, Count);
-            Fail();
         }
-        return item;
+        return item!;
     }
 
     /// <summary>Pops the item from the top of the stack.</summary>

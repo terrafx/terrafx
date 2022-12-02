@@ -7,7 +7,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -23,10 +22,19 @@ namespace TerraFX.Collections;
 public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T>
     where T : unmanaged
 {
+    /// <summary>Gets an empty queue.</summary>
+    public static UnmanagedValueQueue<T> Empty => new UnmanagedValueQueue<T>();
+
     private UnmanagedArray<T> _items;
     private nuint _count;
     private nuint _head;
     private nuint _tail;
+
+    /// <summary>Initializes a new instance of the <see cref="UnmanagedValueQueue{T}" /> struct.</summary>
+    public UnmanagedValueQueue()
+    {
+        _items = UnmanagedArray<T>.Empty;
+    }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueQueue{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the queue.</param>
@@ -46,10 +54,6 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
             }
             _items = UnmanagedArray<T>.Empty;
         }
-
-        _count = 0;
-        _head = 0;
-        _tail = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueQueue{T}" /> struct.</summary>
@@ -308,9 +312,8 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
         if (!TryPeek(index, out var item))
         {
             ThrowIfNotInBounds(index, Count);
-            Fail();
         }
-        return item;
+        return item!;
     }
 
     /// <summary>Removes the first occurence of an item from the queue.</summary>

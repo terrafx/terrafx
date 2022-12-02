@@ -11,7 +11,7 @@ namespace TerraFX.Runtime;
 public static partial class Resources
 {
     /// <summary>Gets the <see cref="ResourceManager" /> instance that is used to lookup the localized resources.</summary>
-    public static readonly ResourceManager ResourceManager = new ResourceManager(typeof(Resources));
+    public static ResourceManager ResourceManager { get; } = new ResourceManager(typeof(Resources));
 
     private static CultureInfo? s_culture;
 

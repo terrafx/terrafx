@@ -7,7 +7,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -23,8 +22,17 @@ namespace TerraFX.Collections;
 public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T>
     where T : unmanaged
 {
+    /// <summary>Gets an empty stack.</summary>
+    public static UnmanagedValueStack<T> Empty => new UnmanagedValueStack<T>();
+
     private UnmanagedArray<T> _items;
     private nuint _count;
+
+    /// <summary>Initializes a new instance of the <see cref="UnmanagedValueStack{T}" /> struct.</summary>
+    public UnmanagedValueStack()
+    {
+        _items = UnmanagedArray<T>.Empty;
+    }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueStack{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the stack.</param>
@@ -44,8 +52,6 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
             }
             _items = UnmanagedArray<T>.Empty;
         }
-
-        _count = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueStack{T}" /> struct.</summary>
@@ -216,9 +222,8 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
         if (!TryPeek(index, out var item))
         {
             ThrowIfNotInBounds(index, Count);
-            Fail();
         }
-        return item;
+        return item!;
     }
 
     /// <summary>Pops the item from the top of the stack.</summary>

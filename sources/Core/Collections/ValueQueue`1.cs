@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -24,10 +23,19 @@ namespace TerraFX.Collections;
 [DebuggerTypeProxy(typeof(ValueQueue<>.DebugView))]
 public partial struct ValueQueue<T> : IEnumerable<T>
 {
+    /// <summary>Gets an empty queue.</summary>
+    public static ValueQueue<T> Empty => new ValueQueue<T>();
+
     private T[] _items;
     private int _count;
     private int _head;
     private int _tail;
+
+    /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
+    public ValueQueue()
+    {
+        _items = Array.Empty<T>();
+    }
 
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the queue.</param>
@@ -44,10 +52,6 @@ public partial struct ValueQueue<T> : IEnumerable<T>
         {
             _items = Array.Empty<T>();
         }
-
-        _count = 0;
-        _head = 0;
-        _tail = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
@@ -309,9 +313,8 @@ public partial struct ValueQueue<T> : IEnumerable<T>
         if (!TryPeek(index, out var item))
         {
             ThrowIfNotInBounds(index, Count);
-            Fail();
         }
-        return item;
+        return item!;
     }
 
     /// <summary>Removes the first occurence of an item from the queue.</summary>

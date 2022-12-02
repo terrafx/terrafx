@@ -7,7 +7,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -21,6 +20,9 @@ namespace TerraFX.Collections;
 [DebuggerTypeProxy(typeof(ValueLinkedList<>.DebugView))]
 public partial struct ValueLinkedList<T> : IEnumerable<T>
 {
+    /// <summary>Gets an empty linked list.</summary>
+    public static ValueLinkedList<T> Empty => new ValueLinkedList<T>();
+
     private Node? _first;
     private int _count;
 
@@ -30,9 +32,6 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     public ValueLinkedList(IEnumerable<T> source)
     {
         ThrowIfNull(source);
-
-        Unsafe.SkipInit(out this);
-        _count = 0;
 
         foreach (var value in source)
         {
@@ -44,9 +43,6 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     /// <param name="span">The span that is used to populate the linked list.</param>
     public ValueLinkedList(ReadOnlySpan<T> span)
     {
-        Unsafe.SkipInit(out this);
-        _count = 0;
-
         foreach (var value in span)
         {
             _ = AddLast(value);

@@ -21,10 +21,10 @@ namespace TerraFX.Numerics;
 public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
 {
     /// <summary>Defines a matrix where all components are zero.</summary>
-    public static readonly Matrix4x4 Zero = Create(Vector128<float>.Zero, Vector128<float>.Zero, Vector128<float>.Zero, Vector128<float>.Zero);
+    public static Matrix4x4 Zero => Create(Vector128<float>.Zero, Vector128<float>.Zero, Vector128<float>.Zero, Vector128<float>.Zero);
 
     /// <summary>Defines the identity matrix.</summary>
-    public static readonly Matrix4x4 Identity = Create(UnitX, UnitY, UnitZ, UnitW);
+    public static Matrix4x4 Identity => Create(UnitX, UnitY, UnitZ, UnitW);
 
     private Vector128<float> _x;
     private Vector128<float> _y;

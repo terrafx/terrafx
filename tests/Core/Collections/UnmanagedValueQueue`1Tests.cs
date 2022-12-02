@@ -181,12 +181,28 @@ public static class UnmanagedValueQueueTests
             );
         }
 
-        Assert.That(() => new UnmanagedValueQueue<int>(new UnmanagedArray<int>(), takeOwnership: false),
+        using (var valueQueue = new UnmanagedValueQueue<int>(new UnmanagedArray<int>(), takeOwnership: false))
+        {
+            Assert.That(() => valueQueue,
+                Has.Property("Capacity").EqualTo((nuint)0)
+                   .And.Count.EqualTo((nuint)0)
+            );
+        }
+
+        using (var valueQueue = new UnmanagedValueQueue<int>(new UnmanagedArray<int>(), takeOwnership: true))
+        {
+            Assert.That(() => valueQueue,
+                Has.Property("Capacity").EqualTo((nuint)0)
+                   .And.Count.EqualTo((nuint)0)
+            );
+        }
+
+        Assert.That(() => new UnmanagedValueQueue<int>(array: default, takeOwnership: false),
             Throws.ArgumentNullException
                   .And.Property("ParamName").EqualTo("array")
         );
 
-        Assert.That(() => new UnmanagedValueQueue<int>(new UnmanagedArray<int>(), takeOwnership: true),
+        Assert.That(() => new UnmanagedValueQueue<int>(array: default, takeOwnership: true),
             Throws.ArgumentNullException
                     .And.Property("ParamName").EqualTo("array")
         );

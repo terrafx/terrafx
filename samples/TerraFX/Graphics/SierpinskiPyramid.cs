@@ -12,8 +12,8 @@ internal class SierpinskiPyramid
     {
         var scale = 1.0f;
 
-        var vertices = new UnmanagedValueList<Vector3>();
-        var indices = new UnmanagedValueList<uint>();
+        var vertices = UnmanagedValueList<Vector3>.Empty;
+        var indices = UnmanagedValueList<uint>.Empty;
 
         //         d
         //         .
@@ -130,8 +130,8 @@ internal class SierpinskiPyramid
     {
         var r = 0.99f;
 
-        var vertices = new UnmanagedValueList<Vector3>();
-        var indices = new UnmanagedValueList<uint>();
+        var vertices = UnmanagedValueList<Vector3>.Empty;
+        var indices = UnmanagedValueList<uint>.Empty;
 
         //
         //  a-------b    y          in this setup
@@ -243,7 +243,7 @@ internal class SierpinskiPyramid
             n4[i / 3] = Vector3.Normalize(Vector3.CrossProduct(b - a, c - a));
         }
 
-        var normals = new UnmanagedValueList<Vector3>();
+        var normals = UnmanagedValueList<Vector3>.Empty;
 
         for (nuint i = 0; i < vertices.Count; i += 3)
         {

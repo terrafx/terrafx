@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using TerraFX.Runtime;
 using TerraFX.Threading;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -126,16 +127,13 @@ public partial struct ValueLazy<T>
             if (previousState == Initialized)
             {
                 AssertNotNull(_factory);
+                _value = _factory();
 
-                try
-                {
-                    _value = _factory();
-                    _state.Transition(from: Creating, to: Created);
-                }
-                catch
+                if (_state.TryTransition(from: Creating, to: Created) != Creating)
                 {
                     _ = _state.Transition(to: Faulted);
-                    throw;
+                    var message = string.Format(Resources.StateTransitionFailureMessage, Creating, Created);
+                    ThrowInvalidOperationException(message);
                 }
 
                 _factory = null;

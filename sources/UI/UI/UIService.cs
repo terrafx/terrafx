@@ -22,11 +22,10 @@ namespace TerraFX.UI;
 /// <summary>Provides access to a UI subsystem.</summary>
 public sealed unsafe class UIService : DisposableObject
 {
-    /// <summary>A <c>HINSTANCE</c> to the entry point module.</summary>
-    public static readonly HINSTANCE EntryPointModule = GetModuleHandleW(lpModuleName: null);
-
     /// <summary>Gets the raw tick frequency of the underlying hardware timer used by <see cref="CurrentTimestamp" />.</summary>
-    public static readonly double TickFrequency = GetTickFrequency();
+    public static double TickFrequency { get; } = GetTickFrequency();
+
+    internal static HINSTANCE EntryPointModule { get; } = GetModuleHandleW(lpModuleName: null);
 
     private static UIService? s_instance;
 
@@ -191,17 +190,15 @@ public sealed unsafe class UIService : DisposableObject
     {
         if (!TryGetDispatcher(thread, out var dispatcher))
         {
-            dispatcher = CreateDispatcher(this, thread);
+            using var writerLock = new DisposableWriterLock(_dispatchersLock, isExternallySynchronized: false);
+            dispatcher = CreateDispatcherNoLock(this, thread);
         }
         return dispatcher;
 
-        static UIDispatcher CreateDispatcher(UIService service, Thread thread)
+        static UIDispatcher CreateDispatcherNoLock(UIService service, Thread thread)
         {
             var dispatcher = new UIDispatcher(service, thread);
-
-            using var writerLock = new DisposableWriterLock(service._dispatchersLock, isExternallySynchronized: false);
             service._dispatchers.Add(thread, dispatcher);
-
             return dispatcher;
         }
     }

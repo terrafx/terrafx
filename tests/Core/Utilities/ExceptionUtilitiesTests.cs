@@ -955,6 +955,10 @@ public static class ExceptionUtilitiesTests
         );
 
         Assert.That(() => ExceptionUtilities.ThrowIfNull(new UnmanagedArray<int>(), "value"),
+            Throws.Nothing
+        );
+
+        Assert.That(() => ExceptionUtilities.ThrowIfNull(default(UnmanagedArray<int>), "value"),
             Throws.ArgumentNullException
                   .And.Message.Contains("'value'")
                   .And.Message.Contains("null")

@@ -25,8 +25,17 @@ namespace TerraFX.Collections;
 [DebuggerTypeProxy(typeof(ValueList<>.DebugView))]
 public partial struct ValueList<T> : IEnumerable<T>
 {
+    /// <summary>Gets an empty linked list.</summary>
+    public static ValueList<T> Empty => new ValueList<T>();
+
     private T[] _items;
     private int _count;
+
+    /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>
+    public ValueList()
+    {
+        _items = Array.Empty<T>();
+    }
 
     /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the list.</param>
@@ -43,8 +52,6 @@ public partial struct ValueList<T> : IEnumerable<T>
         {
             _items = Array.Empty<T>();
         }
-
-        _count = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>

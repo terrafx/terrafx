@@ -17,8 +17,18 @@ namespace TerraFX.Collections;
 public unsafe partial struct UnmanagedValuePool<T> : IEnumerable<T>
     where T : unmanaged
 {
+    /// <summary>Gets an empty pool.</summary>
+    public static UnmanagedValuePool<T> Empty => new UnmanagedValuePool<T>();
+
     private UnmanagedValueQueue<T> _availableItems;
     private UnmanagedValueList<T> _items;
+
+    /// <summary>Initializes a new instance of the <see cref="UnmanagedValuePool{T}" /> struct.</summary>
+    public UnmanagedValuePool()
+    {
+        _availableItems = UnmanagedValueQueue<T>.Empty;
+        _items = UnmanagedValueList<T>.Empty;
+    }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValuePool{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the pool.</param>

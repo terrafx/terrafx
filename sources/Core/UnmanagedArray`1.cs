@@ -20,12 +20,18 @@ namespace TerraFX;
 public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerable<T>
     where T : unmanaged
 {
-    /// <summary>An empty array.</summary>
-    public static readonly UnmanagedArray<T> Empty = new UnmanagedArray<T>(
+    /// <summary>Gets an empty array.</summary>
+    public static UnmanagedArray<T> Empty { get; } = new UnmanagedArray<T>(
         (Metadata*)RuntimeHelpers.AllocateTypeAssociatedMemory(typeof(UnmanagedArray<T>), sizeof(Metadata))
     );
 
     private readonly Metadata* _data;
+
+    /// <summary>Initializes a new instance of the <see cref="UnmanagedArray{T}" /> struct.</summary>
+    public UnmanagedArray()
+    {
+        _data = Empty._data;
+    }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedArray{T}" /> struct.</summary>
     /// <param name="length">The length, in items, of the array.</param>

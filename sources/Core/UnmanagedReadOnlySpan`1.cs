@@ -14,8 +14,8 @@ namespace TerraFX;
 public readonly unsafe partial struct UnmanagedReadOnlySpan<T> : IEnumerable<T>
     where T : unmanaged
 {
-    /// <summary>An empty span.</summary>
-    public static readonly UnmanagedReadOnlySpan<T> Empty = new UnmanagedReadOnlySpan<T>();
+    /// <summary>Gets an empty span.</summary>
+    public static UnmanagedReadOnlySpan<T> Empty => new UnmanagedReadOnlySpan<T>();
 
     private readonly UnmanagedSpan<T> _span;
 

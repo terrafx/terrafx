@@ -7,7 +7,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -23,6 +22,9 @@ namespace TerraFX.Collections;
 public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumerable<T>
     where T : unmanaged
 {
+    /// <summary>Gets an empty linked list.</summary>
+    public static UnmanagedValueLinkedList<T> Empty => new UnmanagedValueLinkedList<T>();
+
     private Node* _first;
     private nuint _count;
 
@@ -32,9 +34,6 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
     public UnmanagedValueLinkedList(IEnumerable<T> source)
     {
         ThrowIfNull(source);
-
-        Unsafe.SkipInit(out this);
-        _count = 0;
 
         foreach (var value in source)
         {
@@ -46,9 +45,6 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
     /// <param name="span">The span that is used to populate the linked list.</param>
     public UnmanagedValueLinkedList(UnmanagedReadOnlySpan<T> span)
     {
-        Unsafe.SkipInit(out this);
-        _count = 0;
-
         foreach (var value in span)
         {
             _ = AddLast(value);

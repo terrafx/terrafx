@@ -12,7 +12,7 @@ namespace TerraFX.Numerics;
 public struct BoundingRectangle : IEquatable<BoundingRectangle>, IFormattable
 {
     /// <summary>Gets a bounding rectangle with zero extent.</summary>
-    public static readonly BoundingRectangle Zero = CreateFromExtent(Vector2.Zero, Vector2.Zero);
+    public static BoundingRectangle Zero => CreateFromExtent(Vector2.Zero, Vector2.Zero);
 
     private Vector2 _center;
     private Vector2 _extent;

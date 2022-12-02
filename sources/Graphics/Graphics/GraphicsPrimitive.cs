@@ -1,13 +1,12 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Graphics;
 using TerraFX.Graphics.Advanced;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-namespace TerraFX.Samples;
+namespace TerraFX.Graphics;
 
-/// <summary>A graphics primitive </summary>
+/// <summary>Represents a set of vertices and indices used as part of a single draw operation.</summary>
 public sealed class GraphicsPrimitive : GraphicsPipelineObject
 {
     private readonly GraphicsBufferView? _indexBufferView;

@@ -89,18 +89,22 @@ public static unsafe class Program
     private static void Run(Sample sample, TimeSpan timeout, Vector2? windowLocation, Vector2? windowSize)
     {
         using var application = new Application();
+        RunNoDispose(sample, timeout, windowLocation, windowSize, application);
 
-        if (sample is HelloWindow window)
+        static void RunNoDispose(Sample sample, TimeSpan timeout, Vector2? windowLocation, Vector2? windowSize, Application application)
         {
-            window.Initialize(application, timeout, windowLocation, windowSize);
-        }
-        else
-        {
-            sample.Initialize(application, timeout);
-        }
+            if (sample is HelloWindow window)
+            {
+                window.Initialize(application, timeout, windowLocation, windowSize);
+            }
+            else
+            {
+                sample.Initialize(application, timeout);
+            }
 
-        application.Run();
-        sample.Cleanup();
+            application.Run();
+            sample.Cleanup();
+        }
     }
 
     private static void RunSamples(string[] args)
