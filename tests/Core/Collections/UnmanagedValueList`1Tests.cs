@@ -181,12 +181,28 @@ public static class UnmanagedValueListTests
             );
         }
 
-        Assert.That(() => new UnmanagedValueList<int>(new UnmanagedArray<int>(), takeOwnership: false),
+        using (var valueList = new UnmanagedValueList<int>(new UnmanagedArray<int>(), takeOwnership: false))
+        {
+            Assert.That(() => valueList,
+                Has.Property("Capacity").EqualTo((nuint)0)
+                   .And.Count.EqualTo((nuint)0)
+            );
+        }
+
+        using (var valueList = new UnmanagedValueList<int>(new UnmanagedArray<int>(), takeOwnership: true))
+        {
+            Assert.That(() => valueList,
+                Has.Property("Capacity").EqualTo((nuint)0)
+                   .And.Count.EqualTo((nuint)0)
+            );
+        }
+
+        Assert.That(() => new UnmanagedValueList<int>(array: default, takeOwnership: false),
             Throws.ArgumentNullException
                   .And.Property("ParamName").EqualTo("array")
         );
 
-        Assert.That(() => new UnmanagedValueList<int>(new UnmanagedArray<int>(), takeOwnership: true),
+        Assert.That(() => new UnmanagedValueList<int>(array: default, takeOwnership: true),
             Throws.ArgumentNullException
                     .And.Property("ParamName").EqualTo("array")
         );
