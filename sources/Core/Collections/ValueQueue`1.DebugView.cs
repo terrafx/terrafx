@@ -21,15 +21,17 @@ public partial struct ValueQueue<T>
 
         public int Capacity => _queue.Capacity;
 
-        public int Count => _queue.Count;
+        public int Count => _queue._count;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public T[] Items
         {
             get
             {
-                var items = GC.AllocateUninitializedArray<T>(_queue.Count);
-                _queue.CopyTo(items);
+                ref readonly var queue = ref _queue;
+                var items = GC.AllocateUninitializedArray<T>(queue._count);
+
+                queue.CopyTo(items);
                 return items;
             }
         }

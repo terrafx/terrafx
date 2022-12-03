@@ -109,7 +109,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
         get
         {
             var items = _items;
-            return items is not null ? _items.Length : 0;
+            return items is not null ? items.Length : 0;
         }
     }
 
@@ -317,7 +317,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
         _count = newCount;
 
         var items = _items;
-        item = items[newCount];
+        item = _items[newCount];
 
         if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
         {

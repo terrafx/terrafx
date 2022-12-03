@@ -109,7 +109,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         get
         {
             var items = _items;
-            return !items.IsNull ? _items.Length : 0;
+            return !items.IsNull ? items.Length : 0;
         }
     }
 
@@ -124,13 +124,13 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     {
         readonly get
         {
-            ThrowIfNotInBounds(index, Count);
+            ThrowIfNotInBounds(index, _count);
             return _items[index];
         }
 
         set
         {
-            ThrowIfNotInBounds(index, Count);
+            ThrowIfNotInBounds(index, _count);
             _items[index] = value;
         }
     }
@@ -139,7 +139,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     /// <param name="item">The item to add to the list.</param>
     public void Add(T item)
     {
-        var count = Count;
+        var count = _count;
         var newCount = count + 1;
 
         if (newCount > Capacity)
@@ -188,7 +188,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="Count" /> is greater than the length of <paramref name="destination" />.</exception>
     public readonly void CopyTo(UnmanagedSpan<T> destination)
     {
-        var count = Count;
+        var count = _count;
 
         if (count != 0)
         {
@@ -255,7 +255,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is negative or greater than <see cref="Count" />.</exception>
     public void Insert(nuint index, T item)
     {
-        var count = Count;
+        var count = _count;
         ThrowIfNotInInsertBounds(index, count);
 
         var newCount = count + 1;
@@ -307,7 +307,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.</exception>
     public void RemoveAt(nuint index)
     {
-        var count = Count;
+        var count = _count;
         ThrowIfNotInBounds(index, count);
 
         var newCount = count - 1;
@@ -316,11 +316,6 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         if (index < newCount)
         {
             CopyArrayUnsafe(items.GetPointerUnsafe(index), items.GetPointerUnsafe(index + 1), newCount - index);
-        }
-
-        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
-        {
-            items[newCount] = default!;
         }
 
         _count = newCount;
@@ -344,7 +339,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     /// <remarks>This methods clamps <paramref name="threshold" /> to between <c>zero</c> and <c>one</c>, inclusive.</remarks>
     public void TrimExcess(float threshold = 1.0f)
     {
-        var count = Count;
+        var count = _count;
         var minCount = (nuint)(Capacity * Clamp(threshold, 0.0f, 1.0f));
 
         if (count < minCount)
@@ -371,7 +366,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
 
         if (!items.IsNull)
         {
-            return TryGetIndexOfUnsafe(items.GetPointerUnsafe(0), Count, item, out index);
+            return TryGetIndexOfUnsafe(items.GetPointerUnsafe(0), _count, item, out index);
         }
         else
         {

@@ -59,8 +59,10 @@ public partial struct ValueList<T> : IEnumerable<T>
     public ValueList(IEnumerable<T> source)
     {
         // This is an extension method and throws ArgumentNullException if null
-        _items = source.ToArray();
-        _count = _items.Length;
+        var items = source.ToArray();
+        
+        _items = items;
+        _count = items.Length;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>
@@ -110,7 +112,7 @@ public partial struct ValueList<T> : IEnumerable<T>
         get
         {
             var items = _items;
-            return items is not null ? _items.Length : 0;
+            return items is not null ? items.Length : 0;
         }
     }
 
@@ -125,13 +127,13 @@ public partial struct ValueList<T> : IEnumerable<T>
     {
         readonly get
         {
-            ThrowIfNotInBounds(index, Count);
+            ThrowIfNotInBounds(index, _count);
             return _items[index];
         }
 
         set
         {
-            ThrowIfNotInBounds(index, Count);
+            ThrowIfNotInBounds(index, _count);
             _items[index] = value;
         }
     }
@@ -140,7 +142,7 @@ public partial struct ValueList<T> : IEnumerable<T>
     /// <param name="item">The item to add to the list.</param>
     public void Add(T item)
     {
-        var count = Count;
+        var count = _count;
         var newCount = count + 1;
 
         if (newCount > Capacity)
@@ -182,9 +184,11 @@ public partial struct ValueList<T> : IEnumerable<T>
     /// <summary>Removes all items from the list.</summary>
     public void Clear()
     {
-        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>() && (_items is not null))
+        var items = _items;
+
+        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>() && (items is not null))
         {
-            Array.Clear(_items, 0, Count);
+            Array.Clear(items, 0, _count);
         }
 
         _count = 0;
@@ -198,7 +202,7 @@ public partial struct ValueList<T> : IEnumerable<T>
     /// <summary>Copies the items of the list to a span.</summary>
     /// <param name="destination">The span to which the items will be copied.</param>
     /// <exception cref="ArgumentException"><see cref="Count" /> is greater than the length of <paramref name="destination" />.</exception>
-    public readonly void CopyTo(Span<T> destination) => _items.AsSpan(0, Count).CopyTo(destination);
+    public readonly void CopyTo(Span<T> destination) => _items.AsSpan(0, _count).CopyTo(destination);
 
     /// <summary>Ensures the capacity of the list is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the list should support.</param>
@@ -241,7 +245,7 @@ public partial struct ValueList<T> : IEnumerable<T>
     public readonly int IndexOf(T item)
     {
         var items = _items;
-        return items is not null ? Array.IndexOf(items, item, 0, Count) : -1;
+        return items is not null ? Array.IndexOf(items, item, 0, _count) : -1;
     }
 
     /// <summary>Inserts an item into list at the specified index.</summary>
@@ -250,7 +254,7 @@ public partial struct ValueList<T> : IEnumerable<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is negative or greater than <see cref="Count" />.</exception>
     public void Insert(int index, T item)
     {
-        var count = Count;
+        var count = _count;
         ThrowIfNotInInsertBounds(index, count);
 
         var newCount = count + 1;
@@ -304,7 +308,7 @@ public partial struct ValueList<T> : IEnumerable<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.</exception>
     public void RemoveAt(int index)
     {
-        var count = Count;
+        var count = _count;
         ThrowIfNotInBounds(index, count);
 
         var newCount = count - 1;
@@ -341,7 +345,7 @@ public partial struct ValueList<T> : IEnumerable<T>
     /// <remarks>This methods clamps <paramref name="threshold" /> to between <c>zero</c> and <c>one</c>, inclusive.</remarks>
     public void TrimExcess(float threshold = 1.0f)
     {
-        var count = Count;
+        var count = _count;
         var minCount = (int)(Capacity * Clamp(threshold, 0.0f, 1.0f));
 
         if (count < minCount)

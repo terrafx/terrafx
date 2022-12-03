@@ -125,7 +125,7 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
     public readonly bool Contains(T item)
     {
         var items = _items;
-        return !items.IsNull && TryGetLastIndexOfUnsafe(items.GetPointerUnsafe(0), Count, item, out _);
+        return !items.IsNull && TryGetLastIndexOfUnsafe(items.GetPointerUnsafe(0), _count, item, out _);
     }
 
     /// <summary>Copies the items of the stack to a span.</summary>
@@ -133,7 +133,7 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
     /// <exception cref="ArgumentOutOfRangeException"><see cref="Count" /> is greater than the length of <paramref name="destination" />.</exception>
     public readonly void CopyTo(UnmanagedSpan<T> destination)
     {
-        var count = Count;
+        var count = _count;
 
         if (count != 0)
         {
@@ -178,10 +178,11 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
     public T* GetPointerUnsafe(nuint index)
     {
         T* item;
+        var count = _count;
 
-        if (index < _count)
+        if (index < count)
         {
-            item = _items.GetPointerUnsafe(_count - (index + 1));
+            item = _items.GetPointerUnsafe(count - (index + 1));
         }
         else
         {
@@ -220,7 +221,7 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
     {
         if (!TryPeek(index, out var item))
         {
-            ThrowIfNotInBounds(index, Count);
+            ThrowIfNotInBounds(index, _count);
         }
         return item!;
     }
@@ -241,7 +242,7 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
     /// <param name="item">The item to push to the top of the stack.</param>
     public void Push(T item)
     {
-        var count = Count;
+        var count = _count;
         var newCount = count + 1;
 
         if (newCount > Capacity)
@@ -258,7 +259,7 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
     /// <remarks>This methods clamps <paramref name="threshold" /> to between <c>zero</c> and <c>one</c>, inclusive.</remarks>
     public void TrimExcess(float threshold = 1.0f)
     {
-        var count = Count;
+        var count = _count;
         var minCount = (nuint)(Capacity * Clamp(threshold, 0.0f, 1.0f));
 
         if (count < minCount)
@@ -280,7 +281,7 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
     /// <returns><c>true</c> if the stack was not empty; otherwise, <c>false</c>.</returns>
     public readonly bool TryPeek(out T item)
     {
-        var count = Count;
+        var count = _count;
 
         if (count != 0)
         {
@@ -300,7 +301,7 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
     /// <returns><c>true</c> if the stack was not empty and <paramref name="index" /> is less than <see cref="Count" />; otherwise, <c>false</c>.</returns>
     public readonly bool TryPeek(nuint index, out T item)
     {
-        var count = Count;
+        var count = _count;
 
         if (index < count)
         {
@@ -319,7 +320,7 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
     /// <returns><c>true</c> if the stack was not empty; otherwise, <c>false</c>.</returns>
     public bool TryPop(out T item)
     {
-        var count = Count;
+        var count = _count;
         var newCount = unchecked(count - 1);
 
         if (count == 0)

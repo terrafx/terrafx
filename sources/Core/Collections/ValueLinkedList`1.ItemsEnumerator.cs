@@ -39,11 +39,11 @@ public partial struct ValueLinkedList<T>
         public bool MoveNext()
         {
             var succeeded = true;
-            _index++;
+            var index = unchecked(_index + 1);
 
-            if (_index == _linkedList.Count)
+            if (index == _linkedList._count)
             {
-                _index--;
+                index--;
                 succeeded = false;
             }
             else
@@ -52,6 +52,7 @@ public partial struct ValueLinkedList<T>
                 _current = _current.Next;
             }
 
+            _index = index;
             return succeeded;
         }
 

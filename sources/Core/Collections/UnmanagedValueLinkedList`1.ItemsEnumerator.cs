@@ -23,7 +23,14 @@ public partial struct UnmanagedValueLinkedList<T>
         }
 
         /// <inheritdoc />
-        public T Current => CurrentRef;
+        public T Current
+        {
+            get
+            {
+                AssertNotNull(_current);
+                return _current->_value;
+            }
+        }
 
         /// <inheritdoc />
         public ref readonly T CurrentRef
@@ -31,7 +38,7 @@ public partial struct UnmanagedValueLinkedList<T>
             get
             {
                 AssertNotNull(_current);
-                return ref _current->ValueRef;
+                return ref _current->_value;
             }
         }
 
@@ -39,19 +46,20 @@ public partial struct UnmanagedValueLinkedList<T>
         public bool MoveNext()
         {
             var succeeded = true;
-            _index = unchecked(_index + 1);
+            var index = unchecked(_index + 1);
 
-            if (_index == _linkedList.Count)
+            if (index == _linkedList._count)
             {
-                _index--;
+                index--;
                 succeeded = false;
             }
             else
             {
                 AssertNotNull(_current);
-                _current = _current->Next;
+                _current = _current->_next;
             }
 
+            _index = index;
             return succeeded;
         }
 

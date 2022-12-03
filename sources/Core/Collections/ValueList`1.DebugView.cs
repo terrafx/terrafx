@@ -21,15 +21,17 @@ public partial struct ValueList<T>
 
         public int Capacity => _list.Capacity;
 
-        public int Count => _list.Count;
+        public int Count => _list._count;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public T[] Items
         {
             get
             {
-                var items = GC.AllocateUninitializedArray<T>(_list.Count);
-                _list.CopyTo(items);
+                ref readonly var list = ref _list;
+                var items = GC.AllocateUninitializedArray<T>(list._count);
+
+                list.CopyTo(items);
                 return items;
             }
         }

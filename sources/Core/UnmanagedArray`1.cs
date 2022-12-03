@@ -88,7 +88,7 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
     }
 
     /// <summary><c>true</c> if the array is <c>null</c>; otherwise, <c>false</c>.</summary>
-    public bool IsNull => _data == null;
+    public bool IsNull => _data is null;
 
     /// <summary>Gets the length, in items, of the array.</summary>
     public nuint Length
@@ -119,9 +119,11 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
     /// <inheritdoc />
     public void Dispose()
     {
-        if (_data != Empty._data)
+        var data = _data;
+
+        if (data != Empty._data)
         {
-            Free(_data);
+            Free(data);
         }
     }
 
@@ -132,13 +134,13 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
     /// <summary>Converts the array to a span starting at the specified index.</summary>
     /// <param name="start">The index of the array at which the span should start.</param>
     /// <returns>A span that covers the array beginning at <paramref name="start" />.</returns>
-    public Span<T> AsSpan(nuint start) => AsUnmanagedSpan().AsSpan(start);
+    public Span<T> AsSpan(nuint start) => AsUnmanagedSpan(start).AsSpan();
 
     /// <summary>Converts the array to a span starting at the specified index and continuing for the specified number of items.</summary>
     /// <param name="start">The index of the array at which the span should start.</param>
     /// <param name="length">The length, in items, of the span.</param>
     /// <returns>A span that covers the array beginning at <paramref name="start" /> and continuing for <paramref name="length" /> items.</returns>
-    public Span<T> AsSpan(nuint start, nuint length) => AsUnmanagedSpan().AsSpan(start, length);
+    public Span<T> AsSpan(nuint start, nuint length) => AsUnmanagedSpan(start, length).AsSpan();
 
     /// <summary>Converts the array to an unmanaged span.</summary>
     /// <returns>An unmanaged span that covers the array.</returns>
@@ -160,10 +162,8 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
     {
         AssertNotNull(this);
 
-        var items = &_data->Item;
-        var length = _data->Length;
-
-        ClearArrayUnsafe(items, length);
+        var data = _data;
+        ClearArrayUnsafe(&data->Item, data->Length);
     }
 
     /// <summary>Copies the items in the array to a given destination.</summary>
@@ -174,13 +174,13 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
     {
         AssertNotNull(this);
 
-        var items = &_data->Item;
-        var length = _data->Length;
+        var data = _data;
+        var length = data->Length;
 
         ThrowIfNull(destination);
-        ThrowIfNotInInsertBounds(length, destination.Length);
+        ThrowIfNotInInsertBounds(length, destination._data->Length);
 
-        CopyArrayUnsafe(destination.GetPointerUnsafe(0), items, length);
+        CopyArrayUnsafe(destination.GetPointerUnsafe(0), &data->Item, length);
     }
 
     /// <summary>Copies the items in the array to a given destination.</summary>
@@ -190,12 +190,12 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
     {
         AssertNotNull(this);
 
-        var items = &_data->Item;
-        var length = _data->Length;
+        var data = _data;
+        var length = data->Length;
 
         ThrowIfNotInInsertBounds(length, destination.Length);
 
-        CopyArrayUnsafe(destination.GetPointerUnsafe(0), items, length);
+        CopyArrayUnsafe(destination.GetPointerUnsafe(0), &data->Item, length);
     }
 
     /// <summary>Gets an enumerator that can iterate through the items in the array.</summary>
@@ -208,7 +208,7 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is greater than or equal to <see cref="Length" />.</exception>
     public T* GetPointer(nuint index)
     {
-        ThrowIfNotInBounds(index, Length);
+        ThrowIfNotInBounds(index, _data->Length);
         return GetPointerUnsafe(index);
     }
 
@@ -219,10 +219,11 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
     public T* GetPointerUnsafe(nuint index)
     {
         AssertNotNull(this);
-        Assert(index <= Length);
 
-        var items = &_data->Item;
-        return items + index;
+        var data = _data;
+        Assert(index <= data->Length);
+
+        return &_data->Item + index;
     }
 
     /// <summary>Gets a reference to the item at the specified index of the array.</summary>

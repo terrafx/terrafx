@@ -29,10 +29,24 @@ public partial struct ValueLinkedList<T>
         public bool IsFirstNode => _isFirstNode;
 
         /// <summary>Gets the next node in the linked list or <c>null</c> if none exists.</summary>
-        public Node? Next => ((_next is not null) && !_next._isFirstNode) ? _next : null;
+        public Node? Next
+        {
+            get
+            {
+                var next = _next;
+                return ((next is not null) && !next._isFirstNode) ? next : null;
+            }
+        }
 
         /// <summary>Gets the previous node in the linked list or <c>null</c> if none exists.</summary>
-        public Node? Previous => ((_previous is not null) && !_isFirstNode) ? _previous : null;
+        public Node? Previous
+        {
+            get
+            {
+                var previous = _previous;
+                return ((previous is not null) && !_isFirstNode) ? previous : null;
+            }
+        }
 
         /// <summary>Gets or sets the value held by the node.</summary>
         public T Value

@@ -32,7 +32,7 @@ public partial struct UnmanagedSpan<T>
             var succeeded = true;
             _index++;
 
-            if (_index == _span.Length)
+            if (_index == _span._length)
             {
                 _index--;
                 succeeded = false;

@@ -29,14 +29,15 @@ public partial struct ValueList<T>
         public bool MoveNext()
         {
             var succeeded = true;
-            _index++;
+            var index = unchecked(_index + 1);
 
-            if (_index == _list.Count)
+            if (index == _list._count)
             {
-                _index--;
+                index--;
                 succeeded = false;
             }
 
+            _index = index;
             return succeeded;
         }
 

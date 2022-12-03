@@ -29,14 +29,15 @@ public partial struct UnmanagedValueStack<T>
         public bool MoveNext()
         {
             var succeeded = true;
-            _index = unchecked(_index + 1);
+            var index = unchecked(_index + 1);
 
-            if (_index == _stack.Count)
+            if (index == _stack._count)
             {
-                _index--;
+                index--;
                 succeeded = false;
             }
 
+            _index = index;
             return succeeded;
         }
 

@@ -182,6 +182,61 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Atan(float value) => MathF.Atan(value);
 
+    /// <summary>Multiplies two 64-bit integers to compute the upper 64-bits of their 128-bit product.</summary>
+    /// <param name="left">The integer to multiply by <paramref name="right" />.</param>
+    /// <param name="right">The integer which is used to multiply <paramref name="left" />.</param>
+    /// <returns>The upper 64-bits of the 128-product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static long BigMultiplyUpper(long left, long right)
+    {
+        if (ArmBase.Arm64.IsSupported)
+        {
+            return ArmBase.Arm64.MultiplyHigh(left, right);
+        }
+        else
+        {
+            var upper = BigMultiplyUpper((ulong)left, (ulong)right);
+            return (long)upper - ((left >> 63) & right) - ((right >> 63) & left);
+        }
+    }
+
+    /// <summary>Multiplies two 64-bit integers to compute the upper 64-bits of their 128-bit product.</summary>
+    /// <param name="left">The integer to multiply by <paramref name="right" />.</param>
+    /// <param name="right">The integer which is used to multiply <paramref name="left" />.</param>
+    /// <returns>The upper 64-bits of the 128-product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ulong BigMultiplyUpper(ulong left, ulong right)
+    {
+        if (ArmBase.Arm64.IsSupported)
+        {
+            return ArmBase.Arm64.MultiplyHigh(left, right);
+        }
+        else if (Bmi2.X64.IsSupported)
+        {
+            return Bmi2.X64.MultiplyNoFlags(left, right);
+        }
+        else
+        {
+            // Adaptation of algorithm for multiplication of 32-bit unsigned integers described
+            // in Hacker's Delight by Henry S. Warren, Jr. (ISBN 0-201-91465-4), Chapter 8
+            //
+            // Basically, it's an optimized version of FOIL method applied to lower and upper
+            // 32-bits of each operand
+
+            var al = (uint)left;
+            var ah = (uint)(left >> 32);
+
+            var bl = (uint)right;
+            var bh = (uint)(right >> 32);
+
+            var mull = ((ulong)al) * bl;
+            var t = (((ulong)ah) * bl) + (mull >> 32);
+            var tl = (((ulong)al) * bh) + (uint)t;
+
+            return (((ulong)ah) * bh) + (t >> 32) + (tl >> 32);
+        }
+    }
+
     /// <summary>Clamps an 8-bit unsigned integer to be between a minimum and maximum value.</summary>
     /// <param name="value">The value to restrict.</param>
     /// <param name="min">The minimum value (inclusive).</param>

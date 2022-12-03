@@ -18,20 +18,22 @@ public partial struct UnmanagedValueList<T>
             _list = list;
         }
 
-        public nuint Count => _list.Count;
+        public nuint Count => _list._count;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public T[] Items
         {
             get
             {
-                var count = Min(_list.Count, MaxArrayLength);
+                ref readonly var list = ref _list;
+
+                var count = Min(list._count, MaxArrayLength);
                 var items = GC.AllocateUninitializedArray<T>((int)count);
 
                 fixed (T* pItems = items)
                 {
                     var span = new UnmanagedSpan<T>(pItems, count);
-                    _list.CopyTo(span);
+                    list.CopyTo(span);
                 }
                 return items;
             }
