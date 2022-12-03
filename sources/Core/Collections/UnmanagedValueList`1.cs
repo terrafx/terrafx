@@ -142,10 +142,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         var count = _count;
         var newCount = count + 1;
 
-        if (newCount > Capacity)
-        {
-            EnsureCapacity(count + 1);
-        }
+        EnsureCapacity(count + 1);
 
         _count = newCount;
         _items[count] = item;
@@ -202,23 +199,14 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
 
     /// <summary>Ensures the capacity of the list is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the list should support.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void EnsureCapacity(nuint capacity)
     {
         var currentCapacity = Capacity;
 
         if (capacity > currentCapacity)
         {
-            var items = _items;
-
-            var newCapacity = Max(capacity, currentCapacity * 2);
-            var alignment = !items.IsNull ? items.Alignment : 0;
-
-            var newItems = new UnmanagedArray<T>(newCapacity, alignment);
-
-            CopyTo(newItems);
-            items.Dispose();
-
-            _items = newItems;
+            Resize(capacity, currentCapacity);
         }
     }
 
@@ -259,11 +247,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         ThrowIfNotInInsertBounds(index, count);
 
         var newCount = count + 1;
-
-        if (newCount > Capacity)
-        {
-            EnsureCapacity(newCount);
-        }
+        EnsureCapacity(newCount);
 
         var items = _items;
 
@@ -373,6 +357,21 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
             index = 0;
             return false;
         }
+    }
+
+    private void Resize(nuint capacity, nuint currentCapacity)
+    {
+        var items = _items;
+
+        var newCapacity = Max(capacity, currentCapacity * 2);
+        var alignment = !items.IsNull ? items.Alignment : 0;
+
+        var newItems = new UnmanagedArray<T>(newCapacity, alignment);
+
+        CopyTo(newItems);
+        items.Dispose();
+
+        _items = newItems;
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

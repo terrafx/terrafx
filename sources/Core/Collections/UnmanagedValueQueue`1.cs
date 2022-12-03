@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -203,10 +204,7 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
         var count = _count;
         var newCount = count + 1;
 
-        if (newCount > Capacity)
-        {
-            EnsureCapacity(count + 1);
-        }
+        EnsureCapacity(count + 1);
 
         var tail = _tail;
         var newTail = tail + 1;
@@ -223,26 +221,14 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
 
     /// <summary>Ensures the capacity of the queue is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the queue should support.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void EnsureCapacity(nuint capacity)
     {
         var currentCapacity = Capacity;
 
         if (capacity > currentCapacity)
         {
-            var items = _items;
-
-            var newCapacity = Max(capacity, currentCapacity * 2);
-            var alignment = !items.IsNull ? items.Alignment : 0;
-
-            var newItems = new UnmanagedArray<T>(newCapacity, alignment);
-
-            CopyTo(newItems);
-            items.Dispose();
-
-            _items = newItems;
-
-            _head = 0;
-            _tail = _count;
+            Resize(capacity, currentCapacity);
         }
     }
 
@@ -453,6 +439,24 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
             item = default!;
             return false;
         }
+    }
+
+    private void Resize(nuint capacity, nuint currentCapacity)
+    {
+        var items = _items;
+
+        var newCapacity = Max(capacity, currentCapacity * 2);
+        var alignment = !items.IsNull ? items.Alignment : 0;
+
+        var newItems = new UnmanagedArray<T>(newCapacity, alignment);
+
+        CopyTo(newItems);
+        items.Dispose();
+
+        _items = newItems;
+
+        _head = 0;
+        _tail = _count;
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

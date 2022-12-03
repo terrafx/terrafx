@@ -216,10 +216,7 @@ public partial struct ValueQueue<T> : IEnumerable<T>
         var count = _count;
         var newCount = count + 1;
 
-        if (newCount > Capacity)
-        {
-            EnsureCapacity(count + 1);
-        }
+        EnsureCapacity(count + 1);
 
         var tail = _tail;
         var newTail = tail + 1;
@@ -237,20 +234,14 @@ public partial struct ValueQueue<T> : IEnumerable<T>
     /// <summary>Ensures the capacity of the queue is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the queue should support.</param>
     /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and is instead does nothing.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void EnsureCapacity(int capacity)
     {
         var currentCapacity = Capacity;
 
         if (capacity > currentCapacity)
         {
-            var newCapacity = Max(capacity, currentCapacity * 2);
-            var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
-
-            CopyTo(newItems);
-            _items = newItems;
-
-            _head = 0;
-            _tail = _count;
+            Resize(capacity, currentCapacity);
         }
     }
 
@@ -470,6 +461,18 @@ public partial struct ValueQueue<T> : IEnumerable<T>
             item = default!;
             return false;
         }
+    }
+
+    private void Resize(int capacity, int currentCapacity)
+    {
+        var newCapacity = Max(capacity, currentCapacity * 2);
+        var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
+
+        CopyTo(newItems);
+        _items = newItems;
+
+        _head = 0;
+        _tail = _count;
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

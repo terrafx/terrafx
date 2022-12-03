@@ -145,10 +145,7 @@ public partial struct ValueList<T> : IEnumerable<T>
         var count = _count;
         var newCount = count + 1;
 
-        if (newCount > Capacity)
-        {
-            EnsureCapacity(newCount);
-        }
+        EnsureCapacity(newCount);
 
         _count = newCount;
         _items[count] = item;
@@ -207,17 +204,14 @@ public partial struct ValueList<T> : IEnumerable<T>
     /// <summary>Ensures the capacity of the list is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the list should support.</param>
     /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and is instead does nothing.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void EnsureCapacity(int capacity)
     {
         var currentCapacity = Capacity;
 
         if (capacity > currentCapacity)
         {
-            var newCapacity = Max(capacity, currentCapacity * 2);
-            var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
-
-            CopyTo(newItems);
-            _items = newItems;
+            Resize(capacity, currentCapacity);
         }
     }
 
@@ -258,11 +252,7 @@ public partial struct ValueList<T> : IEnumerable<T>
         ThrowIfNotInInsertBounds(index, count);
 
         var newCount = count + 1;
-
-        if (newCount > Capacity)
-        {
-            EnsureCapacity(newCount);
-        }
+        EnsureCapacity(newCount);
 
         var items = _items;
 
@@ -354,6 +344,15 @@ public partial struct ValueList<T> : IEnumerable<T>
             CopyTo(newItems);
             _items = newItems;
         }
+    }
+
+    private void Resize(int capacity, int currentCapacity)
+    {
+        var newCapacity = Max(capacity, currentCapacity * 2);
+        var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
+
+        CopyTo(newItems);
+        _items = newItems;
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
