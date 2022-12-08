@@ -116,9 +116,11 @@ public static unsafe class Program
         {
             var argsList = args.ToList();
             var index = argsList.IndexOf("-windowLocation");
+
             (float x, float y) = (-1, -1);
             (var xOk, var yOk) = (false, false);
-            if (index != -1 && argsList.Count >= index + 2)
+
+            if ((index >= 0) && (argsList.Count >= index + 2))
             {
                 xOk = float.TryParse(argsList[++index], out x);
                 yOk = float.TryParse(argsList[++index], out y);
@@ -134,9 +136,11 @@ public static unsafe class Program
         {
             var argsList = args.ToList();
             var index = argsList.IndexOf("-windowSize");
+
             (float w, float h) = (-1, -1);
             (var wOk, var hOk) = (false, false);
-            if (index != -1 && argsList.Count >= index + 2)
+
+            if ((index >= 0) && (argsList.Count >= index + 2))
             {
                 wOk = float.TryParse(argsList[++index], out w);
                 hOk = float.TryParse(argsList[++index], out h);

@@ -120,7 +120,7 @@ public static unsafe class MarshalUtilities
             result = CreateReadOnlySpan(in source, maxLength);
             var length = result.IndexOf((sbyte)'\0');
 
-            if (length != -1)
+            if (length >= 0)
             {
                 result = result.Slice(0, length);
             }
@@ -166,7 +166,7 @@ public static unsafe class MarshalUtilities
             result = CreateReadOnlySpan(in source, maxLength);
             var length = result.IndexOf('\0');
 
-            if (length != -1)
+            if (length >= 0)
             {
                 result = result.Slice(0, length);
             }

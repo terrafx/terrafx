@@ -137,7 +137,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
         if (items is not null)
         {
             var count = Count;
-            return (count != 0) && Array.LastIndexOf(items, item, count - 1) != -1;
+            return (count != 0) && Array.LastIndexOf(items, item, count - 1) >= 0;
         }
         else
         {
@@ -152,7 +152,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
 
     /// <summary>Ensures the capacity of the stack is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the stack should support.</param>
-    /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and is instead does nothing.</remarks>
+    /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and instead does nothing.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void EnsureCapacity(int capacity)
     {

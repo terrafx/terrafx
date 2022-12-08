@@ -194,7 +194,7 @@ public partial struct ValueList<T> : IEnumerable<T>
     /// <summary>Checks whether the list contains a specified item.</summary>
     /// <param name="item">The item to check for in the list.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was found in the list; otherwise, <c>false</c>.</returns>
-    public readonly bool Contains(T item) => IndexOf(item) != -1;
+    public readonly bool Contains(T item) => IndexOf(item) >= 0;
 
     /// <summary>Copies the items of the list to a span.</summary>
     /// <param name="destination">The span to which the items will be copied.</param>
@@ -203,7 +203,7 @@ public partial struct ValueList<T> : IEnumerable<T>
 
     /// <summary>Ensures the capacity of the list is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the list should support.</param>
-    /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and is instead does nothing.</remarks>
+    /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and instead does nothing.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void EnsureCapacity(int capacity)
     {

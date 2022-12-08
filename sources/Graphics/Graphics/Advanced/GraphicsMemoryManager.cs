@@ -227,7 +227,7 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
     {
         var memoryAllocatorIndex = _memoryAllocators.IndexOf(memoryAllocator);
 
-        if (memoryAllocatorIndex == -1)
+        if (memoryAllocatorIndex < 0)
         {
             ThrowKeyNotFoundException(memoryRegion, nameof(_memoryAllocators));
         }

@@ -160,12 +160,12 @@ public partial struct ValueQueue<T> : IEnumerable<T>
 
             if ((head < tail) || (tail == 0))
             {
-                return Array.IndexOf(items, item, head, _count) != -1;
+                return Array.IndexOf(items, item, head, _count) >= 0;
             }
             else
             {
-                return (Array.IndexOf(items, item, head, _count - head) != -1)
-                    || (Array.IndexOf(items, item, 0, tail) != -1);
+                return (Array.IndexOf(items, item, head, _count - head) >= 0)
+                    || (Array.IndexOf(items, item, 0, tail) >= 0);
             }
         }
         else
@@ -233,7 +233,7 @@ public partial struct ValueQueue<T> : IEnumerable<T>
 
     /// <summary>Ensures the capacity of the queue is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the queue should support.</param>
-    /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and is instead does nothing.</remarks>
+    /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and instead does nothing.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void EnsureCapacity(int capacity)
     {
@@ -320,12 +320,12 @@ public partial struct ValueQueue<T> : IEnumerable<T>
 
             var index = Array.IndexOf(items, item, head, count - head);
 
-            if (index == -1)
+            if (index < 0)
             {
                 index = Array.IndexOf(items, item, 0, tail);
             }
 
-            if (index != -1)
+            if (index >= 0)
             {
                 var newTail = tail - 1;
                 var newCount = count - 1;
