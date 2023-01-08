@@ -1,7 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 
 namespace TerraFX.Collections;
@@ -17,7 +16,7 @@ public sealed class NotifyCollectionChangedEventArgs<T> : EventArgs
 
     private NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, T? value = default)
     {
-        Assert(AssertionsEnabled && Enum.IsDefined(action));
+        AssertIsDefined(action);
 
         _action = action;
         _value = value;
@@ -32,7 +31,7 @@ public sealed class NotifyCollectionChangedEventArgs<T> : EventArgs
     {
         get
         {
-            Assert(AssertionsEnabled && (_action != NotifyCollectionChangedAction.Reset));
+            Assert(_action != NotifyCollectionChangedAction.Reset);
             return _value;
         }
     }

@@ -6,7 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using TerraFX.Threading;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Utilities;
@@ -22,10 +21,10 @@ public static unsafe class AssertionUtilities
     /// <param name="condition">The condition to assert.</param>
     /// <param name="conditionExpression">The expression of the condition that caused the exception.</param>
     /// <exception cref="InvalidOperationException">TerraFX based assertions are disabled.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [Conditional("DEBUG")]
     public static void Assert([DoesNotReturnIf(false)] bool condition, [CallerArgumentExpression("condition")] string? conditionExpression = null)
     {
-        if (AssertionsEnabled && !condition)
+        if (!condition)
         {
             Fail(conditionExpression);
         }
@@ -33,57 +32,52 @@ public static unsafe class AssertionUtilities
 
     /// <summary>Asserts that the state is <see cref="VolatileState.Disposing" />.</summary>
     /// <param name="state">The state to assert.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [Conditional("DEBUG")]
     public static void AssertDisposing(VolatileState state)
-        => Assert(AssertionsEnabled && (state == VolatileState.Disposing));
+        => Assert(state == VolatileState.Disposing);
 
     /// <summary>Asserts that <paramref name="value" /> is defined by <typeparamref name="TEnum" />.</summary>
     /// <param name="value">The value to be checked if it is defined by <typeparamref name="TEnum" />.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not defined by <typeparamref name="TEnum" />.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [Conditional("DEBUG")]
     public static void AssertIsDefined<TEnum>(TEnum value)
         where TEnum : struct, Enum => Assert(!Enum.IsDefined(value));
 
     /// <summary>Asserts that the state is not <see cref="VolatileState.Disposed" /> or <see cref="VolatileState.Disposing" />.</summary>
     /// <param name="state">The state to assert.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [Conditional("DEBUG")]
     public static void AssertNotDisposedOrDisposing(VolatileState state)
-        => Assert(AssertionsEnabled && state.IsNotDisposedOrDisposing);
+        => Assert(state.IsNotDisposedOrDisposing);
 
     /// <summary>Asserts that <paramref name="value" /> is not <c>null</c>.</summary>
     /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
     /// <param name="value">The value to assert is not <c>null</c>.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [Conditional("DEBUG")]
     public static void AssertNotNull<T>([NotNull] T? value)
-        where T : class => Assert(AssertionsEnabled && (value is not null));
+        where T : class => Assert(value is not null);
 
     /// <summary>Asserts that <paramref name="array" /> is not <c>null</c>.</summary>
     /// <typeparam name="T">The type of items in <paramref name="array" />.</typeparam>
     /// <param name="array">The array to assert is not <c>null</c>.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [Conditional("DEBUG")]
     public static void AssertNotNull<T>(UnmanagedArray<T> array)
-        where T : unmanaged => Assert(AssertionsEnabled && !array.IsNull);
+        where T : unmanaged => Assert(!array.IsNull);
 
     /// <summary>Asserts that <paramref name="value" /> is not <c>null</c>.</summary>
     /// <param name="value">The value to assert is not <c>null</c>.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [Conditional("DEBUG")]
     public static void AssertNotNull(void* value)
-        => Assert(AssertionsEnabled && (value != null));
+        => Assert(value != null);
 
     /// <summary>Asserts that <see cref="Thread.CurrentThread" /> is <paramref name="expectedThread" />.</summary>
     /// <param name="expectedThread">The thread to assert the code is running on.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [Conditional("DEBUG")]
     public static void AssertThread(Thread expectedThread)
-        => Assert(AssertionsEnabled && (Thread.CurrentThread == expectedThread));
+        => Assert(Thread.CurrentThread == expectedThread);
 
-    /// <summary>Throws an <see cref="Exception" />.</summary>
+    /// <summary>Throws an <see cref="UnreachableException" />.</summary>
+    [Conditional("DEBUG")]
     [DoesNotReturn]
     public static void Fail(string? message = null)
-    {
-        if (BreakOnFailedAssert)
-        {
-            Debugger.Break();
-        }
-        ThrowUnreachableException(message);
-    }
+        => ThrowUnreachableException(message);
 }

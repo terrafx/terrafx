@@ -3,7 +3,6 @@
 using System;
 using TerraFX.Runtime;
 using static System.Threading.Interlocked;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -44,7 +43,7 @@ public struct VolatileState
     public void EndDispose()
     {
         var previousState = Transition(to: Disposed);
-        Assert(AssertionsEnabled && (previousState == Disposing));
+        Assert(previousState == Disposing);
     }
 
     /// <summary>Transititions the object to a new state.</summary>

@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -34,10 +33,6 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
             _length = array.Length;
             _items = array.GetPointerUnsafe(0);
         }
-        else
-        {
-            this = Empty;
-        }
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedSpan{T}" /> struct.</summary>
@@ -57,7 +52,6 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
         else
         {
             ThrowIfNotZero(start);
-            this = Empty;
         }
     }
 
@@ -83,7 +77,6 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
         {
             ThrowIfNotZero(start);
             ThrowIfNotZero(length);
-            this = Empty;
         }
     }
 
@@ -114,22 +107,21 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
     /// <param name="index">The index of the item to get or set.</param>
     /// <returns>The item that exists at <paramref name="index" /> in the span.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is greater than or equal to <see cref="Length" />.</exception>
-    public ref T this[nuint index] => ref AsRef<T>(GetPointer(index));
+    public ref T this[nuint index] => ref *GetPointer(index);
 
     /// <summary>Implicitly converts the span to a readonly span.</summary>
     /// <param name="span">The span to convert.</param>
     /// <returns>A readonly span that covers the same memory as <paramref name="span" />.</returns>
-    public static implicit operator UnmanagedReadOnlySpan<T>(UnmanagedSpan<T> span)
-        => new UnmanagedReadOnlySpan<T>(span);
+    public static implicit operator UnmanagedReadOnlySpan<T>(UnmanagedSpan<T> span) => new UnmanagedReadOnlySpan<T>(span);
 
     /// <summary>Converts the unmanaged span to a span.</summary>
     /// <returns>A span that covers the unmanaged span.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="Length" /> is greater than <see cref="int.MaxValue" />.</exception>
     public Span<T> AsSpan()
     {
-        var myLength = _length;
-        ThrowIfNotInInsertBounds(myLength, int.MaxValue);
-        return new Span<T>(_items, (int)myLength);
+        var length = _length;
+        ThrowIfNotInInsertBounds(length, int.MaxValue);
+        return new Span<T>(_items, (int)length);
     }
 
     /// <summary>Converts the array to a span starting at the specified index.</summary>
@@ -138,10 +130,10 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="Length" /> is greater than <see cref="int.MaxValue" />.</exception>
     public Span<T> AsSpan(nuint start)
     {
-        var myLength = _length;
-        ThrowIfNotInBounds(start, myLength);
+        var length = _length;
+        ThrowIfNotInBounds(start, length);
 
-        var length = myLength - start;
+        length -= start;
         ThrowIfNotInInsertBounds(length, int.MaxValue);
 
         return new Span<T>(_items + start, (int)length);
@@ -153,10 +145,10 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
     /// <returns>A span that covers the array beginning at <paramref name="start" /> and continuing for <paramref name="length" /> items.</returns>
     public Span<T> AsSpan(nuint start, nuint length)
     {
-        var myLength = _length;
+        var thisLength = _length;
 
-        ThrowIfNotInBounds(start, myLength);
-        ThrowIfNotInInsertBounds(length, myLength - start);
+        ThrowIfNotInBounds(start, thisLength);
+        ThrowIfNotInInsertBounds(length, thisLength - start);
         ThrowIfNotInInsertBounds(length, int.MaxValue);
 
         return new Span<T>(_items + start, (int)length);
@@ -188,7 +180,7 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
         var items = _items;
         var length = _length;
 
-        ThrowIfNotInInsertBounds(length, destination.Length);
+        ThrowIfNotInInsertBounds(length, destination._length);
 
         CopyArrayUnsafe(destination.GetPointerUnsafe(0), items, length);
     }
@@ -203,7 +195,7 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is greater than or equal to <see cref="Length" />.</exception>
     public T* GetPointer(nuint index)
     {
-        ThrowIfNotInBounds(index, Length);
+        ThrowIfNotInBounds(index, _length);
         return GetPointerUnsafe(index);
     }
 
@@ -213,28 +205,29 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
     /// <remarks>This method is unsafe because it does not validate that <paramref name="index" /> is less than <see cref="Length" />.</remarks>
     public T* GetPointerUnsafe(nuint index)
     {
-        Assert(AssertionsEnabled && (index < Length));
+        Assert(index < _length);
         return _items + index;
     }
 
     /// <summary>Gets a reference to the item at the specified index of the span.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
     /// <returns>A reference to the item that exists at <paramref name="index" /> in the span.</returns>
-    public ref T GetReference(nuint index) => ref AsRef<T>(GetPointer(index));
+    public ref T GetReference(nuint index) => ref *GetPointer(index);
 
     /// <summary>Gets a reference to the item at the specified index of the span.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
     /// <returns>A reference to the item that exists at <paramref name="index" /> in the span.</returns>
     /// <remarks>This method is unsafe because it does not validate that <paramref name="index" /> is less than <see cref="Length" />.</remarks>
-    public ref T GetReferenceUnsafe(nuint index) => ref AsRef<T>(GetPointerUnsafe(index));
+    public ref T GetReferenceUnsafe(nuint index) => ref *GetPointerUnsafe(index);
 
     /// <summary>Slices the span so that it begins at the specified index.</summary>
     /// <param name="start">The index at which the span should start.</param>
     /// <returns>A span that covers the same memory as the current span beginning at <paramref name="start" />.</returns>
     public UnmanagedSpan<T> Slice(nuint start)
     {
-        ThrowIfNotInBounds(start, Length);
-        return new UnmanagedSpan<T>(_items + start, Length - start);
+        var length = _length;
+        ThrowIfNotInBounds(start, length);
+        return new UnmanagedSpan<T>(_items + start, length - start);
     }
 
     /// <summary>Slices the span so that it begins at the specified index and continuing for the specified number of items.</summary>
@@ -243,8 +236,10 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
     /// <returns>A span that covers the same memory as the current span beginning at <paramref name="start" /> and continuing for <paramref name="length" /> items.</returns>
     public UnmanagedSpan<T> Slice(nuint start, nuint length)
     {
-        ThrowIfNotInBounds(start, Length);
-        ThrowIfNotInInsertBounds(length, Length - start);
+        var thisLength = _length;
+        ThrowIfNotInBounds(start, thisLength);
+
+        ThrowIfNotInInsertBounds(length, thisLength - start);
         return new UnmanagedSpan<T>(_items + start, length);
     }
 

@@ -7,7 +7,7 @@ using static TerraFX.Utilities.MathUtilities;
 
 namespace TerraFX;
 
-public partial struct UnmanagedArray<T>
+public unsafe partial struct UnmanagedArray<T>
 {
     internal sealed class DebugView
     {
@@ -18,24 +18,26 @@ public partial struct UnmanagedArray<T>
             _array = array;
         }
 
-        public nuint Alignment => _array.Alignment;
+        public nuint Alignment => _array._data->Alignment;
 
         public bool IsNull => _array.IsNull;
 
-        public nuint Length => _array.Length;
+        public nuint Length => _array._data->Length;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public unsafe T[] Items
         {
             get
             {
-                var count = Min(_array.Length, MaxArrayLength);
+                var array = _array;
+
+                var count = Min(array._data->Length, MaxArrayLength);
                 var items = GC.AllocateUninitializedArray<T>((int)count);
 
                 fixed (T* pItems = items)
                 {
                     var span = new UnmanagedSpan<T>(pItems, count);
-                    _array.CopyTo(span);
+                    array.CopyTo(span);
                 }
                 return items;
             }

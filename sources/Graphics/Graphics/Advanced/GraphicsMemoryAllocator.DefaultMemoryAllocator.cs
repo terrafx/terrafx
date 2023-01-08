@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using TerraFX.Collections;
 using TerraFX.Graphics.Advanced;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
@@ -210,12 +209,12 @@ public partial class GraphicsMemoryAllocator
         private void MergeFreeMemoryRegionWithNext(ValueLinkedList<GraphicsMemoryRegion>.Node memoryRegionNode)
         {
             AssertNotNull(memoryRegionNode);
-            Assert(AssertionsEnabled && !memoryRegionNode.ValueRef.IsAllocated);
+            Assert(!memoryRegionNode.ValueRef.IsAllocated);
 
             var nextMemoryRegionNode = memoryRegionNode.Next;
 
             AssertNotNull(nextMemoryRegionNode);
-            Assert(AssertionsEnabled && !nextMemoryRegionNode.ValueRef.IsAllocated);
+            Assert(!nextMemoryRegionNode.ValueRef.IsAllocated);
 
             ref var memoryRegion = ref memoryRegionNode.ValueRef;
             ref readonly var nextMemoryRegion = ref nextMemoryRegionNode.ValueRef;
@@ -236,8 +235,8 @@ public partial class GraphicsMemoryAllocator
 
         private void RegisterFreeMemoryRegion(ValueLinkedList<GraphicsMemoryRegion>.Node memoryRegionNode)
         {
-            Assert(AssertionsEnabled && !memoryRegionNode.ValueRef.IsAllocated);
-            Assert(AssertionsEnabled && (memoryRegionNode.ValueRef.ByteLength > 0));
+            Assert(!memoryRegionNode.ValueRef.IsAllocated);
+            Assert(memoryRegionNode.ValueRef.ByteLength > 0);
 
             ValidateFreeMemoryRegionsBySizeList();
 
@@ -259,11 +258,11 @@ public partial class GraphicsMemoryAllocator
 
         private bool TryAllocate(nuint byteLength, nuint byteAlignment, ValueLinkedList<GraphicsMemoryRegion>.Node memoryRegionNode)
         {
-            Assert(AssertionsEnabled && (byteLength > 0));
+            Assert(byteLength > 0);
             AssertNotNull(memoryRegionNode);
 
             ref var memoryRegion = ref memoryRegionNode.ValueRef;
-            Assert(AssertionsEnabled && !memoryRegion.IsAllocated);
+            Assert(!memoryRegion.IsAllocated);
 
             if (memoryRegion.ByteLength < byteLength)
             {
@@ -361,8 +360,8 @@ public partial class GraphicsMemoryAllocator
 
         private void UnregisterFreeMemoryRegion(ValueLinkedList<GraphicsMemoryRegion>.Node memoryRegionNode)
         {
-            Assert(AssertionsEnabled && !memoryRegionNode.ValueRef.IsAllocated);
-            Assert(AssertionsEnabled && (memoryRegionNode.ValueRef.ByteLength > 0));
+            Assert(!memoryRegionNode.ValueRef.IsAllocated);
+            Assert(memoryRegionNode.ValueRef.ByteLength > 0);
 
             ValidateFreeMemoryRegionsBySizeList();
 
@@ -375,7 +374,7 @@ public partial class GraphicsMemoryAllocator
                         _freeMemoryRegionsByByteLength.RemoveAt(index);
                         return;
                     }
-                    Assert(AssertionsEnabled && (_freeMemoryRegionsByByteLength[index].ValueRef.ByteLength == memoryRegionNode.ValueRef.ByteLength));
+                    Assert(_freeMemoryRegionsByByteLength[index].ValueRef.ByteLength == memoryRegionNode.ValueRef.ByteLength);
                 }
 
                 ThrowKeyNotFoundException(memoryRegionNode, nameof(_freeMemoryRegionsByByteLength));
@@ -387,7 +386,7 @@ public partial class GraphicsMemoryAllocator
         [Conditional("DEBUG")]
         private void Validate()
         {
-            Assert(AssertionsEnabled && (_memoryRegions.Count != 0));
+            Assert(_memoryRegions.Count != 0);
 
             nuint calculatedByteLength = 0;
             nuint calculatedTotalFreeRegionByteLength = 0;
@@ -403,12 +402,12 @@ public partial class GraphicsMemoryAllocator
                 ref readonly var memoryRegion = ref memoryRegionNode.ValueRef;
 
                 // The node should immediately procede the previous
-                Assert(AssertionsEnabled && (memoryRegion.ByteOffset == calculatedByteLength));
+                Assert(memoryRegion.ByteOffset == calculatedByteLength);
 
                 var isCurrentMemoryRegionFree = !memoryRegion.IsAllocated;
 
                 // Two adjacent free memory regions are invalid, they should have been merged
-                Assert(AssertionsEnabled && (!isPreviousMemoryRegionFree || !isCurrentMemoryRegionFree));
+                Assert(!isPreviousMemoryRegionFree || !isCurrentMemoryRegionFree);
 
                 if (isCurrentMemoryRegionFree)
                 {
@@ -421,12 +420,12 @@ public partial class GraphicsMemoryAllocator
                     }
 
                     // When margins are required between allocations every free space must be at least that large
-                    Assert(AssertionsEnabled && (memoryRegion.ByteLength >= MinimumAllocatedMemoryRegionMarginByteLength));
+                    Assert(memoryRegion.ByteLength >= MinimumAllocatedMemoryRegionMarginByteLength);
                 }
                 else
                 {
                     // When margins are required between allocations, the previous allocation must be free
-                    Assert(AssertionsEnabled && ((MinimumAllocatedMemoryRegionMarginByteLength == 0) || isPreviousMemoryRegionFree));
+                    Assert((MinimumAllocatedMemoryRegionMarginByteLength == 0) || isPreviousMemoryRegionFree);
                 }
 
                 calculatedByteLength += memoryRegion.ByteLength;
@@ -436,10 +435,10 @@ public partial class GraphicsMemoryAllocator
             ValidateFreeMemoryRegionsBySizeList();
 
             // All totals should match the computed values
-            Assert(AssertionsEnabled && (calculatedByteLength == ByteLength));
-            Assert(AssertionsEnabled && (calculatedTotalFreeRegionByteLength == MemoryAllocatorInfo.TotalFreeMemoryRegionByteLength));
-            Assert(AssertionsEnabled && (calculatedFreeRegionCount == _freeMemoryRegionCount));
-            Assert(AssertionsEnabled && (calculatedFreeRegionsToRegisterCount == _freeMemoryRegionsByByteLength.Count));
+            Assert(calculatedByteLength == ByteLength);
+            Assert(calculatedTotalFreeRegionByteLength == MemoryAllocatorInfo.TotalFreeMemoryRegionByteLength);
+            Assert(calculatedFreeRegionCount == _freeMemoryRegionCount);
+            Assert(calculatedFreeRegionsToRegisterCount == _freeMemoryRegionsByByteLength.Count);
         }
 
         [Conditional("DEBUG")]
@@ -452,9 +451,9 @@ public partial class GraphicsMemoryAllocator
             {
                 ref readonly var memoryRegion = ref freeMemoryRegionsBySize[index].ValueRef;
 
-                Assert(AssertionsEnabled && !memoryRegion.IsAllocated);
-                Assert(AssertionsEnabled && (memoryRegion.ByteLength >= MinimumFreeMemoryRegionByteLengthToRegister));
-                Assert(AssertionsEnabled && (memoryRegion.ByteLength >= lastMemoryRegionSize));
+                Assert(!memoryRegion.IsAllocated);
+                Assert(memoryRegion.ByteLength >= MinimumFreeMemoryRegionByteLengthToRegister);
+                Assert(memoryRegion.ByteLength >= lastMemoryRegionSize);
 
                 lastMemoryRegionSize = memoryRegion.ByteLength;
             }

@@ -29,7 +29,7 @@ public static partial class Resources
 
         set
         {
-            Assert(AssertionsEnabled && !InvariantResourceLookup);
+            Assert(!InvariantResourceLookup);
             s_culture = value;
         }
     }

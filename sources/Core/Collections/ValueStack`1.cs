@@ -109,7 +109,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
         get
         {
             var items = _items;
-            return items is not null ? _items.Length : 0;
+            return items is not null ? items.Length : 0;
         }
     }
 
@@ -137,7 +137,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
         if (items is not null)
         {
             var count = Count;
-            return (count != 0) && Array.LastIndexOf(items, item, count - 1) != -1;
+            return (count != 0) && Array.LastIndexOf(items, item, count - 1) >= 0;
         }
         else
         {
@@ -152,18 +152,15 @@ public partial struct ValueStack<T> : IEnumerable<T>
 
     /// <summary>Ensures the capacity of the stack is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the stack should support.</param>
-    /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and is instead does nothing.</remarks>
+    /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and instead does nothing.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void EnsureCapacity(int capacity)
     {
         var currentCapacity = Capacity;
 
         if (capacity > currentCapacity)
         {
-            var newCapacity = Max(capacity, currentCapacity * 2);
-            var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
-
-            CopyTo(newItems);
-            _items = newItems;
+            Resize(capacity, currentCapacity);
         }
     }
 
@@ -184,7 +181,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
 
         if (unchecked((uint)index < (uint)count))
         {
-            return ref _items.GetReference(count - (index + 1));
+            return ref _items.GetReferenceUnsafe(count - (index + 1));
         }
         else
         {
@@ -236,10 +233,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
         var count = Count;
         var newCount = count + 1;
 
-        if (newCount > Capacity)
-        {
-            EnsureCapacity(count + 1);
-        }
+        EnsureCapacity(count + 1);
 
         _count = newCount;
         _items[count] = item;
@@ -317,7 +311,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
         _count = newCount;
 
         var items = _items;
-        item = items[newCount];
+        item = _items[newCount];
 
         if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
         {
@@ -325,6 +319,15 @@ public partial struct ValueStack<T> : IEnumerable<T>
         }
 
         return true;
+    }
+
+    private void Resize(int capacity, int currentCapacity)
+    {
+        var newCapacity = Max(capacity, currentCapacity * 2);
+        var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
+
+        CopyTo(newItems);
+        _items = newItems;
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

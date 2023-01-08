@@ -10,26 +10,6 @@ namespace TerraFX.Runtime;
 /// <summary>Provides various configuration switches and values for TerraFX.</summary>
 public static class Configuration
 {
-    /// <summary><c>true</c> if TerraFX based assertions are enabled; otherwise, <c>false</c>.</summary>
-    /// <remarks>
-    ///     <para>This defaults to <c>true</c> in debug builds of TerraFX; otherwise, it defaults to <c>false</c>.</para>
-    ///     <para>Users can enable this via an <see cref="AppContext" /> switch to get additional validation in their own assemblies.</para>
-    /// </remarks>
-    public static bool AssertionsEnabled { get; } = GetAppContextData(
-        $"{typeof(Configuration).FullName}.{nameof(AssertionsEnabled)}",
-        defaultValue: IsDebug
-    );
-
-    /// <summary><c>true</c> if TerraFX should break on a failed assert; otherwise, <c>false</c>.</summary>
-    /// <remarks>
-    ///     <para>This defaults to <c>true</c> in debug builds of TerraFX; otherwise, it defaults to <c>false</c>.</para>
-    ///     <para>Users can enable this via an <see cref="AppContext" /> switch to get additional validation in their own assemblies.</para>
-    /// </remarks>
-    public static bool BreakOnFailedAssert { get; } = GetAppContextData(
-        $"{typeof(Configuration).FullName}.{nameof(BreakOnFailedAssert)}",
-        defaultValue: IsDebug
-    );
-
     /// <summary><c>true</c> if TerraFX should break on a failed assert; otherwise, <c>false</c>.</summary>
     /// <remarks>
     ///     <para>This defaults to <c>true</c> in debug builds of TerraFX; otherwise, it defaults to <c>false</c>.</para>

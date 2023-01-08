@@ -18,20 +18,22 @@ public partial struct UnmanagedValueStack<T>
             _stack = stack;
         }
 
-        public nuint Count => _stack.Count;
+        public nuint Count => _stack._count;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public unsafe T[] Items
         {
             get
             {
-                var count = Min(_stack.Count, MaxArrayLength);
+                ref readonly var stack = ref _stack;
+
+                var count = Min(stack._count, MaxArrayLength);
                 var items = GC.AllocateUninitializedArray<T>((int)count);
 
                 fixed (T* pItems = items)
                 {
                     var span = new UnmanagedSpan<T>(pItems, count);
-                    _stack.CopyTo(span);
+                    stack.CopyTo(span);
                 }
                 return items;
             }

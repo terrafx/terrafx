@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 
 namespace TerraFX.Utilities;
@@ -33,8 +32,8 @@ public static unsafe class UnsafeUtilities
         where TFrom : unmanaged
         where TTo : unmanaged
     {
-        Assert(AssertionsEnabled && (SizeOf<TFrom>() == SizeOf<TTo>()));
-        return CreateSpan(ref As<TFrom, TTo>(ref span.GetReference()), span.Length);
+        Assert(SizeOf<TFrom>() == SizeOf<TTo>());
+        return MemoryMarshal.CreateSpan(ref Unsafe.As<TFrom, TTo>(ref MemoryMarshal.GetReference(span)), span.Length);
     }
 
     /// <inheritdoc cref="Unsafe.As{TFrom, TTo}(ref TFrom)" />
@@ -43,24 +42,19 @@ public static unsafe class UnsafeUtilities
         where TFrom : unmanaged
         where TTo : unmanaged
     {
-        Assert(AssertionsEnabled && (SizeOf<TFrom>() == SizeOf<TTo>()));
-        return CreateReadOnlySpan(in AsReadonly<TFrom, TTo>(in span.GetReference()), span.Length);
+        Assert(SizeOf<TFrom>() == SizeOf<TTo>());
+        return MemoryMarshal.CreateReadOnlySpan(ref Unsafe.As<TFrom, TTo>(ref MemoryMarshal.GetReference(span)), span.Length);
     }
 
     /// <inheritdoc cref="Unsafe.AsPointer{T}(ref T)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* AsPointer<T>(ref T source)
-        where T : unmanaged => (T*)Unsafe.AsPointer(ref source);
+    public static T* AsPointer<T>(in T source)
+        where T : unmanaged => (T*)Unsafe.AsPointer(ref Unsafe.AsRef(in source));
 
     /// <inheritdoc cref="Unsafe.As{TFrom, TTo}(ref TFrom)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref readonly TTo AsReadonly<TFrom, TTo>(in TFrom source)
-        => ref Unsafe.As<TFrom, TTo>(ref AsRef(in source));
-
-    /// <inheritdoc cref="Unsafe.AsPointer{T}(ref T)" />
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* AsReadonlyPointer<T>(in T source)
-        where T : unmanaged => AsPointer(ref AsRef(in source));
+        => ref Unsafe.As<TFrom, TTo>(ref Unsafe.AsRef(in source));
 
     /// <summary>Reinterprets the given native integer as a reference.</summary>
     /// <typeparam name="T">The type of the reference.</typeparam>
@@ -84,20 +78,15 @@ public static unsafe class UnsafeUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref TTo AsRef<TFrom, TTo>(in TFrom source)
     {
-        ref var mutable = ref AsRef(in source);
-        return ref As<TFrom, TTo>(ref mutable);
+        return ref Unsafe.As<TFrom, TTo>(ref Unsafe.AsRef(in source));
     }
-
-    /// <inheritdoc cref="Unsafe.AsRef{T}(void*)" />
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ref T AsRef<T>(void* source) => ref Unsafe.AsRef<T>(source);
 
     /// <summary>Reinterprets the readonly span as a writeable span.</summary>
     /// <typeparam name="T">The type of items in <paramref name="span" /></typeparam>
     /// <param name="span">The readonly span to reinterpret.</param>
     /// <returns>A writeable span that points to the same items as <paramref name="span" />.</returns>
     public static Span<T> AsSpan<T>(this ReadOnlySpan<T> span)
-        => MemoryMarshal.CreateSpan(ref AsRef(in span.GetReference()), span.Length);
+        => MemoryMarshal.CreateSpan(ref Unsafe.AsRef(in MemoryMarshal.GetReference(span)), span.Length);
 
     /// <inheritdoc cref="MemoryMarshal.Cast{TFrom, TTo}(Span{TFrom})" />
     public static Span<TTo> Cast<TFrom, TTo>(this Span<TFrom> span)
@@ -118,83 +107,83 @@ public static unsafe class UnsafeUtilities
     /// <inheritdoc cref="Unsafe.CopyBlock(ref byte, ref byte, uint)" />
     public static void CopyBlock<TDestination, TSource>(ref TDestination destination, in TSource source, uint byteCount)
     {
-        Unsafe.CopyBlock(ref As<TDestination, byte>(ref destination), ref AsRef<TSource, byte>(in source), byteCount);
+        Unsafe.CopyBlock(ref Unsafe.As<TDestination, byte>(ref destination), ref Unsafe.As<TSource, byte>(ref Unsafe.AsRef(in source)), byteCount);
     }
 
     /// <inheritdoc cref="Unsafe.CopyBlockUnaligned(ref byte, ref byte, uint)" />
-    public static void CopyBlockUnaligned<TDestination, TSource>(ref TDestination destination, ref TSource source, uint byteCount)
+    public static void CopyBlockUnaligned<TDestination, TSource>(ref TDestination destination, in TSource source, uint byteCount)
     {
-        Unsafe.CopyBlockUnaligned(ref As<TDestination, byte>(ref destination), ref As<TSource, byte>(ref source), byteCount);
+        Unsafe.CopyBlockUnaligned(ref Unsafe.As<TDestination, byte>(ref destination), ref Unsafe.As<TSource, byte>(ref Unsafe.AsRef(in source)), byteCount);
     }
 
     /// <inheritdoc cref="MemoryMarshal.CreateSpan{T}(ref T, int)" />
-    public static Span<T> CreateSpan<T>(ref T reference, int length) => MemoryMarshal.CreateSpan(ref reference, length);
+    public static Span<T> CreateSpan<T>(scoped ref T reference, int length) => MemoryMarshal.CreateSpan(ref reference, length);
 
     /// <inheritdoc cref="MemoryMarshal.CreateReadOnlySpan{T}(ref T, int)" />
-    public static ReadOnlySpan<T> CreateReadOnlySpan<T>(scoped in T reference, int length) => MemoryMarshal.CreateReadOnlySpan(ref AsRef(in reference), length);
+    public static ReadOnlySpan<T> CreateReadOnlySpan<T>(scoped in T reference, int length) => MemoryMarshal.CreateReadOnlySpan(ref Unsafe.AsRef(in reference), length);
 
     /// <summary>Returns a pointer to the element of the span at index zero.</summary>
     /// <typeparam name="T">The type of items in <paramref name="span" />.</typeparam>
     /// <param name="span">The span from which the pointer is retrieved.</param>
     /// <returns>A pointer to the item at index zero of <paramref name="span" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* GetPointer<T>(this Span<T> span)
-        where T : unmanaged => AsPointer(ref span.GetReference());
+    public static T* GetPointerUnsafe<T>(this Span<T> span)
+        where T : unmanaged => (T*)Unsafe.AsPointer(ref MemoryMarshal.GetReference(span));
 
     /// <summary>Returns a pointer to the element of the span at index zero.</summary>
     /// <typeparam name="T">The type of items in <paramref name="span" />.</typeparam>
     /// <param name="span">The span from which the pointer is retrieved.</param>
     /// <returns>A pointer to the item at index zero of <paramref name="span" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* GetPointer<T>(this ReadOnlySpan<T> span)
-        where T : unmanaged => AsPointer(ref AsRef(in span.GetReference()));
+    public static T* GetPointerUnsafe<T>(this ReadOnlySpan<T> span)
+        where T : unmanaged => (T*)Unsafe.AsPointer(ref MemoryMarshal.GetReference(span));
 
     /// <inheritdoc cref="MemoryMarshal.GetArrayDataReference{T}(T[])" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ref T GetReference<T>(this T[] array) => ref MemoryMarshal.GetArrayDataReference(array);
+    public static ref T GetReferenceUnsafe<T>(this T[] array) => ref MemoryMarshal.GetArrayDataReference(array);
 
     /// <inheritdoc cref="MemoryMarshal.GetArrayDataReference{T}(T[])" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ref T GetReference<T>(this T[] array, int index) => ref Unsafe.Add(ref array.GetReference(), index);
+    public static ref T GetReferenceUnsafe<T>(this T[] array, int index) => ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), index);
 
     /// <inheritdoc cref="MemoryMarshal.GetArrayDataReference{T}(T[])" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ref T GetReference<T>(this T[] array, nuint index) => ref Unsafe.Add(ref array.GetReference(), index);
+    public static ref T GetReferenceUnsafe<T>(this T[] array, nuint index) => ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), index);
 
     /// <inheritdoc cref="MemoryMarshal.GetReference{T}(Span{T})" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ref T GetReference<T>(this Span<T> span) => ref MemoryMarshal.GetReference(span);
+    public static ref T GetReferenceUnsafe<T>(this Span<T> span) => ref MemoryMarshal.GetReference(span);
 
     /// <inheritdoc cref="MemoryMarshal.GetReference{T}(Span{T})" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ref T GetReference<T>(this Span<T> span, int index) => ref Unsafe.Add(ref MemoryMarshal.GetReference(span), index);
+    public static ref T GetReferenceUnsafe<T>(this Span<T> span, int index) => ref Unsafe.Add(ref MemoryMarshal.GetReference(span), index);
 
     /// <inheritdoc cref="MemoryMarshal.GetReference{T}(Span{T})" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ref T GetReference<T>(this Span<T> span, nuint index) => ref Unsafe.Add(ref MemoryMarshal.GetReference(span), index);
+    public static ref T GetReferenceUnsafe<T>(this Span<T> span, nuint index) => ref Unsafe.Add(ref MemoryMarshal.GetReference(span), index);
 
     /// <inheritdoc cref="MemoryMarshal.GetReference{T}(ReadOnlySpan{T})" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ref readonly T GetReference<T>(this ReadOnlySpan<T> span) => ref MemoryMarshal.GetReference(span);
+    public static ref readonly T GetReferenceUnsafe<T>(this ReadOnlySpan<T> span) => ref MemoryMarshal.GetReference(span);
 
     /// <inheritdoc cref="MemoryMarshal.GetReference{T}(ReadOnlySpan{T})" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ref readonly T GetReference<T>(this ReadOnlySpan<T> span, int index) => ref Unsafe.Add(ref MemoryMarshal.GetReference(span), index);
+    public static ref readonly T GetReferenceUnsafe<T>(this ReadOnlySpan<T> span, int index) => ref Unsafe.Add(ref MemoryMarshal.GetReference(span), index);
 
     /// <inheritdoc cref="MemoryMarshal.GetReference{T}(ReadOnlySpan{T})" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ref readonly T GetReference<T>(this ReadOnlySpan<T> span, nuint index) => ref Unsafe.Add(ref MemoryMarshal.GetReference(span), index);
+    public static ref readonly T GetReferenceUnsafe<T>(this ReadOnlySpan<T> span, nuint index) => ref Unsafe.Add(ref MemoryMarshal.GetReference(span), index);
 
     /// <summary>Determines if a given reference to a value of type <typeparamref name="T" /> is not a null reference.</summary>
     /// <typeparam name="T">The type of the reference</typeparam>
     /// <param name="source">The reference to check.</param>
     /// <returns><c>true</c> if <paramref name="source" /> is not a null reference; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsNotNullRef<T>(in T source) => !IsNullRef(in source);
+    public static bool IsNotNullRef<T>(in T source) => !Unsafe.IsNullRef(ref Unsafe.AsRef(in source));
 
     /// <inheritdoc cref="Unsafe.IsNullRef{T}(ref T)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsNullRef<T>(in T source) => Unsafe.IsNullRef(ref AsRef(in source));
+    public static bool IsNullRef<T>(in T source) => Unsafe.IsNullRef(ref Unsafe.AsRef(in source));
 
     /// <inheritdoc cref="Unsafe.NullRef{T}" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -212,7 +201,12 @@ public static unsafe class UnsafeUtilities
 
     /// <inheritdoc cref="Unsafe.SizeOf{T}" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint SizeOf<T>() => unchecked((uint)Unsafe.SizeOf<T>());
+    public static uint SizeOf<T>()
+    {
+#pragma warning disable CS8500
+        return unchecked((uint)sizeof(T));
+#pragma warning restore CS8500
+    }
 
     /// <summary>Converts the span to an unmanaged array with the same length and contents.</summary>
     /// <typeparam name="T">The type of items in the span.</typeparam>
@@ -231,7 +225,7 @@ public static unsafe class UnsafeUtilities
         }
 
         var destination = new UnmanagedArray<T>(length, alignment);
-        CopyBlock(ref destination.GetReferenceUnsafe(0), in span.GetReference(), SizeOf<T>() * length);
+        CopyBlock(ref destination.GetReferenceUnsafe(0), in span.GetReferenceUnsafe(), SizeOf<T>() * length);
         return destination;
     }
 
@@ -252,7 +246,7 @@ public static unsafe class UnsafeUtilities
         }
 
         var destination = new UnmanagedArray<T>(length, alignment);
-        CopyBlock(ref destination.GetReferenceUnsafe(0), in span.GetReference(), SizeOf<T>() * length);
+        CopyBlock(ref destination.GetReferenceUnsafe(0), in span.GetReferenceUnsafe(), SizeOf<T>() * length);
         return destination;
     }
 

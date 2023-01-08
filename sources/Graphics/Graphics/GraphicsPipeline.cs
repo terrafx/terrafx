@@ -88,7 +88,7 @@ public sealed unsafe class GraphicsPipeline : GraphicsRenderPassObject
                         alignedByteOffset = AlignUp(alignedByteOffset, inputByteAlignment);
 
                         d3d12InputElementDescs[index] = new D3D12_INPUT_ELEMENT_DESC {
-                            SemanticName = GetSemanticName(input.Kind).GetPointer(),
+                            SemanticName = GetSemanticName(input.Kind).GetPointerUnsafe(),
                             SemanticIndex = 0,
                             Format = input.Format.AsDxgiFormat(),
                             InputSlot = 0,

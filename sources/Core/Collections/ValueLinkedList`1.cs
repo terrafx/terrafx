@@ -7,7 +7,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -72,7 +71,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
         AssertNotNull(node._next);
         InternalInsertNodeBefore(node._next, result);
 
-        Assert(AssertionsEnabled && result.HasParent);
+        Assert(result.HasParent);
         return result;
     }
 
@@ -92,7 +91,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
         AssertNotNull(node._next);
         InternalInsertNodeBefore(node._next, newNode);
 
-        Assert(AssertionsEnabled && newNode.HasParent);
+        Assert(newNode.HasParent);
         return newNode;
     }
 
@@ -114,11 +113,11 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
             Assert(node._isFirstNode);
             node._isFirstNode = false;
 
+            result._isFirstNode = true;
             _first = result;
-            _first._isFirstNode = true;
         }
 
-        Assert(AssertionsEnabled && result.HasParent);
+        Assert(result.HasParent);
         return result;
     }
 
@@ -142,11 +141,11 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
             Assert(node._isFirstNode);
             node._isFirstNode = false;
 
+            newNode._isFirstNode = true;
             _first = newNode;
-            _first._isFirstNode = true;
         }
 
-        Assert(AssertionsEnabled && newNode.HasParent);
+        Assert(newNode.HasParent);
         return newNode;
     }
 
@@ -156,23 +155,24 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     public Node AddFirst(T value)
     {
         var result = new Node(value);
+        var first = _first;
 
-        if (_first is null)
+        if (first is null)
         {
             InternalInsertNodeToEmptyList(result);
         }
         else
         {
-            InternalInsertNodeBefore(_first, result);
+            InternalInsertNodeBefore(first, result);
 
-            Assert(_first._isFirstNode);
-            _first._isFirstNode = false;
+            Assert(first._isFirstNode);
+            first._isFirstNode = false;
 
+            result._isFirstNode = true;
             _first = result;
-            _first._isFirstNode = true;
         }
 
-        Assert(AssertionsEnabled && result.HasParent);
+        Assert(result.HasParent);
         return result;
     }
 
@@ -184,23 +184,24 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     public Node AddFirst(Node newNode)
     {
         ValidateNewNode(newNode);
+        var first = _first;
 
-        if (_first is null)
+        if (first is null)
         {
             InternalInsertNodeToEmptyList(newNode);
         }
         else
         {
-            InternalInsertNodeBefore(_first, newNode);
+            InternalInsertNodeBefore(first, newNode);
 
-            Assert(_first._isFirstNode);
-            _first._isFirstNode = false;
+            Assert(first._isFirstNode);
+            first._isFirstNode = false;
 
+            newNode._isFirstNode = true;
             _first = newNode;
-            _first._isFirstNode = true;
         }
 
-        Assert(AssertionsEnabled && newNode.HasParent);
+        Assert(newNode.HasParent);
         return newNode;
     }
 
@@ -210,17 +211,18 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     public Node AddLast(T value)
     {
         var result = new Node(value);
+        var first = _first;
 
-        if (_first is null)
+        if (first is null)
         {
             InternalInsertNodeToEmptyList(result);
         }
         else
         {
-            InternalInsertNodeBefore(_first, result);
+            InternalInsertNodeBefore(first, result);
         }
 
-        Assert(AssertionsEnabled && result.HasParent);
+        Assert(result.HasParent);
         return result;
     }
 
@@ -232,17 +234,18 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     public Node AddLast(Node newNode)
     {
         ValidateNewNode(newNode);
+        var first = _first;
 
-        if (_first is null)
+        if (first is null)
         {
             InternalInsertNodeToEmptyList(newNode);
         }
         else
         {
-            InternalInsertNodeBefore(_first, newNode);
+            InternalInsertNodeBefore(first, newNode);
         }
 
-        Assert(AssertionsEnabled && newNode.HasParent);
+        Assert(newNode.HasParent);
         return newNode;
     }
 
@@ -284,7 +287,8 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     {
         if (node.HasParent)
         {
-            var current = _first;
+            var first = _first;
+            var current = first;
 
             if (current is not null)
             {
@@ -299,7 +303,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
 
                     current = current._next;
                 }
-                while (current != _first);
+                while (current != first);
             }
         }
         return false;
@@ -311,7 +315,9 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     public void CopyTo(Span<T> destination)
     {
         ThrowIfNotInInsertBounds(destination.Length, _count);
-        var current = _first;
+
+        var first = _first;
+        var current = first;
 
         if (current is not null)
         {
@@ -325,7 +331,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
                 current = current._next;
                 index++;
             }
-            while (current != _first);
+            while (current != first);
         }
     }
 
@@ -341,7 +347,8 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     public Node? Find<TComparer>(T value, TComparer comparer)
         where TComparer : IEqualityComparer<T>
     {
-        var current = _first;
+        var first = _first;
+        var current = first;
 
         if (current is not null)
         {
@@ -358,7 +365,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
 
                     current = current._next;
                 }
-                while (current != _first);
+                while (current != first);
             }
             else
             {
@@ -373,7 +380,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
 
                     current = current._next;
                 }
-                while (current != _first);
+                while (current != first);
             }
         }
 
@@ -392,9 +399,11 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     public Node? FindLast<TComparer>(T value, TComparer comparer)
         where TComparer : IEqualityComparer<T>
     {
-        if (_first is not null)
+        var first = _first;
+
+        if (first is not null)
         {
-            var last = _first._previous;
+            var last = first._previous;
             var current = last;
 
             if (current is not null)
@@ -474,75 +483,79 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     /// <exception cref="ArgumentNullException"><see cref="First" /> is <c>null</c>.</exception>
     public void RemoveFirst()
     {
-        ThrowIfNull(First);
-        InternalRemoveNode(First);
+        var first = _first;
+
+        ThrowIfNull(first);
+        InternalRemoveNode(first);
     }
 
     /// <summary>Removes the last node from the linked list.</summary>
     /// <exception cref="ArgumentNullException"><see cref="Last" /> is <c>null</c>.</exception>
     public void RemoveLast()
     {
-        ThrowIfNull(Last);
-        InternalRemoveNode(Last);
+        var last = Last;
+
+        ThrowIfNull(last);
+        InternalRemoveNode(last);
     }
 
     private void InternalInsertNodeBefore(Node node, Node newNode)
     {
         newNode._next = node;
-        newNode._previous = node._previous;
 
-        AssertNotNull(node._previous);
-        node._previous._next = newNode;
+        var previousNode = node._previous;
+        newNode._previous = previousNode;
 
+        AssertNotNull(previousNode);
+
+        previousNode._next = newNode;
         node._previous = newNode;
+
         _count++;
     }
 
     private void InternalInsertNodeToEmptyList(Node newNode)
     {
-        Assert(AssertionsEnabled && (_first is null));
-        Assert(AssertionsEnabled && (_count == 0));
+        Assert(_first is null);
+        Assert(_count == 0);
 
         newNode._next = newNode;
         newNode._previous = newNode;
+        newNode._isFirstNode = true;
 
         _first = newNode;
-        _first._isFirstNode = true;
-
         _count++;
     }
 
     private void InternalRemoveNode(Node node)
     {
-        if (AssertionsEnabled)
-        {
-            Assert(node.HasParent);
-            Assert(Contains(node));
-            Assert(_first is not null);
-        }
+        Assert(node.HasParent);
+        Assert(Contains(node));
+        Assert(_first is not null);
 
-        if (node._next == node)
+        var nextNode = node._next;
+
+        if (nextNode == node)
         {
-            if (AssertionsEnabled)
-            {
-                Assert(_count == 1);
-                Assert(_first == node);
-            }
+            Assert(_count == 1);
+            Assert(_first == node);
 
             _first = null;
         }
         else
         {
-            AssertNotNull(node._next);
-            node._next._previous = node._previous;
+            var previousNode = node._previous;
 
-            AssertNotNull(node._previous);
-            node._previous._next = node._next;
+            AssertNotNull(nextNode);
+            nextNode._previous = previousNode;
+
+            AssertNotNull(previousNode);
+            previousNode._next = nextNode;
 
             if (node == _first)
             {
-                _first = node._next;
-                _first._isFirstNode = true;
+                nextNode._isFirstNode = true;
+                _first = nextNode;
             }
         }
 
@@ -566,7 +579,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
 
         if (node.HasParent)
         {
-            Assert(AssertionsEnabled && Contains(node));
+            Assert(Contains(node));
         }
         else
         {

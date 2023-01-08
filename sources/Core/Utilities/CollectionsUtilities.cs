@@ -22,7 +22,7 @@ public static unsafe class CollectionsUtilities
     {
         for (var index = span.Length - 1; index >= 0; index--)
         {
-            var item = span.GetReference(index);
+            var item = span.GetReferenceUnsafe(index);
             item.Dispose();
         }
         span.Clear();

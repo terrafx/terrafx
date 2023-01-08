@@ -19,15 +19,17 @@ public partial struct ValueLinkedList<T>
             _linkedList = linkedList;
         }
 
-        public int Count => _linkedList.Count;
+        public int Count => _linkedList._count;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public T[] Items
         {
             get
             {
-                var items = GC.AllocateUninitializedArray<T>(_linkedList.Count);
-                _linkedList.CopyTo(items);
+                ref readonly var linkedList = ref _linkedList;
+                var items = GC.AllocateUninitializedArray<T>(linkedList._count);
+
+                linkedList.CopyTo(items);
                 return items;
             }
         }

@@ -18,7 +18,7 @@ public partial struct UnmanagedValuePool<T>
         }
 
         /// <inheritdoc />
-        public T Current => CurrentRef;
+        public T Current => _enumerator.Current;
 
         /// <inheritdoc />
         public ref readonly T CurrentRef => ref _enumerator.CurrentRef;

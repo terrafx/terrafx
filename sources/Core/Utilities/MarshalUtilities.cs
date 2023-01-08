@@ -16,14 +16,14 @@ public static unsafe class MarshalUtilities
     /// <returns>A string created from <paramref name="span" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string? GetString(this ReadOnlySpan<sbyte> span)
-        => span.GetPointer() != null ? Encoding.UTF8.GetString(span.As<sbyte, byte>()) : null;
+        => span.GetPointerUnsafe() != null ? Encoding.UTF8.GetString(span.As<sbyte, byte>()) : null;
 
     /// <summary>Gets a string for a given span.</summary>
     /// <param name="span">The span for which to create the string.</param>
     /// <returns>A string created from <paramref name="span" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string? GetString(this ReadOnlySpan<ushort> span)
-        => span.GetPointer() != null ? new string(span.As<ushort, char>()) : null;
+        => span.GetPointerUnsafe() != null ? new string(span.As<ushort, char>()) : null;
 
     /// <inheritdoc cref="Marshal.GetLastSystemError" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -120,7 +120,7 @@ public static unsafe class MarshalUtilities
             result = CreateReadOnlySpan(in source, maxLength);
             var length = result.IndexOf((sbyte)'\0');
 
-            if (length != -1)
+            if (length >= 0)
             {
                 result = result.Slice(0, length);
             }
@@ -166,7 +166,7 @@ public static unsafe class MarshalUtilities
             result = CreateReadOnlySpan(in source, maxLength);
             var length = result.IndexOf('\0');
 
-            if (length != -1)
+            if (length >= 0)
             {
                 result = result.Slice(0, length);
             }

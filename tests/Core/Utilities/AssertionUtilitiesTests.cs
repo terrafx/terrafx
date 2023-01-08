@@ -18,7 +18,7 @@ public static class AssertionUtilitiesTests
     public static void AssertTest()
     {
         Assert.That(() => AssertionUtilities.Assert(false),
-            Configuration.AssertionsEnabled ? Throws.Exception : Throws.Nothing
+            Configuration.IsDebug ? Throws.Exception : Throws.Nothing
         );
 
         Assert.That(() => AssertionUtilities.Assert(true),
@@ -33,7 +33,7 @@ public static class AssertionUtilitiesTests
         var state = new VolatileState();
 
         Assert.That(() => AssertionUtilities.AssertDisposing(state),
-            Configuration.AssertionsEnabled ? Throws.Exception : Throws.Nothing
+            Configuration.IsDebug ? Throws.Exception : Throws.Nothing
         );
 
         _ = state.BeginDispose();
@@ -45,7 +45,7 @@ public static class AssertionUtilitiesTests
         state.EndDispose();
 
         Assert.That(() => AssertionUtilities.AssertDisposing(state),
-            Configuration.AssertionsEnabled ? Throws.Exception : Throws.Nothing
+            Configuration.IsDebug ? Throws.Exception : Throws.Nothing
         );
     }
 
@@ -62,13 +62,13 @@ public static class AssertionUtilitiesTests
         _ = state.BeginDispose();
 
         Assert.That(() => AssertionUtilities.AssertNotDisposedOrDisposing(state),
-            Configuration.AssertionsEnabled ? Throws.Exception : Throws.Nothing
+            Configuration.IsDebug ? Throws.Exception : Throws.Nothing
         );
 
         state.EndDispose();
 
         Assert.That(() => AssertionUtilities.AssertNotDisposedOrDisposing(state),
-            Configuration.AssertionsEnabled ? Throws.Exception : Throws.Nothing
+            Configuration.IsDebug ? Throws.Exception : Throws.Nothing
         );
     }
 
@@ -81,7 +81,7 @@ public static class AssertionUtilitiesTests
         );
 
         Assert.That(() => AssertionUtilities.AssertNotNull<object>(null),
-            Configuration.AssertionsEnabled ? Throws.Exception : Throws.Nothing
+            Configuration.IsDebug ? Throws.Exception : Throws.Nothing
         );
     }
 
@@ -94,7 +94,7 @@ public static class AssertionUtilitiesTests
         );
 
         Assert.That(() => AssertionUtilities.AssertNotNull(null),
-            Configuration.AssertionsEnabled ? Throws.Exception : Throws.Nothing
+            Configuration.IsDebug ? Throws.Exception : Throws.Nothing
         );
     }
 
@@ -106,8 +106,8 @@ public static class AssertionUtilitiesTests
             Throws.Nothing
         );
 
-        Assert.That(() => AssertionUtilities.AssertNotNull(new UnmanagedArray<int>()),
-            Configuration.AssertionsEnabled ? Throws.Exception : Throws.Nothing
+        Assert.That(() => AssertionUtilities.AssertNotNull(default(UnmanagedArray<int>)),
+            Configuration.IsDebug ? Throws.Exception : Throws.Nothing
         );
     }
 
@@ -120,7 +120,7 @@ public static class AssertionUtilitiesTests
         );
 
         Assert.That(() => AssertionUtilities.AssertThread(null!),
-            Configuration.AssertionsEnabled ? Throws.Exception : Throws.Nothing
+            Configuration.IsDebug ? Throws.Exception : Throws.Nothing
         );
     }
 
@@ -129,7 +129,7 @@ public static class AssertionUtilitiesTests
     public static unsafe void FailTest()
     {
         Assert.That(() => AssertionUtilities.Fail(),
-            Throws.InstanceOf<UnreachableException>()
+            Configuration.IsDebug ? Throws.InstanceOf<UnreachableException>() : Throws.Nothing
         );
     }
 }

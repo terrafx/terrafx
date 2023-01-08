@@ -7,7 +7,6 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using TerraFX.Utilities;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 using static TerraFX.Utilities.VectorUtilities;
@@ -224,8 +223,8 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
     /// <returns>A quaternion that represents <paramref name="axis" /> and <paramref name="angle" />.</returns>
     public static Quaternion CreateFromAxisAngle(Vector3 axis, float angle)
     {
-        Assert(AssertionsEnabled && (axis != Vector3.Zero));
-        Assert(AssertionsEnabled && !Vector3.IsAnyInfinity(axis));
+        Assert(axis != Vector3.Zero);
+        Assert(!Vector3.IsAnyInfinity(axis));
 
         var normalizedAxis = Vector3.Normalize(axis);
         return CreateFromNormalizedAxisAngle(normalizedAxis, angle);

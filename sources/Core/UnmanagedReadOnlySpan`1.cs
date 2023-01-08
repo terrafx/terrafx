@@ -22,17 +22,17 @@ public readonly unsafe partial struct UnmanagedReadOnlySpan<T> : IEnumerable<T>
     /// <summary>Initializes a new instance of the <see cref="UnmanagedReadOnlySpan{T}" /> struct.</summary>
     /// <inheritdoc cref="UnmanagedSpan{T}.UnmanagedSpan(UnmanagedArray{T})" />
     public UnmanagedReadOnlySpan(UnmanagedArray<T> array)
-        : this(new UnmanagedSpan<T>(array)) { }
+        : this(array.AsUnmanagedSpan()) { }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedReadOnlySpan{T}" /> struct.</summary>
     /// <inheritdoc cref="UnmanagedSpan{T}.UnmanagedSpan(UnmanagedArray{T}, nuint)" />
     public UnmanagedReadOnlySpan(UnmanagedArray<T> array, nuint start)
-        : this(new UnmanagedSpan<T>(array, start)) { }
+        : this(array.AsUnmanagedSpan(start)) { }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedReadOnlySpan{T}" /> struct.</summary>
     /// <inheritdoc cref="UnmanagedSpan{T}.UnmanagedSpan(UnmanagedArray{T}, nuint, nuint)" />
     public UnmanagedReadOnlySpan(UnmanagedArray<T> array, nuint start, nuint length)
-        : this(new UnmanagedSpan<T>(array, start, length)) { }
+        : this(array.AsUnmanagedSpan(start, length)) { }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedReadOnlySpan{T}" /> struct.</summary>
     /// <inheritdoc cref="UnmanagedSpan{T}.UnmanagedSpan(T*, nuint)" />
