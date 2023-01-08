@@ -106,7 +106,7 @@ public static class AssertionUtilitiesTests
             Throws.Nothing
         );
 
-        Assert.That(() => AssertionUtilities.AssertNotNull(new UnmanagedArray<int>()),
+        Assert.That(() => AssertionUtilities.AssertNotNull(default(UnmanagedArray<int>)),
             Configuration.IsDebug ? Throws.Exception : Throws.Nothing
         );
     }
