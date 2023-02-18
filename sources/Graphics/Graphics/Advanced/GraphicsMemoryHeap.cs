@@ -74,8 +74,5 @@ public sealed unsafe class GraphicsMemoryHeap : GraphicsDeviceObject
     }
 
     /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
-        _d3d12Heap->SetD3D12Name(value);
-    }
+    protected override void SetNameUnsafe(string value) => _d3d12Heap->SetD3D12Name(value);
 }

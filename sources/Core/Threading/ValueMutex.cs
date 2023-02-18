@@ -24,27 +24,15 @@ public readonly unsafe partial struct ValueMutex : IDisposable
     public bool IsNull => _value is null;
 
     /// <inheritdoc />
-    public void Dispose()
-    {
-        Free(_value);
-    }
+    public void Dispose() => Free(_value);
 
     /// <summary>Acquires a lock on the mutex.</summary>
-    public void AcquireLock()
-    {
-        AcquireSRWLockExclusive(_value);
-    }
+    public void AcquireLock() => AcquireSRWLockExclusive(_value);
 
     /// <summary>Attempts to acquire a lock on the mutex.</summary>
     /// <returns><c>true</c> if the lock was successfully acquired; otherwise, <c>false</c>.</returns>
-    public bool TryAcquireLock()
-    {
-        return TryAcquireSRWLockExclusive(_value) != 0; 
-    }
+    public bool TryAcquireLock() => TryAcquireSRWLockExclusive(_value) != 0;
 
     /// <summary>Releases a lock on the mutex.</summary>
-    public void ReleaseLock()
-    {
-        ReleaseSRWLockExclusive(_value);
-    }
+    public void ReleaseLock() => ReleaseSRWLockExclusive(_value);
 }

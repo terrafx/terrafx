@@ -42,10 +42,7 @@ public partial struct ValueList<T>
         }
 
         /// <inheritdoc />
-        public void Reset()
-        {
-            _index = -1;
-        }
+        public void Reset() => _index = -1;
 
         object? IEnumerator.Current => Current;
 

@@ -37,10 +37,7 @@ public sealed unsafe class GraphicsComputeCommandQueue : GraphicsCommandQueue
         base.Dispose(isDisposing);
     }
 
-    internal override bool RemoveContext(GraphicsContext context)
-    {
-        return IsDisposed || _contexts.Remove(context.As<GraphicsComputeContext>());
-    }
+    internal override bool RemoveContext(GraphicsContext context) => IsDisposed || _contexts.Remove(context.As<GraphicsComputeContext>());
 
     private protected override GraphicsComputeContext RentContextUnsafe()
     {
@@ -52,8 +49,5 @@ public sealed unsafe class GraphicsComputeCommandQueue : GraphicsCommandQueue
         }
     }
 
-    private protected override void ReturnContextUnsafe(GraphicsContext context)
-    {
-        _contexts.Return(context.As<GraphicsComputeContext>(), _contextsMutex);
-    }
+    private protected override void ReturnContextUnsafe(GraphicsContext context) => _contexts.Return(context.As<GraphicsComputeContext>(), _contextsMutex);
 }

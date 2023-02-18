@@ -435,19 +435,13 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
     /// <param name="angle">The new angle of the quaternion.</param>
     /// <returns>A new quaternion with <see cref="Angle" /> set to <paramref name="angle" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Quaternion WithAngle(float angle)
-    {
-        return CreateFromAxisAngle(Axis, angle);
-    }
+    public Quaternion WithAngle(float angle) => CreateFromAxisAngle(Axis, angle);
 
     /// <summary>Creates a new quaternion with <see cref="Axis" /> set to the specified value.</summary>
     /// <param name="axis">The new axis of the quaternion.</param>
     /// <returns>A new quaternion with <see cref="Axis" /> set to <paramref name="axis" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Quaternion WithAxis(Vector3 axis)
-    {
-        return CreateFromAxisAngle(axis, Angle);
-    }
+    public Quaternion WithAxis(Vector3 axis) => CreateFromAxisAngle(axis, Angle);
 
     /// <summary>Creates a new quaternion with <see cref="X" /> set to the specified value.</summary>
     /// <param name="x">The new x-component of the quaternion.</param>

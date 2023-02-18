@@ -170,10 +170,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     public UnmanagedSpan<T> AsUnmanagedSpanUnsafe() => new UnmanagedSpan<T>(_items);
 
     /// <summary>Removes all items from the list.</summary>
-    public void Clear()
-    {
-        _count = 0;
-    }
+    public void Clear() => _count = 0;
 
     /// <summary>Checks whether the list contains a specified item.</summary>
     /// <param name="item">The item to check for in the list.</param>

@@ -76,10 +76,7 @@ public static unsafe class UnsafeUtilities
 
     /// <inheritdoc cref="Unsafe.AsRef{T}(in T)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ref TTo AsRef<TFrom, TTo>(in TFrom source)
-    {
-        return ref Unsafe.As<TFrom, TTo>(ref Unsafe.AsRef(in source));
-    }
+    public static ref TTo AsRef<TFrom, TTo>(in TFrom source) => ref Unsafe.As<TFrom, TTo>(ref Unsafe.AsRef(in source));
 
     /// <summary>Reinterprets the readonly span as a writeable span.</summary>
     /// <typeparam name="T">The type of items in <paramref name="span" /></typeparam>
@@ -91,30 +88,18 @@ public static unsafe class UnsafeUtilities
     /// <inheritdoc cref="MemoryMarshal.Cast{TFrom, TTo}(Span{TFrom})" />
     public static Span<TTo> Cast<TFrom, TTo>(this Span<TFrom> span)
         where TFrom : struct
-        where TTo : struct
-    {
-        return MemoryMarshal.Cast<TFrom, TTo>(span);
-    }
+        where TTo : struct => MemoryMarshal.Cast<TFrom, TTo>(span);
 
     /// <inheritdoc cref="MemoryMarshal.Cast{TFrom, TTo}(ReadOnlySpan{TFrom})" />
     public static ReadOnlySpan<TTo> Cast<TFrom, TTo>(this ReadOnlySpan<TFrom> span)
         where TFrom : struct
-        where TTo : struct
-    {
-        return MemoryMarshal.Cast<TFrom, TTo>(span);
-    }
+        where TTo : struct => MemoryMarshal.Cast<TFrom, TTo>(span);
 
     /// <inheritdoc cref="Unsafe.CopyBlock(ref byte, ref byte, uint)" />
-    public static void CopyBlock<TDestination, TSource>(ref TDestination destination, in TSource source, uint byteCount)
-    {
-        Unsafe.CopyBlock(ref Unsafe.As<TDestination, byte>(ref destination), ref Unsafe.As<TSource, byte>(ref Unsafe.AsRef(in source)), byteCount);
-    }
+    public static void CopyBlock<TDestination, TSource>(ref TDestination destination, in TSource source, uint byteCount) => Unsafe.CopyBlock(ref Unsafe.As<TDestination, byte>(ref destination), ref Unsafe.As<TSource, byte>(ref Unsafe.AsRef(in source)), byteCount);
 
     /// <inheritdoc cref="Unsafe.CopyBlockUnaligned(ref byte, ref byte, uint)" />
-    public static void CopyBlockUnaligned<TDestination, TSource>(ref TDestination destination, in TSource source, uint byteCount)
-    {
-        Unsafe.CopyBlockUnaligned(ref Unsafe.As<TDestination, byte>(ref destination), ref Unsafe.As<TSource, byte>(ref Unsafe.AsRef(in source)), byteCount);
-    }
+    public static void CopyBlockUnaligned<TDestination, TSource>(ref TDestination destination, in TSource source, uint byteCount) => Unsafe.CopyBlockUnaligned(ref Unsafe.As<TDestination, byte>(ref destination), ref Unsafe.As<TSource, byte>(ref Unsafe.AsRef(in source)), byteCount);
 
     /// <inheritdoc cref="MemoryMarshal.CreateSpan{T}(ref T, int)" />
     public static Span<T> CreateSpan<T>(scoped ref T reference, int length) => MemoryMarshal.CreateSpan(ref reference, length);
@@ -199,14 +184,11 @@ public static unsafe class UnsafeUtilities
     public static T ReadUnaligned<T>(void* source, nuint offset)
         where T : unmanaged => Unsafe.ReadUnaligned<T>((void*)((nuint)source + offset));
 
+#pragma warning disable CS8500
     /// <inheritdoc cref="Unsafe.SizeOf{T}" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint SizeOf<T>()
-    {
-#pragma warning disable CS8500
-        return unchecked((uint)sizeof(T));
+    public static uint SizeOf<T>() => unchecked((uint)sizeof(T));
 #pragma warning restore CS8500
-    }
 
     /// <summary>Converts the span to an unmanaged array with the same length and contents.</summary>
     /// <typeparam name="T">The type of items in the span.</typeparam>

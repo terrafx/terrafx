@@ -173,10 +173,7 @@ public abstract unsafe class GraphicsCommandQueue : GraphicsDeviceObject
     }
 
     /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
-        D3D12CommandQueue->SetD3D12Name(value);
-    }
+    protected override void SetNameUnsafe(string value) => D3D12CommandQueue->SetD3D12Name(value);
 
     internal void ExecuteContextUnsafe(GraphicsContext context)
     {
@@ -194,18 +191,9 @@ public abstract unsafe class GraphicsCommandQueue : GraphicsDeviceObject
 
     private protected abstract void ReturnContextUnsafe(GraphicsContext context);
 
-    private void SignalFenceUnsafe(GraphicsFence fence)
-    {
-        ThrowExternalExceptionIfFailed(D3D12CommandQueue->Signal(fence.D3D12Fence, Value: 1));
-    }
+    private void SignalFenceUnsafe(GraphicsFence fence) => ThrowExternalExceptionIfFailed(D3D12CommandQueue->Signal(fence.D3D12Fence, Value: 1));
 
-    private void WaitForFenceUnsafe(GraphicsFence fence)
-    {
-        ThrowExternalExceptionIfFailed(D3D12CommandQueue->Wait(fence.D3D12Fence, Value: 1));
-    }
+    private void WaitForFenceUnsafe(GraphicsFence fence) => ThrowExternalExceptionIfFailed(D3D12CommandQueue->Wait(fence.D3D12Fence, Value: 1));
 
-    private void WaitForIdleUnsafe()
-    {
-        WaitForFenceUnsafe(_waitForIdleFence);
-    }
+    private void WaitForIdleUnsafe() => WaitForFenceUnsafe(_waitForIdleFence);
 }

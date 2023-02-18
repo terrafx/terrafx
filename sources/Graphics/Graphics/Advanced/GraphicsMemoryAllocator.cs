@@ -91,10 +91,7 @@ public abstract unsafe partial class GraphicsMemoryAllocator
     }
 
     /// <summary>Clears the memory allocator of all allocated regions.</summary>
-    public void Clear()
-    {
-        ClearUnsafe();
-    }
+    public void Clear() => ClearUnsafe();
 
     /// <summary>Frees a memory region of memory.</summary>
     /// <param name="memoryRegion">The memory region to be freed.</param>

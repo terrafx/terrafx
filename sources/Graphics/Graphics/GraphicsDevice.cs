@@ -836,40 +836,19 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
     }
 
     /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
-        D3D12Device->SetD3D12Name(value);
-    }
+    protected override void SetNameUnsafe(string value) => D3D12Device->SetD3D12Name(value);
 
-    internal void AddBuffer(GraphicsBuffer buffer)
-    {
-        _buffers.Add(buffer, _buffersMutex);
-    }
+    internal void AddBuffer(GraphicsBuffer buffer) => _buffers.Add(buffer, _buffersMutex);
 
-    internal void AddFence(GraphicsFence fence)
-    {
-        _fences.Add(fence, _fencesMutex);
-    }
+    internal void AddFence(GraphicsFence fence) => _fences.Add(fence, _fencesMutex);
 
-    internal void AddPipelineSignature(GraphicsPipelineSignature pipelineSignature)
-    {
-        _pipelineSignatures.Add(pipelineSignature, _pipelineSignaturesMutex);
-    }
+    internal void AddPipelineSignature(GraphicsPipelineSignature pipelineSignature) => _pipelineSignatures.Add(pipelineSignature, _pipelineSignaturesMutex);
 
-    internal void AddRenderPass(GraphicsRenderPass renderPass)
-    {
-        _renderPasses.Add(renderPass, _renderPassesMutex);
-    }
+    internal void AddRenderPass(GraphicsRenderPass renderPass) => _renderPasses.Add(renderPass, _renderPassesMutex);
 
-    internal void AddShader(GraphicsShader shader)
-    {
-        _shaders.Add(shader, _shadersMutex);
-    }
+    internal void AddShader(GraphicsShader shader) => _shaders.Add(shader, _shadersMutex);
 
-    internal void AddTexture(GraphicsTexture texture)
-    {
-        _textures.Add(texture, _texturesMutex);
-    }
+    internal void AddTexture(GraphicsTexture texture) => _textures.Add(texture, _texturesMutex);
 
     internal GraphicsMemoryBudget GetMemoryBudget(GraphicsMemoryManager memoryManager)
     {
@@ -906,65 +885,29 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
         return _memoryManagers[memoryManagerIndex];
     }
 
-    internal bool RemoveBuffer(GraphicsBuffer buffer)
-    {
-        return IsDisposed || _buffers.Remove(buffer, _buffersMutex);
-    }
+    internal bool RemoveBuffer(GraphicsBuffer buffer) => IsDisposed || _buffers.Remove(buffer, _buffersMutex);
 
-    internal bool RemoveFence(GraphicsFence fence)
-    {
-        return IsDisposed || _fences.Remove(fence, _fencesMutex);
-    }
+    internal bool RemoveFence(GraphicsFence fence) => IsDisposed || _fences.Remove(fence, _fencesMutex);
 
-    internal bool RemovePipelineSignature(GraphicsPipelineSignature pipelineSignature)
-    {
-        return IsDisposed || _pipelineSignatures.Remove(pipelineSignature, _pipelineSignaturesMutex);
-    }
+    internal bool RemovePipelineSignature(GraphicsPipelineSignature pipelineSignature) => IsDisposed || _pipelineSignatures.Remove(pipelineSignature, _pipelineSignaturesMutex);
 
-    internal bool RemoveRenderPass(GraphicsRenderPass renderPass)
-    {
-        return IsDisposed || _renderPasses.Remove(renderPass, _renderPassesMutex);
-    }
+    internal bool RemoveRenderPass(GraphicsRenderPass renderPass) => IsDisposed || _renderPasses.Remove(renderPass, _renderPassesMutex);
 
-    internal bool RemoveShader(GraphicsShader shader)
-    {
-        return IsDisposed || _shaders.Remove(shader, _shadersMutex);
-    }
+    internal bool RemoveShader(GraphicsShader shader) => IsDisposed || _shaders.Remove(shader, _shadersMutex);
 
-    internal bool RemoveTexture(GraphicsTexture texture)
-    {
-        return IsDisposed || _textures.Remove(texture, _texturesMutex);
-    }
+    internal bool RemoveTexture(GraphicsTexture texture) => IsDisposed || _textures.Remove(texture, _texturesMutex);
 
-    private GraphicsBuffer CreateBufferUnsafe(in GraphicsBufferCreateOptions createOptions)
-    {
-        return new GraphicsBuffer(this, in createOptions);
-    }
+    private GraphicsBuffer CreateBufferUnsafe(in GraphicsBufferCreateOptions createOptions) => new GraphicsBuffer(this, in createOptions);
 
-    private GraphicsFence CreateFenceUnsafe(in GraphicsFenceCreateOptions createOptions)
-    {
-        return new GraphicsFence(this, in createOptions);
-    }
+    private GraphicsFence CreateFenceUnsafe(in GraphicsFenceCreateOptions createOptions) => new GraphicsFence(this, in createOptions);
 
-    private GraphicsPipelineSignature CreatePipelineSignatureUnsafe(in GraphicsPipelineSignatureCreateOptions createOptions)
-    {
-        return new GraphicsPipelineSignature(this, in createOptions);
-    }
+    private GraphicsPipelineSignature CreatePipelineSignatureUnsafe(in GraphicsPipelineSignatureCreateOptions createOptions) => new GraphicsPipelineSignature(this, in createOptions);
 
-    private GraphicsRenderPass CreateRenderPassUnsafe(in GraphicsRenderPassCreateOptions createOptions)
-    {
-        return new GraphicsRenderPass(this, in createOptions);
-    }
+    private GraphicsRenderPass CreateRenderPassUnsafe(in GraphicsRenderPassCreateOptions createOptions) => new GraphicsRenderPass(this, in createOptions);
 
-    private GraphicsShader CreateShaderUnsafe(in GraphicsShaderCreateOptions createOptions)
-    {
-        return new GraphicsShader(this, in createOptions);
-    }
+    private GraphicsShader CreateShaderUnsafe(in GraphicsShaderCreateOptions createOptions) => new GraphicsShader(this, in createOptions);
 
-    private GraphicsTexture CreateTextureUnsafe(in GraphicsTextureCreateOptions createOptions)
-    {
-        return new GraphicsTexture(this, in createOptions);
-    }
+    private GraphicsTexture CreateTextureUnsafe(in GraphicsTextureCreateOptions createOptions) => new GraphicsTexture(this, in createOptions);
 
     private GraphicsMemoryBudget GetMemoryBudgetNoLock(GraphicsMemoryManager memoryManager, in MemoryBudgetInfo memoryBudgetInfo)
     {

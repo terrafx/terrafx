@@ -137,15 +137,9 @@ public abstract unsafe class GraphicsContext : GraphicsCommandQueueObject
         D3D12GraphicsCommandList->SetD3D12Name(value);
     }
 
-    private void CloseUnsafe()
-    {
-        ThrowExternalExceptionIfFailed(D3D12GraphicsCommandList->Close());
-    }
+    private void CloseUnsafe() => ThrowExternalExceptionIfFailed(D3D12GraphicsCommandList->Close());
 
-    private void ExecuteUnsafe()
-    {
-        CommandQueue.ExecuteContextUnsafe(this);
-    }
+    private void ExecuteUnsafe() => CommandQueue.ExecuteContextUnsafe(this);
 
     private void ResetUnsafe()
     {

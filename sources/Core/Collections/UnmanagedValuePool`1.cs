@@ -116,10 +116,7 @@ public unsafe partial struct UnmanagedValuePool<T> : IEnumerable<T>
 
     /// <summary>Returns an item to the pool.</summary>
     /// <param name="item">The item that should be returned to the pool.</param>
-    public void Return(T item)
-    {
-        _availableItems.Enqueue(item);
-    }
+    public void Return(T item) => _availableItems.Enqueue(item);
 
     /// <summary>Returns an item to the pool.</summary>
     /// <param name="item">The item that should be returned to the pool.</param>

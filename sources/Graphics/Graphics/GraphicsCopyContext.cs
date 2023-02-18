@@ -54,10 +54,7 @@ public sealed unsafe class GraphicsCopyContext : GraphicsContext
         CopyUnsafe(destination, source);
     }
 
-    private void CopyUnsafe(GraphicsBufferView destination, GraphicsBufferView source)
-    {
-        D3D12GraphicsCommandList->CopyBufferRegion(destination.Resource.D3D12Resource, destination.ByteOffset, source.Resource.D3D12Resource, source.ByteOffset, source.ByteLength);
-    }
+    private void CopyUnsafe(GraphicsBufferView destination, GraphicsBufferView source) => D3D12GraphicsCommandList->CopyBufferRegion(destination.Resource.D3D12Resource, destination.ByteOffset, source.Resource.D3D12Resource, source.ByteOffset, source.ByteLength);
 
     private void CopyUnsafe(GraphicsTextureView destination, GraphicsBufferView source)
     {

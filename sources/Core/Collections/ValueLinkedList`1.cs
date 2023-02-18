@@ -275,10 +275,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     /// <param name="comparer">The comparer to use when checking for equality.</param>
     /// <returns><c>true</c> if a node containing <paramref name="value" /> was found in the linked list; otherwise, <c>false</c>.</returns>
     public bool Contains<TComparer>(T value, TComparer comparer)
-        where TComparer : IEqualityComparer<T>
-    {
-        return Find(value, comparer) is not null;
-    }
+        where TComparer : IEqualityComparer<T> => Find(value, comparer) is not null;
 
     /// <summary>Checks whether the linked list contains a specified node.</summary>
     /// <param name="node">The node to check for in the linked list.</param>

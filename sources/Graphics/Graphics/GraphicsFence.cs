@@ -112,10 +112,7 @@ public sealed unsafe class GraphicsFence : GraphicsDeviceObject
     }
 
     /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
-        D3D12Fence->SetD3D12Name(value);
-    }
+    protected override void SetNameUnsafe(string value) => D3D12Fence->SetD3D12Name(value);
 
     private void ResetUnsafe()
     {

@@ -139,10 +139,7 @@ public sealed unsafe class UIDispatcher : UIServiceObject
         }
     }
 
-    private UIWindow CreateWindowUnsafe()
-    {
-        return new UIWindow(this);
-    }
+    private UIWindow CreateWindowUnsafe() => new UIWindow(this);
 
     private void DispatchPendingUnsafe()
     {
@@ -167,8 +164,5 @@ public sealed unsafe class UIDispatcher : UIServiceObject
         ExitRequested?.Invoke(this, EventArgs.Empty);
     }
 
-    private void RequestExitUnsafe()
-    {
-        PostQuitMessage(0);
-    }
+    private void RequestExitUnsafe() => PostQuitMessage(0);
 }

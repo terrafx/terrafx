@@ -209,20 +209,11 @@ public sealed unsafe class GraphicsBuffer : GraphicsResource
         _ = Device.RemoveBuffer(this);
     }
 
-    internal void AddBufferView(GraphicsBufferView bufferView)
-    {
-        _bufferViews.Add(bufferView, _bufferViewsMutex);
-    }
+    internal void AddBufferView(GraphicsBufferView bufferView) => _bufferViews.Add(bufferView, _bufferViewsMutex);
 
-    internal bool RemoveBufferView(GraphicsBufferView bufferView)
-    {
-        return IsDisposed || _bufferViews.Remove(bufferView, _bufferViewsMutex);
-    }
+    internal bool RemoveBufferView(GraphicsBufferView bufferView) => IsDisposed || _bufferViews.Remove(bufferView, _bufferViewsMutex);
 
-    private void DisposeAllViewsUnsafe()
-    {
-        _bufferViews.Dispose();
-    }
+    private void DisposeAllViewsUnsafe() => _bufferViews.Dispose();
 
     private bool TryCreateBufferViewUnsafe(in GraphicsBufferViewCreateOptions createOptions, [NotNullWhen(true)] out GraphicsBufferView? bufferView)
     {

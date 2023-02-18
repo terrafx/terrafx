@@ -101,15 +101,9 @@ public sealed unsafe class GraphicsAdapter : GraphicsServiceObject
     {
     }
 
-    internal void AddDevice(GraphicsDevice device)
-    {
-        _devices.Add(device, _devicesMutex);
-    }
+    internal void AddDevice(GraphicsDevice device) => _devices.Add(device, _devicesMutex);
 
-    internal bool RemoveDevice(GraphicsDevice device)
-    {
-        return IsDisposed || _devices.Remove(device, _devicesMutex);
-    }
+    internal bool RemoveDevice(GraphicsDevice device) => IsDisposed || _devices.Remove(device, _devicesMutex);
 
     internal bool TryQueryLocalVideoMemoryInfo(DXGI_QUERY_VIDEO_MEMORY_INFO* dxgiLocalVideoMemoryInfo)
     {
@@ -137,8 +131,5 @@ public sealed unsafe class GraphicsAdapter : GraphicsServiceObject
         return result;
     }
 
-    private GraphicsDevice CreateDeviceUnsafe(in GraphicsDeviceCreateOptions createOptions)
-    {
-        return new GraphicsDevice(this, in createOptions);
-    }
+    private GraphicsDevice CreateDeviceUnsafe(in GraphicsDeviceCreateOptions createOptions) => new GraphicsDevice(this, in createOptions);
 }

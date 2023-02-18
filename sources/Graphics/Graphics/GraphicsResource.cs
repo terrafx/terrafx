@@ -388,10 +388,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     }
 
     /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
-        D3D12Resource->SetD3D12Name(value);
-    }
+    protected override void SetNameUnsafe(string value) => D3D12Resource->SetD3D12Name(value);
 
     internal byte* MapForReadUnsafe(uint subresource)
     {

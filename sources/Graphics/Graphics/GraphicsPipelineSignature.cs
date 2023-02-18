@@ -260,8 +260,5 @@ public sealed unsafe class GraphicsPipelineSignature : GraphicsDeviceObject
     }
 
     /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
-        D3D12RootSignature->SetD3D12Name(value);
-    }
+    protected override void SetNameUnsafe(string value) => D3D12RootSignature->SetD3D12Name(value);
 }

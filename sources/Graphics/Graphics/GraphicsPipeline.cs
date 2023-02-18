@@ -247,13 +247,7 @@ public sealed unsafe class GraphicsPipeline : GraphicsRenderPassObject
     }
 
     /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
-        D3D12PipelineState->SetD3D12Name(value);
-    }
+    protected override void SetNameUnsafe(string value) => D3D12PipelineState->SetD3D12Name(value);
 
-    private GraphicsPipelineDescriptorSet CreateDescriptorSetUnsafe(in GraphicsPipelineDescriptorSetCreateOptions createOptions)
-    {
-        return new GraphicsPipelineDescriptorSet(this, in createOptions);
-    }
+    private GraphicsPipelineDescriptorSet CreateDescriptorSetUnsafe(in GraphicsPipelineDescriptorSetCreateOptions createOptions) => new GraphicsPipelineDescriptorSet(this, in createOptions);
 }

@@ -324,8 +324,5 @@ public static partial class ExceptionUtilities
     /// <param name="message">The message detailing the cause of the exception.</param>
     /// <exception cref="UnreachableException"><paramref name="message" /></exception>
     [DoesNotReturn]
-    public static void ThrowUnreachableException(string? message)
-    {
-        throw new UnreachableException(message);
-    }
+    public static void ThrowUnreachableException(string? message) => throw new UnreachableException(message);
 }

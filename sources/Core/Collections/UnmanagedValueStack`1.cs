@@ -115,10 +115,7 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
     public readonly nuint Count => _count;
 
     /// <summary>Removes all items from the stack.</summary>
-    public void Clear()
-    {
-        _count = 0;
-    }
+    public void Clear() => _count = 0;
 
     /// <summary>Checks whether the stack contains a specified item.</summary>
     /// <param name="item">The item to check for in the stack.</param>

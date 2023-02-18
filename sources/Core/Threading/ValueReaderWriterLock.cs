@@ -24,46 +24,25 @@ public readonly unsafe partial struct ValueReaderWriterLock : IDisposable
     public bool IsNull => _value is null;
 
     /// <inheritdoc />
-    public void Dispose()
-    {
-        Free(_value);
-    }
+    public void Dispose() => Free(_value);
 
     /// <summary>Acquires a read lock on the mutex.</summary>
-    public void AcquireReadLock()
-    {
-        AcquireSRWLockShared(_value);
-    }
+    public void AcquireReadLock() => AcquireSRWLockShared(_value);
 
     /// <summary>Acquires a write lock on the mutex.</summary>
-    public void AcquireWriteLock()
-    {
-        AcquireSRWLockExclusive(_value);
-    }
+    public void AcquireWriteLock() => AcquireSRWLockExclusive(_value);
 
     /// <summary>Attempts to acquire a read lock on the mutex.</summary>
     /// <returns><c>true</c> if the lock was successfully acquired; otherwise, <c>false</c>.</returns>
-    public bool TryAcquireReadLock()
-    {
-        return TryAcquireSRWLockShared(_value) != 0;
-    }
+    public bool TryAcquireReadLock() => TryAcquireSRWLockShared(_value) != 0;
 
     /// <summary>Attempts to acquire a write lock on the mutex.</summary>
     /// <returns><c>true</c> if the lock was successfully acquired; otherwise, <c>false</c>.</returns>
-    public bool TryAcquireWriteLock()
-    {
-        return TryAcquireSRWLockExclusive(_value) != 0; 
-    }
+    public bool TryAcquireWriteLock() => TryAcquireSRWLockExclusive(_value) != 0;
 
     /// <summary>Releases a read lock on the mutex.</summary>
-    public void ReleaseReadLock()
-    {
-        ReleaseSRWLockShared(_value);
-    }
+    public void ReleaseReadLock() => ReleaseSRWLockShared(_value);
 
     /// <summary>Releases a write lock on the mutex.</summary>
-    public void ReleaseWriteLock()
-    {
-        ReleaseSRWLockExclusive(_value);
-    }
+    public void ReleaseWriteLock() => ReleaseSRWLockExclusive(_value);
 }
