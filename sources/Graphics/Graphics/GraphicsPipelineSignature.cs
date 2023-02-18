@@ -139,7 +139,7 @@ public sealed unsafe class GraphicsPipelineSignature : GraphicsDeviceObject
                             d3d12RootParameters[d3d12RootParametersIndex].InitAsDescriptorTable(
                                 numDescriptorRanges: 1,
                                 d3d12DescriptorRanges.GetPointerUnsafe(d3d12DescriptorRangeIndex),
-                                GetD3D12ShaderVisiblity(resource.ShaderVisibility)
+                                GetD3D12ShaderVisibility(resource.ShaderVisibility)
                             );
 
                             d3d12DescriptorRangeIndex++;
@@ -149,7 +149,7 @@ public sealed unsafe class GraphicsPipelineSignature : GraphicsDeviceObject
 
                         case GraphicsPipelineResourceKind.Texture:
                         {
-                            var shaderVisibility = GetD3D12ShaderVisiblity(resource.ShaderVisibility);
+                            var shaderVisibility = GetD3D12ShaderVisibility(resource.ShaderVisibility);
 
                             d3d12DescriptorRanges[d3d12DescriptorRangeIndex].Init(
                                 D3D12_DESCRIPTOR_RANGE_TYPE_SRV,
@@ -214,7 +214,7 @@ public sealed unsafe class GraphicsPipelineSignature : GraphicsDeviceObject
             return GetLatestD3D12RootSignature(d3d12RootSignature, out d3d12RootSignatureVersion);
         }
 
-        static D3D12_SHADER_VISIBILITY GetD3D12ShaderVisiblity(GraphicsShaderVisibility shaderVisibility)
+        static D3D12_SHADER_VISIBILITY GetD3D12ShaderVisibility(GraphicsShaderVisibility shaderVisibility)
         {
             D3D12_SHADER_VISIBILITY d3d12ShaderVisibility = 0;
 
@@ -260,8 +260,5 @@ public sealed unsafe class GraphicsPipelineSignature : GraphicsDeviceObject
     }
 
     /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
-        D3D12RootSignature->SetD3D12Name(value);
-    }
+    protected override void SetNameUnsafe(string value) => D3D12RootSignature->SetD3D12Name(value);
 }

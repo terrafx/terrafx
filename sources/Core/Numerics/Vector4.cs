@@ -216,7 +216,7 @@ public readonly struct Vector4 : IEquatable<Vector4>, IFormattable
     /// <summary>Computes the product of a vector and a float.</summary>
     /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
     /// <param name="right">The float which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    /// <returns>The product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector4 operator *(Vector4 left, float right)
     {
@@ -227,7 +227,7 @@ public readonly struct Vector4 : IEquatable<Vector4>, IFormattable
     /// <summary>Computes the product of two vectors.</summary>
     /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
     /// <param name="right">The vector which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    /// <returns>The product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector4 operator *(Vector4 left, Vector4 right)
     {
@@ -238,12 +238,12 @@ public readonly struct Vector4 : IEquatable<Vector4>, IFormattable
     /// <summary>Computes the product of a vector and matrix.</summary>
     /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
     /// <param name="right">The matrix which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    /// <returns>The product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector4 operator *(Vector4 left, Matrix4x4 right) => Transform(left, right);
 
     /// <summary>Computes the quotient of a vector and a float.</summary>
-    /// <param name="left">The vector which is divied by <paramref name="right" />.</param>
+    /// <param name="left">The vector which is divided by <paramref name="right" />.</param>
     /// <param name="right">The float which divides <paramref name="left" />.</param>
     /// <returns>The quotient of <paramref name="left" /> divided by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -254,7 +254,7 @@ public readonly struct Vector4 : IEquatable<Vector4>, IFormattable
     }
 
     /// <summary>Computes the quotient of two vectors.</summary>
-    /// <param name="left">The vector which is divied by <paramref name="right" />.</param>
+    /// <param name="left">The vector which is divided by <paramref name="right" />.</param>
     /// <param name="right">The vector which divides <paramref name="left" />.</param>
     /// <returns>The quotient of <paramref name="left" /> divided by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -304,7 +304,7 @@ public readonly struct Vector4 : IEquatable<Vector4>, IFormattable
 
     /// <summary>Computes the dot product of two vectors.</summary>
     /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
-    /// <param name="right">The quatnerion which is used to multiply <paramref name="left" />.</param>
+    /// <param name="right">The quaternion which is used to multiply <paramref name="left" />.</param>
     /// <returns>The dot product of <paramref name="left" /> and <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float DotProduct(Vector4 left, Vector4 right)
@@ -409,7 +409,7 @@ public readonly struct Vector4 : IEquatable<Vector4>, IFormattable
     }
 
     /// <summary>Reinterprets the current instance as a new <see cref="SysVector4" />.</summary>
-    /// <returns>The current instance reintepreted as a new <see cref="SysVector4" />.</returns>
+    /// <returns>The current instance reinterpreted as a new <see cref="SysVector4" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public SysVector4 AsSystemVector4() => _value.AsVector4();
 

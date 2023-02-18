@@ -1,5 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+// This file includes code based on the GpuResource class from https://github.com/microsoft/DirectX-Graphics-Samples
+// The original code is Copyright © Microsoft. All rights reserved. Licensed under the MIT License (MIT).
+
 using System;
 using System.Threading;
 using TerraFX.Graphics.Advanced;
@@ -174,7 +177,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     /// <summary>Gets the length, in bytes, of the resource.</summary>
     public nuint ByteLength => _memoryRegion.ByteLength;
 
-    /// <summary>Gets the CPU access capabilitites of the resource.</summary>
+    /// <summary>Gets the CPU access capabilities of the resource.</summary>
     public GraphicsCpuAccess CpuAccess => _cpuAccess;
 
     /// <summary>Gets <c>true</c> if the resource is mapped; otherwise, <c>false</c>.</summary>
@@ -183,7 +186,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     /// <summary>Gets the resource kind.</summary>
     public GraphicsResourceKind Kind => _kind;
 
-    /// <summary>Gets the mapped address of the resouce or <c>null</c> if the resource is not currently mapped.</summary>
+    /// <summary>Gets the mapped address of the resource or <c>null</c> if the resource is not currently mapped.</summary>
     public void* MappedAddress => _mappedAddress;
 
     /// <summary>Gets the memory heap in which the resource exists.</summary>
@@ -385,10 +388,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     }
 
     /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
-        D3D12Resource->SetD3D12Name(value);
-    }
+    protected override void SetNameUnsafe(string value) => D3D12Resource->SetD3D12Name(value);
 
     internal byte* MapForReadUnsafe(uint subresource)
     {

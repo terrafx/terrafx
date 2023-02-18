@@ -90,38 +90,17 @@ public sealed unsafe class GraphicsTextureView : GraphicsResourceView
     internal UnmanagedReadOnlySpan<D3D12_PLACED_SUBRESOURCE_FOOTPRINT> D3D12PlacedSubresourceFootprints => _d3d12PlacedSubresourceFootprints;
 
     /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
-    {
-        _ = Resource.RemoveTextureView(this);
-    }
+    protected override void Dispose(bool isDisposing) => _ = Resource.RemoveTextureView(this);
 
-    private protected override unsafe byte* MapForReadUnsafe()
-    {
-        return Resource.MapForReadUnsafe(D3D12SubresourceIndex);
-    }
+    private protected override unsafe byte* MapForReadUnsafe() => Resource.MapForReadUnsafe(D3D12SubresourceIndex);
 
-    private protected override unsafe byte* MapForReadUnsafe(nuint byteStart, nuint byteLength)
-    {
-        return Resource.MapForReadUnsafe(D3D12SubresourceIndex, byteStart, byteLength);
-    }
+    private protected override unsafe byte* MapForReadUnsafe(nuint byteStart, nuint byteLength) => Resource.MapForReadUnsafe(D3D12SubresourceIndex, byteStart, byteLength);
 
-    private protected override unsafe byte* MapUnsafe()
-    {
-        return Resource.MapUnsafe(D3D12SubresourceIndex);
-    }
+    private protected override unsafe byte* MapUnsafe() => Resource.MapUnsafe(D3D12SubresourceIndex);
 
-    private protected override void UnmapAndWriteUnsafe()
-    {
-        Resource.UnmapAndWriteUnsafe(D3D12SubresourceIndex);
-    }
+    private protected override void UnmapAndWriteUnsafe() => Resource.UnmapAndWriteUnsafe(D3D12SubresourceIndex);
 
-    private protected override void UnmapAndWriteUnsafe(nuint byteStart, nuint byteLength)
-    {
-        Resource.UnmapAndWriteUnsafe(D3D12SubresourceIndex, byteStart, byteLength);
-    }
+    private protected override void UnmapAndWriteUnsafe(nuint byteStart, nuint byteLength) => Resource.UnmapAndWriteUnsafe(D3D12SubresourceIndex, byteStart, byteLength);
 
-    private protected override void UnmapUnsafe()
-    {
-        Resource.UnmapUnsafe(D3D12SubresourceIndex);
-    }
+    private protected override void UnmapUnsafe() => Resource.UnmapUnsafe(D3D12SubresourceIndex);
 }

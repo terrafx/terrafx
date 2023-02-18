@@ -15,7 +15,7 @@ using SysVector4 = System.Numerics.Vector4;
 
 namespace TerraFX.Numerics;
 
-/// <summary>Defines a quaternion whch encodes a rotation as an axis-angle.</summary>
+/// <summary>Defines a quaternion which encodes a rotation as an axis-angle.</summary>
 public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
 {
     /// <summary>Defines a quaternion where all components are zero.</summary>
@@ -174,7 +174,7 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
     /// <summary>Computes the product of two quaternions.</summary>
     /// <param name="left">The quaternion to multiply by <paramref name="right" />.</param>
     /// <param name="right">The quaternion which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    /// <returns>The product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Quaternion operator *(Quaternion left, Quaternion right)
     {
@@ -331,8 +331,8 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
 
     /// <summary>Computes the dot product of two quaternions.</summary>
     /// <param name="left">The quaternion to multiply by <paramref name="right" />.</param>
-    /// <param name="right">The quatnerion which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The dot product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    /// <param name="right">The quaternion which is used to multiply <paramref name="left" />.</param>
+    /// <returns>The dot product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float DotProduct(Quaternion left, Quaternion right)
     {
@@ -395,17 +395,17 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
     }
 
     /// <summary>Reinterprets the current instance as a new <see cref="SysQuaternion" />.</summary>
-    /// <returns>The current instance reintepreted as a new <see cref="SysQuaternion" />.</returns>
+    /// <returns>The current instance reinterpreted as a new <see cref="SysQuaternion" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public SysQuaternion AsSystemQuaternion() => AsReadonly<Vector128<float>, SysQuaternion>(in _value);
 
     /// <summary>Reinterprets the current instance as a new <see cref="SysVector4" />.</summary>
-    /// <returns>The current instance reintepreted as a new <see cref="SysVector4" />.</returns>
+    /// <returns>The current instance reinterpreted as a new <see cref="SysVector4" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public SysVector4 AsSystemVector4() => AsReadonly<Vector128<float>, SysVector4>(in _value);
 
     /// <summary>Reinterprets the current instance as a new <see cref="Vector4" />.</summary>
-    /// <returns>The current instance reintepreted as a new <see cref="Vector4" />.</returns>
+    /// <returns>The current instance reinterpreted as a new <see cref="Vector4" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public SysVector4 AsVector4() => _value.AsVector4();
 
@@ -435,19 +435,13 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
     /// <param name="angle">The new angle of the quaternion.</param>
     /// <returns>A new quaternion with <see cref="Angle" /> set to <paramref name="angle" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Quaternion WithAngle(float angle)
-    {
-        return CreateFromAxisAngle(Axis, angle);
-    }
+    public Quaternion WithAngle(float angle) => CreateFromAxisAngle(Axis, angle);
 
     /// <summary>Creates a new quaternion with <see cref="Axis" /> set to the specified value.</summary>
     /// <param name="axis">The new axis of the quaternion.</param>
     /// <returns>A new quaternion with <see cref="Axis" /> set to <paramref name="axis" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Quaternion WithAxis(Vector3 axis)
-    {
-        return CreateFromAxisAngle(axis, Angle);
-    }
+    public Quaternion WithAxis(Vector3 axis) => CreateFromAxisAngle(axis, Angle);
 
     /// <summary>Creates a new quaternion with <see cref="X" /> set to the specified value.</summary>
     /// <param name="x">The new x-component of the quaternion.</param>

@@ -172,7 +172,7 @@ public struct BoundingRectangle : IEquatable<BoundingRectangle>, IFormattable
         }
     }
 
-    /// <summary>Compares two bounding rectanglees to determine equality.</summary>
+    /// <summary>Compares two bounding rectangles to determine equality.</summary>
     /// <param name="left">The bounding rectangle to compare with <paramref name="right" />.</param>
     /// <param name="right">The bounding rectangle to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
@@ -183,7 +183,7 @@ public struct BoundingRectangle : IEquatable<BoundingRectangle>, IFormattable
             && (left._extent == right._extent);
     }
 
-    /// <summary>Compares two bounding rectanglees instances to determine inequality.</summary>
+    /// <summary>Compares two bounding rectangles instances to determine inequality.</summary>
     /// <param name="left">The bounding rectangle to compare with <paramref name="right" />.</param>
     /// <param name="right">The bounding rectangle to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>

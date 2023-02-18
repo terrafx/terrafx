@@ -345,7 +345,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     /// <summary>Computes the product of two matrices.</summary>
     /// <param name="left">The matrix to multiply by <paramref name="right" />.</param>
     /// <param name="right">The matrix which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    /// <returns>The product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
     public static Matrix4x4 operator *(Matrix4x4 left, in Matrix4x4 right)
     {
         return Create(
@@ -708,7 +708,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
 
     /// <summary>Computes the inverse of a matrix.</summary>
     /// <param name="value">The matrix to invert.</param>
-    /// <param name="determinant">On return, contains the dterminant of the matrix.</param>
+    /// <param name="determinant">On return, contains the determinant of the matrix.</param>
     /// <returns>The inverse of <paramref name="value" /> or an <c>infinite</c> matrix if no inverse exists.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Matrix4x4 Inverse(Matrix4x4 value, out float determinant)
@@ -885,7 +885,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     }
 
     /// <summary>Reinterprets the current instance as a new <see cref="SysMatrix4x4" />.</summary>
-    /// <returns>The current instance reintepreted as a new <see cref="SysMatrix4x4" />.</returns>
+    /// <returns>The current instance reinterpreted as a new <see cref="SysMatrix4x4" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public SysMatrix4x4 AsSystemMatrix4x4() => As<Matrix4x4, SysMatrix4x4>(ref this);
 

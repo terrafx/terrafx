@@ -6,6 +6,9 @@ using System.Linq;
 using NUnit.Framework;
 using TerraFX.Collections;
 
+// Not a correct fix for mutable structs
+#pragma warning disable IDE0200
+
 namespace TerraFX.UnitTests.Collections;
 
 /// <summary>Provides a set of tests covering the <see cref="ValueQueue{T}" /> struct.</summary>

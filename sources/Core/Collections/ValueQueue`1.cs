@@ -43,15 +43,7 @@ public partial struct ValueQueue<T> : IEnumerable<T>
     public ValueQueue(int capacity)
     {
         ThrowIfNegative(capacity);
-
-        if (capacity != 0)
-        {
-            _items = GC.AllocateUninitializedArray<T>(capacity);
-        }
-        else
-        {
-            _items = Array.Empty<T>();
-        }
+        _items = (capacity != 0) ? GC.AllocateUninitializedArray<T>(capacity) : Array.Empty<T>();
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
@@ -265,14 +257,8 @@ public partial struct ValueQueue<T> : IEnumerable<T>
             var head = _head;
             var headLength = count - head;
 
-            if ((head < _tail) || (index < headLength))
-            {
-                return ref _items.GetReferenceUnsafe(head + index);
-            }
-            else
-            {
-                return ref _items.GetReferenceUnsafe(index - headLength);
-            }
+            var actualIndex = ((head < _tail) || (index < headLength)) ? (head + index) : (index - headLength);
+            return ref _items.GetReferenceUnsafe(actualIndex);
         }
         else
         {
@@ -305,7 +291,7 @@ public partial struct ValueQueue<T> : IEnumerable<T>
         return item!;
     }
 
-    /// <summary>Removes the first occurence of an item from the queue.</summary>
+    /// <summary>Removes the first occurrence of an item from the queue.</summary>
     /// <param name="item">The item to remove from the queue.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was removed from the queue; otherwise, <c>false</c>.</returns>
     public bool Remove(T item)
@@ -363,7 +349,7 @@ public partial struct ValueQueue<T> : IEnumerable<T>
     }
 
     /// <summary>Trims any excess capacity, up to a given threshold, from the queue.</summary>
-    /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any exceess will not be trimmed.</param>
+    /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any excess will not be trimmed.</param>
     /// <remarks>This methods clamps <paramref name="threshold" /> to between <c>zero</c> and <c>one</c>, inclusive.</remarks>
     public void TrimExcess(float threshold = 1.0f)
     {
@@ -446,14 +432,9 @@ public partial struct ValueQueue<T> : IEnumerable<T>
         {
             var head = _head;
 
-            if ((head < _tail) || (index < (count - head)))
-            {
-                item = _items[head + index];
-            }
-            else
-            {
-                item = _items[index];
-            }
+            var actualIndex = ((head < _tail) || (index < (count - head))) ? (head + index) : index;
+            item = _items[actualIndex];
+
             return true;
         }
         else

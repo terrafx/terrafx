@@ -91,10 +91,7 @@ public abstract unsafe partial class GraphicsMemoryAllocator
     }
 
     /// <summary>Clears the memory allocator of all allocated regions.</summary>
-    public void Clear()
-    {
-        ClearUnsafe();
-    }
+    public void Clear() => ClearUnsafe();
 
     /// <summary>Frees a memory region of memory.</summary>
     /// <param name="memoryRegion">The memory region to be freed.</param>
@@ -148,7 +145,7 @@ public abstract unsafe partial class GraphicsMemoryAllocator
 
     /// <summary>Tries to free a memory region.</summary>
     /// <param name="memoryRegion">The memory region to be freed.</param>
-    /// <returns><c>true</c> if <paramref name="memoryRegion" /> was succesfully freed; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if <paramref name="memoryRegion" /> was successfully freed; otherwise, <c>false</c>.</returns>
     /// <remarks>This method is unsafe because it does not perform most parameter or state validation.</remarks>
     protected abstract bool TryFreeUnsafe(in GraphicsMemoryRegion memoryRegion);
 }

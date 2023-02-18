@@ -237,14 +237,7 @@ public static unsafe class AppContextUtilities
 
         if (data is not string[] value)
         {
-            if (data is string stringValue)
-            {
-                value = stringValue.Split(';', StringSplitOptions.RemoveEmptyEntries);
-            }
-            else
-            {
-                value = defaultValue;
-            }
+            value = (data is string stringValue) ? stringValue.Split(';', StringSplitOptions.RemoveEmptyEntries) : defaultValue;
         }
 
         return value.Distinct().ToArray();

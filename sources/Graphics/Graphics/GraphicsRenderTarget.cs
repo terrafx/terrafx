@@ -66,14 +66,8 @@ public sealed unsafe class GraphicsRenderTarget : GraphicsSwapchainObject
     internal uint D3D12RtvResourceVersion => _d3d12RtvResourceVersion;
 
     /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
-    {
-        _ = _d3d12RtvResource.Reset();
-    }
+    protected override void Dispose(bool isDisposing) => _ = _d3d12RtvResource.Reset();
 
     /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
-        D3D12RtvResource->SetD3D12Name(value);
-    }
+    protected override void SetNameUnsafe(string value) => D3D12RtvResource->SetD3D12Name(value);
 }

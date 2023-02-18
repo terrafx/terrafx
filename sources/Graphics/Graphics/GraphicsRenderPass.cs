@@ -104,8 +104,5 @@ public sealed unsafe class GraphicsRenderPass : GraphicsDeviceObject
     {
     }
 
-    private GraphicsPipeline CreatePipelineUnsafe(in GraphicsPipelineCreateOptions createOptions)
-    {
-        return new GraphicsPipeline(this, in createOptions);
-    }
+    private GraphicsPipeline CreatePipelineUnsafe(in GraphicsPipelineCreateOptions createOptions) => new GraphicsPipeline(this, in createOptions);
 }

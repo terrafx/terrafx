@@ -124,7 +124,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     /// <summary>Gets the location of the window.</summary>
     public Vector2 Location => Bounds.Location;
 
-    /// <summary>Gets the reading directionfor the window.</summary>
+    /// <summary>Gets the reading direction for the window.</summary>
     public UIReadingDirection ReadingDirection => _readingDirection;
 
     /// <summary>Gets the size of the window.</summary>
@@ -362,7 +362,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     }
 
     /// <summary>Tries to activate the window.</summary>
-    /// <returns><c>true</c> if the window was succesfully activated; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if the window was successfully activated; otherwise, <c>false</c>.</returns>
     /// <exception cref="ObjectDisposedException">The window has been disposed.</exception>
     public bool TryActivate() => _isActive || (SetForegroundWindow(_handle) != FALSE);
 
@@ -403,13 +403,13 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
 
             case WM_DESTROY:
             {
-                result = HandleWmDestroy(wParam, lParam);
+                result = HandleWmDestroy();
                 break;
             }
 
             case WM_MOVE:
             {
-                result = HandleWmMove(wParam, lParam);
+                result = HandleWmMove(lParam);
                 break;
             }
 
@@ -421,13 +421,13 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
 
             case WM_ACTIVATE:
             {
-                result = HandleWmActivate(wParam, lParam);
+                result = HandleWmActivate(wParam);
                 break;
             }
 
             case WM_ENABLE:
             {
-                result = HandleWmEnable(wParam, lParam);
+                result = HandleWmEnable(wParam);
                 break;
             }
 
@@ -439,13 +439,13 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
 
             case WM_CLOSE:
             {
-                result = HandleWmClose(wParam, lParam);
+                result = HandleWmClose();
                 break;
             }
 
             case WM_SHOWWINDOW:
             {
-                result = HandleWmShowWindow(wParam, lParam);
+                result = HandleWmShowWindow(wParam);
                 break;
             }
 
@@ -479,13 +479,13 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
         }
     }
 
-    private LRESULT HandleWmActivate(WPARAM wParam, LPARAM lParam)
+    private LRESULT HandleWmActivate(WPARAM wParam)
     {
         _isActive = LOWORD(wParam) != WA_INACTIVE;
         return 0;
     }
 
-    private LRESULT HandleWmClose(WPARAM wParam, LPARAM lParam)
+    private LRESULT HandleWmClose()
     {
         // If we are already disposing, then Dispose is happening on some other thread
         // and Close was called in order for us to continue disposal on the parent thread.
@@ -515,7 +515,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
         return 0;
     }
 
-    private LRESULT HandleWmDestroy(WPARAM wParam, LPARAM lParam)
+    private LRESULT HandleWmDestroy()
     {
         // We handle this here to ensure we transition to the appropriate state in the case
         // an end-user called DestroyWindow themselves. The assumption here is that this was
@@ -529,7 +529,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
         return 0;
     }
 
-    private LRESULT HandleWmEnable(WPARAM wParam, LPARAM lParam)
+    private LRESULT HandleWmEnable(WPARAM wParam)
     {
         if (wParam != (WPARAM)FALSE)
         {
@@ -542,7 +542,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
         return 0;
     }
 
-    private LRESULT HandleWmMove(WPARAM wParam, LPARAM lParam)
+    private LRESULT HandleWmMove(LPARAM lParam)
     {
         var previousClientLocation = _clientBounds.Location;
         var currentClientLocation = Vector2.Create(LOWORD(lParam), HIWORD(lParam));
@@ -566,7 +566,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
         return result;
     }
 
-    private LRESULT HandleWmShowWindow(WPARAM wParam, LPARAM lParam)
+    private LRESULT HandleWmShowWindow(WPARAM wParam)
     {
         if (wParam != (WPARAM)FALSE)
         {

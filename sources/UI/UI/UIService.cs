@@ -44,7 +44,7 @@ public sealed unsafe class UIService : DisposableObject
         {
             ushort classAtom;
 
-            fixed (char* lpszClassName = $"{nameof(UIService)}.X{EntryPointModule:X16}")
+            fixed (char* className = $"{nameof(UIService)}.X{EntryPointModule:X16}")
             {
                 var wndClassEx = new WNDCLASSEXW {
                     cbSize = SizeOf<WNDCLASSEXW>(),
@@ -57,7 +57,7 @@ public sealed unsafe class UIService : DisposableObject
                     hCursor = GetDesktopCursor(),
                     hbrBackground = (HBRUSH)(COLOR_WINDOW + 1),
                     lpszMenuName = null,
-                    lpszClassName = (ushort*)lpszClassName,
+                    lpszClassName = (ushort*)className,
                     hIconSm = HICON.NULL
                 };
 
@@ -142,8 +142,6 @@ public sealed unsafe class UIService : DisposableObject
     [UnmanagedCallersOnly]
     private static LRESULT ForwardWindowMessage(HWND hWnd, uint msg, WPARAM wParam, LPARAM lParam)
     {
-        LRESULT result;
-
         if (!Instance.DispatcherForCurrentThread.TryGetWindow(hWnd, out var window) && (msg == WM_CREATE))
         {
             // We allow the WM_CREATE message to be forwarded to the Window instance
@@ -161,16 +159,7 @@ public sealed unsafe class UIService : DisposableObject
             gcHandle.Free();
         }
 
-        if (window is not null)
-        {
-            result = window.ProcessWindowMessage(msg, wParam, lParam);
-        }
-        else
-        {
-            result = DefWindowProcW(hWnd, msg, wParam, lParam);
-        }
-
-        return result;
+        return (window is not null) ? window.ProcessWindowMessage(msg, wParam, lParam) : DefWindowProcW(hWnd, msg, wParam, lParam);
     }
 
     private static double GetTickFrequency()

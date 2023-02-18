@@ -43,10 +43,7 @@ public partial struct UnmanagedReadOnlySpan<T>
         }
 
         /// <inheritdoc />
-        public void Reset()
-        {
-            _index = nuint.MaxValue;
-        }
+        public void Reset() => _index = nuint.MaxValue;
 
         object IEnumerator.Current => Current;
 

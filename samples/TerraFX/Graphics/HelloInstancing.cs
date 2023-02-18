@@ -263,8 +263,5 @@ public sealed class HelloInstancing : HelloWindow
         }
     }
 
-    private float GetRandomInBoundsSingle()
-    {
-        return _rng.NextSingle() + _rng.NextSingle() - 1.0f;
-    }
+    private float GetRandomInBoundsSingle() => _rng.NextSingle() + _rng.NextSingle() - 1.0f;
 }

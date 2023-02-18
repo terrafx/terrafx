@@ -155,14 +155,7 @@ public sealed class HelloTextureTransform : HelloWindow
 
                     for (var x = 0u; x < width; x++)
                     {
-                        if ((x / cellWidth % 2) == (y / cellHeight % 2))
-                        {
-                            row[x] = 0xFF000000;
-                        }
-                        else
-                        {
-                            row[x] = 0xFFFFFFFF;
-                        }
+                        row[x] = ((x / cellWidth % 2) == (y / cellHeight % 2)) ? 0xFF000000 : 0xFFFFFFFF;
                     }
                 }
             }

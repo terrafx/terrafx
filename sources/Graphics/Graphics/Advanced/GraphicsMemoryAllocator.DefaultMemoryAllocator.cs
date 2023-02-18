@@ -401,7 +401,7 @@ public partial class GraphicsMemoryAllocator
             {
                 ref readonly var memoryRegion = ref memoryRegionNode.ValueRef;
 
-                // The node should immediately procede the previous
+                // The node should immediately proceed the previous
                 Assert(memoryRegion.ByteOffset == calculatedByteLength);
 
                 var isCurrentMemoryRegionFree = !memoryRegion.IsAllocated;

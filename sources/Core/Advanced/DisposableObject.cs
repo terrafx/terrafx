@@ -75,8 +75,5 @@ public abstract class DisposableObject : IDisposable
     }
 
     /// <summary>Marks the object as being disposed.</summary>
-    protected void MarkDisposed()
-    {
-        _ = Interlocked.Exchange(ref _isDisposed, 1);
-    }
+    protected void MarkDisposed() => Interlocked.Exchange(ref _isDisposed, 1);
 }

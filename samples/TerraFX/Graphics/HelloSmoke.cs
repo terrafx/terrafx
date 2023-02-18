@@ -52,14 +52,9 @@ public sealed class HelloSmoke : HelloWindow
         _constantBuffer = graphicsDevice.CreateConstantBuffer(64 * 1024, GraphicsCpuAccess.Write);
         _indexBuffer = graphicsDevice.CreateIndexBuffer(64 * 1024);
 
-        if (_isQuickAndDirty)
-        {
-            _texture3D = graphicsDevice.CreateTexture3D(GraphicsFormat.R8G8B8A8_UNORM, 64, 64, 64);
-        }
-        else
-        {
-            _texture3D = graphicsDevice.CreateTexture3D(GraphicsFormat.R8G8B8A8_UNORM, 256, 256, 256);
-        }
+        _texture3D = _isQuickAndDirty
+                   ? graphicsDevice.CreateTexture3D(GraphicsFormat.R8G8B8A8_UNORM, 64, 64, 64)
+                   : graphicsDevice.CreateTexture3D(GraphicsFormat.R8G8B8A8_UNORM, 256, 256, 256);
 
         _uploadBuffer = graphicsDevice.CreateUploadBuffer(128 * 1024 * 1024);
         _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);

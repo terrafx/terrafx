@@ -159,13 +159,7 @@ public sealed unsafe class GraphicsTexture : GraphicsResource
         _ = Device.RemoveTexture(this);
     }
 
-    internal void AddTextureView(GraphicsTextureView textureView)
-    {
-        _textureViews.Add(textureView, _textureViewsMutex);
-    }
+    internal void AddTextureView(GraphicsTextureView textureView) => _textureViews.Add(textureView, _textureViewsMutex);
 
-    internal bool RemoveTextureView(GraphicsTextureView textureView)
-    {
-        return IsDisposed || _textureViews.Remove(textureView, _textureViewsMutex);
-    }
+    internal bool RemoveTextureView(GraphicsTextureView textureView) => IsDisposed || _textureViews.Remove(textureView, _textureViewsMutex);
 }

@@ -47,10 +47,7 @@ public sealed class Application : DisposableObject
     ///   <para>This method does nothing if <see cref="IsRunning" /> is <c>false</c>.</para>
     ///   <para>This method can be called from any thread.</para>
     /// </remarks>
-    public void RequestExit()
-    {
-        _isRunning = false;
-    }
+    public void RequestExit() => _isRunning = false;
 
     /// <summary>Runs the event loop for the instance.</summary>
     /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
