@@ -47,7 +47,7 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
     );
 
     /// <summary>The minimum length, in bytes, of an allocator allowed in a memory manager.</summary>
-    /// <remarks>This defaults to <c>32MB</c> which is approx 1/8th the byte length of the default <see cref="MaximumSharedMemoryAllocatorByteLength" />.</remarks>
+    /// <remarks>This defaults to <c>32MB</c> which is approximately 1/8th the byte length of the default <see cref="MaximumSharedMemoryAllocatorByteLength" />.</remarks>
     public static uint MinimumMemoryAllocatorByteLength { get; } = GetAppContextData(
         $"{typeof(GraphicsMemoryManager).FullName}.{nameof(MinimumMemoryAllocatorByteLength)}",
         defaultValue: 32U * 1024U * 1024U
@@ -132,7 +132,7 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
     /// <summary>Tries to allocate a memory region in the manager.</summary>
     /// <param name="allocationOptions">The options to use when allocating the memory.</param>
     /// <param name="memoryRegion">On return, contains the allocated memory region or <c>default</c> if the allocation failed.</param>
-    /// <returns><c>true</c> if a region was sucesfully allocated; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if a region was successfully allocated; otherwise, <c>false</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="GraphicsMemoryAllocationOptions.ByteAlignment" /> is not zero or a <c>power of two</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="GraphicsMemoryAllocationOptions.ByteLength" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="GraphicsMemoryAllocationOptions.AllocationFlags" /> is undefined.</exception>
@@ -149,7 +149,7 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
     /// <summary>Tries to allocate a set of memory regions in the manager.</summary>
     /// <param name="allocationOptions">The options to use when allocating the memory.</param>
     /// <param name="memoryRegions">On return, will be filled with the allocated memory regions.</param>
-    /// <returns><c>true</c> if the regions were sucesfully allocated; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if the regions were successfully allocated; otherwise, <c>false</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="GraphicsMemoryAllocationOptions.ByteAlignment" /> is not zero or a <c>power of two</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="GraphicsMemoryAllocationOptions.ByteLength" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="GraphicsMemoryAllocationOptions.AllocationFlags" /> is undefined.</exception>
@@ -165,7 +165,7 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
 
     /// <summary>Tries to set the minimum length, in bytes, of the manager.</summary>
     /// <param name="minimumByteLength">The minimum length, in bytes, of the manager.</param>
-    /// <returns><c>true</c> if the minimum length was succesfully set; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if the minimum length was successfully set; otherwise, <c>false</c>.</returns>
     /// <exception cref="ObjectDisposedException">The memory manager has been disposed.</exception>
     public bool TrySetMinimumByteLength(nuint minimumByteLength)
     {

@@ -36,7 +36,7 @@ public readonly unsafe partial struct ValueMutex : IDisposable
     }
 
     /// <summary>Attempts to acquire a lock on the mutex.</summary>
-    /// <returns><c>true</c> if the lock was succesfully acquired; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if the lock was successfully acquired; otherwise, <c>false</c>.</returns>
     public bool TryAcquireLock()
     {
         return TryAcquireSRWLockExclusive(_value) != 0; 

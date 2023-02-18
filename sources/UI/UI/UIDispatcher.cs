@@ -86,7 +86,7 @@ public sealed unsafe class UIDispatcher : UIServiceObject
     /// <summary>Tries to get the window associated with a window handle.</summary>
     /// <param name="hWnd">The window handle for which to get the associated window.</param>
     /// <param name="window">On return, contains the window associated with <paramref name="hWnd" /> or <c>null</c> if no such window exists.</param>
-    /// <returns><c>true</c> if a window associated with <paramref name="hWnd" /> was succesfully retrieved; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if a window associated with <paramref name="hWnd" /> was successfully retrieved; otherwise, <c>false</c>.</returns>
     public bool TryGetWindow(HWND hWnd, [NotNullWhen(true)] out UIWindow? window)
     {
         using var readerLock = new DisposableReaderLock(_windowsLock, isExternallySynchronized: false);

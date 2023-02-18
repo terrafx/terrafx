@@ -2552,7 +2552,7 @@ public static class VectorUtilities
     }
 
     /// <summary>Computes the quotient of a vector and a float.</summary>
-    /// <param name="left">The vector which is divied by <paramref name="right" />.</param>
+    /// <param name="left">The vector which is divided by <paramref name="right" />.</param>
     /// <param name="right">The float which divides <paramref name="left" />.</param>
     /// <returns>The quotient of <paramref name="left" /> divided by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2585,7 +2585,7 @@ public static class VectorUtilities
     }
 
     /// <summary>Computes the quotient of two vectors.</summary>
-    /// <param name="left">The vector which is divied by <paramref name="right" />.</param>
+    /// <param name="left">The vector which is divided by <paramref name="right" />.</param>
     /// <param name="right">The vector which divides <paramref name="left" />.</param>
     /// <returns>The quotient of <paramref name="left" /> divided by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2891,7 +2891,7 @@ public static class VectorUtilities
     /// <summary>Computes the product of a vector and a float.</summary>
     /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
     /// <param name="right">The float which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    /// <returns>The product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> Multiply(Vector128<float> left, float right)
     {
@@ -2924,7 +2924,7 @@ public static class VectorUtilities
     /// <summary>Computes the product of two vectors.</summary>
     /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
     /// <param name="right">The vector which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    /// <returns>The product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> Multiply(Vector128<float> left, Vector128<float> right)
     {
@@ -2956,7 +2956,7 @@ public static class VectorUtilities
     /// <param name="addend">The vector which is added to the product of <paramref name="left" /> and <paramref name="right" />.</param>
     /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
     /// <param name="right">The vector which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The sum of <paramref name="addend" /> and the product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    /// <returns>The sum of <paramref name="addend" /> and the product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> MultiplyAdd(Vector128<float> addend, Vector128<float> left, Vector128<float> right)
     {
@@ -2990,7 +2990,7 @@ public static class VectorUtilities
     /// <param name="addend">The vector which is added to the product of <paramref name="left" /> and <paramref name="right" />.</param>
     /// <param name="left">The vector to multiply by the component of <paramref name="right" />.</param>
     /// <param name="right">The vector whose component is used to multiply <paramref name="left" />.</param>
-    /// <returns>The sum of <paramref name="addend" /> and the product of <paramref name="left" /> multipled by the component of <paramref name="right" />.</returns>
+    /// <returns>The sum of <paramref name="addend" /> and the product of <paramref name="left" /> multiplied by the component of <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> MultiplyAddByX(Vector128<float> addend, Vector128<float> left, Vector128<float> right)
     {
@@ -3026,7 +3026,7 @@ public static class VectorUtilities
     /// <param name="addend">The vector which is added to the product of <paramref name="left" /> and <paramref name="right" />.</param>
     /// <param name="left">The vector to multiply by the component of <paramref name="right" />.</param>
     /// <param name="right">The vector whose component is used to multiply <paramref name="left" />.</param>
-    /// <returns>The sum of <paramref name="addend" /> and the product of <paramref name="left" /> multipled by the component of <paramref name="right" />.</returns>
+    /// <returns>The sum of <paramref name="addend" /> and the product of <paramref name="left" /> multiplied by the component of <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> MultiplyAddByY(Vector128<float> addend, Vector128<float> left, Vector128<float> right)
     {
@@ -3062,7 +3062,7 @@ public static class VectorUtilities
     /// <param name="addend">The vector which is added to the product of <paramref name="left" /> and <paramref name="right" />.</param>
     /// <param name="left">The vector to multiply by the component of <paramref name="right" />.</param>
     /// <param name="right">The vector whose component is used to multiply <paramref name="left" />.</param>
-    /// <returns>The sum of <paramref name="addend" /> and the product of <paramref name="left" /> multipled by the component of <paramref name="right" />.</returns>
+    /// <returns>The sum of <paramref name="addend" /> and the product of <paramref name="left" /> multiplied by the component of <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> MultiplyAddByZ(Vector128<float> addend, Vector128<float> left, Vector128<float> right)
     {
@@ -3098,7 +3098,7 @@ public static class VectorUtilities
     /// <param name="addend">The vector which is added to the product of <paramref name="left" /> and <paramref name="right" />.</param>
     /// <param name="left">The vector to multiply by the component of <paramref name="right" />.</param>
     /// <param name="right">The vector whose component is used to multiply <paramref name="left" />.</param>
-    /// <returns>The sum of <paramref name="addend" /> and the product of <paramref name="left" /> multipled by the component of <paramref name="right" />.</returns>
+    /// <returns>The sum of <paramref name="addend" /> and the product of <paramref name="left" /> multiplied by the component of <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> MultiplyAddByW(Vector128<float> addend, Vector128<float> left, Vector128<float> right)
     {
@@ -3134,7 +3134,7 @@ public static class VectorUtilities
     /// <param name="addend">The vector which is added to the negated product of <paramref name="left" /> and <paramref name="right" />.</param>
     /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
     /// <param name="right">The vector which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The sum of <paramref name="addend" /> and the product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    /// <returns>The sum of <paramref name="addend" /> and the product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> MultiplyAddNegated(Vector128<float> addend, Vector128<float> left, Vector128<float> right)
     {

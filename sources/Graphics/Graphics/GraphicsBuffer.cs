@@ -119,8 +119,8 @@ public sealed unsafe class GraphicsBuffer : GraphicsResource
 
     /// <summary>Tries to creates a view of the buffer.</summary>
     /// <param name="createOptions">The options to use when creating the buffer view.</param>
-    /// <param name="bufferView">On return, contains the buffer view if it was succesfully created; otherwise, <c>null</c>.</param>
-    /// <returns><c>true</c> if the view was succesfully created; otherwise, <c>false</c>.</returns>
+    /// <param name="bufferView">On return, contains the buffer view if it was successfully created; otherwise, <c>null</c>.</param>
+    /// <returns><c>true</c> if the view was successfully created; otherwise, <c>false</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="GraphicsBufferViewCreateOptions.BytesPerElement" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="GraphicsBufferViewCreateOptions.ElementCount" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="Kind" /> is <see cref="GraphicsBufferKind.Index" /> and <see cref="GraphicsBufferViewCreateOptions.BytesPerElement" /> is not <c>2</c> or <c>4</c>.</exception>
@@ -143,8 +143,8 @@ public sealed unsafe class GraphicsBuffer : GraphicsResource
     /// <summary>Tries to creates a view of the buffer.</summary>
     /// <param name="elementCount">The number of elements in the buffer view.</param>
     /// <param name="bytesPerElement">The number of bytes per element in the buffer view.</param>
-    /// <param name="bufferView">On return, contains the buffer view if it was succesfully created; otherwise, <c>null</c>.</param>
-    /// <returns><c>true</c> if the buffer view was succesfully created; otherwise, <c>false</c>.</returns>
+    /// <param name="bufferView">On return, contains the buffer view if it was successfully created; otherwise, <c>null</c>.</param>
+    /// <returns><c>true</c> if the buffer view was successfully created; otherwise, <c>false</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="bytesPerElement" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="elementCount" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="Kind" /> is <see cref="GraphicsBufferKind.Index" /> and <paramref name="bytesPerElement" /> is not <c>2</c> or <c>4</c>.</exception>
@@ -171,8 +171,8 @@ public sealed unsafe class GraphicsBuffer : GraphicsResource
     /// <summary>Tries to creates a view of the buffer.</summary>
     /// <typeparam name="T">The type used to compute the size, in bytes, of the elements in the buffer view.</typeparam>
     /// <param name="elementCount">The number of elements, of type <typeparamref name="T" />, in the buffer view.</param>
-    /// <param name="bufferView">On return, contains the buffer view if it was succesfully created; otherwise, <c>null</c>.</param>
-    /// <returns><c>true</c> if the view was succesfully created; otherwise, <c>false</c>.</returns>
+    /// <param name="bufferView">On return, contains the buffer view if it was successfully created; otherwise, <c>null</c>.</param>
+    /// <returns><c>true</c> if the view was successfully created; otherwise, <c>false</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="elementCount" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="Kind" /> is <see cref="GraphicsBufferKind.Index" /> and the size of <typeparamref name="T" /> is not <c>2</c> or <c>4</c>.</exception>
     /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>

@@ -42,14 +42,14 @@ public readonly unsafe partial struct ValueReaderWriterLock : IDisposable
     }
 
     /// <summary>Attempts to acquire a read lock on the mutex.</summary>
-    /// <returns><c>true</c> if the lock was succesfully acquired; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if the lock was successfully acquired; otherwise, <c>false</c>.</returns>
     public bool TryAcquireReadLock()
     {
         return TryAcquireSRWLockShared(_value) != 0;
     }
 
     /// <summary>Attempts to acquire a write lock on the mutex.</summary>
-    /// <returns><c>true</c> if the lock was succesfully acquired; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if the lock was successfully acquired; otherwise, <c>false</c>.</returns>
     public bool TryAcquireWriteLock()
     {
         return TryAcquireSRWLockExclusive(_value) != 0; 

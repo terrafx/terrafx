@@ -18,7 +18,7 @@ public sealed unsafe class GraphicsFence : GraphicsDeviceObject
     private ComPtr<ID3D12Fence> _d3d12Fence;
     private readonly uint _d3d12FenceVersion;
 
-    private bool _isSignalled;
+    private bool _isSignaled;
 
     private HANDLE _signalEventHandle;
 
@@ -29,9 +29,9 @@ public sealed unsafe class GraphicsFence : GraphicsDeviceObject
         var d3d12Fence = CreateD3D12Fence(in createOptions, out _d3d12FenceVersion);
         _d3d12Fence.Attach(d3d12Fence);
 
-        _isSignalled = createOptions.IsSignalled;
+        _isSignaled = createOptions.IsSignaled;
 
-        var initialState = createOptions.IsSignalled ? TRUE : FALSE;
+        var initialState = createOptions.IsSignaled ? TRUE : FALSE;
         ThrowForLastErrorIfZero(_signalEventHandle = CreateEventW(lpEventAttributes: null, bManualReset: TRUE, initialState, lpName: null));
 
         SetNameUnsafe(Name);
@@ -40,7 +40,7 @@ public sealed unsafe class GraphicsFence : GraphicsDeviceObject
         {
             ID3D12Fence* d3d12Fence;
 
-            var initialValue = createOptions.IsSignalled ? 0UL : 1UL;
+            var initialValue = createOptions.IsSignaled ? 0UL : 1UL;
             ThrowExternalExceptionIfFailed(device.D3D12Device->CreateFence(initialValue, D3D12_FENCE_FLAG_NONE, __uuidof<ID3D12Fence>(), (void**)&d3d12Fence));
 
             return GetLatestD3D12Fence(d3d12Fence, out d3d12FenceVersion);
@@ -50,30 +50,30 @@ public sealed unsafe class GraphicsFence : GraphicsDeviceObject
     /// <summary>Finalizes an instance of the <see cref="GraphicsFence" /> class.</summary>
     ~GraphicsFence() => Dispose(isDisposing: false);
 
-    /// <summary>Gets <c>true</c> if the fence is in the signalled state; otherwise, <c>false</c>.</summary>
-    public bool IsSignalled => _isSignalled;
+    /// <summary>Gets <c>true</c> if the fence is in the signaled state; otherwise, <c>false</c>.</summary>
+    public bool IsSignaled => _isSignaled;
 
     internal ID3D12Fence* D3D12Fence => _d3d12Fence;
 
     internal uint D3D12FenceVersion => _d3d12FenceVersion;
 
-    /// <summary>Resets the fence to the unsignalled state.</summary>
+    /// <summary>Resets the fence to the unsignaled state.</summary>
     /// <exception cref="ObjectDisposedException">The fence has been disposed.</exception>
     public void Reset()
     {
         ThrowIfDisposed();
 
-        if (_isSignalled)
+        if (_isSignaled)
         {
             ResetUnsafe();
-            _isSignalled = false;
+            _isSignaled = false;
         }
     }
 
-    /// <summary>Waits for the fence to transition to the signalled state or the timeout to be reached, whichever occurs first.</summary>
-    /// <param name="millisecondsTimeout">The amount of time, in milliseconds, to wait for the fence to transition to the signalled state before failing.</param>
+    /// <summary>Waits for the fence to transition to the signaled state or the timeout to be reached, whichever occurs first.</summary>
+    /// <param name="millisecondsTimeout">The amount of time, in milliseconds, to wait for the fence to transition to the signaled state before failing.</param>
     /// <exception cref="ObjectDisposedException">The fence has been disposed.</exception>
-    /// <exception cref="TimeoutException"><paramref name="millisecondsTimeout" /> was reached before the fence transitioned to the signalled state.</exception>
+    /// <exception cref="TimeoutException"><paramref name="millisecondsTimeout" /> was reached before the fence transitioned to the signaled state.</exception>
     /// <remarks>This method treats <see cref="uint.MaxValue" /> as having no timeout.</remarks>
     public void Wait(uint millisecondsTimeout = uint.MaxValue)
     {
@@ -83,21 +83,21 @@ public sealed unsafe class GraphicsFence : GraphicsDeviceObject
         }
     }
 
-    /// <summary>Waits for the fence to transition to the signalled state or the timeout to be reached, whichever occurs first.</summary>
-    /// <param name="millisecondsTimeout">The amount of time, in milliseconds, to wait for the fence to transition to the signalled state before failing.</param>
-    /// <returns><c>true</c> if the fence transitioned to the signalled state; otherwise, <c>false</c>.</returns>
+    /// <summary>Waits for the fence to transition to the signaled state or the timeout to be reached, whichever occurs first.</summary>
+    /// <param name="millisecondsTimeout">The amount of time, in milliseconds, to wait for the fence to transition to the signaled state before failing.</param>
+    /// <returns><c>true</c> if the fence transitioned to the signaled state; otherwise, <c>false</c>.</returns>
     /// <exception cref="ObjectDisposedException">The fence has been disposed.</exception>
     /// <remarks>This method treats <see cref="uint.MaxValue" /> as having no timeout.</remarks>
     public bool TryWait(uint millisecondsTimeout = uint.MaxValue)
     {
         ThrowIfDisposed();
 
-        if (!_isSignalled)
+        if (!_isSignaled)
         {
-            _isSignalled = TryWaitUnsafe(millisecondsTimeout);
+            _isSignaled = TryWaitUnsafe(millisecondsTimeout);
         }
 
-        return _isSignalled;
+        return _isSignaled;
     }
 
     /// <inheritdoc />
@@ -125,7 +125,7 @@ public sealed unsafe class GraphicsFence : GraphicsDeviceObject
 
     private bool TryWaitUnsafe(uint millisecondsTimeout)
     {
-        var isSignalled = false;
+        var isSignaled = false;
         var signalEventHandle = _signalEventHandle;
 
         ThrowExternalExceptionIfFailed(D3D12Fence->SetEventOnCompletion(1, signalEventHandle));
@@ -133,13 +133,13 @@ public sealed unsafe class GraphicsFence : GraphicsDeviceObject
 
         if (result == WAIT_OBJECT_0)
         {
-            isSignalled = true;
+            isSignaled = true;
         }
         else if (result != WAIT_TIMEOUT)
         {
             ThrowForLastError(nameof(WaitForSingleObject));
         }
 
-        return isSignalled;
+        return isSignaled;
     }
 }

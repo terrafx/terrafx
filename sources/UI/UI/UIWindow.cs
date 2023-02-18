@@ -124,7 +124,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     /// <summary>Gets the location of the window.</summary>
     public Vector2 Location => Bounds.Location;
 
-    /// <summary>Gets the reading directionfor the window.</summary>
+    /// <summary>Gets the reading direction for the window.</summary>
     public UIReadingDirection ReadingDirection => _readingDirection;
 
     /// <summary>Gets the size of the window.</summary>
@@ -362,7 +362,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     }
 
     /// <summary>Tries to activate the window.</summary>
-    /// <returns><c>true</c> if the window was succesfully activated; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if the window was successfully activated; otherwise, <c>false</c>.</returns>
     /// <exception cref="ObjectDisposedException">The window has been disposed.</exception>
     public bool TryActivate() => _isActive || (SetForegroundWindow(_handle) != FALSE);
 

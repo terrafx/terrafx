@@ -5,7 +5,7 @@ using System;
 namespace TerraFX.ApplicationModel;
 
 /// <summary>Represents the event args that occur during an <see cref="Application.Idle" /> event.</summary>
-/// <remarks>This is a struct, rather than derived from <see cref="EventArgs" />, to prevent unecessary heap allocations.</remarks>
+/// <remarks>This is a struct, rather than derived from <see cref="EventArgs" />, to prevent unnecessary heap allocations.</remarks>
 public readonly struct ApplicationIdleEventArgs
 {
     private readonly TimeSpan _delta;

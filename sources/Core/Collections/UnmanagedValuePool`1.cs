@@ -61,7 +61,7 @@ public unsafe partial struct UnmanagedValuePool<T> : IEnumerable<T>
     /// <returns>An enumerator that can iterate through the items in the pool.</returns>
     public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
-    /// <summary>Removes the first occurence of an item from the pool.</summary>
+    /// <summary>Removes the first occurrence of an item from the pool.</summary>
     /// <param name="item">The item to remove from the pool.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was removed from the pool; otherwise, <c>false</c>.</returns>
     public bool Remove(T item)
@@ -76,7 +76,7 @@ public unsafe partial struct UnmanagedValuePool<T> : IEnumerable<T>
         return result;
     }
 
-    /// <summary>Removes the first occurence of an item from the pool.</summary>
+    /// <summary>Removes the first occurrence of an item from the pool.</summary>
     /// <param name="item">The item to remove from the pool.</param>
     /// <param name="mutex">The mutex to use when removing an item from the pool.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was removed from the pool; otherwise, <c>false</c>.</returns>

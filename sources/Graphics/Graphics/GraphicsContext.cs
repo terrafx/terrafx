@@ -36,7 +36,7 @@ public abstract unsafe class GraphicsContext : GraphicsCommandQueueObject
         _d3d12GraphicsCommandList.Attach(d3d12GraphicsCommandList);
 
         _kind = kind;
-        _fence = Device.CreateFence(isSignalled: true);
+        _fence = Device.CreateFence(isSignaled: true);
 
         SetNameUnsafe(Name);
 

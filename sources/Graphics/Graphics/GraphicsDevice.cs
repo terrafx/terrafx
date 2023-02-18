@@ -301,14 +301,14 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
     }
 
     /// <summary>Creates a new graphics fence.</summary>
-    /// <param name="isSignalled"><c>true</c> if the fence is signalled by default; otherwise, <c>false</c>.</param>
+    /// <param name="isSignaled"><c>true</c> if the fence is signaled by default; otherwise, <c>false</c>.</param>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-    public GraphicsFence CreateFence(bool isSignalled)
+    public GraphicsFence CreateFence(bool isSignaled)
     {
         ThrowIfDisposed();
 
         var createOptions = new GraphicsFenceCreateOptions {
-            IsSignalled = isSignalled,
+            IsSignaled = isSignaled,
         };
         return CreateFenceUnsafe(in createOptions);
     }

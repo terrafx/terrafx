@@ -47,7 +47,7 @@ public sealed unsafe class GraphicsSwapchain : GraphicsRenderPassObject
     {
         _minimumRenderTargetCount = createOptions.MinimumRenderTargetCount;
 
-        _fence = Device.CreateFence(isSignalled: false);
+        _fence = Device.CreateFence(isSignaled: false);
         _renderTargetFormat = createOptions.RenderTargetFormat;
         _renderTargets = Array.Empty<GraphicsRenderTarget>();
         _surface = createOptions.Surface;

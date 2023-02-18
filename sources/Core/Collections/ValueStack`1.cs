@@ -240,7 +240,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
     }
 
     /// <summary>Trims any excess capacity, up to a given threshold, from the stack.</summary>
-    /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any exceess will not be trimmed.</param>
+    /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any excess will not be trimmed.</param>
     /// <remarks>This methods clamps <paramref name="threshold" /> to between <c>zero</c> and <c>one</c>, inclusive.</remarks>
     public void TrimExcess(float threshold = 1.0f)
     {

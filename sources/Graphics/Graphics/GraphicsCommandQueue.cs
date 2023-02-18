@@ -30,7 +30,7 @@ public abstract unsafe class GraphicsCommandQueue : GraphicsDeviceObject
 
         _kind = kind;
 
-        _waitForIdleFence = device.CreateFence(isSignalled: false);
+        _waitForIdleFence = device.CreateFence(isSignaled: false);
 
         SetNameUnsafe(Name);
 

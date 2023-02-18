@@ -43,7 +43,7 @@ public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
     /// <param name="matrix">The matrix from which the affine transform should be created.</param>
     /// <param name="epsilon">The maximum (inclusive) difference between the <c>(scaleX, scaleY, scaleZ, determinant)</c> and zero for which they should be considered equivalent.</param>
     /// <param name="result">The resulting affine transform or <see cref="Zero" /> if creation from <paramref name="matrix" /> failed.</param>
-    /// <returns><c>true</c> if an affine transform was succesfully created from <paramref name="matrix" />; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if an affine transform was successfully created from <paramref name="matrix" />; otherwise, <c>false</c>.</returns>
     public static unsafe bool TryCreateFromMatrix(Matrix4x4 matrix, Vector4 epsilon, out AffineTransform result)
     {
         var translation = Vector3.Create(matrix.W.Value);

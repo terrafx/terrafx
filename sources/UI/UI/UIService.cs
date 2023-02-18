@@ -44,7 +44,7 @@ public sealed unsafe class UIService : DisposableObject
         {
             ushort classAtom;
 
-            fixed (char* lpszClassName = $"{nameof(UIService)}.X{EntryPointModule:X16}")
+            fixed (char* className = $"{nameof(UIService)}.X{EntryPointModule:X16}")
             {
                 var wndClassEx = new WNDCLASSEXW {
                     cbSize = SizeOf<WNDCLASSEXW>(),
@@ -57,7 +57,7 @@ public sealed unsafe class UIService : DisposableObject
                     hCursor = GetDesktopCursor(),
                     hbrBackground = (HBRUSH)(COLOR_WINDOW + 1),
                     lpszMenuName = null,
-                    lpszClassName = (ushort*)lpszClassName,
+                    lpszClassName = (ushort*)className,
                     hIconSm = HICON.NULL
                 };
 
