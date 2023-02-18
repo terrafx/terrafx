@@ -22,7 +22,7 @@ public static unsafe class AssertionUtilities
     /// <param name="conditionExpression">The expression of the condition that caused the exception.</param>
     /// <exception cref="InvalidOperationException">TerraFX based assertions are disabled.</exception>
     [Conditional("DEBUG")]
-    public static void Assert([DoesNotReturnIf(false)] bool condition, [CallerArgumentExpression("condition")] string? conditionExpression = null)
+    public static void Assert([DoesNotReturnIf(false)] bool condition, [CallerArgumentExpression(nameof(condition))] string? conditionExpression = null)
     {
         if (!condition)
         {

@@ -35,7 +35,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="valueExpression" /> has an invalid flag combination.</exception>
     [DoesNotReturn]
-    public static void ThrowForInvalidFlagsCombination<TEnum>(TEnum value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForInvalidFlagsCombination<TEnum>(TEnum value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
         where TEnum : struct, Enum
     {
         AssertNotNull(valueExpression);
@@ -49,7 +49,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ArgumentOutOfRangeException">The kind for <paramref name="valueExpression" /> is unsupported.</exception>
     [DoesNotReturn]
-    public static void ThrowForInvalidKind<TEnum>(TEnum value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForInvalidKind<TEnum>(TEnum value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
         where TEnum : struct, Enum
     {
         AssertNotNull(valueExpression);
@@ -64,7 +64,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ArgumentOutOfRangeException">The kind for <paramref name="valueExpression" /> is not <paramref name="expectedValue" />.</exception>
     [DoesNotReturn]
-    public static void ThrowForInvalidKind<TEnum>(TEnum value, TEnum expectedValue, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForInvalidKind<TEnum>(TEnum value, TEnum expectedValue, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
         where TEnum : struct, Enum
     {
         AssertNotNull(valueExpression);
@@ -77,7 +77,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="valueExpression" /> is incompatible as it belongs to a different parent.</exception>
     [DoesNotReturn]
-    public static void ThrowForInvalidParent<T>(T value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForInvalidParent<T>(T value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         AssertNotNull(valueExpression);
         var message = string.Format(Resources.InvalidParentMessage, valueExpression);
@@ -100,7 +100,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="typeExpression">The expression of the object that is not <paramref name="expectedType" />.</param>
     /// <exception cref="ArgumentException"><paramref name="typeExpression" /> is not an instance of <paramref name="expectedType" />.</exception>
     [DoesNotReturn]
-    public static void ThrowForInvalidType(Type type, Type expectedType, [CallerArgumentExpression("type")] string? typeExpression = null)
+    public static void ThrowForInvalidType(Type type, Type expectedType, [CallerArgumentExpression(nameof(type))] string? typeExpression = null)
     {
         AssertNotNull(typeExpression);
         var message = string.Format(Resources.InvalidTypeMessage, typeExpression, expectedType);
@@ -118,7 +118,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="value">The value to compare against zero to determine failure.</param>
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ExternalException"><paramref name="valueExpression" /> failed with an error code of <paramref name="value" />.</exception>
-    public static void ThrowForLastErrorIfNotZero(int value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForLastErrorIfNotZero(int value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value != 0)
         {
@@ -131,7 +131,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="value">The value to compare against zero to determine failure.</param>
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ExternalException"><paramref name="valueExpression" /> failed with an error code of <paramref name="value" />.</exception>
-    public static void ThrowForLastErrorIfNotZero(long value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForLastErrorIfNotZero(long value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value != 0)
         {
@@ -144,7 +144,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="value">The value to compare against zero to determine failure.</param>
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ExternalException"><paramref name="valueExpression" /> failed with an error code of <paramref name="value" />.</exception>
-    public static void ThrowForLastErrorIfNotZero(nint value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForLastErrorIfNotZero(nint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value != 0)
         {
@@ -157,7 +157,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="value">The value to compare against zero to determine failure.</param>
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ExternalException"><paramref name="valueExpression" /> failed with an error code of <paramref name="value" />.</exception>
-    public static void ThrowForLastErrorIfNotZero(uint value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForLastErrorIfNotZero(uint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value != 0)
         {
@@ -170,7 +170,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="value">The value to compare against zero to determine failure.</param>
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ExternalException"><paramref name="valueExpression" /> failed with an error code of <paramref name="value" />.</exception>
-    public static void ThrowForLastErrorIfNotZero(ulong value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForLastErrorIfNotZero(ulong value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value != 0)
         {
@@ -183,7 +183,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="value">The value to compare against zero to determine failure.</param>
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ExternalException"><paramref name="valueExpression" /> failed with an error code of <paramref name="value" />.</exception>
-    public static void ThrowForLastErrorIfNotZero(nuint value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForLastErrorIfNotZero(nuint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value != 0)
         {
@@ -196,7 +196,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="value">The value to compare against null to determine failure.</param>
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ExternalException"><paramref name="valueExpression" /> failed with an error code of <paramref name="value" />.</exception>
-    public static void ThrowForLastErrorIfNull(void* value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForLastErrorIfNull(void* value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value == null)
         {
@@ -209,7 +209,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="value">The value to compare against zero to determine failure.</param>
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ExternalException"><paramref name="valueExpression" /> failed with an error code of <paramref name="value" />.</exception>
-    public static void ThrowForLastErrorIfZero(int value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForLastErrorIfZero(int value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value == 0)
         {
@@ -222,7 +222,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="value">The value to compare against zero to determine failure.</param>
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ExternalException"><paramref name="valueExpression" /> failed with an error code of <paramref name="value" />.</exception>
-    public static void ThrowForLastErrorIfZero(long value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForLastErrorIfZero(long value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value == 0)
         {
@@ -235,7 +235,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="value">The value to compare against zero to determine failure.</param>
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ExternalException"><paramref name="valueExpression" /> failed with an error code of <paramref name="value" />.</exception>
-    public static void ThrowForLastErrorIfZero(nint value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForLastErrorIfZero(nint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value == 0)
         {
@@ -248,7 +248,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="value">The value to compare against zero to determine failure.</param>
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ExternalException"><paramref name="valueExpression" /> failed with an error code of <paramref name="value" />.</exception>
-    public static void ThrowForLastErrorIfZero(uint value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForLastErrorIfZero(uint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value == 0)
         {
@@ -261,7 +261,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="value">The value to compare against zero to determine failure.</param>
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ExternalException"><paramref name="valueExpression" /> failed with an error code of <paramref name="value" />.</exception>
-    public static void ThrowForLastErrorIfZero(ulong value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForLastErrorIfZero(ulong value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value == 0)
         {
@@ -274,7 +274,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="value">The value to compare against zero to determine failure.</param>
     /// <param name="valueExpression">The expression of the value that caused the exception.</param>
     /// <exception cref="ExternalException"><paramref name="valueExpression" /> failed with an error code of <paramref name="value" />.</exception>
-    public static void ThrowForLastErrorIfZero(nuint value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForLastErrorIfZero(nuint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value == 0)
         {
@@ -294,7 +294,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value that is not supported.</param>
     /// <exception cref="ArgumentException"><paramref name="valueExpression" /> has an unsupported value of <paramref name="value" />.</exception>
     [DoesNotReturn]
-    public static void ThrowForUnsupportedValue<T>(T value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowForUnsupportedValue<T>(T value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         AssertNotNull(valueExpression);
         var message = string.Format(Resources.UnsupportedValueMessage, value);

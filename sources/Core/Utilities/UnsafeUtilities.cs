@@ -13,7 +13,7 @@ public static unsafe class UnsafeUtilities
 {
     /// <inheritdoc cref="Unsafe.As{T}(object)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    [return: NotNullIfNotNull("o")]
+    [return: NotNullIfNotNull(nameof(o))]
     public static T? As<T>(this object? o)
         where T : class?
     {
