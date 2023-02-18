@@ -518,7 +518,7 @@ public class Matrix4x4Tests
     [Test]
     public static void AsSystemMatrix4x4Test()
     {
-        Assert.That(Matrix4x4.Identity.AsSystemMatrix4x4,
+        Assert.That(() => Matrix4x4.Identity.AsSystemMatrix4x4(),
             Is.EqualTo(SysMatrix4x4.Identity)
         );
     }

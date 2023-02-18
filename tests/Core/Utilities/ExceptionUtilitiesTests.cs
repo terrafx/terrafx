@@ -82,7 +82,7 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static void ThrowForEmptyQueueTest()
     {
-        Assert.That(ExceptionUtilities.ThrowForEmptyQueue,
+        Assert.That(() => ExceptionUtilities.ThrowForEmptyQueue(),
             Throws.InstanceOf<InvalidOperationException>()
         );
     }
@@ -91,7 +91,7 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static void ThrowForEmptyStackTest()
     {
-        Assert.That(ExceptionUtilities.ThrowForEmptyStack,
+        Assert.That(() => ExceptionUtilities.ThrowForEmptyStack(),
             Throws.InstanceOf<InvalidOperationException>()
         );
     }
@@ -355,7 +355,7 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static void ThrowForMissingFeatureTest()
     {
-        Assert.That(ExceptionUtilities.ThrowForMissingFeature,
+        Assert.That(() => ExceptionUtilities.ThrowForMissingFeature(),
             Throws.InstanceOf<NotSupportedException>()
         );
     }
@@ -1132,7 +1132,7 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static unsafe void ThrowNotImplementedExceptionTest()
     {
-        Assert.That(ExceptionUtilities.ThrowNotImplementedException,
+        Assert.That(() => ExceptionUtilities.ThrowNotImplementedException(),
             Throws.InstanceOf<NotImplementedException>()
         );
     }
