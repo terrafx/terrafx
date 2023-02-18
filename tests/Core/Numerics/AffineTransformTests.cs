@@ -11,14 +11,14 @@ public class AffineTransformTests
     {
         get
         {
-            yield return new TestCaseData(Quaternion.Create(0, 0, 0, 1), Vector3.Create(0, 0, 0), Vector3.Create(1, 1, 1), Vector3.Create(0, 0, 0));
-            yield return new TestCaseData(Quaternion.Create(1, 0, 0, 1), Vector3.Create(0, 0, 0), Vector3.Create(7, 8, 9), Vector3.Create(1, 2, 3));
+            yield return new TestCaseData(Quaternion.Create(0, 0, 0, 1), Vector3.Create(1, 1, 1), Vector3.Create(0, 0, 0));
+            yield return new TestCaseData(Quaternion.Create(1, 0, 0, 1), Vector3.Create(7, 8, 9), Vector3.Create(1, 2, 3));
         }
     }
 
     /// <summary>Ensures that a instance's components are equal to the parameters used to construct one.</summary>
     [Test, TestCaseSource(nameof(TransformConstructorData))]
-    public static void ComponentsReturnCorrectValues(Quaternion rotation, Vector3 rotationOrigin, Vector3 scale, Vector3 translation)
+    public static void ComponentsReturnCorrectValues(Quaternion rotation, Vector3 scale, Vector3 translation)
     {
         var transform = AffineTransform.Create(rotation, scale, translation);
 
@@ -29,7 +29,7 @@ public class AffineTransformTests
 
     /// <summary>Ensures that two instances that are expected to compare equal do, in fact compare equal.</summary>
     [Test, TestCaseSource(nameof(TransformConstructorData))]
-    public static void TransformsCompareEqual(Quaternion rotation, Vector3 rotationOrigin, Vector3 scale, Vector3 translation)
+    public static void TransformsCompareEqual(Quaternion rotation, Vector3 scale, Vector3 translation)
     {
         var a = AffineTransform.Create(rotation, scale, translation);
         var b = AffineTransform.Create(rotation, scale, translation);
@@ -41,7 +41,7 @@ public class AffineTransformTests
 
     /// <summary>Ensures that two instances that are expected to compare not equal do, in fact compare not equal.</summary>
     [Test, TestCaseSource(nameof(TransformConstructorData))]
-    public static void TransformsCompareNotEqual(Quaternion rotation, Vector3 rotationOrigin, Vector3 scale, Vector3 translation)
+    public static void TransformsCompareNotEqual(Quaternion rotation, Vector3 scale, Vector3 translation)
     {
         var a = AffineTransform.Create(rotation, scale, translation);
         var b = AffineTransform.Create(rotation, scale, translation);

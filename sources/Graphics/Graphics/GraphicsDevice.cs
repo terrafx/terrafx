@@ -124,7 +124,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
         }
 
         _featureFlags = featureFlags;
-        _memoryManagers = CreateMemoryManagers(d3d12Device, createOptions.CreateMemoryAllocator);
+        _memoryManagers = CreateMemoryManagers(createOptions.CreateMemoryAllocator);
 
         _memoryBudgetInfo = new MemoryBudgetInfo();
         UpdateMemoryBudgetInfo(ref _memoryBudgetInfo, totalOperationCount: 0);
@@ -138,7 +138,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
             return GetLatestD3D12Device(d3d12Device, out d3d12DeviceVersion);
         }
 
-        GraphicsMemoryManager[] CreateMemoryManagers(ID3D12Device* d3d12Device, GraphicsMemoryAllocatorCreateFunc memoryAllocatorCreateFunc)
+        GraphicsMemoryManager[] CreateMemoryManagers(GraphicsMemoryAllocatorCreateFunc memoryAllocatorCreateFunc)
         {
             GraphicsMemoryManager[] memoryManagers;
 
