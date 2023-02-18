@@ -22,13 +22,13 @@ public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
     public static Vector3 UnitX => Create(1.0f, 0.0f, 0.0f);
 
     /// <summary>Defines a <see cref="Vector3" /> whose y-component is one and whose remaining components are zero.</summary>
-    public static Vector3 UnitY = Create(0.0f, 1.0f, 0.0f);
+    public static Vector3 UnitY => Create(0.0f, 1.0f, 0.0f);
 
     /// <summary>Defines a <see cref="Vector3" /> whose z-component is one and whose remaining components are zero.</summary>
-    public static Vector3 UnitZ = Create(0.0f, 0.0f, 1.0f);
+    public static Vector3 UnitZ => Create(0.0f, 0.0f, 1.0f);
 
     /// <summary>Defines a <see cref="Vector3" /> where all components are one.</summary>
-    public static Vector3 One = Create(1.0f, 1.0f, 1.0f);
+    public static Vector3 One => Create(1.0f, 1.0f, 1.0f);
 
     private readonly SysVector3 _value;
 
