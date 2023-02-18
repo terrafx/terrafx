@@ -80,11 +80,9 @@ public class Matrix4x4Tests
     [Test]
     public static void OpEqualityTest()
     {
-#pragma warning disable CS1718
         Assert.That(() => Matrix4x4.Identity == Matrix4x4.Identity,
             Is.True
         );
-#pragma warning restore CS1718
 
         Assert.That(() => Matrix4x4.Identity == Matrix4x4.Zero,
             Is.False
@@ -95,11 +93,9 @@ public class Matrix4x4Tests
     [Test]
     public static void OpInequalityTest()
     {
-#pragma warning disable CS1718
         Assert.That(() => Matrix4x4.Identity != Matrix4x4.Identity,
             Is.False
         );
-#pragma warning restore CS1718
 
         Assert.That(() => Matrix4x4.Identity != Matrix4x4.Zero,
             Is.True
