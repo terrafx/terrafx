@@ -65,7 +65,7 @@ public partial struct ValueLazy<T>
     /// <summary>Gets the underlying value if it has been created; otherwise, <c>default</c>.</summary>
     public T? ValueOrDefault => IsValueCreated ? _value : default;
 
-    /// <summary>Gets a reference to the underyling value for the instance.</summary>
+    /// <summary>Gets a reference to the underlying value for the instance.</summary>
     /// <remarks>This property is unsafe as it returns a reference to a struct field.</remarks>
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     [UnscopedRef]

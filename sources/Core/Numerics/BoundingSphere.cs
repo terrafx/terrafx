@@ -23,7 +23,7 @@ public struct BoundingSphere : IEquatable<BoundingSphere>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static BoundingSphere CreateFromRadius(Vector3 center, float radius)
     {
-        Unsafe.SkipInit(out BoundingSphere result);
+        BoundingSphere result;
 
         result._center = center;
         result._radius = radius;

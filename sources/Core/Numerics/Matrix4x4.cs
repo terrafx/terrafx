@@ -75,7 +75,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Matrix4x4 Create(Vector128<float> x, Vector128<float> y, Vector128<float> z, Vector128<float> w)
     {
-        Unsafe.SkipInit(out Matrix4x4 result);
+        Matrix4x4 result;
 
         result._x = x;
         result._y = y;
@@ -147,7 +147,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
         q1 = CreateFromXWAB(r0, v0);
         q1 = CreateFromXZWY(q1);
 
-        Unsafe.SkipInit(out Matrix4x4 m);
+        Matrix4x4 m;
         {
             m._x = q1;
 
