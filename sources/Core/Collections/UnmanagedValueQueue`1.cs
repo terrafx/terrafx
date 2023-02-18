@@ -250,14 +250,8 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
             var head = _head;
             var headLength = count - head;
 
-            if ((head < _tail) || (index < headLength))
-            {
-                item = _items.GetPointerUnsafe(head + index);
-            }
-            else
-            {
-                item = _items.GetPointerUnsafe(index - headLength);
-            }
+            var actualIndex = ((head < _tail) || (index < headLength)) ? (head + index) : (index - headLength);
+            item = _items.GetPointerUnsafe(actualIndex);
         }
         else
         {
@@ -424,14 +418,9 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
         {
             var head = _head;
 
-            if ((head < _tail) || (index < (count - head)))
-            {
-                item = _items[head + index];
-            }
-            else
-            {
-                item = _items[index];
-            }
+            var actualIndex = ((head < _tail) || (index < (count - head))) ? (head + index) : index;
+            item = _items[actualIndex];
+
             return true;
         }
         else

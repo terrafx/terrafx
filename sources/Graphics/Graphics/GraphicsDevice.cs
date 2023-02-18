@@ -1024,14 +1024,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
             }
         }
 
-        if ((estimatedMemoryUsage + totalSize) > totalSizeAtLastUpdate)
-        {
-            estimatedMemoryUsage = estimatedMemoryUsage + totalSize - totalSizeAtLastUpdate;
-        }
-        else
-        {
-            estimatedMemoryUsage = 0;
-        }
+        estimatedMemoryUsage = ((estimatedMemoryUsage + totalSize) > totalSizeAtLastUpdate) ? (estimatedMemoryUsage + totalSize - totalSizeAtLastUpdate) : 0;
 
         return new GraphicsMemoryBudget {
             EstimatedMemoryByteBudget = estimatedMemoryBudget,

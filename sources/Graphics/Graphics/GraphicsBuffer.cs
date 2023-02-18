@@ -43,14 +43,9 @@ public sealed unsafe class GraphicsBuffer : GraphicsResource
             OnFree = default,
         };
 
-        if (createOptions.CreateMemorySuballocator.IsNotNull)
-        {
-            _memoryAllocator = createOptions.CreateMemorySuballocator.Invoke(this, in memoryAllocatorCreateOptions);
-        }
-        else
-        {
-            _memoryAllocator = GraphicsMemoryAllocator.CreateDefault(this, in memoryAllocatorCreateOptions);
-        }
+        _memoryAllocator = createOptions.CreateMemorySuballocator.IsNotNull
+                         ? createOptions.CreateMemorySuballocator.Invoke(this, in memoryAllocatorCreateOptions)
+                         : GraphicsMemoryAllocator.CreateDefault(this, in memoryAllocatorCreateOptions);
     }
 
     /// <summary>Gets the buffer kind.</summary>

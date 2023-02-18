@@ -43,14 +43,7 @@ public partial struct ValueList<T> : IEnumerable<T>
     {
         ThrowIfNegative(capacity);
 
-        if (capacity != 0)
-        {
-            _items = GC.AllocateUninitializedArray<T>(capacity);
-        }
-        else
-        {
-            _items = Array.Empty<T>();
-        }
+        _items = (capacity != 0) ? GC.AllocateUninitializedArray<T>(capacity) : Array.Empty<T>();
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>

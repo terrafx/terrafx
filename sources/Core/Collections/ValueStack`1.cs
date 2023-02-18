@@ -41,15 +41,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
     public ValueStack(int capacity)
     {
         ThrowIfNegative(capacity);
-
-        if (capacity != 0)
-        {
-            _items = GC.AllocateUninitializedArray<T>(capacity);
-        }
-        else
-        {
-            _items = Array.Empty<T>();
-        }
+        _items = (capacity != 0) ? GC.AllocateUninitializedArray<T>(capacity) : Array.Empty<T>();
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueStack{T}" /> struct.</summary>
@@ -178,15 +170,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
     public ref T GetReferenceUnsafe(int index)
     {
         var count = Count;
-
-        if (unchecked((uint)index < (uint)count))
-        {
-            return ref _items.GetReferenceUnsafe(count - (index + 1));
-        }
-        else
-        {
-            return ref NullRef<T>();
-        }
+        return ref (((uint)index < (uint)count) ? ref _items.GetReferenceUnsafe(count - (index + 1)) : ref NullRef<T>());
     }
 
     /// <summary>Peeks at the item at the top of the stack.</summary>

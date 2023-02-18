@@ -172,15 +172,7 @@ public unsafe partial struct UnmanagedValueStack<T> : IDisposable, IEnumerable<T
         T* item;
         var count = _count;
 
-        if (index < count)
-        {
-            item = _items.GetPointerUnsafe(count - (index + 1));
-        }
-        else
-        {
-            item = null;
-        }
-
+        item = (index < count) ? _items.GetPointerUnsafe(count - (index + 1)) : null;
         return item;
     }
 

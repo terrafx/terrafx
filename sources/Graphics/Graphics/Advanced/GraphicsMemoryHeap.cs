@@ -49,16 +49,7 @@ public sealed unsafe class GraphicsMemoryHeap : GraphicsDeviceObject
         static nuint GetAlignment(D3D12_HEAP_FLAGS heapFlags)
         {
             const D3D12_HEAP_FLAGS DenyAllTexturesFlags = D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES;
-            var canContainAnyTextures = (heapFlags & DenyAllTexturesFlags) != DenyAllTexturesFlags;
-
-            if (canContainAnyTextures)
-            {
-                return D3D12_DEFAULT_MSAA_RESOURCE_PLACEMENT_ALIGNMENT;
-            }
-            else
-            {
-                return D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
-            }
+            return ((heapFlags & DenyAllTexturesFlags) != DenyAllTexturesFlags) ? D3D12_DEFAULT_MSAA_RESOURCE_PLACEMENT_ALIGNMENT : (nuint)D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
         }
     }
 
