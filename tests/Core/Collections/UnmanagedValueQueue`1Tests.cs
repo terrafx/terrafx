@@ -455,19 +455,19 @@ public static class UnmanagedValueQueueTests
 
         using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: false))
         {
-            Assert.That(() => valueQueue.Dequeue(),
+            Assert.That(valueQueue.Dequeue,
                 Is.EqualTo(1)
             );
 
-            Assert.That(() => valueQueue.Dequeue(),
+            Assert.That(valueQueue.Dequeue,
                 Is.EqualTo(2)
             );
 
-            Assert.That(() => valueQueue.Dequeue(),
+            Assert.That(valueQueue.Dequeue,
                 Is.EqualTo(3)
             );
 
-            Assert.That(() => valueQueue.Dequeue(),
+            Assert.That(valueQueue.Dequeue,
                 Throws.InvalidOperationException
             );
         }
@@ -477,7 +477,7 @@ public static class UnmanagedValueQueueTests
             _ = valueQueue.Dequeue();
             valueQueue.Enqueue(4);
 
-            Assert.That(() => valueQueue.Dequeue(),
+            Assert.That(valueQueue.Dequeue,
                 Is.EqualTo(2)
             );
 
@@ -485,15 +485,15 @@ public static class UnmanagedValueQueueTests
             valueQueue.Enqueue(5);
             valueQueue.Enqueue(6);
 
-            Assert.That(() => valueQueue.Dequeue(),
+            Assert.That(valueQueue.Dequeue,
                 Is.EqualTo(4)
             );
 
-            Assert.That(() => valueQueue.Dequeue(),
+            Assert.That(valueQueue.Dequeue,
                 Is.EqualTo(5)
             );
 
-            Assert.That(() => valueQueue.Dequeue(),
+            Assert.That(valueQueue.Dequeue,
                 Is.EqualTo(6)
             );
 
@@ -505,7 +505,7 @@ public static class UnmanagedValueQueueTests
 
         using (var valueQueue = new UnmanagedValueQueue<int>())
         {
-            Assert.That(() => valueQueue.Dequeue(),
+            Assert.That(valueQueue.Dequeue,
                 Throws.InvalidOperationException
             );
         }
@@ -617,20 +617,20 @@ public static class UnmanagedValueQueueTests
 
         using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true))
         {
-            Assert.That(() => valueQueue.Peek(),
+            Assert.That(valueQueue.Peek,
                 Is.EqualTo(1)
             );
 
             valueQueue.Enqueue(4);
 
-            Assert.That(() => valueQueue.Peek(),
+            Assert.That(valueQueue.Peek,
                 Is.EqualTo(1)
             );
 
             _ = valueQueue.Dequeue();
             valueQueue.Enqueue(5);
 
-            Assert.That(() => valueQueue.Peek(),
+            Assert.That(valueQueue.Peek,
                 Is.EqualTo(2)
             );
 
@@ -638,7 +638,7 @@ public static class UnmanagedValueQueueTests
             valueQueue.Enqueue(6);
             valueQueue.Enqueue(7);
 
-            Assert.That(() => valueQueue.Peek(),
+            Assert.That(valueQueue.Peek,
                 Is.EqualTo(3)
             );
 
@@ -650,7 +650,7 @@ public static class UnmanagedValueQueueTests
 
         using (var valueQueue = new UnmanagedValueQueue<int>())
         {
-            Assert.That(() => valueQueue.Peek(),
+            Assert.That(valueQueue.Peek,
                 Throws.InvalidOperationException
             );
         }

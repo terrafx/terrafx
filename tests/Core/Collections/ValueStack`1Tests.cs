@@ -305,20 +305,20 @@ public static class ValueStackTests
     {
         var valueStack = new ValueStack<int>(new int[] { 1, 2, 3 });
 
-        Assert.That(() => valueStack.Peek(),
+        Assert.That(valueStack.Peek,
             Is.EqualTo(3)
         );
 
         valueStack.Push(4);
 
-        Assert.That(() => valueStack.Peek(),
+        Assert.That(valueStack.Peek,
             Is.EqualTo(4)
         );
 
         _ = valueStack.Pop();
         valueStack.Push(5);
 
-        Assert.That(() => valueStack.Peek(),
+        Assert.That(valueStack.Peek,
             Is.EqualTo(5)
         );
 
@@ -326,7 +326,7 @@ public static class ValueStackTests
         valueStack.Push(6);
         valueStack.Push(7);
 
-        Assert.That(() => valueStack.Peek(),
+        Assert.That(valueStack.Peek,
             Is.EqualTo(7)
         );
 
@@ -337,7 +337,7 @@ public static class ValueStackTests
 
         valueStack = new ValueStack<int>();
 
-        Assert.That(() => valueStack.Peek(),
+        Assert.That(valueStack.Peek,
             Throws.InvalidOperationException
         );
     }
@@ -405,19 +405,19 @@ public static class ValueStackTests
     {
         var valueStack = new ValueStack<int>(new int[] { 1, 2, 3 });
 
-        Assert.That(() => valueStack.Pop(),
+        Assert.That(valueStack.Pop,
             Is.EqualTo(3)
         );
 
-        Assert.That(() => valueStack.Pop(),
+        Assert.That(valueStack.Pop,
             Is.EqualTo(2)
         );
 
-        Assert.That(() => valueStack.Pop(),
+        Assert.That(valueStack.Pop,
             Is.EqualTo(1)
         );
 
-        Assert.That(() => valueStack.Pop(),
+        Assert.That(valueStack.Pop,
             Throws.InvalidOperationException
         );
 
@@ -426,7 +426,7 @@ public static class ValueStackTests
         _ = valueStack.Pop();
         valueStack.Push(4);
 
-        Assert.That(() => valueStack.Pop(),
+        Assert.That(valueStack.Pop,
             Is.EqualTo(4)
         );
 
@@ -434,15 +434,15 @@ public static class ValueStackTests
         valueStack.Push(5);
         valueStack.Push(6);
 
-        Assert.That(() => valueStack.Pop(),
+        Assert.That(valueStack.Pop,
             Is.EqualTo(6)
         );
 
-        Assert.That(() => valueStack.Pop(),
+        Assert.That(valueStack.Pop,
             Is.EqualTo(5)
         );
 
-        Assert.That(() => valueStack.Pop(),
+        Assert.That(valueStack.Pop,
             Is.EqualTo(1)
         );
 
@@ -453,7 +453,7 @@ public static class ValueStackTests
 
         valueStack = new ValueStack<int>();
 
-        Assert.That(() => valueStack.Pop(),
+        Assert.That(valueStack.Pop,
             Throws.InvalidOperationException
         );
     }
