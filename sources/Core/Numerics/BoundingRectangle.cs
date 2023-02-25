@@ -23,7 +23,7 @@ public struct BoundingRectangle : IEquatable<BoundingRectangle>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static BoundingRectangle CreateFromExtent(Vector2 center, Vector2 extent)
     {
-        Unsafe.SkipInit(out BoundingRectangle result);
+        BoundingRectangle result;
 
         result._center = center;
         result._extent = extent;
@@ -37,7 +37,7 @@ public struct BoundingRectangle : IEquatable<BoundingRectangle>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static BoundingRectangle CreateFromSize(Vector2 location, Vector2 size)
     {
-        Unsafe.SkipInit(out BoundingRectangle result);
+        BoundingRectangle result;
         var extent = size * 0.5f;
 
         result._center = location + extent;

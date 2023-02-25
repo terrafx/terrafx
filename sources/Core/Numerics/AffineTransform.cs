@@ -30,7 +30,7 @@ public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static AffineTransform Create(Quaternion rotation, Vector3 scale, Vector3 translation)
     {
-        Unsafe.SkipInit(out AffineTransform result);
+        AffineTransform result;
 
         result._rotation = rotation;
         result._scale = scale;
@@ -113,7 +113,6 @@ public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
         }
 
         // generate the quaternion from the matrix
-        Unsafe.SkipInit(out result);
 
         result._rotation = Quaternion.CreateFromMatrix(matrix);
         result._scale = ((Vector3*)scale)[0];
