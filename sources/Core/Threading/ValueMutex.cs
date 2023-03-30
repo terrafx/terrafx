@@ -19,7 +19,7 @@ public readonly unsafe partial struct ValueMutex : IDisposable
     /// <summary>Initializes a new instance of the <see cref="ValueMutex" /> struct.</summary>
     public ValueMutex()
     {
-        if (OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindowsVersionAtLeast(6, 1))
         {
             var value = Allocate<SRWLOCK>();
             InitializeSRWLock(value);
@@ -44,7 +44,7 @@ public readonly unsafe partial struct ValueMutex : IDisposable
     /// <inheritdoc />
     public void Dispose()
     {
-        if (OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindowsVersionAtLeast(6, 1))
         {
             var value = (SRWLOCK*)_value;
             Free(value);
@@ -64,7 +64,7 @@ public readonly unsafe partial struct ValueMutex : IDisposable
     /// <summary>Acquires a lock on the mutex.</summary>
     public void AcquireLock()
     {
-        if (OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindowsVersionAtLeast(6, 1))
         {
             var value = (SRWLOCK*)_value;
             AcquireSRWLockExclusive(value);
@@ -81,10 +81,10 @@ public readonly unsafe partial struct ValueMutex : IDisposable
     }
 
     /// <summary>Attempts to acquire a lock on the mutex.</summary>
-    /// <returns><c>true</c> if the lock was succesfully acquired; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if the lock was successfully acquired; otherwise, <c>false</c>.</returns>
     public bool TryAcquireLock()
     {
-        if (OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindowsVersionAtLeast(6, 1))
         {
             var value = (SRWLOCK*)_value;
             return TryAcquireSRWLockExclusive(value) != 0; 
@@ -104,7 +104,7 @@ public readonly unsafe partial struct ValueMutex : IDisposable
     /// <summary>Releases a lock on the mutex.</summary>
     public void ReleaseLock()
     {
-        if (OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindowsVersionAtLeast(6, 1))
         {
             var value = (SRWLOCK*)_value;
             ReleaseSRWLockExclusive(value);

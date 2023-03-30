@@ -28,8 +28,10 @@ public partial struct ValueStack<T>
         {
             get
             {
-                var items = GC.AllocateUninitializedArray<T>(_stack.Count);
-                _stack.CopyTo(items);
+                ref readonly var stack = ref _stack;
+                var items = GC.AllocateUninitializedArray<T>(stack.Count);
+
+                stack.CopyTo(items);
                 return items;
             }
         }

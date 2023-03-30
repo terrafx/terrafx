@@ -3,7 +3,7 @@
 // This file includes code based on the ICollectionDebugView<T> class from https://github.com/dotnet/runtime/
 // The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
-using static TerraFX.Utilities.UnsafeUtilities;
+using System.Diagnostics.CodeAnalysis;
 
 namespace TerraFX.Collections;
 
@@ -21,10 +21,7 @@ public partial struct UnmanagedValueLinkedList<T>
         /// <param name="value">The value held by the node.</param>
         public Node(T value)
         {
-            _next = null;
-            _previous = null;
             _value = value;
-            _isFirstNode = false;
         }
 
         /// <summary>Gets <c>true</c> if the node belongs to a linked list; otherwise, <c>false</c>.</summary>
@@ -34,10 +31,24 @@ public partial struct UnmanagedValueLinkedList<T>
         public bool IsFirstNode => _isFirstNode;
 
         /// <summary>Gets the next node in the linked list or <c>null</c> if none exists.</summary>
-        public Node* Next => ((_next is not null) && !_next->_isFirstNode) ? _next : null;
+        public Node* Next
+        {
+            get
+            {
+                var next = _next;
+                return ((next is not null) && !next->_isFirstNode) ? next : null;
+            }
+        }
 
         /// <summary>Gets the previous node in the linked list or <c>null</c> if none exists.</summary>
-        public Node* Previous => ((_previous is not null) && !_isFirstNode) ? _previous : null;
+        public Node* Previous
+        {
+            get
+            {
+                var previous = _previous;
+                return ((previous is not null) && !_isFirstNode) ? previous : null;
+            }
+        }
 
         /// <summary>Gets or sets the value held by the node.</summary>
         public T Value
@@ -54,7 +65,8 @@ public partial struct UnmanagedValueLinkedList<T>
         }
 
         /// <summary>Gets a reference to the value held by the node.</summary>
-        public ref T ValueRef => ref AsRef<T>(AsPointer(ref _value));
+        [UnscopedRef]
+        public ref T ValueRef => ref _value;
 
         internal void Invalidate()
         {

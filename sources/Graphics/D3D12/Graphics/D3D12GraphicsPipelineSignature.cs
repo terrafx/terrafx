@@ -1,6 +1,9 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
+using TerraFX.Interop.Windows;
+using TerraFX.Utilities;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_RANGE_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_FEATURE;
 using static TerraFX.Interop.DirectX.D3D12_ROOT_SIGNATURE_FLAGS;
@@ -11,8 +14,6 @@ using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
-using TerraFX.Graphics.Advanced;
-using TerraFX.Interop.Windows;
 
 namespace TerraFX.Graphics;
 
@@ -201,7 +202,7 @@ public sealed unsafe class D3D12GraphicsPipelineSignature : GraphicsPipelineSign
 
             if (result.FAILED)
             {
-                ThrowExternalException(nameof(ID3D12Device.CreateRootSignature), result);
+                ExceptionUtilities.ThrowExternalException(nameof(ID3D12Device.CreateRootSignature), result);
             }
 
             return d3d12RootSignature;

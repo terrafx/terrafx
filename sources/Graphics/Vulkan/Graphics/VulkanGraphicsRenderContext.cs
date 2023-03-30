@@ -466,8 +466,8 @@ public sealed unsafe class VulkanGraphicsRenderContext : GraphicsRenderContext
     /// <inheritdoc />
     protected override void SetNameUnsafe(string value)
     {
-        Device.SetVkObjectName(VK_OBJECT_TYPE_COMMAND_BUFFER, VkCommandBuffer, value);
-        Device.SetVkObjectName(VK_OBJECT_TYPE_COMMAND_POOL, VkCommandPool, value);
+        Device.SetVkObjectName(VK_OBJECT_TYPE_COMMAND_BUFFER, VkCommandBuffer.Value, value);
+        Device.SetVkObjectName(VK_OBJECT_TYPE_COMMAND_POOL, VkCommandPool.Value, value);
     }
 
     private void BindVertexBufferViewsInternal(ReadOnlySpan<GraphicsBufferView> vertexBufferViews, uint firstBindingSlot, VkBuffer* vkVertexBuffers, ulong* vkVertexBufferOffsets)

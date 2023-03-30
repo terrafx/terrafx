@@ -30,7 +30,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>negative</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNegative(int value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfNegative(int value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value < 0)
         {
@@ -45,7 +45,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>negative</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNegative(long value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfNegative(long value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value < 0)
         {
@@ -60,7 +60,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>negative</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNegative(nint value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfNegative(nint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value < 0)
         {
@@ -75,7 +75,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not defined by <typeparamref name="TEnum" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotDefined<TEnum>(TEnum value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfNotDefined<TEnum>(TEnum value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
         where TEnum : struct, Enum
     {
         if (!Enum.IsDefined(value))
@@ -93,7 +93,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="lengthExpression">The expression of the length being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexExpression" /> is <c>negative</c> or greater than or equal to <paramref name="lengthExpression" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotInBounds(int index, int length, [CallerArgumentExpression("index")] string? indexExpression = null, [CallerArgumentExpression("length")] string? lengthExpression = null)
+    public static void ThrowIfNotInBounds(int index, int length, [CallerArgumentExpression(nameof(index))] string? indexExpression = null, [CallerArgumentExpression(nameof(length))] string? lengthExpression = null)
     {
         if (unchecked((uint)index >= (uint)length))
         {
@@ -112,7 +112,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="lengthExpression">The expression of the length being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexExpression" /> is <c>negative</c> or greater than or equal to <paramref name="lengthExpression" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotInBounds(long index, long length, [CallerArgumentExpression("index")] string? indexExpression = null, [CallerArgumentExpression("length")] string? lengthExpression = null)
+    public static void ThrowIfNotInBounds(long index, long length, [CallerArgumentExpression(nameof(index))] string? indexExpression = null, [CallerArgumentExpression(nameof(length))] string? lengthExpression = null)
     {
         if (unchecked((ulong)index >= (ulong)length))
         {
@@ -131,7 +131,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="lengthExpression">The expression of the length being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexExpression" /> is <c>negative</c> or greater than or equal to <paramref name="lengthExpression" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotInBounds(nint index, nint length, [CallerArgumentExpression("index")] string? indexExpression = null, [CallerArgumentExpression("length")] string? lengthExpression = null)
+    public static void ThrowIfNotInBounds(nint index, nint length, [CallerArgumentExpression(nameof(index))] string? indexExpression = null, [CallerArgumentExpression(nameof(length))] string? lengthExpression = null)
     {
         if (unchecked((nuint)index >= (nuint)length))
         {
@@ -150,7 +150,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="lengthExpression">The name of the length being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexExpression" /> is greater than or equal to <paramref name="lengthExpression" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotInBounds(uint index, uint length, [CallerArgumentExpression("index")] string? indexExpression = null, [CallerArgumentExpression("length")] string? lengthExpression = null)
+    public static void ThrowIfNotInBounds(uint index, uint length, [CallerArgumentExpression(nameof(index))] string? indexExpression = null, [CallerArgumentExpression(nameof(length))] string? lengthExpression = null)
     {
         if (index >= length)
         {
@@ -169,7 +169,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="lengthExpression">The name of the length being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexExpression" /> is greater than or equal to <paramref name="lengthExpression" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotInBounds(ulong index, ulong length, [CallerArgumentExpression("index")] string? indexExpression = null, [CallerArgumentExpression("length")] string? lengthExpression = null)
+    public static void ThrowIfNotInBounds(ulong index, ulong length, [CallerArgumentExpression(nameof(index))] string? indexExpression = null, [CallerArgumentExpression(nameof(length))] string? lengthExpression = null)
     {
         if (index >= length)
         {
@@ -188,7 +188,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="lengthExpression">The name of the length being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexExpression" /> is greater than or equal to <paramref name="lengthExpression" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotInBounds(nuint index, nuint length, [CallerArgumentExpression("index")] string? indexExpression = null, [CallerArgumentExpression("length")] string? lengthExpression = null)
+    public static void ThrowIfNotInBounds(nuint index, nuint length, [CallerArgumentExpression(nameof(index))] string? indexExpression = null, [CallerArgumentExpression(nameof(length))] string? lengthExpression = null)
     {
         if (index >= length)
         {
@@ -207,7 +207,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="lengthExpression">The name of the length being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexExpression" /> is <c>negative</c> or greater than <paramref name="lengthExpression" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotInInsertBounds(int index, int length, [CallerArgumentExpression("index")] string? indexExpression = null, [CallerArgumentExpression("length")] string? lengthExpression = null)
+    public static void ThrowIfNotInInsertBounds(int index, int length, [CallerArgumentExpression(nameof(index))] string? indexExpression = null, [CallerArgumentExpression(nameof(length))] string? lengthExpression = null)
     {
         if (unchecked((uint)index > (uint)length))
         {
@@ -226,7 +226,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="lengthExpression">The name of the length being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexExpression" /> is <c>negative</c> or greater than <paramref name="lengthExpression" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotInInsertBounds(long index, long length, [CallerArgumentExpression("index")] string? indexExpression = null, [CallerArgumentExpression("length")] string? lengthExpression = null)
+    public static void ThrowIfNotInInsertBounds(long index, long length, [CallerArgumentExpression(nameof(index))] string? indexExpression = null, [CallerArgumentExpression(nameof(length))] string? lengthExpression = null)
     {
         if (unchecked((ulong)index > (ulong)length))
         {
@@ -245,7 +245,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="lengthExpression">The name of the length being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexExpression" /> is <c>negative</c> or greater than <paramref name="lengthExpression" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotInInsertBounds(nint index, nint length, [CallerArgumentExpression("index")] string? indexExpression = null, [CallerArgumentExpression("length")] string? lengthExpression = null)
+    public static void ThrowIfNotInInsertBounds(nint index, nint length, [CallerArgumentExpression(nameof(index))] string? indexExpression = null, [CallerArgumentExpression(nameof(length))] string? lengthExpression = null)
     {
         if (unchecked((nuint)index > (nuint)length))
         {
@@ -264,7 +264,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="lengthExpression">The name of the length being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexExpression" /> is greater than <paramref name="lengthExpression" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotInInsertBounds(uint index, uint length, [CallerArgumentExpression("index")] string? indexExpression = null, [CallerArgumentExpression("length")] string? lengthExpression = null)
+    public static void ThrowIfNotInInsertBounds(uint index, uint length, [CallerArgumentExpression(nameof(index))] string? indexExpression = null, [CallerArgumentExpression(nameof(length))] string? lengthExpression = null)
     {
         if (index > length)
         {
@@ -283,7 +283,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="lengthExpression">The name of the length being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexExpression" /> is greater than <paramref name="lengthExpression" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotInInsertBounds(ulong index, ulong length, [CallerArgumentExpression("index")] string? indexExpression = null, [CallerArgumentExpression("length")] string? lengthExpression = null)
+    public static void ThrowIfNotInInsertBounds(ulong index, ulong length, [CallerArgumentExpression(nameof(index))] string? indexExpression = null, [CallerArgumentExpression(nameof(length))] string? lengthExpression = null)
     {
         if (index > length)
         {
@@ -302,7 +302,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="lengthExpression">The name of the length being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexExpression" /> is greater than <paramref name="lengthExpression" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotInInsertBounds(nuint index, nuint length, [CallerArgumentExpression("index")] string? indexExpression = null, [CallerArgumentExpression("length")] string? lengthExpression = null)
+    public static void ThrowIfNotInInsertBounds(nuint index, nuint length, [CallerArgumentExpression(nameof(index))] string? indexExpression = null, [CallerArgumentExpression(nameof(length))] string? lengthExpression = null)
     {
         if (index > length)
         {
@@ -319,7 +319,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not a <c>power of two</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotPow2(uint value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfNotPow2(uint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (!MathUtilities.IsPow2(value))
         {
@@ -334,7 +334,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not a <c>power of two</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotPow2(ulong value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfNotPow2(ulong value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (!MathUtilities.IsPow2(value))
         {
@@ -349,7 +349,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not a <c>power of two</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotPow2(nuint value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfNotPow2(nuint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (!MathUtilities.IsPow2(value))
         {
@@ -377,7 +377,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotZero(int value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfNotZero(int value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value != 0)
         {
@@ -392,7 +392,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotZero(long value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfNotZero(long value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value != 0)
         {
@@ -407,7 +407,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotZero(nint value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfNotZero(nint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value != 0)
         {
@@ -422,7 +422,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotZero(uint value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfNotZero(uint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value != 0)
         {
@@ -437,7 +437,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotZero(ulong value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfNotZero(ulong value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value != 0)
         {
@@ -452,7 +452,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNotZero(nuint value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfNotZero(nuint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value != 0)
         {
@@ -468,7 +468,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNull<T>([NotNull] T? value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfNull<T>([NotNull] T? value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
         where T : class
     {
         if (value is null)
@@ -484,7 +484,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the array being checked.</param>
     /// <exception cref="ArgumentNullException"><paramref name="array" /> is <c>null</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNull<T>(UnmanagedArray<T> array, [CallerArgumentExpression("array")] string? valueExpression = null)
+    public static void ThrowIfNull<T>(UnmanagedArray<T> array, [CallerArgumentExpression(nameof(array))] string? valueExpression = null)
         where T : unmanaged
     {
         if (array.IsNull)
@@ -499,7 +499,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNull(void* value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfNull(void* value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value == null)
         {
@@ -513,7 +513,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfZero(int value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfZero(int value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value == 0)
         {
@@ -528,7 +528,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfZero(long value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfZero(long value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value == 0)
         {
@@ -543,7 +543,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfZero(nint value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfZero(nint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value == 0)
         {
@@ -558,7 +558,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfZero(uint value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfZero(uint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value == 0)
         {
@@ -573,7 +573,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfZero(ulong value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfZero(ulong value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value == 0)
         {
@@ -588,7 +588,7 @@ public static unsafe partial class ExceptionUtilities
     /// <param name="valueExpression">The expression of the value being checked.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfZero(nuint value, [CallerArgumentExpression("value")] string? valueExpression = null)
+    public static void ThrowIfZero(nuint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         if (value == 0)
         {

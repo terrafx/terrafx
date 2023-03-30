@@ -13,11 +13,11 @@ namespace TerraFX.Numerics;
 /// <summary>Defines an affine transformation.</summary>
 public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
 {
-    /// <summary>Defines a transform where all components are zero.</summary>
-    public static readonly AffineTransform Zero = Create(Quaternion.Zero, Vector3.Zero, Vector3.Zero);
+    /// <summary>Gets a transform where all components are zero.</summary>
+    public static AffineTransform Zero => Create(Quaternion.Zero, Vector3.Zero, Vector3.Zero);
 
-    /// <summary>Defines the identity transform.</summary>
-    public static readonly AffineTransform Identity = Create(Quaternion.Identity, Vector3.One, Vector3.Zero);
+    /// <summary>Gets the identity transform.</summary>
+    public static AffineTransform Identity => Create(Quaternion.Identity, Vector3.One, Vector3.Zero);
 
     private Quaternion _rotation;
     private Vector3 _scale;
@@ -30,7 +30,7 @@ public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static AffineTransform Create(Quaternion rotation, Vector3 scale, Vector3 translation)
     {
-        Unsafe.SkipInit(out AffineTransform result);
+        AffineTransform result;
 
         result._rotation = rotation;
         result._scale = scale;
@@ -43,7 +43,7 @@ public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
     /// <param name="matrix">The matrix from which the affine transform should be created.</param>
     /// <param name="epsilon">The maximum (inclusive) difference between the <c>(scaleX, scaleY, scaleZ, determinant)</c> and zero for which they should be considered equivalent.</param>
     /// <param name="result">The resulting affine transform or <see cref="Zero" /> if creation from <paramref name="matrix" /> failed.</param>
-    /// <returns><c>true</c> if an affine transform was succesfully created from <paramref name="matrix" />; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if an affine transform was successfully created from <paramref name="matrix" />; otherwise, <c>false</c>.</returns>
     public static unsafe bool TryCreateFromMatrix(Matrix4x4 matrix, Vector4 epsilon, out AffineTransform result)
     {
         var translation = Vector3.Create(matrix.W.Value);
@@ -113,7 +113,6 @@ public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
         }
 
         // generate the quaternion from the matrix
-        Unsafe.SkipInit(out result);
 
         result._rotation = Quaternion.CreateFromMatrix(matrix);
         result._scale = ((Vector3*)scale)[0];

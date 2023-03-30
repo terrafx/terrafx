@@ -7,7 +7,6 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using TerraFX.Utilities;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -21,10 +20,10 @@ namespace TerraFX.Numerics;
 public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
 {
     /// <summary>Defines a matrix where all components are zero.</summary>
-    public static readonly Matrix4x4 Zero = Create(Vector128<float>.Zero, Vector128<float>.Zero, Vector128<float>.Zero, Vector128<float>.Zero);
+    public static Matrix4x4 Zero => Create(Vector128<float>.Zero, Vector128<float>.Zero, Vector128<float>.Zero, Vector128<float>.Zero);
 
     /// <summary>Defines the identity matrix.</summary>
-    public static readonly Matrix4x4 Identity = Create(UnitX, UnitY, UnitZ, UnitW);
+    public static Matrix4x4 Identity => Create(UnitX, UnitY, UnitZ, UnitW);
 
     private Vector128<float> _x;
     private Vector128<float> _y;
@@ -76,7 +75,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Matrix4x4 Create(Vector128<float> x, Vector128<float> y, Vector128<float> z, Vector128<float> w)
     {
-        Unsafe.SkipInit(out Matrix4x4 result);
+        Matrix4x4 result;
 
         result._x = x;
         result._y = y;
@@ -148,7 +147,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
         q1 = CreateFromXWAB(r0, v0);
         q1 = CreateFromXZWY(q1);
 
-        Unsafe.SkipInit(out Matrix4x4 m);
+        Matrix4x4 m;
         {
             m._x = q1;
 
@@ -346,7 +345,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     /// <summary>Computes the product of two matrices.</summary>
     /// <param name="left">The matrix to multiply by <paramref name="right" />.</param>
     /// <param name="right">The matrix which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    /// <returns>The product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
     public static Matrix4x4 operator *(Matrix4x4 left, in Matrix4x4 right)
     {
         return Create(
@@ -421,10 +420,10 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     /// <returns>A matrix that represents a camera at <paramref name="position" /> looking to <paramref name="direction" />.</returns>
     public static Matrix4x4 CreateLookToLH(Vector3 position, Vector3 direction, Vector3 up)
     {
-        Assert(AssertionsEnabled && (direction != Vector3.Zero));
-        Assert(AssertionsEnabled && !Vector3.IsAnyInfinity(direction));
-        Assert(AssertionsEnabled && (up != Vector3.Zero));
-        Assert(AssertionsEnabled && !Vector3.IsAnyInfinity(up));
+        Assert(direction != Vector3.Zero);
+        Assert(!Vector3.IsAnyInfinity(direction));
+        Assert(up != Vector3.Zero);
+        Assert(!Vector3.IsAnyInfinity(up));
 
         var r2 = Normalize(direction.AsVector128());
         var r0 = Normalize(CrossProduct(up.AsVector128(), r2));
@@ -461,9 +460,9 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     /// <returns>A matrix that represents a orthographic projection.</returns>
     public static Matrix4x4 CreateOrthographicLH(float frustumWidth, float frustumHeight, float nearClippingDistance, float farClippingDistance)
     {
-        Assert(AssertionsEnabled && !CompareEqual(frustumWidth, 0.0f, NearZeroEpsilon));
-        Assert(AssertionsEnabled && !CompareEqual(frustumHeight, 0.0f, NearZeroEpsilon));
-        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+        Assert(!CompareEqual(frustumWidth, 0.0f, NearZeroEpsilon));
+        Assert(!CompareEqual(frustumHeight, 0.0f, NearZeroEpsilon));
+        Assert(!CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
 
         var range = 1.0f / (farClippingDistance - nearClippingDistance);
 
@@ -483,9 +482,9 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     /// <returns>A matrix that represents a orthographic projection.</returns>
     public static Matrix4x4 CreateOrthographicRH(float frustumWidth, float frustumHeight, float nearClippingDistance, float farClippingDistance)
     {
-        Assert(AssertionsEnabled && !CompareEqual(frustumWidth, 0.0f, NearZeroEpsilon));
-        Assert(AssertionsEnabled && !CompareEqual(frustumHeight, 0.0f, NearZeroEpsilon));
-        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+        Assert(!CompareEqual(frustumWidth, 0.0f, NearZeroEpsilon));
+        Assert(!CompareEqual(frustumHeight, 0.0f, NearZeroEpsilon));
+        Assert(!CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
 
         var range = 1.0f / (nearClippingDistance - farClippingDistance);
 
@@ -507,9 +506,9 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     /// <returns>A matrix that represents a orthographic projection.</returns>
     public static Matrix4x4 CreateOrthographicOffCenterLH(float frustumLeft, float frustumRight, float frustumBottom, float frustumTop, float nearClippingDistance, float farClippingDistance)
     {
-        Assert(AssertionsEnabled && !CompareEqual(frustumLeft, frustumRight, NearZeroEpsilon * 2));
-        Assert(AssertionsEnabled && !CompareEqual(frustumTop, frustumBottom, NearZeroEpsilon));
-        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+        Assert(!CompareEqual(frustumLeft, frustumRight, NearZeroEpsilon * 2));
+        Assert(!CompareEqual(frustumTop, frustumBottom, NearZeroEpsilon));
+        Assert(!CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
 
         var reciprocalWidth = 1.0f / (frustumRight - frustumLeft);
         var reciprocalHeight = 1.0f / (frustumTop - frustumBottom);
@@ -533,9 +532,9 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     /// <returns>A matrix that represents a orthographic projection.</returns>
     public static Matrix4x4 CreateOrthographicOffCenterRH(float frustumLeft, float frustumRight, float frustumBottom, float frustumTop, float nearClippingDistance, float farClippingDistance)
     {
-        Assert(AssertionsEnabled && !CompareEqual(frustumLeft, frustumRight, NearZeroEpsilon * 2));
-        Assert(AssertionsEnabled && !CompareEqual(frustumTop, frustumBottom, NearZeroEpsilon));
-        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+        Assert(!CompareEqual(frustumLeft, frustumRight, NearZeroEpsilon * 2));
+        Assert(!CompareEqual(frustumTop, frustumBottom, NearZeroEpsilon));
+        Assert(!CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
 
         var reciprocalWidth = 1.0f / (frustumRight - frustumLeft);
         var reciprocalHeight = 1.0f / (frustumTop - frustumBottom);
@@ -557,10 +556,10 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     /// <returns>A matrix that represents a perspective projection.</returns>
     public static Matrix4x4 CreatePerspectiveLH(float frustumWidth, float frustumHeight, float nearClippingDistance, float farClippingDistance)
     {
-        Assert(AssertionsEnabled && (nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
-        Assert(AssertionsEnabled && !CompareEqual(frustumWidth, 0.0f, NearZeroEpsilon));
-        Assert(AssertionsEnabled && !CompareEqual(frustumHeight, 0.0f, NearZeroEpsilon));
-        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+        Assert((nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
+        Assert(!CompareEqual(frustumWidth, 0.0f, NearZeroEpsilon));
+        Assert(!CompareEqual(frustumHeight, 0.0f, NearZeroEpsilon));
+        Assert(!CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
 
         var doubleNearClippingDistance = nearClippingDistance + nearClippingDistance;
         var range = farClippingDistance / (farClippingDistance - nearClippingDistance);
@@ -581,10 +580,10 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     /// <returns>A matrix that represents a perspective projection.</returns>
     public static Matrix4x4 CreatePerspectiveRH(float frustumWidth, float frustumHeight, float nearClippingDistance, float farClippingDistance)
     {
-        Assert(AssertionsEnabled && (nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
-        Assert(AssertionsEnabled && !CompareEqual(frustumWidth, 0.0f, NearZeroEpsilon));
-        Assert(AssertionsEnabled && !CompareEqual(frustumHeight, 0.0f, NearZeroEpsilon));
-        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+        Assert((nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
+        Assert(!CompareEqual(frustumWidth, 0.0f, NearZeroEpsilon));
+        Assert(!CompareEqual(frustumHeight, 0.0f, NearZeroEpsilon));
+        Assert(!CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
 
         var doubleNearClippingDistance = nearClippingDistance + nearClippingDistance;
         var range = farClippingDistance / (nearClippingDistance - farClippingDistance);
@@ -605,10 +604,10 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     /// <returns>A matrix that represents a perspective projection based on <paramref name="fieldOfView" />.</returns>
     public static Matrix4x4 CreatePerspectiveFieldOfViewLH(float fieldOfView, float aspectRatio, float nearClippingDistance, float farClippingDistance)
     {
-        Assert(AssertionsEnabled && (nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
-        Assert(AssertionsEnabled && !CompareEqual(fieldOfView, 0.0f, NearZeroEpsilon * 2));
-        Assert(AssertionsEnabled && !CompareEqual(aspectRatio, 0.0f, NearZeroEpsilon));
-        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+        Assert((nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
+        Assert(!CompareEqual(fieldOfView, 0.0f, NearZeroEpsilon * 2));
+        Assert(!CompareEqual(aspectRatio, 0.0f, NearZeroEpsilon));
+        Assert(!CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
 
         var (sin, cos) = SinCos(0.5f * fieldOfView);
 
@@ -632,10 +631,10 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     /// <returns>A matrix that represents a perspective projection based on <paramref name="fieldOfView" />.</returns>
     public static Matrix4x4 CreatePerspectiveFieldOfViewRH(float fieldOfView, float aspectRatio, float nearClippingDistance, float farClippingDistance)
     {
-        Assert(AssertionsEnabled && (nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
-        Assert(AssertionsEnabled && !CompareEqual(fieldOfView, 0.0f, NearZeroEpsilon * 2));
-        Assert(AssertionsEnabled && !CompareEqual(aspectRatio, 0.0f, NearZeroEpsilon));
-        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+        Assert((nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
+        Assert(!CompareEqual(fieldOfView, 0.0f, NearZeroEpsilon * 2));
+        Assert(!CompareEqual(aspectRatio, 0.0f, NearZeroEpsilon));
+        Assert(!CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
 
         var (sin, cos) = SinCos(0.5f * fieldOfView);
 
@@ -661,10 +660,10 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     /// <returns>A matrix that represents an off-center perspective projection.</returns>
     public static Matrix4x4 CreatePerspectiveOffCenterLH(float frustumLeft, float frustumRight, float frustumBottom, float frustumTop, float nearClippingDistance, float farClippingDistance)
     {
-        Assert(AssertionsEnabled && (nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
-        Assert(AssertionsEnabled && !CompareEqual(frustumLeft, frustumRight, NearZeroEpsilon * 2));
-        Assert(AssertionsEnabled && !CompareEqual(frustumTop, frustumBottom, NearZeroEpsilon));
-        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+        Assert((nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
+        Assert(!CompareEqual(frustumLeft, frustumRight, NearZeroEpsilon * 2));
+        Assert(!CompareEqual(frustumTop, frustumBottom, NearZeroEpsilon));
+        Assert(!CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
 
         var doubleNearClippingDistance = nearClippingDistance + nearClippingDistance;
         var reciprocalWidth = 1.0f / (frustumRight - frustumLeft);
@@ -689,10 +688,10 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     /// <returns>A matrix that represents an off-center perspective projection.</returns>
     public static Matrix4x4 CreatePerspectiveOffCenterRH(float frustumLeft, float frustumRight, float frustumBottom, float frustumTop, float nearClippingDistance, float farClippingDistance)
     {
-        Assert(AssertionsEnabled && (nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
-        Assert(AssertionsEnabled && !CompareEqual(frustumLeft, frustumRight, NearZeroEpsilon * 2));
-        Assert(AssertionsEnabled && !CompareEqual(frustumTop, frustumBottom, NearZeroEpsilon));
-        Assert(AssertionsEnabled && !CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
+        Assert((nearClippingDistance > 0.0f) && (0.0f < farClippingDistance));
+        Assert(!CompareEqual(frustumLeft, frustumRight, NearZeroEpsilon * 2));
+        Assert(!CompareEqual(frustumTop, frustumBottom, NearZeroEpsilon));
+        Assert(!CompareEqual(farClippingDistance, nearClippingDistance, NearZeroEpsilon));
 
         var doubleNearClippingDistance = nearClippingDistance + nearClippingDistance;
         var reciprocalWidth = 1.0f / (frustumRight - frustumLeft);
@@ -709,7 +708,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
 
     /// <summary>Computes the inverse of a matrix.</summary>
     /// <param name="value">The matrix to invert.</param>
-    /// <param name="determinant">On return, contains the dterminant of the matrix.</param>
+    /// <param name="determinant">On return, contains the determinant of the matrix.</param>
     /// <returns>The inverse of <paramref name="value" /> or an <c>infinite</c> matrix if no inverse exists.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Matrix4x4 Inverse(Matrix4x4 value, out float determinant)
@@ -886,7 +885,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     }
 
     /// <summary>Reinterprets the current instance as a new <see cref="SysMatrix4x4" />.</summary>
-    /// <returns>The current instance reintepreted as a new <see cref="SysMatrix4x4" />.</returns>
+    /// <returns>The current instance reinterpreted as a new <see cref="SysMatrix4x4" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public SysMatrix4x4 AsSystemMatrix4x4() => As<Matrix4x4, SysMatrix4x4>(ref this);
 

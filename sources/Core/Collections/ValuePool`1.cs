@@ -5,7 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using TerraFX.Threading;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections;
@@ -17,8 +16,18 @@ namespace TerraFX.Collections;
 [DebuggerTypeProxy(typeof(ValuePool<>.DebugView))]
 public unsafe partial struct ValuePool<T> : IEnumerable<T>
 {
+    /// <summary>Gets an empty pool.</summary>
+    public static ValuePool<T> Empty => new ValuePool<T>();
+
     private ValueQueue<T> _availableItems;
     private ValueList<T> _items;
+
+    /// <summary>Initializes a new instance of the <see cref="ValuePool{T}" /> struct.</summary>
+    public ValuePool()
+    {
+        _availableItems = ValueQueue<T>.Empty;
+        _items = ValueList<T>.Empty;
+    }
 
     /// <summary>Initializes a new instance of the <see cref="ValuePool{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the pool.</param>
@@ -52,7 +61,7 @@ public unsafe partial struct ValuePool<T> : IEnumerable<T>
     /// <returns>An enumerator that can iterate through the items in the pool.</returns>
     public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
-    /// <summary>Removes the first occurence of an item from the pool.</summary>
+    /// <summary>Removes the first occurrence of an item from the pool.</summary>
     /// <param name="item">The item to remove from the pool.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was removed from the pool; otherwise, <c>false</c>.</returns>
     public bool Remove(T item)
@@ -67,7 +76,7 @@ public unsafe partial struct ValuePool<T> : IEnumerable<T>
         return result;
     }
 
-    /// <summary>Removes the first occurence of an item from the pool.</summary>
+    /// <summary>Removes the first occurrence of an item from the pool.</summary>
     /// <param name="item">The item to remove from the pool.</param>
     /// <param name="mutex">The mutex to use when removing an item from the pool.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was removed from the pool; otherwise, <c>false</c>.</returns>

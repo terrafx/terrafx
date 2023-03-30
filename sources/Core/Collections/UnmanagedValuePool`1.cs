@@ -17,8 +17,18 @@ namespace TerraFX.Collections;
 public unsafe partial struct UnmanagedValuePool<T> : IEnumerable<T>
     where T : unmanaged
 {
+    /// <summary>Gets an empty pool.</summary>
+    public static UnmanagedValuePool<T> Empty => new UnmanagedValuePool<T>();
+
     private UnmanagedValueQueue<T> _availableItems;
     private UnmanagedValueList<T> _items;
+
+    /// <summary>Initializes a new instance of the <see cref="UnmanagedValuePool{T}" /> struct.</summary>
+    public UnmanagedValuePool()
+    {
+        _availableItems = UnmanagedValueQueue<T>.Empty;
+        _items = UnmanagedValueList<T>.Empty;
+    }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValuePool{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the pool.</param>
@@ -51,7 +61,7 @@ public unsafe partial struct UnmanagedValuePool<T> : IEnumerable<T>
     /// <returns>An enumerator that can iterate through the items in the pool.</returns>
     public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
-    /// <summary>Removes the first occurence of an item from the pool.</summary>
+    /// <summary>Removes the first occurrence of an item from the pool.</summary>
     /// <param name="item">The item to remove from the pool.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was removed from the pool; otherwise, <c>false</c>.</returns>
     public bool Remove(T item)
@@ -66,7 +76,7 @@ public unsafe partial struct UnmanagedValuePool<T> : IEnumerable<T>
         return result;
     }
 
-    /// <summary>Removes the first occurence of an item from the pool.</summary>
+    /// <summary>Removes the first occurrence of an item from the pool.</summary>
     /// <param name="item">The item to remove from the pool.</param>
     /// <param name="mutex">The mutex to use when removing an item from the pool.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was removed from the pool; otherwise, <c>false</c>.</returns>
@@ -106,10 +116,7 @@ public unsafe partial struct UnmanagedValuePool<T> : IEnumerable<T>
 
     /// <summary>Returns an item to the pool.</summary>
     /// <param name="item">The item that should be returned to the pool.</param>
-    public void Return(T item)
-    {
-        _availableItems.Enqueue(item);
-    }
+    public void Return(T item) => _availableItems.Enqueue(item);
 
     /// <summary>Returns an item to the pool.</summary>
     /// <param name="item">The item that should be returned to the pool.</param>

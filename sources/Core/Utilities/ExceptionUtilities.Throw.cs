@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -318,4 +319,10 @@ public static partial class ExceptionUtilities
         var message = string.Format(Resources.MethodTimeoutMessage, methodName, timeout.TotalMilliseconds);
         throw new TimeoutException(message, innerException);
     }
+
+    /// <summary>Throws an <see cref="UnreachableException" />.</summary>
+    /// <param name="message">The message detailing the cause of the exception.</param>
+    /// <exception cref="UnreachableException"><paramref name="message" /></exception>
+    [DoesNotReturn]
+    public static void ThrowUnreachableException(string? message) => throw new UnreachableException(message);
 }

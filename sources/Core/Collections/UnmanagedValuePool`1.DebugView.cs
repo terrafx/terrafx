@@ -18,41 +18,45 @@ public partial struct UnmanagedValuePool<T>
             _pool = pool;
         }
 
-        public nuint AvailableCount => _pool.AvailableCount;
+        public nuint AvailableCount => _pool._availableItems.Count;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public T[] AvailableItems
         {
             get
             {
-                var availableCount = Min(_pool._availableItems.Count, s_maxArrayLength);
+                ref readonly var poolAvailableItems = ref _pool._availableItems;
+
+                var availableCount = Min(poolAvailableItems.Count, MaxArrayLength);
                 var availableItems = GC.AllocateUninitializedArray<T>((int)availableCount);
 
                 fixed (T* pItems = availableItems)
                 {
                     var span = new UnmanagedSpan<T>(pItems, availableCount);
-                    _pool._availableItems.CopyTo(span);
+                    poolAvailableItems.CopyTo(span);
                 }
                 return availableItems;
             }
         }
 
-        public nuint Capacity => _pool.Capacity;
+        public nuint Capacity => _pool._items.Capacity;
 
-        public nuint Count => _pool.Count;
+        public nuint Count => _pool._items.Count;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public T[] Items
         {
             get
             {
-                var count = Min(_pool._items.Count, s_maxArrayLength);
+                ref readonly var poolItems = ref _pool._items;
+
+                var count = Min(poolItems.Count, MaxArrayLength);
                 var items = GC.AllocateUninitializedArray<T>((int)count);
 
                 fixed (T* pItems = items)
                 {
                     var span = new UnmanagedSpan<T>(pItems, count);
-                    _pool._items.CopyTo(span);
+                    poolItems.CopyTo(span);
                 }
                 return items;
             }

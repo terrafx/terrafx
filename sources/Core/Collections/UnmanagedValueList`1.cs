@@ -9,12 +9,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using TerraFX.Threading;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
-using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Collections;
 
@@ -26,8 +24,17 @@ namespace TerraFX.Collections;
 public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     where T : unmanaged
 {
+    /// <summary>Gets an empty list.</summary>
+    public static UnmanagedValueList<T> Empty => new UnmanagedValueList<T>();
+
     private UnmanagedArray<T> _items;
     private nuint _count;
+
+    /// <summary>Initializes a new instance of the <see cref="UnmanagedValueList{T}" /> struct.</summary>
+    public UnmanagedValueList()
+    {
+        _items = UnmanagedArray<T>.Empty;
+    }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueList{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the list.</param>
@@ -47,8 +54,6 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
             }
             _items = UnmanagedArray<T>.Empty;
         }
-
-        _count = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueList{T}" /> struct.</summary>
@@ -104,7 +109,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         get
         {
             var items = _items;
-            return !items.IsNull ? _items.Length : 0;
+            return !items.IsNull ? items.Length : 0;
         }
     }
 
@@ -119,13 +124,13 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     {
         readonly get
         {
-            ThrowIfNotInBounds(index, Count);
+            ThrowIfNotInBounds(index, _count);
             return _items[index];
         }
 
         set
         {
-            ThrowIfNotInBounds(index, Count);
+            ThrowIfNotInBounds(index, _count);
             _items[index] = value;
         }
     }
@@ -134,13 +139,10 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     /// <param name="item">The item to add to the list.</param>
     public void Add(T item)
     {
-        var count = Count;
+        var count = _count;
         var newCount = count + 1;
 
-        if (newCount > Capacity)
-        {
-            EnsureCapacity(count + 1);
-        }
+        EnsureCapacity(count + 1);
 
         _count = newCount;
         _items[count] = item;
@@ -168,10 +170,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     public UnmanagedSpan<T> AsUnmanagedSpanUnsafe() => new UnmanagedSpan<T>(_items);
 
     /// <summary>Removes all items from the list.</summary>
-    public void Clear()
-    {
-        _count = 0;
-    }
+    public void Clear() => _count = 0;
 
     /// <summary>Checks whether the list contains a specified item.</summary>
     /// <param name="item">The item to check for in the list.</param>
@@ -183,7 +182,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="Count" /> is greater than the length of <paramref name="destination" />.</exception>
     public readonly void CopyTo(UnmanagedSpan<T> destination)
     {
-        var count = Count;
+        var count = _count;
 
         if (count != 0)
         {
@@ -197,23 +196,14 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
 
     /// <summary>Ensures the capacity of the list is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the list should support.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void EnsureCapacity(nuint capacity)
     {
         var currentCapacity = Capacity;
 
         if (capacity > currentCapacity)
         {
-            var items = _items;
-
-            var newCapacity = Max(capacity, currentCapacity * 2);
-            var alignment = !items.IsNull ? items.Alignment : 0;
-
-            var newItems = new UnmanagedArray<T>(newCapacity, alignment);
-
-            CopyTo(newItems);
-            items.Dispose();
-
-            _items = newItems;
+            Resize(capacity, currentCapacity);
         }
     }
 
@@ -231,8 +221,8 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     public T* GetPointerUnsafe(nuint index)
     {
         AssertNotNull(_items);
-        Assert(AssertionsEnabled && (index <= Capacity));
-        return _items.GetPointer(index);
+        Assert(index <= Capacity);
+        return _items.GetPointerUnsafe(index);
     }
 
     /// <summary>Gets a reference to the item at the specified index of the list.</summary>
@@ -242,7 +232,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     ///     <para>This method is because other operations may invalidate the backing array.</para>
     ///     <para>This method is because it does not validate that <paramref name="index" /> is less than <see cref="Capacity" />.</para>
     /// </remarks>
-    public ref T GetReferenceUnsafe(nuint index) => ref AsRef<T>(GetPointerUnsafe(index));
+    public ref T GetReferenceUnsafe(nuint index) => ref *GetPointerUnsafe(index);
 
     /// <summary>Inserts an item into list at the specified index.</summary>
     /// <param name="index">The zero-based index at which <paramref name="item" /> is inserted.</param>
@@ -250,15 +240,11 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is negative or greater than <see cref="Count" />.</exception>
     public void Insert(nuint index, T item)
     {
-        var count = Count;
+        var count = _count;
         ThrowIfNotInInsertBounds(index, count);
 
         var newCount = count + 1;
-
-        if (newCount > Capacity)
-        {
-            EnsureCapacity(newCount);
-        }
+        EnsureCapacity(newCount);
 
         var items = _items;
 
@@ -271,7 +257,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         items[index] = item;
     }
 
-    /// <summary>Removes the first occurence of an item from the list.</summary>
+    /// <summary>Removes the first occurrence of an item from the list.</summary>
     /// <param name="item">The item to remove from the list.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was removed from the list; otherwise, <c>false</c>.</returns>
     public bool Remove(T item)
@@ -287,7 +273,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         }
     }
 
-    /// <summary>Removes the first occurence of an item from the list.</summary>
+    /// <summary>Removes the first occurrence of an item from the list.</summary>
     /// <param name="item">The item to remove from the list.</param>
     /// <param name="mutex">The mutex to use when removing <paramref name="item" /> from the list.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was removed from the list; otherwise, <c>false</c>.</returns>
@@ -302,7 +288,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.</exception>
     public void RemoveAt(nuint index)
     {
-        var count = Count;
+        var count = _count;
         ThrowIfNotInBounds(index, count);
 
         var newCount = count - 1;
@@ -311,11 +297,6 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         if (index < newCount)
         {
             CopyArrayUnsafe(items.GetPointerUnsafe(index), items.GetPointerUnsafe(index + 1), newCount - index);
-        }
-
-        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
-        {
-            items[newCount] = default!;
         }
 
         _count = newCount;
@@ -335,11 +316,11 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
     }
 
     /// <summary>Trims any excess capacity, up to a given threshold, from the list.</summary>
-    /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any exceess will not be trimmed.</param>
+    /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any excess will not be trimmed.</param>
     /// <remarks>This methods clamps <paramref name="threshold" /> to between <c>zero</c> and <c>one</c>, inclusive.</remarks>
     public void TrimExcess(float threshold = 1.0f)
     {
-        var count = Count;
+        var count = _count;
         var minCount = (nuint)(Capacity * Clamp(threshold, 0.0f, 1.0f));
 
         if (count < minCount)
@@ -366,13 +347,28 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
 
         if (!items.IsNull)
         {
-            return TryGetIndexOfUnsafe(items.GetPointerUnsafe(0), Count, item, out index);
+            return TryGetIndexOfUnsafe(items.GetPointerUnsafe(0), _count, item, out index);
         }
         else
         {
             index = 0;
             return false;
         }
+    }
+
+    private void Resize(nuint capacity, nuint currentCapacity)
+    {
+        var items = _items;
+
+        var newCapacity = Max(capacity, currentCapacity * 2);
+        var alignment = !items.IsNull ? items.Alignment : 0;
+
+        var newItems = new UnmanagedArray<T>(newCapacity, alignment);
+
+        CopyTo(newItems);
+        items.Dispose();
+
+        _items = newItems;
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

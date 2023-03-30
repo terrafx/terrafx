@@ -30,22 +30,20 @@ public partial struct UnmanagedReadOnlySpan<T>
         public bool MoveNext()
         {
             var succeeded = true;
-            _index++;
+            var index = unchecked(_index + 1);
 
-            if (_index == _span.Length)
+            if (index == _span.Length)
             {
-                _index--;
+                index--;
                 succeeded = false;
             }
 
+            _index = index;
             return succeeded;            
         }
 
         /// <inheritdoc />
-        public void Reset()
-        {
-            _index = nuint.MaxValue;
-        }
+        public void Reset() => _index = nuint.MaxValue;
 
         object IEnumerator.Current => Current;
 

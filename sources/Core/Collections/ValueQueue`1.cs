@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -24,10 +23,19 @@ namespace TerraFX.Collections;
 [DebuggerTypeProxy(typeof(ValueQueue<>.DebugView))]
 public partial struct ValueQueue<T> : IEnumerable<T>
 {
+    /// <summary>Gets an empty queue.</summary>
+    public static ValueQueue<T> Empty => new ValueQueue<T>();
+
     private T[] _items;
     private int _count;
     private int _head;
     private int _tail;
+
+    /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
+    public ValueQueue()
+    {
+        _items = Array.Empty<T>();
+    }
 
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the queue.</param>
@@ -35,19 +43,7 @@ public partial struct ValueQueue<T> : IEnumerable<T>
     public ValueQueue(int capacity)
     {
         ThrowIfNegative(capacity);
-
-        if (capacity != 0)
-        {
-            _items = GC.AllocateUninitializedArray<T>(capacity);
-        }
-        else
-        {
-            _items = Array.Empty<T>();
-        }
-
-        _count = 0;
-        _head = 0;
-        _tail = 0;
+        _items = (capacity != 0) ? GC.AllocateUninitializedArray<T>(capacity) : Array.Empty<T>();
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
@@ -56,11 +52,10 @@ public partial struct ValueQueue<T> : IEnumerable<T>
     public ValueQueue(IEnumerable<T> source)
     {
         // This is an extension method and throws ArgumentNullException if null
-        _items = source.ToArray();
+        var items = source.ToArray();
 
-        _count = _items.Length;
-        _head = 0;
-        _tail = 0;
+        _items = items;
+        _count = items.Length;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
@@ -79,8 +74,6 @@ public partial struct ValueQueue<T> : IEnumerable<T>
         }
 
         _count = span.Length;
-        _head = 0;
-        _tail = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
@@ -104,8 +97,6 @@ public partial struct ValueQueue<T> : IEnumerable<T>
         }
 
         _count = array.Length;
-        _head = 0;
-        _tail = 0;
     }
 
     /// <summary>Gets the number of items that can be contained by the queue without being resized.</summary>
@@ -114,7 +105,7 @@ public partial struct ValueQueue<T> : IEnumerable<T>
         get
         {
             var items = _items;
-            return items is not null ? _items.Length : 0;
+            return items is not null ? items.Length : 0;
         }
     }
 
@@ -131,12 +122,14 @@ public partial struct ValueQueue<T> : IEnumerable<T>
 
             if ((head < tail) || (tail == 0))
             {
-                Array.Clear(_items, head, Count);
+                Array.Clear(_items, head, _count);
             }
             else
             {
-                Array.Clear(_items, head, Count - head);
-                Array.Clear(_items, 0, tail);
+                var items = _items;
+
+                Array.Clear(items, head, _count - head);
+                Array.Clear(items, 0, tail);
             }
         }
 
@@ -159,12 +152,12 @@ public partial struct ValueQueue<T> : IEnumerable<T>
 
             if ((head < tail) || (tail == 0))
             {
-                return Array.IndexOf(items, item, head, Count) != -1;
+                return Array.IndexOf(items, item, head, _count) >= 0;
             }
             else
             {
-                return (Array.IndexOf(items, item, head, Count - head) != -1)
-                    || (Array.IndexOf(items, item, 0, tail) != -1);
+                return (Array.IndexOf(items, item, head, _count - head) >= 0)
+                    || (Array.IndexOf(items, item, 0, tail) >= 0);
             }
         }
         else
@@ -212,13 +205,10 @@ public partial struct ValueQueue<T> : IEnumerable<T>
     /// <param name="item">The item to enqueue to the tail of the queue.</param>
     public void Enqueue(T item)
     {
-        var count = Count;
+        var count = _count;
         var newCount = count + 1;
 
-        if (newCount > Capacity)
-        {
-            EnsureCapacity(count + 1);
-        }
+        EnsureCapacity(count + 1);
 
         var tail = _tail;
         var newTail = tail + 1;
@@ -235,21 +225,15 @@ public partial struct ValueQueue<T> : IEnumerable<T>
 
     /// <summary>Ensures the capacity of the queue is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the queue should support.</param>
-    /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and is instead does nothing.</remarks>
+    /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and instead does nothing.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void EnsureCapacity(int capacity)
     {
         var currentCapacity = Capacity;
 
         if (capacity > currentCapacity)
         {
-            var newCapacity = Max(capacity, currentCapacity * 2);
-            var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
-
-            CopyTo(newItems);
-            _items = newItems;
-
-            _head = 0;
-            _tail = Count;
+            Resize(capacity, currentCapacity);
         }
     }
 
@@ -266,21 +250,15 @@ public partial struct ValueQueue<T> : IEnumerable<T>
     /// </remarks>
     public ref T GetReferenceUnsafe(int index)
     {
-        var count = Count;
+        var count = _count;
 
         if (unchecked((uint)index < (uint)_count))
         {
             var head = _head;
             var headLength = count - head;
 
-            if ((head < _tail) || (index < headLength))
-            {
-                return ref _items.GetReference(head + index);
-            }
-            else
-            {
-                return ref _items.GetReference(index - headLength);
-            }
+            var actualIndex = ((head < _tail) || (index < headLength)) ? (head + index) : (index - headLength);
+            return ref _items.GetReferenceUnsafe(actualIndex);
         }
         else
         {
@@ -308,13 +286,12 @@ public partial struct ValueQueue<T> : IEnumerable<T>
     {
         if (!TryPeek(index, out var item))
         {
-            ThrowIfNotInBounds(index, Count);
-            Fail();
+            ThrowIfNotInBounds(index, _count);
         }
-        return item;
+        return item!;
     }
 
-    /// <summary>Removes the first occurence of an item from the queue.</summary>
+    /// <summary>Removes the first occurrence of an item from the queue.</summary>
     /// <param name="item">The item to remove from the queue.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was removed from the queue; otherwise, <c>false</c>.</returns>
     public bool Remove(T item)
@@ -329,12 +306,12 @@ public partial struct ValueQueue<T> : IEnumerable<T>
 
             var index = Array.IndexOf(items, item, head, count - head);
 
-            if (index == -1)
+            if (index < 0)
             {
                 index = Array.IndexOf(items, item, 0, tail);
             }
 
-            if (index != -1)
+            if (index >= 0)
             {
                 var newTail = tail - 1;
                 var newCount = count - 1;
@@ -372,11 +349,11 @@ public partial struct ValueQueue<T> : IEnumerable<T>
     }
 
     /// <summary>Trims any excess capacity, up to a given threshold, from the queue.</summary>
-    /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any exceess will not be trimmed.</param>
+    /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any excess will not be trimmed.</param>
     /// <remarks>This methods clamps <paramref name="threshold" /> to between <c>zero</c> and <c>one</c>, inclusive.</remarks>
     public void TrimExcess(float threshold = 1.0f)
     {
-        var count = Count;
+        var count = _count;
         var minCount = (int)(Capacity * Clamp(threshold, 0.0f, 1.0f));
 
         if (count < minCount)
@@ -395,7 +372,7 @@ public partial struct ValueQueue<T> : IEnumerable<T>
     /// <returns><c>true</c> if the queue was not empty; otherwise, <c>false</c>.</returns>
     public bool TryDequeue([MaybeNullWhen(false)] out T item)
     {
-        var count = Count;
+        var count = _count;
         var newCount = count - 1;
 
         if (count == 0)
@@ -431,7 +408,7 @@ public partial struct ValueQueue<T> : IEnumerable<T>
     /// <returns><c>true</c> if the queue was not empty; otherwise, <c>false</c>.</returns>
     public readonly bool TryPeek([MaybeNullWhen(false)] out T item)
     {
-        if (Count != 0)
+        if (_count != 0)
         {
             item = _items[_head];
             return true;
@@ -449,20 +426,15 @@ public partial struct ValueQueue<T> : IEnumerable<T>
     /// <returns><c>true</c> if the queue was not empty and <paramref name="index" /> is less than <see cref="Count" />; otherwise, <c>false</c>.</returns>
     public readonly bool TryPeek(int index, [MaybeNullWhen(false)] out T item)
     {
-        var count = Count;
+        var count = _count;
 
         if (unchecked((uint)index < (uint)count))
         {
             var head = _head;
 
-            if ((head < _tail) || (index < (count - head)))
-            {
-                item = _items[head + index];
-            }
-            else
-            {
-                item = _items[index];
-            }
+            var actualIndex = ((head < _tail) || (index < (count - head))) ? (head + index) : index;
+            item = _items[actualIndex];
+
             return true;
         }
         else
@@ -470,6 +442,18 @@ public partial struct ValueQueue<T> : IEnumerable<T>
             item = default!;
             return false;
         }
+    }
+
+    private void Resize(int capacity, int currentCapacity)
+    {
+        var newCapacity = Max(capacity, currentCapacity * 2);
+        var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
+
+        CopyTo(newItems);
+        _items = newItems;
+
+        _head = 0;
+        _tail = _count;
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

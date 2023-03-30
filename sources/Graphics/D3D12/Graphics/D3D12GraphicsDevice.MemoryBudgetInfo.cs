@@ -54,7 +54,7 @@ public partial class D3D12GraphicsDevice : GraphicsDevice
 
         public ulong GetTotalAllocatedMemoryRegionByteLengthAtLastUpdate(int memoryManagerKindIndex)
         {
-            Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
+            Assert(((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
 
             var totalSizeAtLastUpdate = _totalByteLengthAtLastUpdate[memoryManagerKindIndex];
             var totalFreeMemoryRegionSizeAtLastUpdate = _totalFreeMemoryRegionByteLengthAtLastUpdate[memoryManagerKindIndex];
@@ -64,25 +64,25 @@ public partial class D3D12GraphicsDevice : GraphicsDevice
 
         public ulong GetTotalFreeMemoryRegionByteLengthAtLastUpdate(int memoryManagerKindIndex)
         {
-            Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
+            Assert(((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
             return _totalFreeMemoryRegionByteLengthAtLastUpdate[memoryManagerKindIndex];
         }
 
         public ulong GetTotalByteLengthAtLastUpdate(int memoryManagerKindIndex)
         {
-            Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
+            Assert(((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
             return _totalByteLengthAtLastUpdate[memoryManagerKindIndex];
         }
 
         public void SetTotalFreeMemoryRegionByteLengthAtLastUpdate(int memoryManagerKindIndex, ulong value)
         {
-            Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
+            Assert(((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
             _totalFreeMemoryRegionByteLengthAtLastUpdate[memoryManagerKindIndex] = value;
         }
 
         public void SetTotalSizeAtLastUpdate(int memoryManagerKindIndex, ulong value)
         {
-            Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
+            Assert(((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
             _totalByteLengthAtLastUpdate[memoryManagerKindIndex] = value;
         }
     }

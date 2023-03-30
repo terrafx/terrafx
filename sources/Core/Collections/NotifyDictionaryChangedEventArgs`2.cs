@@ -1,7 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 
 namespace TerraFX.Collections;
@@ -20,7 +19,7 @@ public sealed class NotifyDictionaryChangedEventArgs<TKey, TValue> : EventArgs
 
     private NotifyDictionaryChangedEventArgs(NotifyDictionaryChangedAction action, TKey? key = default, TValue? oldValue = default, TValue? newValue = default)
     {
-        Assert(AssertionsEnabled && Enum.IsDefined(action));
+        AssertIsDefined(action);
 
         _action = action;
         _key = key;
@@ -37,7 +36,7 @@ public sealed class NotifyDictionaryChangedEventArgs<TKey, TValue> : EventArgs
     {
         get
         {
-            Assert(AssertionsEnabled && (_action != NotifyDictionaryChangedAction.Reset));
+            Assert(_action != NotifyDictionaryChangedAction.Reset);
             return _key;
         }
     }
@@ -48,7 +47,7 @@ public sealed class NotifyDictionaryChangedEventArgs<TKey, TValue> : EventArgs
     {
         get
         {
-            Assert(AssertionsEnabled && (_action == NotifyDictionaryChangedAction.ValueChanged));
+            Assert(_action == NotifyDictionaryChangedAction.ValueChanged);
             return _oldValue;
         }
     }
@@ -59,7 +58,7 @@ public sealed class NotifyDictionaryChangedEventArgs<TKey, TValue> : EventArgs
     {
         get
         {
-            Assert(AssertionsEnabled && (_action == NotifyDictionaryChangedAction.ValueChanged));
+            Assert(_action == NotifyDictionaryChangedAction.ValueChanged);
             return _newValue;
         }
     }

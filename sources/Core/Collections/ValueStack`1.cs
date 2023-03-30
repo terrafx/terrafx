@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -24,8 +23,17 @@ namespace TerraFX.Collections;
 [DebuggerTypeProxy(typeof(ValueStack<>.DebugView))]
 public partial struct ValueStack<T> : IEnumerable<T>
 {
+    /// <summary>Gets an empty stack.</summary>
+    public static ValueStack<T> Empty => new ValueStack<T>();
+
     private T[] _items;
     private int _count;
+
+    /// <summary>Initializes a new instance of the <see cref="ValueStack{T}" /> struct.</summary>
+    public ValueStack()
+    {
+        _items = Array.Empty<T>();
+    }
 
     /// <summary>Initializes a new instance of the <see cref="ValueStack{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the stack.</param>
@@ -33,17 +41,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
     public ValueStack(int capacity)
     {
         ThrowIfNegative(capacity);
-
-        if (capacity != 0)
-        {
-            _items = GC.AllocateUninitializedArray<T>(capacity);
-        }
-        else
-        {
-            _items = Array.Empty<T>();
-        }
-
-        _count = 0;
+        _items = (capacity != 0) ? GC.AllocateUninitializedArray<T>(capacity) : Array.Empty<T>();
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueStack{T}" /> struct.</summary>
@@ -103,7 +101,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
         get
         {
             var items = _items;
-            return items is not null ? _items.Length : 0;
+            return items is not null ? items.Length : 0;
         }
     }
 
@@ -131,7 +129,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
         if (items is not null)
         {
             var count = Count;
-            return (count != 0) && Array.LastIndexOf(items, item, count - 1) != -1;
+            return (count != 0) && Array.LastIndexOf(items, item, count - 1) >= 0;
         }
         else
         {
@@ -146,18 +144,15 @@ public partial struct ValueStack<T> : IEnumerable<T>
 
     /// <summary>Ensures the capacity of the stack is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the stack should support.</param>
-    /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and is instead does nothing.</remarks>
+    /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and instead does nothing.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void EnsureCapacity(int capacity)
     {
         var currentCapacity = Capacity;
 
         if (capacity > currentCapacity)
         {
-            var newCapacity = Max(capacity, currentCapacity * 2);
-            var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
-
-            CopyTo(newItems);
-            _items = newItems;
+            Resize(capacity, currentCapacity);
         }
     }
 
@@ -175,15 +170,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
     public ref T GetReferenceUnsafe(int index)
     {
         var count = Count;
-
-        if (unchecked((uint)index < (uint)count))
-        {
-            return ref _items.GetReference(count - (index + 1));
-        }
-        else
-        {
-            return ref NullRef<T>();
-        }
+        return ref (((uint)index < (uint)count) ? ref _items.GetReferenceUnsafe(count - (index + 1)) : ref NullRef<T>());
     }
 
     /// <summary>Peeks at the item at the top of the stack.</summary>
@@ -207,9 +194,8 @@ public partial struct ValueStack<T> : IEnumerable<T>
         if (!TryPeek(index, out var item))
         {
             ThrowIfNotInBounds(index, Count);
-            Fail();
         }
-        return item;
+        return item!;
     }
 
     /// <summary>Pops the item from the top of the stack.</summary>
@@ -231,17 +217,14 @@ public partial struct ValueStack<T> : IEnumerable<T>
         var count = Count;
         var newCount = count + 1;
 
-        if (newCount > Capacity)
-        {
-            EnsureCapacity(count + 1);
-        }
+        EnsureCapacity(count + 1);
 
         _count = newCount;
         _items[count] = item;
     }
 
     /// <summary>Trims any excess capacity, up to a given threshold, from the stack.</summary>
-    /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any exceess will not be trimmed.</param>
+    /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any excess will not be trimmed.</param>
     /// <remarks>This methods clamps <paramref name="threshold" /> to between <c>zero</c> and <c>one</c>, inclusive.</remarks>
     public void TrimExcess(float threshold = 1.0f)
     {
@@ -312,7 +295,7 @@ public partial struct ValueStack<T> : IEnumerable<T>
         _count = newCount;
 
         var items = _items;
-        item = items[newCount];
+        item = _items[newCount];
 
         if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
         {
@@ -320,6 +303,15 @@ public partial struct ValueStack<T> : IEnumerable<T>
         }
 
         return true;
+    }
+
+    private void Resize(int capacity, int currentCapacity)
+    {
+        var newCapacity = Max(capacity, currentCapacity * 2);
+        var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
+
+        CopyTo(newItems);
+        _items = newItems;
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

@@ -73,4 +73,7 @@ public abstract class DisposableObject : IDisposable
             ThrowObjectDisposedException(_name);
         }
     }
+
+    /// <summary>Marks the object as being disposed.</summary>
+    protected void MarkDisposed() => Interlocked.Exchange(ref _isDisposed, 1);
 }

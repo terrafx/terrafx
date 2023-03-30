@@ -14,25 +14,25 @@ namespace TerraFX;
 public readonly unsafe partial struct UnmanagedReadOnlySpan<T> : IEnumerable<T>
     where T : unmanaged
 {
-    /// <summary>An empty span.</summary>
-    public static readonly UnmanagedReadOnlySpan<T> Empty = new UnmanagedReadOnlySpan<T>();
+    /// <summary>Gets an empty span.</summary>
+    public static UnmanagedReadOnlySpan<T> Empty => new UnmanagedReadOnlySpan<T>();
 
     private readonly UnmanagedSpan<T> _span;
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedReadOnlySpan{T}" /> struct.</summary>
     /// <inheritdoc cref="UnmanagedSpan{T}.UnmanagedSpan(UnmanagedArray{T})" />
     public UnmanagedReadOnlySpan(UnmanagedArray<T> array)
-        : this(new UnmanagedSpan<T>(array)) { }
+        : this(array.AsUnmanagedSpan()) { }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedReadOnlySpan{T}" /> struct.</summary>
     /// <inheritdoc cref="UnmanagedSpan{T}.UnmanagedSpan(UnmanagedArray{T}, nuint)" />
     public UnmanagedReadOnlySpan(UnmanagedArray<T> array, nuint start)
-        : this(new UnmanagedSpan<T>(array, start)) { }
+        : this(array.AsUnmanagedSpan(start)) { }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedReadOnlySpan{T}" /> struct.</summary>
     /// <inheritdoc cref="UnmanagedSpan{T}.UnmanagedSpan(UnmanagedArray{T}, nuint, nuint)" />
     public UnmanagedReadOnlySpan(UnmanagedArray<T> array, nuint start, nuint length)
-        : this(new UnmanagedSpan<T>(array, start, length)) { }
+        : this(array.AsUnmanagedSpan(start, length)) { }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedReadOnlySpan{T}" /> struct.</summary>
     /// <inheritdoc cref="UnmanagedSpan{T}.UnmanagedSpan(T*, nuint)" />

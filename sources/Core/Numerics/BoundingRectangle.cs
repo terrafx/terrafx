@@ -12,7 +12,7 @@ namespace TerraFX.Numerics;
 public struct BoundingRectangle : IEquatable<BoundingRectangle>, IFormattable
 {
     /// <summary>Gets a bounding rectangle with zero extent.</summary>
-    public static readonly BoundingRectangle Zero = CreateFromExtent(Vector2.Zero, Vector2.Zero);
+    public static BoundingRectangle Zero => CreateFromExtent(Vector2.Zero, Vector2.Zero);
 
     private Vector2 _center;
     private Vector2 _extent;
@@ -23,7 +23,7 @@ public struct BoundingRectangle : IEquatable<BoundingRectangle>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static BoundingRectangle CreateFromExtent(Vector2 center, Vector2 extent)
     {
-        Unsafe.SkipInit(out BoundingRectangle result);
+        BoundingRectangle result;
 
         result._center = center;
         result._extent = extent;
@@ -37,7 +37,7 @@ public struct BoundingRectangle : IEquatable<BoundingRectangle>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static BoundingRectangle CreateFromSize(Vector2 location, Vector2 size)
     {
-        Unsafe.SkipInit(out BoundingRectangle result);
+        BoundingRectangle result;
         var extent = size * 0.5f;
 
         result._center = location + extent;
@@ -172,7 +172,7 @@ public struct BoundingRectangle : IEquatable<BoundingRectangle>, IFormattable
         }
     }
 
-    /// <summary>Compares two bounding rectanglees to determine equality.</summary>
+    /// <summary>Compares two bounding rectangles to determine equality.</summary>
     /// <param name="left">The bounding rectangle to compare with <paramref name="right" />.</param>
     /// <param name="right">The bounding rectangle to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
@@ -183,7 +183,7 @@ public struct BoundingRectangle : IEquatable<BoundingRectangle>, IFormattable
             && (left._extent == right._extent);
     }
 
-    /// <summary>Compares two bounding rectanglees instances to determine inequality.</summary>
+    /// <summary>Compares two bounding rectangles instances to determine inequality.</summary>
     /// <param name="left">The bounding rectangle to compare with <paramref name="right" />.</param>
     /// <param name="right">The bounding rectangle to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>

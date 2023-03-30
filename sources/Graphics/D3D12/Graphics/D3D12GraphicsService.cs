@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using TerraFX.Collections;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
+using TerraFX.Utilities;
 using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.DirectX.DXGI;
 using static TerraFX.Interop.DirectX.DXGI_DEBUG_RLO_FLAGS;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics;
 
@@ -56,7 +56,7 @@ public sealed unsafe class D3D12GraphicsService : GraphicsService
                     if (result != DXGI_ERROR_NOT_FOUND)
                     {
                         ReleaseIfNotNull(dxgiAdapter1);
-                        ThrowExternalException(nameof(IDXGIFactory1.EnumAdapters1), result);
+                        ExceptionUtilities.ThrowExternalException(nameof(IDXGIFactory1.EnumAdapters1), result);
                     }
                     index = 0;
                 }

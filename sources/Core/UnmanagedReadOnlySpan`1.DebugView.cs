@@ -27,7 +27,7 @@ public partial struct UnmanagedReadOnlySpan<T>
         {
             get
             {
-                var count = Min(_span.Length, s_maxArrayLength);
+                var count = Min(_span.Length, MaxArrayLength);
                 var items = GC.AllocateUninitializedArray<T>((int)count);
 
                 fixed (T* pItems = items)

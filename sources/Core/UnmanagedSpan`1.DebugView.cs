@@ -20,14 +20,14 @@ public readonly partial struct UnmanagedSpan<T>
 
         public bool IsEmpty => _span.IsEmpty;
 
-        public nuint Length => _span.Length;
+        public nuint Length => _span._length;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public unsafe T[] Items
         {
             get
             {
-                var count = Min(_span.Length, s_maxArrayLength);
+                var count = Min(_span._length, MaxArrayLength);
                 var items = GC.AllocateUninitializedArray<T>((int)count);
 
                 fixed (T* pItems = items)

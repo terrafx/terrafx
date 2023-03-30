@@ -19,7 +19,7 @@ public readonly unsafe partial struct ValueReaderWriterLock : IDisposable
     /// <summary>Initializes a new instance of the <see cref="ValueReaderWriterLock" /> struct.</summary>
     public ValueReaderWriterLock()
     {
-        if (OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindowsVersionAtLeast(6, 1))
         {
             var value = Allocate<SRWLOCK>();
             InitializeSRWLock(value);
@@ -44,7 +44,7 @@ public readonly unsafe partial struct ValueReaderWriterLock : IDisposable
     /// <inheritdoc />
     public void Dispose()
     {
-        if (OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindowsVersionAtLeast(6, 1))
         {
             var value = (SRWLOCK*)_value;
             Free(value);
@@ -64,7 +64,7 @@ public readonly unsafe partial struct ValueReaderWriterLock : IDisposable
     /// <summary>Acquires a read lock on the mutex.</summary>
     public void AcquireReadLock()
     {
-        if (OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindowsVersionAtLeast(6, 1))
         {
             var value = (SRWLOCK*)_value;
             AcquireSRWLockShared(value);
@@ -83,7 +83,7 @@ public readonly unsafe partial struct ValueReaderWriterLock : IDisposable
     /// <summary>Acquires a write lock on the mutex.</summary>
     public void AcquireWriteLock()
     {
-        if (OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindowsVersionAtLeast(6, 1))
         {
             var value = (SRWLOCK*)_value;
             AcquireSRWLockExclusive(value);
@@ -103,7 +103,7 @@ public readonly unsafe partial struct ValueReaderWriterLock : IDisposable
     /// <returns><c>true</c> if the lock was succesfully acquired; otherwise, <c>false</c>.</returns>
     public bool TryAcquireReadLock()
     {
-        if (OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindowsVersionAtLeast(6, 1))
         {
             var value = (SRWLOCK*)_value;
             return TryAcquireSRWLockShared(value) != 0;
@@ -124,10 +124,10 @@ public readonly unsafe partial struct ValueReaderWriterLock : IDisposable
     /// <returns><c>true</c> if the lock was succesfully acquired; otherwise, <c>false</c>.</returns>
     public bool TryAcquireWriteLock()
     {
-        if (OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindowsVersionAtLeast(6, 1))
         {
             var value = (SRWLOCK*)_value;
-            return TryAcquireSRWLockExclusive(value) != 0; 
+            return TryAcquireSRWLockExclusive(value) != 0;
         }
         else if (OperatingSystem.IsLinux())
         {
@@ -144,7 +144,7 @@ public readonly unsafe partial struct ValueReaderWriterLock : IDisposable
     /// <summary>Releases a read lock on the mutex.</summary>
     public void ReleaseReadLock()
     {
-        if (OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindowsVersionAtLeast(6, 1))
         {
             var value = (SRWLOCK*)_value;
             ReleaseSRWLockShared(value);
@@ -163,7 +163,7 @@ public readonly unsafe partial struct ValueReaderWriterLock : IDisposable
     /// <summary>Releases a write lock on the mutex.</summary>
     public void ReleaseWriteLock()
     {
-        if (OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindowsVersionAtLeast(6, 1))
         {
             var value = (SRWLOCK*)_value;
             ReleaseSRWLockExclusive(value);

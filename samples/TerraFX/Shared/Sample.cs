@@ -7,6 +7,7 @@ using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Interop.DirectX;
+using TerraFX.Utilities;
 using static TerraFX.Interop.DirectX.D3D;
 using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.Windows.Windows;
@@ -67,7 +68,7 @@ public abstract class Sample : IDisposable
 
     protected unsafe GraphicsShader CompileShader(GraphicsDevice graphicsDevice, GraphicsShaderKind kind, string shaderName, string entryPointName)
     {
-        if (OperatingSystem.IsWindowsVersionAtLeast(10) && (_serviceProvider == Program.s_d3d12GraphicsServiceProvider))
+        if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763) && (_serviceProvider == Program.s_d3d12GraphicsServiceProvider))
         {
             var assetName = $"{shaderName}{kind}.hlsl";
 
@@ -91,14 +92,14 @@ public abstract class Sample : IDisposable
 
                 try
                 {
-                    var result = D3DCompileFromFile((ushort*)assetPath, pDefines: null, D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).GetPointer(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &d3dShaderErrorBlob);
+                    var result = D3DCompileFromFile((ushort*)assetPath, pDefines: null, D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).GetPointerUnsafe(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &d3dShaderErrorBlob);
 
                     if (FAILED(result))
                     {
                         // todo: var span = TerraFX.Utilities.InteropUtilities.MarshalUtf8ToReadOnlySpan((sbyte*)pError->GetBufferPointer(), (int)pError->GetBufferSize());
                         var errorMsg = System.Text.Encoding.UTF8.GetString((byte*)d3dShaderErrorBlob->GetBufferPointer(), (int)d3dShaderErrorBlob->GetBufferSize());
                         Console.WriteLine(errorMsg);
-                        ThrowExternalException(nameof(D3DCompileFromFile), result);
+                        ExceptionUtilities.ThrowExternalException(nameof(D3DCompileFromFile), result);
                     }
 
                     var bytecode = new UnmanagedArray<byte>(d3dShaderBlob->GetBufferSize());

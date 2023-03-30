@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using TerraFX.Threading;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
@@ -25,8 +24,17 @@ namespace TerraFX.Collections;
 [DebuggerTypeProxy(typeof(ValueList<>.DebugView))]
 public partial struct ValueList<T> : IEnumerable<T>
 {
+    /// <summary>Gets an empty linked list.</summary>
+    public static ValueList<T> Empty => new ValueList<T>();
+
     private T[] _items;
     private int _count;
+
+    /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>
+    public ValueList()
+    {
+        _items = Array.Empty<T>();
+    }
 
     /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the list.</param>
@@ -35,16 +43,7 @@ public partial struct ValueList<T> : IEnumerable<T>
     {
         ThrowIfNegative(capacity);
 
-        if (capacity != 0)
-        {
-            _items = GC.AllocateUninitializedArray<T>(capacity);
-        }
-        else
-        {
-            _items = Array.Empty<T>();
-        }
-
-        _count = 0;
+        _items = (capacity != 0) ? GC.AllocateUninitializedArray<T>(capacity) : Array.Empty<T>();
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>
@@ -53,8 +52,10 @@ public partial struct ValueList<T> : IEnumerable<T>
     public ValueList(IEnumerable<T> source)
     {
         // This is an extension method and throws ArgumentNullException if null
-        _items = source.ToArray();
-        _count = _items.Length;
+        var items = source.ToArray();
+        
+        _items = items;
+        _count = items.Length;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>
@@ -104,7 +105,7 @@ public partial struct ValueList<T> : IEnumerable<T>
         get
         {
             var items = _items;
-            return items is not null ? _items.Length : 0;
+            return items is not null ? items.Length : 0;
         }
     }
 
@@ -119,13 +120,13 @@ public partial struct ValueList<T> : IEnumerable<T>
     {
         readonly get
         {
-            ThrowIfNotInBounds(index, Count);
+            ThrowIfNotInBounds(index, _count);
             return _items[index];
         }
 
         set
         {
-            ThrowIfNotInBounds(index, Count);
+            ThrowIfNotInBounds(index, _count);
             _items[index] = value;
         }
     }
@@ -134,13 +135,10 @@ public partial struct ValueList<T> : IEnumerable<T>
     /// <param name="item">The item to add to the list.</param>
     public void Add(T item)
     {
-        var count = Count;
+        var count = _count;
         var newCount = count + 1;
 
-        if (newCount > Capacity)
-        {
-            EnsureCapacity(newCount);
-        }
+        EnsureCapacity(newCount);
 
         _count = newCount;
         _items[count] = item;
@@ -176,9 +174,11 @@ public partial struct ValueList<T> : IEnumerable<T>
     /// <summary>Removes all items from the list.</summary>
     public void Clear()
     {
-        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>() && (_items is not null))
+        var items = _items;
+
+        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>() && (items is not null))
         {
-            Array.Clear(_items, 0, Count);
+            Array.Clear(items, 0, _count);
         }
 
         _count = 0;
@@ -187,27 +187,24 @@ public partial struct ValueList<T> : IEnumerable<T>
     /// <summary>Checks whether the list contains a specified item.</summary>
     /// <param name="item">The item to check for in the list.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was found in the list; otherwise, <c>false</c>.</returns>
-    public readonly bool Contains(T item) => IndexOf(item) != -1;
+    public readonly bool Contains(T item) => IndexOf(item) >= 0;
 
     /// <summary>Copies the items of the list to a span.</summary>
     /// <param name="destination">The span to which the items will be copied.</param>
     /// <exception cref="ArgumentException"><see cref="Count" /> is greater than the length of <paramref name="destination" />.</exception>
-    public readonly void CopyTo(Span<T> destination) => _items.AsSpan(0, Count).CopyTo(destination);
+    public readonly void CopyTo(Span<T> destination) => _items.AsSpan(0, _count).CopyTo(destination);
 
     /// <summary>Ensures the capacity of the list is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the list should support.</param>
-    /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and is instead does nothing.</remarks>
+    /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and instead does nothing.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void EnsureCapacity(int capacity)
     {
         var currentCapacity = Capacity;
 
         if (capacity > currentCapacity)
         {
-            var newCapacity = Max(capacity, currentCapacity * 2);
-            var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
-
-            CopyTo(newItems);
-            _items = newItems;
+            Resize(capacity, currentCapacity);
         }
     }
 
@@ -225,17 +222,17 @@ public partial struct ValueList<T> : IEnumerable<T>
     public ref T GetReferenceUnsafe(int index)
     {
         AssertNotNull(_items);
-        Assert(AssertionsEnabled && unchecked((uint)index <= (uint)Capacity));
-        return ref _items.GetReference(index);
+        Assert(unchecked((uint)index <= (uint)Capacity));
+        return ref _items.GetReferenceUnsafe(index);
     }
 
-    /// <summary>Gets the index of the first occurence of an item in the list.</summary>
+    /// <summary>Gets the index of the first occurrence of an item in the list.</summary>
     /// <param name="item">The item to find in the list.</param>
     /// <returns>The index of <paramref name="item" /> if it was found in the list; otherwise, <c>-1</c>.</returns>
     public readonly int IndexOf(T item)
     {
         var items = _items;
-        return items is not null ? Array.IndexOf(items, item, 0, Count) : -1;
+        return items is not null ? Array.IndexOf(items, item, 0, _count) : -1;
     }
 
     /// <summary>Inserts an item into list at the specified index.</summary>
@@ -244,15 +241,11 @@ public partial struct ValueList<T> : IEnumerable<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is negative or greater than <see cref="Count" />.</exception>
     public void Insert(int index, T item)
     {
-        var count = Count;
+        var count = _count;
         ThrowIfNotInInsertBounds(index, count);
 
         var newCount = count + 1;
-
-        if (newCount > Capacity)
-        {
-            EnsureCapacity(newCount);
-        }
+        EnsureCapacity(newCount);
 
         var items = _items;
 
@@ -265,7 +258,7 @@ public partial struct ValueList<T> : IEnumerable<T>
         items[index] = item;
     }
 
-    /// <summary>Removes the first occurence of an item from the list.</summary>
+    /// <summary>Removes the first occurrence of an item from the list.</summary>
     /// <param name="item">The item to remove from the list.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was removed from the list; otherwise, <c>false</c>.</returns>
     public bool Remove(T item)
@@ -283,7 +276,7 @@ public partial struct ValueList<T> : IEnumerable<T>
         }
     }
 
-    /// <summary>Removes the first occurence of an item from the list.</summary>
+    /// <summary>Removes the first occurrence of an item from the list.</summary>
     /// <param name="item">The item to remove from the list.</param>
     /// <param name="mutex">The mutex to use when removing <paramref name="item" /> from the list.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was removed from the list; otherwise, <c>false</c>.</returns>
@@ -298,7 +291,7 @@ public partial struct ValueList<T> : IEnumerable<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.</exception>
     public void RemoveAt(int index)
     {
-        var count = Count;
+        var count = _count;
         ThrowIfNotInBounds(index, count);
 
         var newCount = count - 1;
@@ -331,11 +324,11 @@ public partial struct ValueList<T> : IEnumerable<T>
     }
 
     /// <summary>Trims any excess capacity, up to a given threshold, from the list.</summary>
-    /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any exceess will not be trimmed.</param>
+    /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any excess will not be trimmed.</param>
     /// <remarks>This methods clamps <paramref name="threshold" /> to between <c>zero</c> and <c>one</c>, inclusive.</remarks>
     public void TrimExcess(float threshold = 1.0f)
     {
-        var count = Count;
+        var count = _count;
         var minCount = (int)(Capacity * Clamp(threshold, 0.0f, 1.0f));
 
         if (count < minCount)
@@ -344,6 +337,15 @@ public partial struct ValueList<T> : IEnumerable<T>
             CopyTo(newItems);
             _items = newItems;
         }
+    }
+
+    private void Resize(int capacity, int currentCapacity)
+    {
+        var newCapacity = Max(capacity, currentCapacity * 2);
+        var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
+
+        CopyTo(newItems);
+        _items = newItems;
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

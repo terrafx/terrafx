@@ -10,7 +10,6 @@ using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.DirectX.DXGI_FORMAT;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
 [assembly: SupportedOSPlatform("windows10.0")]
@@ -441,7 +440,7 @@ internal static unsafe partial class D3D12Utilities
         if (value.FAILED)
         {
             AssertNotNull(valueExpression);
-            ThrowExternalException(valueExpression, value);
+            ExceptionUtilities.ThrowExternalException(valueExpression, value);
         }
     }
 
@@ -470,7 +469,7 @@ internal static unsafe partial class D3D12Utilities
 
             fixed (char* pName = componentName)
             {
-                _ = self.SetPrivateData(AsReadonlyPointer(in WKPDID_D3DDebugObjectName), (uint)componentName.Length, (ushort*)pName);
+                _ = self.SetPrivateData(AsPointer(in WKPDID_D3DDebugObjectName), (uint)componentName.Length, (ushort*)pName);
             }
         }
     }

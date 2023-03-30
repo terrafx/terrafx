@@ -187,8 +187,8 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
             const int EnabledExtensionNamesCount = 2;
 
             var enabledVkExtensionNames = stackalloc sbyte*[EnabledExtensionNamesCount] {
-                (sbyte*)VK_EXT_MEMORY_BUDGET_EXTENSION_NAME.GetPointer(),
-                (sbyte*)VK_KHR_SWAPCHAIN_EXTENSION_NAME.GetPointer(),
+                (sbyte*)VK_EXT_MEMORY_BUDGET_EXTENSION_NAME.GetPointerUnsafe(),
+                (sbyte*)VK_KHR_SWAPCHAIN_EXTENSION_NAME.GetPointerUnsafe(),
             };
 
             var enabledVkLayersNamesCount = GraphicsService.EnableDebugMode ? 1u : 0u;
@@ -209,16 +209,12 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
 
             if (GraphicsService.EnableDebugMode)
             {
-                // VK_LAYER_KHRONOS_validation
-                ReadOnlySpan<sbyte> vkLayerKhronosValidation = new sbyte[] { 0x56, 0x4B, 0x5F, 0x4C, 0x41, 0x59, 0x45, 0x52, 0x5F, 0x4B, 0x48, 0x52, 0x4F, 0x4E, 0x4F, 0x53, 0x5F, 0x76, 0x61, 0x6C, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x00 };
-                enabledVkLayerNames[enabledVkLayersNamesCount - 1] = vkLayerKhronosValidation.GetPointer();
+                enabledVkLayerNames[enabledVkLayersNamesCount - 1] = (sbyte*)"VK_LAYER_KHRONOS_validation"u8.GetPointerUnsafe();
             }
 
             ThrowExternalExceptionIfNotSuccess(vkCreateDevice(adapter.VkPhysicalDevice, &vkDeviceCreateInfo, pAllocator: null, &vkDevice));
 
-            // vkSetDebugUtilsObjectNameEXT
-            ReadOnlySpan<sbyte> vkSetDebugUtilsObjectNameEXT = new sbyte[] { 0x76, 0x6B, 0x53, 0x65, 0x74, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4F, 0x62, 0x6A, 0x65, 0x63, 0x74, 0x4E, 0x61, 0x6D, 0x65, 0x45, 0x58, 0x54, 0x00 };
-            vkDeviceManualImports.vkSetDebugUtilsObjectNameEXT = (delegate* unmanaged<VkDevice, VkDebugUtilsObjectNameInfoEXT*, VkResult>)vkGetDeviceProcAddr(vkDevice, vkSetDebugUtilsObjectNameEXT.GetPointer());
+            vkDeviceManualImports.vkSetDebugUtilsObjectNameEXT = (delegate* unmanaged<VkDevice, VkDebugUtilsObjectNameInfoEXT*, VkResult>)vkGetDeviceProcAddr(vkDevice, (sbyte*)"vkSetDebugUtilsObjectNameEXT"u8.GetPointerUnsafe());
 
             return vkDevice;
         }
@@ -355,7 +351,7 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
     /// <inheritdoc />
     protected override void SetNameUnsafe(string value)
     {
-        SetVkObjectName(VK_OBJECT_TYPE_DEVICE, VkDevice, value);
+        SetVkObjectName(VK_OBJECT_TYPE_DEVICE, VkDevice.Value, value);
     }
 
     internal void AddBuffer(VulkanGraphicsBuffer buffer)
@@ -588,19 +584,19 @@ public sealed unsafe partial class VulkanGraphicsDevice : GraphicsDevice
 
     private ulong GetTotalFreeMemoryRegionByteLength(uint vkMemoryTypeIndex)
     {
-        Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
+        Assert((vkMemoryTypeIndex < MaxMemoryManagerTypes));
         return _memoryManagers[vkMemoryTypeIndex].TotalFreeMemoryRegionByteLength;
     }
 
     private ulong GetTotalOperationCount(uint vkMemoryTypeIndex)
     {
-        Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
+        Assert((vkMemoryTypeIndex < MaxMemoryManagerTypes));
         return _memoryManagers[vkMemoryTypeIndex].OperationCount;
     }
 
     private ulong GetTotalByteLength(uint vkMemoryTypeIndex)
     {
-        Assert(AssertionsEnabled && (vkMemoryTypeIndex < MaxMemoryManagerTypes));
+        Assert((vkMemoryTypeIndex < MaxMemoryManagerTypes));
         return _memoryManagers[vkMemoryTypeIndex].ByteLength;
     }
 

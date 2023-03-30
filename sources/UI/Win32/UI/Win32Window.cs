@@ -7,6 +7,7 @@ using TerraFX.Graphics;
 using TerraFX.Interop.Windows;
 using TerraFX.Numerics;
 using TerraFX.Threading;
+using TerraFX.Utilities;
 using static TerraFX.Interop.Windows.GWL;
 using static TerraFX.Interop.Windows.HWND;
 using static TerraFX.Interop.Windows.SW;
@@ -155,7 +156,7 @@ public sealed unsafe class Win32Window : Window
     {
         if (!TryActivate())
         {
-            ThrowExternalException(nameof(SetForegroundWindow), 0);
+            ExceptionUtilities.ThrowExternalException(nameof(SetForegroundWindow), 0);
         }
     }
 

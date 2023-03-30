@@ -316,7 +316,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
 
     private void RemoveMemoryAllocatorAt(int index)
     {
-        Assert(AssertionsEnabled && unchecked((uint)index <= _memoryAllocators.Count));
+        Assert(unchecked((uint)index <= _memoryAllocators.Count));
 
         var memoryAllocator = _memoryAllocators[index];
         memoryAllocator.DeviceObject.Dispose();
@@ -327,7 +327,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         var byteLength = memoryAllocator.ByteLength;
         MemoryManagerInfo.ByteLength -= byteLength;
 
-        Assert(AssertionsEnabled && byteLength == memoryAllocator.TotalFreeMemoryRegionByteLength);
+        Assert(byteLength == memoryAllocator.TotalFreeMemoryRegionByteLength);
         MemoryManagerInfo.TotalFreeMemoryRegionByteLength -= byteLength;
     }
 
@@ -529,7 +529,7 @@ public sealed unsafe class VulkanGraphicsMemoryManager : GraphicsMemoryManager
         }
 
         MemoryManagerInfo.MinimumByteLength = minimumByteLength;
-        Assert(AssertionsEnabled && MemoryManagerInfo.ByteLength == byteLength);
+        Assert(MemoryManagerInfo.ByteLength == byteLength);
 
         return true;
     }

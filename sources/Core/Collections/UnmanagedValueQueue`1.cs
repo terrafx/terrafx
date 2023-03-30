@@ -7,7 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using static TerraFX.Utilities.AssertionUtilities;
+using System.Runtime.CompilerServices;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -23,10 +23,19 @@ namespace TerraFX.Collections;
 public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T>
     where T : unmanaged
 {
+    /// <summary>Gets an empty queue.</summary>
+    public static UnmanagedValueQueue<T> Empty => new UnmanagedValueQueue<T>();
+
     private UnmanagedArray<T> _items;
     private nuint _count;
     private nuint _head;
     private nuint _tail;
+
+    /// <summary>Initializes a new instance of the <see cref="UnmanagedValueQueue{T}" /> struct.</summary>
+    public UnmanagedValueQueue()
+    {
+        _items = UnmanagedArray<T>.Empty;
+    }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueQueue{T}" /> struct.</summary>
     /// <param name="capacity">The initial capacity of the queue.</param>
@@ -46,10 +55,6 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
             }
             _items = UnmanagedArray<T>.Empty;
         }
-
-        _count = 0;
-        _head = 0;
-        _tail = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueQueue{T}" /> struct.</summary>
@@ -74,8 +79,6 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
         }
 
         _count = span.Length;
-        _head = 0;
-        _tail = 0;
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueQueue{T}" /> struct.</summary>
@@ -99,8 +102,6 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
         }
 
         _count = array.Length;
-        _head = 0;
-        _tail = 0;
     }
 
     /// <summary>Gets the number of items that can be contained by the queue without being resized.</summary>
@@ -109,7 +110,7 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
         get
         {
             var items = _items;
-            return !items.IsNull ? _items.Length : 0;
+            return !items.IsNull ? items.Length : 0;
         }
     }
 
@@ -138,11 +139,11 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
 
             if ((head < tail) || (tail == 0))
             {
-                return TryGetIndexOfUnsafe(items.GetPointerUnsafe(head), Count, item, out _);
+                return TryGetIndexOfUnsafe(items.GetPointerUnsafe(head), _count, item, out _);
             }
             else
             {
-                return TryGetIndexOfUnsafe(items.GetPointerUnsafe(head), Count - head, item, out _)
+                return TryGetIndexOfUnsafe(items.GetPointerUnsafe(head), _count - head, item, out _)
                     || TryGetIndexOfUnsafe(items.GetPointerUnsafe(0), tail, item, out _);
             }
         }
@@ -157,7 +158,7 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
     /// <exception cref="ArgumentOutOfRangeException"><see cref="Count" /> is greater than the length of <paramref name="destination" />.</exception>
     public readonly void CopyTo(UnmanagedSpan<T> destination)
     {
-        var count = Count;
+        var count = _count;
 
         if (count != 0)
         {
@@ -172,9 +173,11 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
             }
             else
             {
+                var items = _items;
                 var headLength = count - head;
-                CopyArrayUnsafe(destination.GetPointerUnsafe(0), _items.GetPointerUnsafe(head), headLength);
-                CopyArrayUnsafe(destination.GetPointerUnsafe(headLength), _items.GetPointerUnsafe(0), tail);
+
+                CopyArrayUnsafe(destination.GetPointerUnsafe(0), items.GetPointerUnsafe(head), headLength);
+                CopyArrayUnsafe(destination.GetPointerUnsafe(headLength), items.GetPointerUnsafe(0), tail);
             }
         }
     }
@@ -198,13 +201,10 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
     /// <param name="item">The item to enqueue to the tail of the queue.</param>
     public void Enqueue(T item)
     {
-        var count = Count;
+        var count = _count;
         var newCount = count + 1;
 
-        if (newCount > Capacity)
-        {
-            EnsureCapacity(count + 1);
-        }
+        EnsureCapacity(count + 1);
 
         var tail = _tail;
         var newTail = tail + 1;
@@ -221,26 +221,14 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
 
     /// <summary>Ensures the capacity of the queue is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the queue should support.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void EnsureCapacity(nuint capacity)
     {
         var currentCapacity = Capacity;
 
         if (capacity > currentCapacity)
         {
-            var items = _items;
-
-            var newCapacity = Max(capacity, currentCapacity * 2);
-            var alignment = !items.IsNull ? items.Alignment : 0;
-
-            var newItems = new UnmanagedArray<T>(newCapacity, alignment);
-
-            CopyTo(newItems);
-            items.Dispose();
-
-            _items = newItems;
-
-            _head = 0;
-            _tail = Count;
+            Resize(capacity, currentCapacity);
         }
     }
 
@@ -255,20 +243,15 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
     public T* GetPointerUnsafe(nuint index)
     {
         T* item;
+        var count = _count;
 
-        if (index < _count)
+        if (index < count)
         {
             var head = _head;
-            var headLength = _count - head;
+            var headLength = count - head;
 
-            if ((head < _tail) || (index < headLength))
-            {
-                item = _items.GetPointerUnsafe(head + index);
-            }
-            else
-            {
-                item = _items.GetPointerUnsafe(index - headLength);
-            }
+            var actualIndex = ((head < _tail) || (index < headLength)) ? (head + index) : (index - headLength);
+            item = _items.GetPointerUnsafe(actualIndex);
         }
         else
         {
@@ -285,7 +268,7 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
     ///     <para>This method is because other operations may invalidate the backing array.</para>
     ///     <para>This method is because it does not validate that <paramref name="index" /> is less than <see cref="Count" />.</para>
     /// </remarks>
-    public ref T GetReferenceUnsafe(nuint index) => ref AsRef<T>(GetPointerUnsafe(index));
+    public ref T GetReferenceUnsafe(nuint index) => ref *GetPointerUnsafe(index);
 
     /// <summary>Peeks at item at the head of the queue.</summary>
     /// <returns>The item at the head of the queue.</returns>
@@ -307,13 +290,12 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
     {
         if (!TryPeek(index, out var item))
         {
-            ThrowIfNotInBounds(index, Count);
-            Fail();
+            ThrowIfNotInBounds(index, _count);
         }
-        return item;
+        return item!;
     }
 
-    /// <summary>Removes the first occurence of an item from the queue.</summary>
+    /// <summary>Removes the first occurrence of an item from the queue.</summary>
     /// <param name="item">The item to remove from the queue.</param>
     /// <returns><c>true</c> if <paramref name="item" /> was removed from the queue; otherwise, <c>false</c>.</returns>
     public bool Remove(T item)
@@ -354,11 +336,11 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
     }
 
     /// <summary>Trims any excess capacity, up to a given threshold, from the queue.</summary>
-    /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any exceess will not be trimmed.</param>
+    /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any excess will not be trimmed.</param>
     /// <remarks>This methods clamps <paramref name="threshold" /> to between <c>zero</c> and <c>one</c>, inclusive.</remarks>
     public void TrimExcess(float threshold = 1.0f)
     {
-        var count = Count;
+        var count = _count;
         var minCount = (nuint)(Capacity * Clamp(threshold, 0.0f, 1.0f));
 
         if (count < minCount)
@@ -383,7 +365,7 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
     /// <returns><c>true</c> if the queue was not empty; otherwise, <c>false</c>.</returns>
     public bool TryDequeue(out T item)
     {
-        var count = Count;
+        var count = _count;
         var newCount = unchecked(count - 1);
 
         if (count == 0)
@@ -403,9 +385,7 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
         }
         _head = newHead;
 
-        var items = _items;
-        item = items[head];
-
+        item = _items[head];
         return true;
     }
 
@@ -414,7 +394,7 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
     /// <returns><c>true</c> if the queue was not empty; otherwise, <c>false</c>.</returns>
     public readonly bool TryPeek(out T item)
     {
-        if (Count != 0)
+        if (_count != 0)
         {
             item = _items[_head];
             return true;
@@ -432,20 +412,15 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
     /// <returns><c>true</c> if the queue was not empty and <paramref name="index" /> is less than <see cref="Count" />; otherwise, <c>false</c>.</returns>
     public readonly bool TryPeek(nuint index, out T item)
     {
-        var count = Count;
+        var count = _count;
 
         if (index < count)
         {
             var head = _head;
 
-            if ((head < _tail) || (index < (count - head)))
-            {
-                item = _items[head + index];
-            }
-            else
-            {
-                item = _items[index];
-            }
+            var actualIndex = ((head < _tail) || (index < (count - head))) ? (head + index) : index;
+            item = _items[actualIndex];
+
             return true;
         }
         else
@@ -453,6 +428,24 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
             item = default!;
             return false;
         }
+    }
+
+    private void Resize(nuint capacity, nuint currentCapacity)
+    {
+        var items = _items;
+
+        var newCapacity = Max(capacity, currentCapacity * 2);
+        var alignment = !items.IsNull ? items.Alignment : 0;
+
+        var newItems = new UnmanagedArray<T>(newCapacity, alignment);
+
+        CopyTo(newItems);
+        items.Dispose();
+
+        _items = newItems;
+
+        _head = 0;
+        _tail = _count;
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

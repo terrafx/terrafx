@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using static TerraFX.Interop.Mimalloc.Mimalloc;
-using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -279,7 +278,7 @@ public static unsafe class MemoryUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ClearUnsafe(void* destination, nuint size)
     {
-        Assert(AssertionsEnabled && ((destination != null) || (size == 0)));
+        Assert((destination != null) || (size == 0));
 
         if (size <= 32)
         {
@@ -292,11 +291,11 @@ public static unsafe class MemoryUtilities
 
         static void LargeClear(void* destination, nuint length)
         {
-            Assert(AssertionsEnabled && (length > 32));
+            Assert(length > 32);
             var blocks = length / 128;
 
             length -= blocks * 128;
-            Assert(AssertionsEnabled && (length < 128));
+            Assert(length < 128);
 
             for (nuint block = 0; block < blocks; block++)
             {
@@ -324,10 +323,10 @@ public static unsafe class MemoryUtilities
             }
 
             blocks = length / 32;
-            Assert(AssertionsEnabled && (blocks <= 3));
+            Assert(blocks <= 3);
 
             length -= blocks * 32;
-            Assert(AssertionsEnabled && (length < 32));
+            Assert(length < 32);
 
             switch (blocks)
             {
@@ -365,7 +364,7 @@ public static unsafe class MemoryUtilities
 
         static void SmallClear(void* destination, nuint length)
         {
-            Assert(AssertionsEnabled && (length <= 32));
+            Assert(length <= 32);
 
             switch (length)
             {
@@ -546,9 +545,9 @@ public static unsafe class MemoryUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CopyUnsafe(void* destination, void* source, nuint length)
     {
-        Assert(AssertionsEnabled && ((destination != null) || (length == 0)));
-        Assert(AssertionsEnabled && ((source != null) || (length == 0)));
-        Assert(AssertionsEnabled && ((destination != source) || (length == 0)));
+        Assert((destination != null) || (length == 0));
+        Assert((source != null) || (length == 0));
+        Assert((destination != source) || (length == 0));
 
         if (length <= 32)
         {
@@ -565,11 +564,11 @@ public static unsafe class MemoryUtilities
 
         static void NonOverlappingCopy(void* destination, void* source, nuint length)
         {
-            Assert(AssertionsEnabled && (length > 32));
+            Assert(length > 32);
             var blocks = length / 128;
 
             length -= blocks * 128;
-            Assert(AssertionsEnabled && (length < 128));
+            Assert(length < 128);
 
             for (nuint block = 0; block < blocks; block++)
             {
@@ -614,8 +613,8 @@ public static unsafe class MemoryUtilities
 
         static void OverlappingCopy(void* destination, void* source, nuint length)
         {
-            Assert(AssertionsEnabled && (source < destination));
-            Assert(AssertionsEnabled && (((nuint)source + length) > (nuint)destination));
+            Assert(source < destination);
+            Assert(((nuint)source + length) > (nuint)destination);
 
             source = (void*)((nuint)source + length);
             destination = (void*)((nuint)destination + length);
@@ -625,11 +624,11 @@ public static unsafe class MemoryUtilities
             // is less than destination and that there is some overlap this ensures
             // we are only overwriting bytes that have already been read.
 
-            Assert(AssertionsEnabled && (length > 32));
+            Assert(length > 32);
             var blocks = length / 128;
 
             length -= blocks * 128;
-            Assert(AssertionsEnabled && (length < 128));
+            Assert(length < 128);
 
             for (nuint block = 0; block < blocks; block++)
             {
@@ -674,7 +673,7 @@ public static unsafe class MemoryUtilities
 
         static void SmallCopy(void* destination, void* source, nuint length)
         {
-            Assert(AssertionsEnabled && (length <= 32));
+            Assert(length <= 32);
 
             switch (length)
             {
@@ -782,10 +781,10 @@ public static unsafe class MemoryUtilities
         static void TrailingCopy(void* destination, void* source, nuint length)
         {
             var blocks = length / 32;
-            Assert(AssertionsEnabled && (blocks <= 3));
+            Assert(blocks <= 3);
 
             length -= blocks * 32;
-            Assert(AssertionsEnabled && (length < 32));
+            Assert(length < 32);
 
             switch (blocks)
             {

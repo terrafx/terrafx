@@ -21,14 +21,14 @@ public static unsafe class Program
 {
     internal static readonly ApplicationServiceProvider s_pulseAudioServiceProvider = new PulseAudioServiceProvider();
 
-    internal static readonly ApplicationServiceProvider s_uiServiceProvider = OperatingSystem.IsWindows() ? new Win32UIServiceProvider() : new XlibWindowServiceProvider();
+    internal static readonly ApplicationServiceProvider s_uiServiceProvider = OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763) ? new Win32UIServiceProvider() : new XlibWindowServiceProvider();
 
-    [SupportedOSPlatform("windows10.0")]
+    [SupportedOSPlatform("windows10.0.17763.0")]
     internal static readonly ApplicationServiceProvider s_d3d12GraphicsServiceProvider = new D3D12GraphicsServiceProvider();
 
     internal static readonly ApplicationServiceProvider s_vulkanGraphicsServiceProvider = new VulkanGraphicsServiceProvider(s_uiServiceProvider);
 
-    [SupportedOSPlatform("windows10.0")]
+    [SupportedOSPlatform("windows10.0.17763.0")]
     private static readonly Sample[] s_d3d12Samples = {
         new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_d3d12GraphicsServiceProvider),
         new HelloWindow("D3D12.HelloWindow", s_d3d12GraphicsServiceProvider),
@@ -105,7 +105,7 @@ public static unsafe class Program
         {
             var samples = Enumerable.Empty<Sample>();
 
-            if (OperatingSystem.IsWindowsVersionAtLeast(10))
+            if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763))
             {
                 samples = samples.Concat(s_d3d12Samples);
             }
@@ -247,7 +247,7 @@ public static unsafe class Program
 
         if (ranAnySamples)
         {
-            if (OperatingSystem.IsWindowsVersionAtLeast(10))
+            if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17763))
             {
                 s_d3d12GraphicsServiceProvider.Dispose();
             }

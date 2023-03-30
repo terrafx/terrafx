@@ -18,20 +18,22 @@ public partial struct UnmanagedValueQueue<T>
             _queue = queue;
         }
 
-        public nuint Count => _queue.Count;
+        public nuint Count => _queue._count;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public unsafe T[] Items
         {
             get
             {
-                var count = Min(_queue.Count, s_maxArrayLength);
+                ref readonly var queue = ref _queue;
+
+                var count = Min(queue._count, MaxArrayLength);
                 var items = GC.AllocateUninitializedArray<T>((int)count);
 
                 fixed (T* pItems = items)
                 {
                     var span = new UnmanagedSpan<T>(pItems, count);
-                    _queue.CopyTo(span);
+                    queue.CopyTo(span);
                 }
                 return items;
             }

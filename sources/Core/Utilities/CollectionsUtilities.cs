@@ -8,6 +8,26 @@ namespace TerraFX.Utilities;
 /// <summary>Provides a set of methods to supplement the collections namespace.</summary>
 public static unsafe class CollectionsUtilities
 {
+    /// <summary>Disposes the items in an array.</summary>
+    /// <typeparam name="TDisposable">The type of the items in the array.</typeparam>
+    /// <param name="array">The array whose items are to be disposed.</param>
+    public static void Dispose<TDisposable>(this TDisposable[] array)
+        where TDisposable : IDisposable => array.AsSpan().Dispose();
+
+    /// <summary>Disposes the items in a span.</summary>
+    /// <typeparam name="TDisposable">The type of the items in the span.</typeparam>
+    /// <param name="span">The span whose items are to be disposed.</param>
+    public static void Dispose<TDisposable>(this Span<TDisposable> span)
+        where TDisposable : IDisposable
+    {
+        for (var index = span.Length - 1; index >= 0; index--)
+        {
+            var item = span.GetReferenceUnsafe(index);
+            item.Dispose();
+        }
+        span.Clear();
+    }
+
     /// <summary>Disposes the items in a list.</summary>
     /// <typeparam name="TDisposable">The type of the items in the list.</typeparam>
     /// <param name="list">The list whose items are to be disposed.</param>

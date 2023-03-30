@@ -157,26 +157,26 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     /// <summary>Computes the product of a vector and a float.</summary>
     /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
     /// <param name="right">The float which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    /// <returns>The product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 operator *(Vector2 left, float right) => new Vector2(left._value * right);
 
     /// <summary>Computes the product of two vectors.</summary>
     /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
     /// <param name="right">The vector which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    /// <returns>The product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 operator *(Vector2 left, Vector2 right) => new Vector2(left._value * right._value);
 
     /// <summary>Computes the quotient of a vector and a float.</summary>
-    /// <param name="left">The vector which is divied by <paramref name="right" />.</param>
+    /// <param name="left">The vector which is divided by <paramref name="right" />.</param>
     /// <param name="right">The float which divides <paramref name="left" />.</param>
     /// <returns>The quotient of <paramref name="left" /> divided by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 operator /(Vector2 left, float right) => new Vector2(left._value / right);
 
     /// <summary>Computes the quotient of two vectors.</summary>
-    /// <param name="left">The vector which is divied by <paramref name="right" />.</param>
+    /// <param name="left">The vector which is divided by <paramref name="right" />.</param>
     /// <param name="right">The vector which divides <paramref name="left" />.</param>
     /// <returns>The quotient of <paramref name="left" /> divided by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -223,8 +223,8 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
 
     /// <summary>Computes the dot product of two vectors.</summary>
     /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
-    /// <param name="right">The quatnerion which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The dot product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+    /// <param name="right">The quaternion which is used to multiply <paramref name="left" />.</param>
+    /// <returns>The dot product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float DotProduct(Vector2 left, Vector2 right) => SysVector2.Dot(left._value, right._value);
 
@@ -313,12 +313,12 @@ public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
     }
 
     /// <summary>Reinterprets the current instance as a new <see cref="SysVector2" />.</summary>
-    /// <returns>The current instance reintepreted as a new <see cref="SysVector2" />.</returns>
+    /// <returns>The current instance reinterpreted as a new <see cref="SysVector2" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public SysVector2 AsSystemVector2() => _value;
 
     /// <summary>Reinterprets the current instance as a new <see cref="Vector128{Single}" />.</summary>
-    /// <returns>The current instance reintepreted as a new <see cref="Vector128{Single}" />.</returns>
+    /// <returns>The current instance reinterpreted as a new <see cref="Vector128{Single}" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector128<float> AsVector128() => _value.AsVector128();
 

@@ -452,8 +452,8 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
             _ => -1,
         };
 
-        Assert(AssertionsEnabled && (memoryManagerIndex >= 0));
-        Assert(AssertionsEnabled && (resourceKind is GraphicsResourceKind.Buffer or GraphicsResourceKind.Texture));
+        Assert((memoryManagerIndex >= 0));
+        Assert((resourceKind is GraphicsResourceKind.Buffer or GraphicsResourceKind.Texture));
 
         if (_memoryManagers.Length != MaxMemoryManagerKinds)
         {
@@ -471,7 +471,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
 
     private ulong GetTotalFreeMemoryRegionByteLength(int memoryManagerKindIndex)
     {
-        Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
+        Assert(((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
 
         if (_memoryManagers.Length == MaxMemoryManagerKinds)
         {
@@ -489,7 +489,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
 
     private ulong GetTotalOperationCount(int memoryManagerKindIndex)
     {
-        Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
+        Assert(((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
 
         if (_memoryManagers.Length == MaxMemoryManagerKinds)
         {
@@ -507,7 +507,7 @@ public sealed unsafe partial class D3D12GraphicsDevice : GraphicsDevice
 
     private ulong GetTotalByteLength(int memoryManagerKindIndex)
     {
-        Assert(AssertionsEnabled && ((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
+        Assert(((uint)memoryManagerKindIndex < MaxMemoryManagerKinds));
 
         if (_memoryManagers.Length == MaxMemoryManagerKinds)
         {

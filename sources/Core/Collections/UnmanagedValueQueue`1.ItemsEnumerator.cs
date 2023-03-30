@@ -29,22 +29,20 @@ public partial struct UnmanagedValueQueue<T>
         public bool MoveNext()
         {
             var succeeded = true;
-            _index = unchecked(_index + 1);
+            var index = unchecked(_index + 1);
 
-            if (_index == _queue.Count)
+            if (index == _queue._count)
             {
-                _index--;
+                index--;
                 succeeded = false;
             }
 
+            _index = index;
             return succeeded;
         }
 
         /// <inheritdoc />
-        public void Reset()
-        {
-            _index = nuint.MaxValue;
-        }
+        public void Reset() => _index = nuint.MaxValue;
 
         object IEnumerator.Current => Current;
 

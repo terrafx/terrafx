@@ -12,7 +12,7 @@ namespace TerraFX.Numerics;
 public struct BoundingBox : IEquatable<BoundingBox>, IFormattable
 {
     /// <summary>Gets a bounding box with zero extent.</summary>
-    public static readonly BoundingBox Zero = CreateFromExtent(Vector3.Zero, Vector3.Zero);
+    public static BoundingBox Zero => CreateFromExtent(Vector3.Zero, Vector3.Zero);
 
     private Vector3 _center;
     private Vector3 _extent;
@@ -23,7 +23,7 @@ public struct BoundingBox : IEquatable<BoundingBox>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static BoundingBox CreateFromExtent(Vector3 center, Vector3 extent)
     {
-        Unsafe.SkipInit(out BoundingBox result);
+        BoundingBox result;
 
         result._center = center;
         result._extent = extent;
@@ -37,7 +37,7 @@ public struct BoundingBox : IEquatable<BoundingBox>, IFormattable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static BoundingBox CreateFromSize(Vector3 location, Vector3 size)
     {
-        Unsafe.SkipInit(out BoundingBox result);
+        BoundingBox result;
         var extent = size * 0.5f;
 
         result._center = location + extent;

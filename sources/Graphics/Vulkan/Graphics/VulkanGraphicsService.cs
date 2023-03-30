@@ -294,21 +294,10 @@ public sealed unsafe class VulkanGraphicsService : GraphicsService
                 ThrowExternalExceptionIfNotSuccess(result, nameof(vkCreateInstance));
             }
 
-            // vkCreateDebugUtilsMessengerEXT
-            ReadOnlySpan<sbyte> vkCreateDebugUtilsMessengerEXT = new sbyte[] { 0x76, 0x6B, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4D, 0x65, 0x73, 0x73, 0x65, 0x6E, 0x67, 0x65, 0x72, 0x45, 0x58, 0x54, 0x00 };
-            vkInstanceManualImports.vkCreateDebugUtilsMessengerEXT = (delegate* unmanaged<VkInstance, VkDebugUtilsMessengerCreateInfoEXT*, VkAllocationCallbacks*, VkDebugUtilsMessengerEXT*, VkResult>)vkGetInstanceProcAddr(vkInstance, vkCreateDebugUtilsMessengerEXT.GetPointer());
-
-            // vkDestroyDebugUtilsMessengerEXT
-            ReadOnlySpan<sbyte> vkDestroyDebugUtilsMessengerEXT = new sbyte[] { 0x76, 0x6B, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6F, 0x79, 0x44, 0x65, 0x62, 0x75, 0x67, 0x55, 0x74, 0x69, 0x6C, 0x73, 0x4D, 0x65, 0x73, 0x73, 0x65, 0x6E, 0x67, 0x65, 0x72, 0x45, 0x58, 0x54, 0x00 };
-            vkInstanceManualImports.vkDestroyDebugUtilsMessengerEXT = (delegate* unmanaged<VkInstance, VkDebugUtilsMessengerEXT, VkAllocationCallbacks*, void>)vkGetInstanceProcAddr(vkInstance, vkDestroyDebugUtilsMessengerEXT.GetPointer());
-
-            // vkCreateWin32SurfaceKHR
-            ReadOnlySpan<sbyte> vkCreateWin32SurfaceKHR = new sbyte[] { 0x76, 0x6B, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x57, 0x69, 0x6E, 0x33, 0x32, 0x53, 0x75, 0x72, 0x66, 0x61, 0x63, 0x65, 0x4B, 0x48, 0x52, 0x00 };
-            vkInstanceManualImports.vkCreateWin32SurfaceKHR = (delegate* unmanaged<VkInstance, VkWin32SurfaceCreateInfoKHR*, VkAllocationCallbacks*, VkSurfaceKHR*, VkResult>)vkGetInstanceProcAddr(vkInstance, vkCreateWin32SurfaceKHR.GetPointer());
-
-            // vkCreateXlibSurfaceKHR
-            ReadOnlySpan<sbyte> vkCreateXlibSurfaceKHR = new sbyte[] { 0x76, 0x6B, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x58, 0x6C, 0x69, 0x62, 0x53, 0x75, 0x72, 0x66, 0x61, 0x63, 0x65, 0x4B, 0x48, 0x52, 0x00 };
-            vkInstanceManualImports.vkCreateXlibSurfaceKHR = (delegate* unmanaged<VkInstance, VkXlibSurfaceCreateInfoKHR*, VkAllocationCallbacks*, VkSurfaceKHR*, VkResult>)vkGetInstanceProcAddr(vkInstance, vkCreateXlibSurfaceKHR.GetPointer());
+            vkInstanceManualImports.vkCreateDebugUtilsMessengerEXT = (delegate* unmanaged<VkInstance, VkDebugUtilsMessengerCreateInfoEXT*, VkAllocationCallbacks*, VkDebugUtilsMessengerEXT*, VkResult>)vkGetInstanceProcAddr(vkInstance, (sbyte*)"vkCreateDebugUtilsMessengerEXT"u8.GetPointerUnsafe());
+            vkInstanceManualImports.vkDestroyDebugUtilsMessengerEXT = (delegate* unmanaged<VkInstance, VkDebugUtilsMessengerEXT, VkAllocationCallbacks*, void>)vkGetInstanceProcAddr(vkInstance, (sbyte*)"vkDestroyDebugUtilsMessengerEXT"u8.GetPointerUnsafe());
+            vkInstanceManualImports.vkCreateWin32SurfaceKHR = (delegate* unmanaged<VkInstance, VkWin32SurfaceCreateInfoKHR*, VkAllocationCallbacks*, VkSurfaceKHR*, VkResult>)vkGetInstanceProcAddr(vkInstance, (sbyte*)"vkCreateWin32SurfaceKHR"u8.GetPointerUnsafe());
+            vkInstanceManualImports.vkCreateXlibSurfaceKHR = (delegate* unmanaged<VkInstance, VkXlibSurfaceCreateInfoKHR*, VkAllocationCallbacks*, VkSurfaceKHR*, VkResult>)vkGetInstanceProcAddr(vkInstance, (sbyte*)"vkCreateXlibSurfaceKHR"u8.GetPointerUnsafe());
 
             return vkInstance;
         }

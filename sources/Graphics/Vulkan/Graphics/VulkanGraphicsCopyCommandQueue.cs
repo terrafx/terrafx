@@ -101,7 +101,7 @@ public sealed unsafe class VulkanGraphicsCopyCommandQueue : GraphicsCopyCommandQ
     /// <inheritdoc />
     protected override void SetNameUnsafe(string value)
     {
-        Device.SetVkObjectName(VK_OBJECT_TYPE_QUEUE, VkQueue, value);
+        Device.SetVkObjectName(VK_OBJECT_TYPE_QUEUE, VkQueue.Value, value);
     }
 
     /// <inheritdoc />

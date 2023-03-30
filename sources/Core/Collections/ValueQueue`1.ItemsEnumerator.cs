@@ -31,7 +31,7 @@ public partial struct ValueQueue<T>
             var succeeded = true;
             _index++;
 
-            if (_index == _queue.Count)
+            if (_index == _queue._count)
             {
                 _index--;
                 succeeded = false;
@@ -41,10 +41,7 @@ public partial struct ValueQueue<T>
         }
 
         /// <inheritdoc />
-        public void Reset()
-        {
-            _index = -1;
-        }
+        public void Reset() => _index = -1;
 
         object? IEnumerator.Current => Current;
 

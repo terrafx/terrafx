@@ -51,7 +51,7 @@ public sealed class PulseAudioPlaybackDevice : IAudioPlaybackDevice
     /// <summary>Initializes a new instance of the <see cref="PulseAudioPlaybackDevice" /> class.</summary>
     internal unsafe PulseAudioPlaybackDevice(IAudioAdapter adapter, pa_context* context)
     {
-        Assert(AssertionsEnabled && (context != null));
+        Assert((context != null));
 
         if (adapter.DeviceType != AudioDeviceType.Playback)
         {
@@ -91,7 +91,7 @@ public sealed class PulseAudioPlaybackDevice : IAudioPlaybackDevice
             stream = pa_stream_new(_context, (sbyte*)streamName, &spec, null);
         }
 
-        Assert(AssertionsEnabled && (stream != null));
+        Assert((stream != null));
 
         var userdata = (void*)GCHandle.ToIntPtr(WriteDelegateHandle);
         pa_stream_set_write_callback(stream, _writeDelegate, userdata);
@@ -126,7 +126,7 @@ public sealed class PulseAudioPlaybackDevice : IAudioPlaybackDevice
     public unsafe void Reset()
     {
         _state.Transition(from: Completed, to: Initialized);
-        Assert(AssertionsEnabled && (pa_stream_disconnect(Stream) == 0));
+        Assert((pa_stream_disconnect(Stream) == 0));
         _sampleDataPipe.Reset();
     }
 
@@ -165,7 +165,7 @@ public sealed class PulseAudioPlaybackDevice : IAudioPlaybackDevice
                 }
 
                 var status = TryPrepareAndWriteBlock(result.Buffer, bytesToWrite, out var written);
-                Assert(AssertionsEnabled && status);
+                Assert(status);
                 bytesWritten += written;
             }
         }
@@ -192,7 +192,7 @@ public sealed class PulseAudioPlaybackDevice : IAudioPlaybackDevice
             void* writeLocation = null;
             var bytesAvailable = (nuint)length;
 
-            Assert(AssertionsEnabled && (pa_stream_begin_write(Stream, &writeLocation, &bytesAvailable) == 0));
+            Assert((pa_stream_begin_write(Stream, &writeLocation, &bytesAvailable) == 0));
             AssertNotNull(writeLocation);
 
             var destination = new Span<byte>(writeLocation, (int)bytesAvailable);
@@ -206,7 +206,7 @@ public sealed class PulseAudioPlaybackDevice : IAudioPlaybackDevice
         {
             fixed (byte* location = block)
             {
-                Assert(AssertionsEnabled && (pa_stream_write(Stream, location, (nuint)block.Length, null, 0, PA_SEEK_RELATIVE) == 0));
+                Assert((pa_stream_write(Stream, location, (nuint)block.Length, null, 0, PA_SEEK_RELATIVE) == 0));
             }
 
             return true;

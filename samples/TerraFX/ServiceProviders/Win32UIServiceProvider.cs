@@ -2,11 +2,13 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Versioning;
 using TerraFX.ApplicationModel;
 using TerraFX.UI;
 
 namespace TerraFX.Samples.ServiceProviders;
 
+[SupportedOSPlatform("windows10.0.17763.0")]
 public class Win32UIServiceProvider : ApplicationServiceProvider
 {
     private ValueLazy<Win32UIService> _uiService;
