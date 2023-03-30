@@ -8,6 +8,7 @@ Each example will give a brief explanation, share the that can be used to run th
 
 Most samples are cross-platform and provide support for executing on any support platform/architecture. Some samples, however, are only available on certain systems. For example, most Direct3D 12 samples are only available on Windows. There are, however, Vulkan variants that can be run on Windows or Linux.
 
+
 ## [Graphics/EnumerateGraphicsAdapters.cs](../../samples/TerraFX/Graphics/EnumerateGraphicsAdapters.cs)
 
 This shows how a user can get a list of the graphics adapters (both physical and virtual) supported by the current system.

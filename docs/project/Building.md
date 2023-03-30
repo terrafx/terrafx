@@ -14,7 +14,7 @@ In addition there are [scripts/cibuild.cmd](../../scripts/cibuild.cmd) and [scri
 
 ## Requirements
 
-.NET 5.0 SDK: https://dotnet.microsoft.com/download/dotnet/5.0
+.NET 7.0 SDK: https://dotnet.microsoft.com/download/dotnet/7.0
 
 ## Available Arguments
 
@@ -56,4 +56,4 @@ That is, all of the existing well known commands "just work". This includes, but
  * `dotnet test`
  * `dotnet pack`
 
-On Unix, [TerraFX.Unix.slnf] should be used instead of [TerraFX.sln] as it excludes any projects that are incapable of building such as the WinForms support.
+On Unix, [TerraFX.NonDesktop.slnf] should be used instead of [TerraFX.sln] as it excludes any projects that are incapable of building such as the WinForms support.
