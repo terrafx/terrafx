@@ -12,12 +12,11 @@
 
   <!-- Package versions for package references across all projects -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
-    <PackageVersion Include="NUnit" Version="3.13.3" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageVersion Include="NUnit" Version="4.0.1" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.5.0" />
-    <PackageVersion Include="TerraFX.Interop.Mimalloc" Version="1.6.7" />
-    <PackageVersion Include="TerraFX.Interop.Windows" Version="10.0.22621.2" />
+    <PackageVersion Include="TerraFX.Interop.Mimalloc" Version="1.6.7.1" />
+    <PackageVersion Include="TerraFX.Interop.Windows" Version="10.0.22621.5" />
   </ItemGroup>
 
 </Project>
