@@ -4,6 +4,7 @@ using System;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics;
@@ -101,10 +102,11 @@ public sealed class HelloInstancing : HelloWindow
         _uploadBuffer.DisposeAllViews();
     }
 
-    protected override void Draw(GraphicsRenderContext graphicsRenderContext)
+    protected override void Draw(GraphicsRenderContext renderContext)
     {
-        _trianglePrimitive.Draw(graphicsRenderContext, InstanceCount);
-        base.Draw(graphicsRenderContext);
+        ThrowIfNull(renderContext);
+        _trianglePrimitive.Draw(renderContext, InstanceCount);
+        base.Draw(renderContext);
     }
 
     protected override unsafe void Update(TimeSpan delta)

@@ -57,7 +57,7 @@ public sealed unsafe class UIService : DisposableObject
                     hCursor = GetDesktopCursor(),
                     hbrBackground = (HBRUSH)(COLOR_WINDOW + 1),
                     lpszMenuName = null,
-                    lpszClassName = (ushort*)className,
+                    lpszClassName = className,
                     hIconSm = HICON.NULL
                 };
 
@@ -71,7 +71,7 @@ public sealed unsafe class UIService : DisposableObject
         {
             var desktopWindowHandle = GetDesktopWindow();
 
-            var desktopClassName = stackalloc ushort[256]; // 256 is the maximum length of WNDCLASSEX.lpszClassName
+            var desktopClassName = stackalloc char[256]; // 256 is the maximum length of WNDCLASSEX.lpszClassName
             ThrowForLastErrorIfZero(GetClassNameW(desktopWindowHandle, desktopClassName, 256));
 
             WNDCLASSEXW desktopWindowClass;
@@ -217,7 +217,7 @@ public sealed unsafe class UIService : DisposableObject
         {
             if (classAtom != 0)
             {
-                ThrowExternalExceptionIfFalse(UnregisterClassW((ushort*)classAtom, EntryPointModule), nameof(UnregisterClassW));
+                ThrowExternalExceptionIfFalse(UnregisterClassW((char*)classAtom, EntryPointModule), nameof(UnregisterClassW));
             }
         }
 

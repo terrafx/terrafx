@@ -57,6 +57,17 @@ charset = utf-16le
 file_header_template = Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 ###############################################################################
+# Set dotnet diagnostic rules to:
+#    ignore use integral or string argument for indexers
+#    ignore operator overloads have named alternates
+#    ignore do not use insecure randomness
+###############################################################################
+[*.cs]
+dotnet_diagnostic.CA1043.severity = none
+dotnet_diagnostic.CA2225.severity = none
+dotnet_diagnostic.CA5394.severity = none
+
+###############################################################################
 # Set dotnet naming rules to:
 #    require async methods be pascal case suffixed with Async
 #    require const fields and locals be pascal case
@@ -427,7 +438,7 @@ csharp_style_implicit_object_creation_when_type_is_apparent = false:error
 
 csharp_style_inlined_variable_declaration = true:error
 
-csharp_style_namespace_declarations= file_scoped:error
+csharp_style_namespace_declarations = file_scoped:error
 
 csharp_style_pattern_local_over_anonymous_function = true:error
 csharp_style_pattern_matching_over_as_with_null_check = true:error

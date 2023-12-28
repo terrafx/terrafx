@@ -34,7 +34,7 @@ public sealed unsafe class GraphicsAdapter : GraphicsServiceObject
         DXGI_ADAPTER_DESC1 dxgiAdapterDesc;
         ThrowExternalExceptionIfFailed(dxgiAdapter->GetDesc1(&dxgiAdapterDesc));
 
-        _description = GetUtf16Span(dxgiAdapterDesc.Description, 128).GetString() ?? string.Empty;
+        _description = GetUtf16Span(in dxgiAdapterDesc.Description[0], 128).GetString() ?? string.Empty;
         _dxgiAdapterDesc = dxgiAdapterDesc;
 
         SetName(_description);

@@ -2,6 +2,9 @@
 
 using System;
 
+#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+
 namespace TerraFX.ApplicationModel;
 
 /// <summary>Represents the event args that occur during an <see cref="Application.Idle" /> event.</summary>

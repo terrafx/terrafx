@@ -6,14 +6,14 @@ using TerraFX.Numerics;
 
 namespace TerraFX.Samples.Graphics;
 
-internal class SierpinskiPyramid
+internal static class SierpinskiPyramid
 {
     internal static (UnmanagedValueList<Vector3> vertices, UnmanagedValueList<uint> indices) CreateMeshTetrahedron(int recursionDepth)
     {
         var scale = 1.0f;
 
-        var vertices = UnmanagedValueList<Vector3>.Empty;
-        var indices = UnmanagedValueList<uint>.Empty;
+        var vertices = UnmanagedValueList.Empty<Vector3>();
+        var indices = UnmanagedValueList.Empty<uint>();
 
         //         d
         //         .
@@ -130,8 +130,8 @@ internal class SierpinskiPyramid
     {
         var r = 0.99f;
 
-        var vertices = UnmanagedValueList<Vector3>.Empty;
-        var indices = UnmanagedValueList<uint>.Empty;
+        var vertices = UnmanagedValueList.Empty<Vector3>();
+        var indices = UnmanagedValueList.Empty<uint>();
 
         //
         //  a-------b    y          in this setup
@@ -243,7 +243,7 @@ internal class SierpinskiPyramid
             n4[i / 3] = Vector3.Normalize(Vector3.CrossProduct(b - a, c - a));
         }
 
-        var normals = UnmanagedValueList<Vector3>.Empty;
+        var normals = UnmanagedValueList.Empty<Vector3>();
 
         for (nuint i = 0; i < vertices.Count; i += 3)
         {

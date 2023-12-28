@@ -4,7 +4,7 @@ using TerraFX.Numerics;
 
 namespace TerraFX.Samples.Graphics;
 
-public struct TextureVertex
+internal struct TextureVertex
 {
     public Vector3 Position;
     public Vector2 UV;

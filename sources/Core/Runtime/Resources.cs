@@ -5,6 +5,8 @@ using System.Resources;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 
+#pragma warning disable CA1724 // Type names should not match namespaces
+
 namespace TerraFX.Runtime;
 
 /// <summary>Provides a set of methods for looking up localized resources.</summary>

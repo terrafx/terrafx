@@ -19,7 +19,7 @@ public partial class GraphicsMemoryAllocator
     private sealed unsafe class DefaultMemoryAllocator : GraphicsMemoryAllocator
     {
         private ValueLinkedList<GraphicsMemoryRegion> _memoryRegions;
-        private ValueList<ValueLinkedList<GraphicsMemoryRegion>.Node> _freeMemoryRegionsByByteLength;
+        private ValueList<ValueLinkedListNode<GraphicsMemoryRegion>> _freeMemoryRegionsByByteLength;
         private uint _freeMemoryRegionCount;
 
         public DefaultMemoryAllocator(GraphicsDeviceObject deviceObject, in GraphicsMemoryAllocatorCreateOptions createOptions) : base(deviceObject)
@@ -31,7 +31,7 @@ public partial class GraphicsMemoryAllocator
             MemoryAllocatorInfo.OnFree = createOptions.OnFree;
 
             _memoryRegions = new ValueLinkedList<GraphicsMemoryRegion>();
-            _freeMemoryRegionsByByteLength = new ValueList<ValueLinkedList<GraphicsMemoryRegion>.Node>();
+            _freeMemoryRegionsByByteLength = new ValueList<ValueLinkedListNode<GraphicsMemoryRegion>>();
 
             ClearUnsafe();
         }
@@ -142,7 +142,7 @@ public partial class GraphicsMemoryAllocator
             return index;
         }
 
-        private ValueLinkedList<GraphicsMemoryRegion>.Node FreeRegion(ValueLinkedList<GraphicsMemoryRegion>.Node memoryRegionNode)
+        private ValueLinkedListNode<GraphicsMemoryRegion> FreeRegion(ValueLinkedListNode<GraphicsMemoryRegion> memoryRegionNode)
         {
             ref var memoryRegion = ref memoryRegionNode.ValueRef;
 
@@ -206,7 +206,7 @@ public partial class GraphicsMemoryAllocator
             }
         }
 
-        private void MergeFreeMemoryRegionWithNext(ValueLinkedList<GraphicsMemoryRegion>.Node memoryRegionNode)
+        private void MergeFreeMemoryRegionWithNext(ValueLinkedListNode<GraphicsMemoryRegion> memoryRegionNode)
         {
             AssertNotNull(memoryRegionNode);
             Assert(!memoryRegionNode.ValueRef.IsAllocated);
@@ -233,7 +233,7 @@ public partial class GraphicsMemoryAllocator
             MemoryAllocatorInfo.IsEmpty = freeMemoryRegionCount == 1;
         }
 
-        private void RegisterFreeMemoryRegion(ValueLinkedList<GraphicsMemoryRegion>.Node memoryRegionNode)
+        private void RegisterFreeMemoryRegion(ValueLinkedListNode<GraphicsMemoryRegion> memoryRegionNode)
         {
             Assert(!memoryRegionNode.ValueRef.IsAllocated);
             Assert(memoryRegionNode.ValueRef.ByteLength > 0);
@@ -256,7 +256,7 @@ public partial class GraphicsMemoryAllocator
             ValidateFreeMemoryRegionsBySizeList();
         }
 
-        private bool TryAllocate(nuint byteLength, nuint byteAlignment, ValueLinkedList<GraphicsMemoryRegion>.Node memoryRegionNode)
+        private bool TryAllocate(nuint byteLength, nuint byteAlignment, ValueLinkedListNode<GraphicsMemoryRegion> memoryRegionNode)
         {
             Assert(byteLength > 0);
             AssertNotNull(memoryRegionNode);
@@ -358,7 +358,7 @@ public partial class GraphicsMemoryAllocator
             return true;
         }
 
-        private void UnregisterFreeMemoryRegion(ValueLinkedList<GraphicsMemoryRegion>.Node memoryRegionNode)
+        private void UnregisterFreeMemoryRegion(ValueLinkedListNode<GraphicsMemoryRegion> memoryRegionNode)
         {
             Assert(!memoryRegionNode.ValueRef.IsAllocated);
             Assert(memoryRegionNode.ValueRef.ByteLength > 0);

@@ -76,9 +76,6 @@ public sealed unsafe class GraphicsTexture : GraphicsResource
         }
     }
 
-    /// <summary>Finalizes an instance of the <see cref="GraphicsTexture" /> class.</summary>
-    ~GraphicsTexture() => Dispose(isDisposing: false);
-
     /// <summary>Gets number of bytes per layer of the texture.</summary>
     public uint BytesPerLayer => _bytesPerLayer;
 

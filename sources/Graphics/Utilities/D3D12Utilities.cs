@@ -1,5 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.	
 
+using System;
 using System.Runtime.CompilerServices;
 using TerraFX.Graphics;
 using TerraFX.Interop.DirectX;
@@ -175,67 +176,70 @@ internal static unsafe partial class D3D12Utilities
 
     public static ID3D12Device* GetLatestD3D12Device(ID3D12Device* d3d12Device, out uint d3d12DeviceVersion)
     {
-        ID3D12Device* result;
+        var result = d3d12Device;
+        d3d12DeviceVersion = 0;
 
-        if (d3d12Device->QueryInterface(__uuidof<ID3D12Device11>(), (void**)&result).SUCCEEDED)
+        if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 19043, 0))
         {
-            d3d12DeviceVersion = 11;
-            _ = d3d12Device->Release();
+            if (d3d12Device->QueryInterface(__uuidof<ID3D12Device11>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12DeviceVersion = 11;
+                _ = d3d12Device->Release();
+            }
+            else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device10>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12DeviceVersion = 10;
+                _ = d3d12Device->Release();
+            }
+            else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device9>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12DeviceVersion = 9;
+                _ = d3d12Device->Release();
+            }
+            else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device8>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12DeviceVersion = 8;
+                _ = d3d12Device->Release();
+            }
+            else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device7>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12DeviceVersion = 7;
+                _ = d3d12Device->Release();
+            }
+            else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device6>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12DeviceVersion = 6;
+                _ = d3d12Device->Release();
+            }
+            else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device5>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12DeviceVersion = 5;
+                _ = d3d12Device->Release();
+            }
+            else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device4>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12DeviceVersion = 4;
+                _ = d3d12Device->Release();
+            }
         }
-        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device10>(), (void**)&result).SUCCEEDED)
+
+        if (d3d12DeviceVersion == 0)
         {
-            d3d12DeviceVersion = 10;
-            _ = d3d12Device->Release();
-        }
-        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device9>(), (void**)&result).SUCCEEDED)
-        {
-            d3d12DeviceVersion = 9;
-            _ = d3d12Device->Release();
-        }
-        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device8>(), (void**)&result).SUCCEEDED)
-        {
-            d3d12DeviceVersion = 8;
-            _ = d3d12Device->Release();
-        }
-        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device7>(), (void**)&result).SUCCEEDED)
-        {
-            d3d12DeviceVersion = 7;
-            _ = d3d12Device->Release();
-        }
-        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device6>(), (void**)&result).SUCCEEDED)
-        {
-            d3d12DeviceVersion = 6;
-            _ = d3d12Device->Release();
-        }
-        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device5>(), (void**)&result).SUCCEEDED)
-        {
-            d3d12DeviceVersion = 5;
-            _ = d3d12Device->Release();
-        }
-        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device4>(), (void**)&result).SUCCEEDED)
-        {
-            d3d12DeviceVersion = 4;
-            _ = d3d12Device->Release();
-        }
-        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device3>(), (void**)&result).SUCCEEDED)
-        {
-            d3d12DeviceVersion = 3;
-            _ = d3d12Device->Release();
-        }
-        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device2>(), (void**)&result).SUCCEEDED)
-        {
-            d3d12DeviceVersion = 2;
-            _ = d3d12Device->Release();
-        }
-        else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device1>(), (void**)&result).SUCCEEDED)
-        {
-            d3d12DeviceVersion = 1;
-            _ = d3d12Device->Release();
-        }
-        else
-        {
-            d3d12DeviceVersion = 0;
-            result = d3d12Device;
+            if (d3d12Device->QueryInterface(__uuidof<ID3D12Device3>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12DeviceVersion = 3;
+                _ = d3d12Device->Release();
+            }
+            else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device2>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12DeviceVersion = 2;
+                _ = d3d12Device->Release();
+            }
+            else if (d3d12Device->QueryInterface(__uuidof<ID3D12Device1>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12DeviceVersion = 1;
+                _ = d3d12Device->Release();
+            }
         }
 
         return result;
@@ -261,52 +265,55 @@ internal static unsafe partial class D3D12Utilities
 
     public static ID3D12GraphicsCommandList* GetLatestD3D12GraphicsCommandList(ID3D12GraphicsCommandList* d3d12GraphicsCommandList, out uint d3d12GraphicsCommandListVersion)
     {
-        ID3D12GraphicsCommandList* result;
+        var result = d3d12GraphicsCommandList;
+        d3d12GraphicsCommandListVersion = 0;
 
-        if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList7>(), (void**)&result).SUCCEEDED)
+        if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 19043, 0))
         {
-            d3d12GraphicsCommandListVersion = 8;
-            _ = d3d12GraphicsCommandList->Release();
+            if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList7>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12GraphicsCommandListVersion = 8;
+                _ = d3d12GraphicsCommandList->Release();
+            }
+            else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList8>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12GraphicsCommandListVersion = 7;
+                _ = d3d12GraphicsCommandList->Release();
+            }
+            else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList6>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12GraphicsCommandListVersion = 6;
+                _ = d3d12GraphicsCommandList->Release();
+            }
+            else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList5>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12GraphicsCommandListVersion = 5;
+                _ = d3d12GraphicsCommandList->Release();
+            }
         }
-        else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList8>(), (void**)&result).SUCCEEDED)
+
+        if (d3d12GraphicsCommandListVersion == 0)
         {
-            d3d12GraphicsCommandListVersion = 7;
-            _ = d3d12GraphicsCommandList->Release();
-        }
-        else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList6>(), (void**)&result).SUCCEEDED)
-        {
-            d3d12GraphicsCommandListVersion = 6;
-            _ = d3d12GraphicsCommandList->Release();
-        }
-        else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList5>(), (void**)&result).SUCCEEDED)
-        {
-            d3d12GraphicsCommandListVersion = 5;
-            _ = d3d12GraphicsCommandList->Release();
-        }
-        else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList4>(), (void**)&result).SUCCEEDED)
-        {
-            d3d12GraphicsCommandListVersion = 4;
-            _ = d3d12GraphicsCommandList->Release();
-        }
-        else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList3>(), (void**)&result).SUCCEEDED)
-        {
-            d3d12GraphicsCommandListVersion = 3;
-            _ = d3d12GraphicsCommandList->Release();
-        }
-        else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList2>(), (void**)&result).SUCCEEDED)
-        {
-            d3d12GraphicsCommandListVersion = 2;
-            _ = d3d12GraphicsCommandList->Release();
-        }
-        else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList1>(), (void**)&result).SUCCEEDED)
-        {
-            d3d12GraphicsCommandListVersion = 1;
-            _ = d3d12GraphicsCommandList->Release();
-        }
-        else
-        {
-            d3d12GraphicsCommandListVersion = 0;
-            result = d3d12GraphicsCommandList;
+            if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList4>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12GraphicsCommandListVersion = 4;
+                _ = d3d12GraphicsCommandList->Release();
+            }
+            else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList3>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12GraphicsCommandListVersion = 3;
+                _ = d3d12GraphicsCommandList->Release();
+            }
+            else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList2>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12GraphicsCommandListVersion = 2;
+                _ = d3d12GraphicsCommandList->Release();
+            }
+            else if (d3d12GraphicsCommandList->QueryInterface(__uuidof<ID3D12GraphicsCommandList1>(), (void**)&result).SUCCEEDED)
+            {
+                d3d12GraphicsCommandListVersion = 1;
+                _ = d3d12GraphicsCommandList->Release();
+            }
         }
 
         return result;
@@ -492,7 +499,7 @@ internal static unsafe partial class D3D12Utilities
 
             fixed (char* pName = componentName)
             {
-                _ = self.SetName((ushort*)pName);
+                _ = self.SetName(pName);
             }
         }
     }

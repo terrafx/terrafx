@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using TerraFX.Threading;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -14,19 +15,18 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
 [DebuggerTypeProxy(typeof(ValuePool<>.DebugView))]
-public unsafe partial struct ValuePool<T> : IEnumerable<T>
+public unsafe partial struct ValuePool<T>
+    : IEnumerable<T>,
+      IEquatable<ValuePool<T>>
 {
-    /// <summary>Gets an empty pool.</summary>
-    public static ValuePool<T> Empty => new ValuePool<T>();
-
     private ValueQueue<T> _availableItems;
     private ValueList<T> _items;
 
     /// <summary>Initializes a new instance of the <see cref="ValuePool{T}" /> struct.</summary>
     public ValuePool()
     {
-        _availableItems = ValueQueue<T>.Empty;
-        _items = ValueList<T>.Empty;
+        _availableItems = ValueQueue.Empty<T>();
+        _items = ValueList.Empty<T>();
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValuePool{T}" /> struct.</summary>
@@ -50,6 +50,26 @@ public unsafe partial struct ValuePool<T> : IEnumerable<T>
     /// <summary>Gets the number of items contained in the pool.</summary>
     public readonly int Count => _items.Count;
 
+    /// <summary>Compares two <see cref="ValuePool{T}" /> instances to determine equality.</summary>
+    /// <param name="left">The <see cref="ValuePool{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="ValuePool{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, false.</returns>
+    public static bool operator ==(ValuePool<T> left, ValuePool<T> right)
+    {
+        return (left._availableItems == right._availableItems)
+            && (left._items == right._items);
+    }
+
+    /// <summary>Compares two <see cref="ValuePool{T}" /> instances to determine inequality.</summary>
+    /// <param name="left">The <see cref="ValuePool{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="ValuePool{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+    public static bool operator !=(ValuePool<T> left, ValuePool<T> right)
+    {
+        return (left._availableItems != right._availableItems)
+            || (left._items != right._items);
+    }
+
     /// <summary>Removes all items from the pool.</summary>
     public void Clear()
     {
@@ -57,9 +77,18 @@ public unsafe partial struct ValuePool<T> : IEnumerable<T>
         _availableItems.Clear();
     }
 
+    /// <inheritdoc />
+    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is ValuePool<T> other) && Equals(other);
+
+    /// <inheritdoc />
+    public bool Equals(ValuePool<T> other) => this == other;
+
     /// <summary>Gets an enumerator that can iterate through the items in the pool.</summary>
     /// <returns>An enumerator that can iterate through the items in the pool.</returns>
     public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
+
+    /// <inheritdoc />
+    public override int GetHashCode() => HashCode.Combine(_availableItems, _items);
 
     /// <summary>Removes the first occurrence of an item from the pool.</summary>
     /// <param name="item">The item to remove from the pool.</param>

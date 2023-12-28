@@ -29,8 +29,10 @@ public sealed unsafe class GraphicsRenderContext : GraphicsContext
     /// <inheritdoc cref="GraphicsCommandQueueObject.CommandQueue" />
     public new GraphicsRenderCommandQueue CommandQueue => base.CommandQueue.As<GraphicsRenderCommandQueue>();
 
+#pragma warning disable CA1822 // Mark members as static
     /// <summary>Gets the maximum number of vertex buffer views that can be bound at one time.</summary>
     public uint MaxBoundVertexBufferViewCount => D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT;
+#pragma warning restore CA1822 // Mark members as static
 
     /// <summary>Gets the current render pass for the context or <c>null</c> if one has not been set.</summary>
     public GraphicsRenderPass? RenderPass => _renderPass;

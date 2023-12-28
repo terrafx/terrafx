@@ -6,7 +6,11 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX;
 
 /// <summary>Defines a timestamp.</summary>
-public readonly struct Timestamp : IComparable<Timestamp>, IEquatable<Timestamp>, IComparable, IFormattable
+public readonly struct Timestamp
+    : IComparable,
+      IComparable<Timestamp>,
+      IEquatable<Timestamp>,
+      IFormattable
 {
     /// <summary>The number of ticks that occur per day.</summary>
     public const long TicksPerDay = TimeSpan.TicksPerDay;
@@ -125,13 +129,19 @@ public readonly struct Timestamp : IComparable<Timestamp>, IEquatable<Timestamp>
     public override bool Equals(object? obj) => (obj is Timestamp other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(Timestamp other) => _ticks.Equals(other._ticks);
+    public bool Equals(Timestamp other) => this == other;
 
     /// <inheritdoc />
     public override int GetHashCode() => _ticks.GetHashCode();
 
     /// <inheritdoc />
-    public override string ToString() => _ticks.ToString();
+    public override string ToString() => ToString(format: null, formatProvider: null);
+
+    /// <inheritdoc />
+    public string ToString(string? format) => ToString(format, formatProvider: null);
+
+    /// <inheritdoc />
+    public string ToString(IFormatProvider? formatProvider) => ToString(format: null, formatProvider);
 
     /// <inheritdoc />
     public string ToString(string? format, IFormatProvider? formatProvider) => _ticks.ToString(format, formatProvider);

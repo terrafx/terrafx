@@ -80,11 +80,13 @@ public sealed unsafe class GraphicsService : DisposableObject
                 }
                 else
                 {
+#pragma warning disable CA2000 // Dispose objects before losing scope
                     var adapter = new GraphicsAdapter(this, dxgiAdapter1);
                     adapters.Add(adapter);
 
                     index++;
                     dxgiAdapter1 = null;
+#pragma warning restore CA2000 // Dispose objects before losing scope
                 }
             }
             while (index != 0);

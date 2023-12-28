@@ -2,6 +2,8 @@
 
 namespace TerraFX.Graphics;
 
+#pragma warning disable CA1707 // Identifiers should not contain underscores
+
 /// <summary>Defines the format kind for a graphics resource.</summary>
 public enum GraphicsFormat
 {

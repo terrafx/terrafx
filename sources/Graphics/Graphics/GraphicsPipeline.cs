@@ -68,7 +68,7 @@ public sealed unsafe class GraphicsPipeline : GraphicsRenderPassObject
             d3d12GraphicsPipelineStateDesc.DepthStencilState.DepthEnable = FALSE;
             d3d12GraphicsPipelineStateDesc.RTVFormats[0] = renderPass.RenderTargetFormat.AsDxgiFormat();
 
-            var d3d12InputElementDescs = UnmanagedArray<D3D12_INPUT_ELEMENT_DESC>.Empty;
+            var d3d12InputElementDescs = UnmanagedArray.Empty<D3D12_INPUT_ELEMENT_DESC>();
 
             if (VertexShader is GraphicsShader vertexShader)
             {

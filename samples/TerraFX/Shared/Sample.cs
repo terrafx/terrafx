@@ -2,7 +2,6 @@
 
 using System;
 using System.IO;
-using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Interop.DirectX;
@@ -26,9 +25,7 @@ public abstract unsafe class Sample : IDisposable
 
     protected Sample(string name)
     {
-        var entryAssembly = Assembly.GetEntryAssembly()!;
-        _assemblyPath = Path.GetDirectoryName(entryAssembly.Location)!;
-
+        _assemblyPath = Path.GetDirectoryName(AppContext.BaseDirectory)!;
         _name = name;
     }
 
@@ -54,12 +51,15 @@ public abstract unsafe class Sample : IDisposable
 
     public virtual void Initialize(Application application, TimeSpan timeout)
     {
+        ThrowIfNull(application);
         _timeout = timeout;
         application.Idle += OnIdle;
     }
 
     protected GraphicsShader CompileShader(GraphicsDevice graphicsDevice, GraphicsShaderKind kind, string shaderName, string entryPointName)
     {
+        ThrowIfNull(graphicsDevice);
+
         GraphicsShader? graphicsShader = null;
 
         fixed (char* assetPath = GetAssetFullPath("Shaders", shaderName, $"{shaderName}{kind}.hlsl"))
@@ -80,7 +80,7 @@ public abstract unsafe class Sample : IDisposable
             ID3DBlob* d3dShaderBlob = null;
             ID3DBlob* d3dShaderErrorBlob = null;
 
-            var result = D3DCompileFromFile((ushort*)assetPath, pDefines: null, D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).GetPointerUnsafe(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &d3dShaderErrorBlob);
+            var result = D3DCompileFromFile(assetPath, pDefines: null, D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).GetPointerUnsafe(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &d3dShaderErrorBlob);
 
             if (result.SUCCEEDED)
             {
@@ -109,6 +109,7 @@ public abstract unsafe class Sample : IDisposable
                 }
             }
 
+#pragma warning disable CA1508 // Avoid dead conditional code
             if (d3dShaderBlob != null)
             {
                 _ = d3dShaderBlob->Release();
@@ -118,6 +119,7 @@ public abstract unsafe class Sample : IDisposable
             {
                 _ = d3dShaderErrorBlob->Release();
             }
+#pragma warning restore CA1508 // Avoid dead conditional code
 
             if (result.FAILED)
             {

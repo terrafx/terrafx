@@ -194,6 +194,7 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
 
     private GraphicsMemoryAllocator AddMemoryAllocator(nuint byteLength, bool isDedicated)
     {
+#pragma warning disable CA2000 // Dispose objects before losing scope
         var memoryHeapCreateOptions = new GraphicsMemoryHeapCreateOptions {
             ByteLength = byteLength,
             D3D12HeapFlags = D3D12HeapFlags,
@@ -215,6 +216,7 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
         _memoryManagerInfo.TotalFreeMemoryRegionByteLength += byteLength;
 
         return memoryAllocator;
+#pragma warning restore CA2000 // Dispose objects before losing scope
     }
 
     private void Free(GraphicsMemoryAllocator memoryAllocator, in GraphicsMemoryRegion memoryRegion)

@@ -31,6 +31,7 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static void ThrowArgumentExceptionExceptionTest()
     {
+#pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
         Assert.That(() => ExceptionUtilities.ThrowArgumentException("message", "value", innerException),
                     Throws.ArgumentException
@@ -39,6 +40,7 @@ public static class ExceptionUtilitiesTests
                           .And.Property(nameof(ArgumentException.ParamName)).EqualTo("value")
                           .And.InnerException.SameAs(innerException)
         );
+#pragma warning restore CA2201 // Do not raise reserved exception types
     }
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowArgumentNullException(string)" /> method.</summary>
@@ -950,7 +952,7 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static unsafe void ThrowIfNullUnmanagedArrayTest()
     {
-        Assert.That(() => ExceptionUtilities.ThrowIfNull(UnmanagedArray<int>.Empty, "value"),
+        Assert.That(() => ExceptionUtilities.ThrowIfNull(UnmanagedArray.Empty<int>(), "value"),
             Throws.Nothing
         );
 
@@ -1086,24 +1088,28 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static unsafe void ThrowIOExceptionExceptionTest()
     {
+#pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
         Assert.That(() => ExceptionUtilities.ThrowIOException("message", innerException),
                     Throws.InstanceOf<IOException>()
                           .And.Message.Contains("message")
                           .And.InnerException.SameAs(innerException)
         );
+#pragma warning restore CA2201 // Do not raise reserved exception types
     }
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIOException(string, int)" /> method.</summary>
     [Test]
     public static unsafe void ThrowIOExceptionWithHrExceptionTest()
     {
+#pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
         Assert.That(() => ExceptionUtilities.ThrowIOException("message", 42),
                     Throws.InstanceOf<IOException>()
                           .And.Message.Contains("message")
                           .And.Property(nameof(IOException.HResult)).EqualTo(42)
         );
+#pragma warning restore CA2201 // Do not raise reserved exception types
     }
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowKeyNotFoundException{TKey}(TKey, string)" /> method.</summary>
@@ -1120,12 +1126,14 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static unsafe void ThrowKeyNotFoundExceptionExceptionTest()
     {
+#pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
         Assert.That(() => ExceptionUtilities.ThrowKeyNotFoundException("key", "collection", innerException),
             Throws.InstanceOf<KeyNotFoundException>()
                   .And.Message.Contains("'collection'")
                   .And.InnerException.SameAs(innerException)
         );
+#pragma warning restore CA2201 // Do not raise reserved exception types
     }
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowNotImplementedException()" /> method.</summary>
@@ -1141,11 +1149,13 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static unsafe void ThrowNotImplementedExceptionExceptionTest()
     {
+#pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
         Assert.That(() => ExceptionUtilities.ThrowNotImplementedException(innerException),
             Throws.InstanceOf<NotImplementedException>()
                   .And.InnerException.SameAs(innerException)
         );
+#pragma warning restore CA2201 // Do not raise reserved exception types
     }
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowObjectDisposedException(string)" /> method.</summary>
@@ -1172,12 +1182,14 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static unsafe void ThrowOutOfMemoryExceptionUInt64ExceptionTest()
     {
+#pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
         Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException(42UL, innerException),
             Throws.InstanceOf<OutOfMemoryException>()
                   .And.Message.Contains($"'{42UL}'")
                   .And.InnerException.SameAs(innerException)
         );
+#pragma warning restore CA2201 // Do not raise reserved exception types
     }
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(nuint)" /> method.</summary>
@@ -1194,12 +1206,14 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static unsafe void ThrowOutOfMemoryExceptionNUIntExceptionTest()
     {
+#pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
         Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException(42, innerException),
             Throws.InstanceOf<OutOfMemoryException>()
                   .And.Message.Contains($"'{(nuint)42}'")
                   .And.InnerException.SameAs(innerException)
         );
+#pragma warning restore CA2201 // Do not raise reserved exception types
     }
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(ulong, ulong)" /> method.</summary>
@@ -1216,12 +1230,14 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static unsafe void ThrowOutOfMemoryExceptionUInt64UInt64ExceptionTest()
     {
+#pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
         Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException(42UL, 24UL, innerException),
             Throws.InstanceOf<OutOfMemoryException>()
                   .And.Message.Contains($"'{42UL}x{24UL}'")
                   .And.InnerException.SameAs(innerException)
         );
+#pragma warning restore CA2201 // Do not raise reserved exception types
     }
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(nuint, nuint)" /> method.</summary>
@@ -1238,12 +1254,14 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static unsafe void ThrowOutOfMemoryExceptionNUIntNUIntExceptionTest()
     {
+#pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
         Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException(42, 24, innerException),
             Throws.InstanceOf<OutOfMemoryException>()
                   .And.Message.Contains($"'{(nuint)42}x{(nuint)24}'")
                   .And.InnerException.SameAs(innerException)
         );
+#pragma warning restore CA2201 // Do not raise reserved exception types
     }
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowTimeoutException(string, int)" /> method.</summary>
@@ -1261,6 +1279,7 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static unsafe void ThrowTimeoutExceptionInt32ExceptionTest()
     {
+#pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
         Assert.That(() => ExceptionUtilities.ThrowTimeoutException("method", 42, innerException),
             Throws.InstanceOf<TimeoutException>()
@@ -1268,6 +1287,7 @@ public static class ExceptionUtilitiesTests
                   .And.Message.Contains($"'{42}'")
                   .And.InnerException.SameAs(innerException)
         );
+#pragma warning restore CA2201 // Do not raise reserved exception types
     }
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowTimeoutException(string, TimeSpan)" /> method.</summary>
@@ -1285,6 +1305,7 @@ public static class ExceptionUtilitiesTests
     [Test]
     public static unsafe void ThrowTimeoutExceptionTimeSpanExceptionTest()
     {
+#pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
         Assert.That(() => ExceptionUtilities.ThrowTimeoutException("method", TimeSpan.FromMilliseconds(42), innerException),
             Throws.InstanceOf<TimeoutException>()
@@ -1292,5 +1313,6 @@ public static class ExceptionUtilitiesTests
                   .And.Message.Contains($"'{TimeSpan.FromMilliseconds(42).TotalMilliseconds}'")
                   .And.InnerException.SameAs(innerException)
         );
+#pragma warning restore CA2201 // Do not raise reserved exception types
     }
 }

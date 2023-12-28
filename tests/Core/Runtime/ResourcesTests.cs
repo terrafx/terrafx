@@ -16,7 +16,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.AllocationFailedMessage,
+        Assert.That(Resources.AllocationFailedMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -27,7 +27,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.ArrayAllocationFailedMessage,
+        Assert.That(Resources.ArrayAllocationFailedMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -60,7 +60,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.InvalidFlagCombinationMessage,
+        Assert.That(Resources.InvalidFlagCombinationMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -71,7 +71,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.InvalidKeyMessage,
+        Assert.That(Resources.InvalidKeyMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -82,7 +82,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.InvalidKindMessage,
+        Assert.That(Resources.InvalidKindMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -93,7 +93,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.InvalidKindWithExpectedKindMessage,
+        Assert.That(Resources.InvalidKindWithExpectedKindMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -104,7 +104,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.InvalidParentMessage,
+        Assert.That(Resources.InvalidParentMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -115,7 +115,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.InvalidStateMessage,
+        Assert.That(Resources.InvalidStateMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -126,7 +126,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.InvalidThreadMessage,
+        Assert.That(Resources.InvalidThreadMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -137,7 +137,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.InvalidTypeMessage,
+        Assert.That(Resources.InvalidTypeMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -148,7 +148,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.MethodTimeoutMessage,
+        Assert.That(Resources.MethodTimeoutMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -181,7 +181,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.ObjectDisposedOrDisposingMessage,
+        Assert.That(Resources.ObjectDisposedOrDisposingMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -192,7 +192,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.ObjectNotDisposingMessage,
+        Assert.That(Resources.ObjectNotDisposingMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -214,7 +214,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.StateTransitionFailureMessage,
+        Assert.That(Resources.StateTransitionFailureMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -225,7 +225,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.UnmanagedMethodFailedMessage,
+        Assert.That(Resources.UnmanagedMethodFailedMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -236,7 +236,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.ValueIsNegativeMessage,
+        Assert.That(Resources.ValueIsNegativeMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -247,7 +247,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.ValueIsNotInSignedBoundsMessage,
+        Assert.That(Resources.ValueIsNotInSignedBoundsMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -258,7 +258,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.ValueIsNotInSignedInsertBoundsMessage,
+        Assert.That(Resources.ValueIsNotInSignedInsertBoundsMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -269,7 +269,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.ValueIsNotInUnsignedBoundsMessage,
+        Assert.That(Resources.ValueIsNotInUnsignedBoundsMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -280,7 +280,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.ValueIsNotInUnsignedInsertBoundsMessage,
+        Assert.That(Resources.ValueIsNotInUnsignedInsertBoundsMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -291,7 +291,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.ValueIsNotPow2Message,
+        Assert.That(Resources.ValueIsNotPow2Message.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -302,7 +302,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.ValueIsNotZeroMessage,
+        Assert.That(Resources.ValueIsNotZeroMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -313,7 +313,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.ValueIsNullMessage,
+        Assert.That(Resources.ValueIsNullMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
@@ -324,7 +324,7 @@ public static class ResourcesTests
     {
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
-        Assert.That(Resources.ValueIsZeroMessage,
+        Assert.That(Resources.ValueIsZeroMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }

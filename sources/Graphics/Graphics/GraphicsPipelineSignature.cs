@@ -1,5 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using System.Runtime.CompilerServices;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
@@ -73,9 +74,9 @@ public sealed unsafe class GraphicsPipelineSignature : GraphicsDeviceObject
                 d3d12FeatureDataRootSignature.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_0;
             }
 
-            var d3d12DescriptorRanges = UnmanagedArray<D3D12_DESCRIPTOR_RANGE1>.Empty;
-            var d3d12RootParameters = UnmanagedArray<D3D12_ROOT_PARAMETER1>.Empty;
-            var d3d12StaticSamplerDescs = UnmanagedArray<D3D12_STATIC_SAMPLER_DESC>.Empty;
+            var d3d12DescriptorRanges = UnmanagedArray.Empty<D3D12_DESCRIPTOR_RANGE1>();
+            var d3d12RootParameters = UnmanagedArray.Empty<D3D12_ROOT_PARAMETER1>();
+            var d3d12StaticSamplerDescs = UnmanagedArray.Empty<D3D12_STATIC_SAMPLER_DESC>();
 
             var resources = createOptions.Resources;
 
@@ -183,8 +184,10 @@ public sealed unsafe class GraphicsPipelineSignature : GraphicsDeviceObject
                 }
             }
 
+            Unsafe.SkipInit(out D3D12_VERSIONED_ROOT_SIGNATURE_DESC d3d12VersionedRootSignatureDesc);
+
             D3D12_VERSIONED_ROOT_SIGNATURE_DESC.Init_1_1(
-                out var d3d12VersionedRootSignatureDesc,
+                ref d3d12VersionedRootSignatureDesc,
                 (uint)d3d12RootParameters.Length,
                 d3d12RootParameters.GetPointerUnsafe(0),
                 (uint)d3d12StaticSamplerDescs.Length,
@@ -195,7 +198,7 @@ public sealed unsafe class GraphicsPipelineSignature : GraphicsDeviceObject
             ID3DBlob* d3dRootSignatureBlob;
             ID3DBlob* d3dRootSignatureErrorBlob;
 
-            ThrowExternalExceptionIfFailed(D3D12SerializeVersionedRootSignature(&d3d12VersionedRootSignatureDesc, d3d12FeatureDataRootSignature.HighestVersion, &d3dRootSignatureBlob, &d3dRootSignatureErrorBlob));
+            ThrowExternalExceptionIfFailed(D3DX12SerializeVersionedRootSignature(&d3d12VersionedRootSignatureDesc, d3d12FeatureDataRootSignature.HighestVersion, &d3dRootSignatureBlob, &d3dRootSignatureErrorBlob));
 
             var result = d3d12Device->CreateRootSignature(0, d3dRootSignatureBlob->GetBufferPointer(), d3dRootSignatureBlob->GetBufferSize(), __uuidof<ID3D12RootSignature>(), (void**)&d3d12RootSignature);
 
@@ -242,10 +245,10 @@ public sealed unsafe class GraphicsPipelineSignature : GraphicsDeviceObject
     /// <summary>Finalizes an instance of the <see cref="GraphicsPipelineSignature" /> class.</summary>
     ~GraphicsPipelineSignature() => Dispose(isDisposing: false);
 
-    /// <summary>Gets the inputs given to the graphics pipeline or <see cref="UnmanagedReadOnlySpan{T}.Empty" /> if none exist.</summary>
+    /// <summary>Gets the inputs given to the graphics pipeline or <see cref="UnmanagedReadOnlySpan.Empty{T}()" /> if none exist.</summary>
     public UnmanagedReadOnlySpan<GraphicsPipelineInput> Inputs => _inputs;
 
-    /// <summary>Gets the resources given to the graphics pipeline or <see cref="UnmanagedReadOnlySpan{T}.Empty" /> if none exist.</summary>
+    /// <summary>Gets the resources given to the graphics pipeline or <see cref="UnmanagedReadOnlySpan.Empty{T}()" /> if none exist.</summary>
     public UnmanagedReadOnlySpan<GraphicsPipelineResource> Resources => _resources;
 
     internal ID3D12RootSignature* D3D12RootSignature => _d3d12RootSignature;

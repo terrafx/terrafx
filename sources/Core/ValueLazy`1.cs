@@ -4,8 +4,10 @@
 // The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using TerraFX.Runtime;
@@ -20,7 +22,7 @@ namespace TerraFX;
 /// <typeparam name="T">The type of the value being lazily initialized.</typeparam>
 [DebuggerDisplay("IsValueCreated={IsValueCreated}, IsValueFaulted={IsValueFaulted}, Value={ValueOrDefault}")]
 [DebuggerTypeProxy(typeof(ValueLazy<>.DebugView))]
-public partial struct ValueLazy<T>
+public partial struct ValueLazy<T> : IEquatable<ValueLazy<T>>
 {
     private const int Creating = 2;
     private const int Faulted = 3;
@@ -84,10 +86,30 @@ public partial struct ValueLazy<T>
         }
     }
 
+    /// <summary>Compares two <see cref="ValueLazy{T}" /> instances to determine equality.</summary>
+    /// <param name="left">The <see cref="ValueLazy{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="ValueLazy{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, false.</returns>
+    public static bool operator ==(ValueLazy<T> left, ValueLazy<T> right)
+        => (left._factory == right._factory)
+        && EqualityComparer<T>.Default.Equals(left._value, right._value)
+        && (left._state == right._state);
+
+    /// <summary>Compares two <see cref="ValueLazy{T}" /> instances to determine inequality.</summary>
+    /// <param name="left">The <see cref="ValueLazy{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="ValueLazy{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+    public static bool operator !=(ValueLazy<T> left, ValueLazy<T> right)
+        => (left._factory != right._factory)
+        || !EqualityComparer<T>.Default.Equals(left._value, right._value)
+        || (left._state != right._state);
+
     /// <inheritdoc cref="IDisposable.Dispose()" />
     /// <param name="action">The action to call, if the value was created, which performs the appropriate disposal.</param>
     public void Dispose(Action<T> action)
     {
+        ThrowIfNull(action);
+
         var priorState = _state.BeginDispose();
 
         if (priorState == Created)
@@ -99,7 +121,13 @@ public partial struct ValueLazy<T>
     }
 
     /// <inheritdoc />
-    public override string ToString() => IsValueCreated ? _value!.ToString()! : string.Empty;
+    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is ValueLazy<T> other) && Equals(other);
+
+    /// <inheritdoc />
+    public bool Equals(ValueLazy<T> other) => this == other;
+
+    /// <inheritdoc />
+    public override int GetHashCode() => HashCode.Combine(_factory, _value, _state);
 
     /// <summary>Resets the instance so the value can be recreated.</summary>
     /// <param name="factory">The factory method to call when initializing the value.</param>
@@ -113,6 +141,9 @@ public partial struct ValueLazy<T>
         _factory = factory;
         _ = _state.Transition(to: Initialized);
     }
+
+    /// <inheritdoc />
+    public override string ToString() => IsValueCreated ? _value!.ToString()! : string.Empty;
 
     private void CreateValue()
     {
@@ -132,7 +163,7 @@ public partial struct ValueLazy<T>
                 if (_state.TryTransition(from: Creating, to: Created) != Creating)
                 {
                     _ = _state.Transition(to: Faulted);
-                    var message = string.Format(Resources.StateTransitionFailureMessage, Creating, Created);
+                    var message = string.Format(CultureInfo.InvariantCulture, Resources.StateTransitionFailureMessage, Creating, Created);
                     ThrowInvalidOperationException(message);
                 }
 

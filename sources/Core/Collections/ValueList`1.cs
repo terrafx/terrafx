@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using TerraFX.Threading;
@@ -22,11 +23,10 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
 [DebuggerTypeProxy(typeof(ValueList<>.DebugView))]
-public partial struct ValueList<T> : IEnumerable<T>
+public partial struct ValueList<T>
+    : IEnumerable<T>,
+      IEquatable<ValueList<T>>
 {
-    /// <summary>Gets an empty linked list.</summary>
-    public static ValueList<T> Empty => new ValueList<T>();
-
     private T[] _items;
     private int _count;
 
@@ -131,6 +131,26 @@ public partial struct ValueList<T> : IEnumerable<T>
         }
     }
 
+    /// <summary>Compares two <see cref="ValueList{T}" /> instances to determine equality.</summary>
+    /// <param name="left">The <see cref="ValueList{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="ValueList{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, false.</returns>
+    public static bool operator ==(ValueList<T> left, ValueList<T> right)
+    {
+        return (left._items == right._items)
+            && (left._count == right._count);
+    }
+
+    /// <summary>Compares two <see cref="ValueList{T}" /> instances to determine inequality.</summary>
+    /// <param name="left">The <see cref="ValueList{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="ValueList{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+    public static bool operator !=(ValueList<T> left, ValueList<T> right)
+    {
+        return (left._items != right._items)
+            || (left._count != right._count);
+    }
+
     /// <summary>Adds an item to the list.</summary>
     /// <param name="item">The item to add to the list.</param>
     public void Add(T item)
@@ -208,9 +228,18 @@ public partial struct ValueList<T> : IEnumerable<T>
         }
     }
 
+    /// <inheritdoc />
+    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is ValueList<T> other) && Equals(other);
+
+    /// <inheritdoc />
+    public bool Equals(ValueList<T> other) => this == other;
+
     /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
     /// <returns>An enumerator that can iterate through the items in the list.</returns>
     public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
+
+    /// <inheritdoc />
+    public override int GetHashCode() => HashCode.Combine(_items, _count);
 
     /// <summary>Gets a reference to the item at the specified index of the list.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>

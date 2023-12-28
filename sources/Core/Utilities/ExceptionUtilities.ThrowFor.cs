@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using TerraFX.Runtime;
@@ -39,7 +40,7 @@ public static unsafe partial class ExceptionUtilities
         where TEnum : struct, Enum
     {
         AssertNotNull(valueExpression);
-        var message = string.Format(Resources.InvalidFlagCombinationMessage, valueExpression);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.InvalidFlagCombinationMessage, valueExpression);
         ThrowArgumentOutOfRangeException(valueExpression, value, message);
     }
 
@@ -53,7 +54,7 @@ public static unsafe partial class ExceptionUtilities
         where TEnum : struct, Enum
     {
         AssertNotNull(valueExpression);
-        var message = string.Format(Resources.InvalidKindMessage, valueExpression);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.InvalidKindMessage, valueExpression);
         ThrowArgumentOutOfRangeException(valueExpression, value, message);
     }
 
@@ -68,7 +69,7 @@ public static unsafe partial class ExceptionUtilities
         where TEnum : struct, Enum
     {
         AssertNotNull(valueExpression);
-        var message = string.Format(Resources.InvalidKindWithExpectedKindMessage, valueExpression, expectedValue);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.InvalidKindWithExpectedKindMessage, valueExpression, expectedValue);
         ThrowArgumentOutOfRangeException(valueExpression, value, message);
     }
 
@@ -80,7 +81,7 @@ public static unsafe partial class ExceptionUtilities
     public static void ThrowForInvalidParent<T>(T value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         AssertNotNull(valueExpression);
-        var message = string.Format(Resources.InvalidParentMessage, valueExpression);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.InvalidParentMessage, valueExpression);
         ThrowArgumentOutOfRangeException(valueExpression, value, message);
     }
 
@@ -90,7 +91,7 @@ public static unsafe partial class ExceptionUtilities
     [DoesNotReturn]
     public static void ThrowForInvalidState(string expectedStateName)
     {
-        var message = string.Format(Resources.InvalidStateMessage, expectedStateName);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.InvalidStateMessage, expectedStateName);
         ThrowInvalidOperationException(message);
     }
 
@@ -103,7 +104,7 @@ public static unsafe partial class ExceptionUtilities
     public static void ThrowForInvalidType(Type type, Type expectedType, [CallerArgumentExpression(nameof(type))] string? typeExpression = null)
     {
         AssertNotNull(typeExpression);
-        var message = string.Format(Resources.InvalidTypeMessage, typeExpression, expectedType);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.InvalidTypeMessage, typeExpression, expectedType);
         ThrowArgumentOutOfRangeException(typeExpression, type, message);
     }
 
@@ -297,7 +298,7 @@ public static unsafe partial class ExceptionUtilities
     public static void ThrowForUnsupportedValue<T>(T value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
         AssertNotNull(valueExpression);
-        var message = string.Format(Resources.UnsupportedValueMessage, value);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.UnsupportedValueMessage, value);
         ThrowArgumentOutOfRangeException(valueExpression, value, message);
     }
 }

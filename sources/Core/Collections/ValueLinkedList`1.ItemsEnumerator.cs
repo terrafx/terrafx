@@ -12,7 +12,7 @@ public partial struct ValueLinkedList<T>
     public struct ItemsEnumerator : IRefEnumerator<T>
     {
         private readonly ValueLinkedList<T> _linkedList;
-        private Node? _current;
+        private ValueLinkedListNode<T>? _current;
         private int _index;
 
         internal ItemsEnumerator(ValueLinkedList<T> linkedList)

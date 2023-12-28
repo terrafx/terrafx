@@ -127,7 +127,7 @@ public sealed unsafe class GraphicsBuffer : GraphicsResource
         ThrowIfZero(createOptions.BytesPerElement);
         ThrowIfZero(createOptions.ElementCount);
 
-        if ((Kind == GraphicsBufferKind.Index) && ((createOptions.BytesPerElement != 2) || (createOptions.BytesPerElement != 4)))
+        if ((Kind == GraphicsBufferKind.Index) && (createOptions.BytesPerElement != 2) && (createOptions.BytesPerElement != 4))
         {
             ThrowForInvalidKind(Kind);
         }
@@ -151,7 +151,7 @@ public sealed unsafe class GraphicsBuffer : GraphicsResource
         ThrowIfZero(bytesPerElement);
         ThrowIfZero(elementCount);
 
-        if ((Kind == GraphicsBufferKind.Index) && ((bytesPerElement != 2) || (bytesPerElement != 4)))
+        if ((Kind == GraphicsBufferKind.Index) && (bytesPerElement != 2) && (bytesPerElement != 4))
         {
             ThrowForInvalidKind(Kind);
         }

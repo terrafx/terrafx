@@ -9,12 +9,12 @@ namespace TerraFX.Collections;
 /// <typeparam name="T">The type of the items in the collection.</typeparam>
 public sealed class NotifyCollectionChangedEventArgs<T> : EventArgs
 {
-    private static readonly NotifyCollectionChangedEventArgs<T> s_reset = new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Reset);
+    internal static readonly NotifyCollectionChangedEventArgs<T> s_reset = new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Reset);
 
     private readonly NotifyCollectionChangedAction _action;
     private readonly T? _value;
 
-    private NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, T? value = default)
+    internal NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, T? value = default)
     {
         AssertIsDefined(action);
 
@@ -35,18 +35,4 @@ public sealed class NotifyCollectionChangedEventArgs<T> : EventArgs
             return _value;
         }
     }
-
-    /// <summary>Gets or creates an instance of the <see cref="NotifyCollectionChangedEventArgs{T}" /> class for the <see cref="NotifyCollectionChangedAction.Add" /> action.</summary>
-    /// <param name="value">The item that caused the event.</param>
-    /// <returns>An instance of the <see cref="NotifyCollectionChangedEventArgs{T}" /> class.</returns>
-    public static NotifyCollectionChangedEventArgs<T> ForAddAction(T value) => new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Add, value);
-
-    /// <summary>Gets or creates an instance of the <see cref="NotifyCollectionChangedEventArgs{T}" /> class for the <see cref="NotifyCollectionChangedAction.Remove" /> action.</summary>
-    /// <param name="value">The item that caused the event.</param>
-    /// <returns>An instance of the <see cref="NotifyCollectionChangedEventArgs{T}" /> class.</returns>
-    public static NotifyCollectionChangedEventArgs<T> ForRemoveAction(T value) => new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Remove, value);
-
-    /// <summary>Gets or creates an instance of the <see cref="NotifyCollectionChangedEventArgs{T}" /> class for the <see cref="NotifyCollectionChangedAction.Reset" /> action.</summary>
-    /// <returns>An instance of the <see cref="NotifyCollectionChangedEventArgs{T}" /> class.</returns>
-    public static NotifyCollectionChangedEventArgs<T> ForResetAction() => s_reset;
 }

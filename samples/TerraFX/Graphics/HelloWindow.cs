@@ -8,6 +8,8 @@ using TerraFX.Numerics;
 using TerraFX.UI;
 using TerraFX.Utilities;
 
+#pragma warning disable CA2213 // Disposable fields should be disposed
+
 namespace TerraFX.Samples.Graphics;
 
 public class HelloWindow : Sample

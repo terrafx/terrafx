@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using TerraFX.Threading;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -21,19 +22,19 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
 [DebuggerTypeProxy(typeof(UnmanagedValueList<>.DebugView))]
-public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
+public unsafe partial struct UnmanagedValueList<T>
+    : IDisposable,
+      IEnumerable<T>,
+      IEquatable<UnmanagedValueList<T>>
     where T : unmanaged
 {
-    /// <summary>Gets an empty list.</summary>
-    public static UnmanagedValueList<T> Empty => new UnmanagedValueList<T>();
-
     private UnmanagedArray<T> _items;
     private nuint _count;
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueList{T}" /> struct.</summary>
     public UnmanagedValueList()
     {
-        _items = UnmanagedArray<T>.Empty;
+        _items = UnmanagedArray.Empty<T>();
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueList{T}" /> struct.</summary>
@@ -52,7 +53,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
             {
                 ThrowIfNotPow2(alignment);
             }
-            _items = UnmanagedArray<T>.Empty;
+            _items = UnmanagedArray.Empty<T>();
         }
     }
 
@@ -74,7 +75,7 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
             {
                 ThrowIfNotPow2(alignment);
             }
-            _items = UnmanagedArray<T>.Empty;
+            _items = UnmanagedArray.Empty<T>();
         }
 
         _count = span.Length;
@@ -133,6 +134,26 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
             ThrowIfNotInBounds(index, _count);
             _items[index] = value;
         }
+    }
+
+    /// <summary>Compares two <see cref="UnmanagedValueList{T}" /> instances to determine equality.</summary>
+    /// <param name="left">The <see cref="UnmanagedValueList{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="UnmanagedValueList{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, false.</returns>
+    public static bool operator ==(UnmanagedValueList<T> left, UnmanagedValueList<T> right)
+    {
+        return (left._items == right._items)
+            && (left._count == right._count);
+    }
+
+    /// <summary>Compares two <see cref="UnmanagedValueList{T}" /> instances to determine inequality.</summary>
+    /// <param name="left">The <see cref="UnmanagedValueList{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="UnmanagedValueList{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+    public static bool operator !=(UnmanagedValueList<T> left, UnmanagedValueList<T> right)
+    {
+        return (left._items != right._items)
+            || (left._count != right._count);
     }
 
     /// <summary>Adds an item to the list.</summary>
@@ -207,9 +228,18 @@ public unsafe partial struct UnmanagedValueList<T> : IDisposable, IEnumerable<T>
         }
     }
 
+    /// <inheritdoc />
+    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedValueList<T> other) && Equals(other);
+
+    /// <inheritdoc />
+    public bool Equals(UnmanagedValueList<T> other) => this == other;
+
     /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
     /// <returns>An enumerator that can iterate through the items in the list.</returns>
     public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
+
+    /// <inheritdoc />
+    public override int GetHashCode() => HashCode.Combine(_items, _count);
 
     /// <summary>Gets a pointer to the item at the specified index of the list.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>

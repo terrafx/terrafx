@@ -74,9 +74,8 @@ public sealed partial class PropertySet : IPropertySet
 
         set
         {
-            if (_items.ContainsKey(key))
+            if (_items.TryGetValue(key, out var oldValue))
             {
-                var oldValue = _items[key];
                 _items[key] = value;
                 OnDictionaryItemChanged(key, oldValue, value);
             }
@@ -128,7 +127,7 @@ public sealed partial class PropertySet : IPropertySet
     {
         if (DictionaryChanged != null)
         {
-            var eventArgs = NotifyDictionaryChangedEventArgs<string, object>.ForResetAction();
+            var eventArgs = NotifyDictionaryChangedEventArgs.ForResetAction<string, object>();
             DictionaryChanged(this, eventArgs);
         }
     }
@@ -137,7 +136,7 @@ public sealed partial class PropertySet : IPropertySet
     {
         if (DictionaryChanged != null)
         {
-            var eventArgs = NotifyDictionaryChangedEventArgs<string, object>.ForAddAction(key);
+            var eventArgs = NotifyDictionaryChangedEventArgs.ForAddAction<string, object>(key);
             DictionaryChanged(this, eventArgs);
         }
     }
@@ -146,7 +145,7 @@ public sealed partial class PropertySet : IPropertySet
     {
         if (DictionaryChanged != null)
         {
-            var eventArgs = NotifyDictionaryChangedEventArgs<string, object>.ForValueChangedAction(key, oldValue, newValue);
+            var eventArgs = NotifyDictionaryChangedEventArgs.ForValueChangedAction(key, oldValue, newValue);
             DictionaryChanged(this, eventArgs);
         }
     }
@@ -155,7 +154,7 @@ public sealed partial class PropertySet : IPropertySet
     {
         if (DictionaryChanged != null)
         {
-            var eventArgs = NotifyDictionaryChangedEventArgs<string, object>.ForRemoveAction(key);
+            var eventArgs = NotifyDictionaryChangedEventArgs.ForRemoveAction<string, object>(key);
             DictionaryChanged(this, eventArgs);
         }
     }

@@ -30,10 +30,9 @@ public abstract unsafe partial class GraphicsMemoryAllocator
         defaultValue: 4096U
     );
 
-    /// <summary>The information for the graphics memory allocator.</summary>
-    protected GraphicsMemoryAllocatorInfo MemoryAllocatorInfo;
-
     private readonly GraphicsDeviceObject _deviceObject;
+
+    private GraphicsMemoryAllocatorInfo _memoryAllocatorInfo;
 
     /// <summary>Creates a new instance of a memory allocator that uses a system provided default algorithm.</summary>
     /// <param name="deviceObject">The device object for which the allocator is managing memory.</param>
@@ -73,6 +72,9 @@ public abstract unsafe partial class GraphicsMemoryAllocator
 
     /// <summary>Gets the total length, in bytes, of free memory regions.</summary>
     public nuint TotalFreeMemoryRegionByteLength => MemoryAllocatorInfo.TotalFreeMemoryRegionByteLength;
+
+    /// <summary>The information for the graphics memory allocator.</summary>
+    protected ref GraphicsMemoryAllocatorInfo MemoryAllocatorInfo => ref _memoryAllocatorInfo;
 
     /// <summary>Allocates a memory region of the specified size and alignment.</summary>
     /// <param name="byteLength">The length, in bytes, of the memory region to allocate.</param>

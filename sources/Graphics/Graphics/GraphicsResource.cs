@@ -36,7 +36,9 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     private volatile uint _mappedCount;
     private readonly ValueMutex _mappedMutex;
 
+#pragma warning disable CA2213 // Disposable fields should be disposed
     private GraphicsMemoryHeap _memoryHeap;
+#pragma warning restore CA2213 // Disposable fields should be disposed
     private readonly GraphicsMemoryRegion _memoryRegion;
 
     private protected GraphicsResource(GraphicsDevice device, in GraphicsBufferCreateOptions createOptions) : this(device, GraphicsResourceKind.Buffer, createOptions.CpuAccess)

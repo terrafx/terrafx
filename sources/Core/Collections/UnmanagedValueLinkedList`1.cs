@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -18,13 +19,13 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(UnmanagedValueLinkedList<>.DebugView))]
-public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumerable<T>
+public unsafe partial struct UnmanagedValueLinkedList<T>
+    : IDisposable,
+      IEnumerable<T>,
+      IEquatable<UnmanagedValueLinkedList<T>>
     where T : unmanaged
 {
-    /// <summary>Gets an empty linked list.</summary>
-    public static UnmanagedValueLinkedList<T> Empty => new UnmanagedValueLinkedList<T>();
-
-    private Node* _first;
+    private UnmanagedValueLinkedListNode<T>* _first;
     private nuint _count;
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueLinkedList{T}" /> struct.</summary>
@@ -54,10 +55,10 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
     public readonly nuint Count => _count;
 
     /// <summary>Gets the first node in the linked list or <c>null</c> if the linked list is empty.</summary>
-    public Node* First => _first;
+    public UnmanagedValueLinkedListNode<T>* First => _first;
 
     /// <summary>Gets the last node in the linked list or <c>null</c> if the linked list is empty.</summary>
-    public Node* Last
+    public UnmanagedValueLinkedListNode<T>* Last
     {
         get
         {
@@ -66,17 +67,37 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
         }
     }
 
+    /// <summary>Compares two <see cref="UnmanagedValueLinkedList{T}" /> instances to determine equality.</summary>
+    /// <param name="left">The <see cref="UnmanagedValueLinkedList{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="UnmanagedValueLinkedList{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, false.</returns>
+    public static bool operator ==(UnmanagedValueLinkedList<T> left, UnmanagedValueLinkedList<T> right)
+    {
+        return (left._first == right._first)
+            && (left._count == right._count);
+    }
+
+    /// <summary>Compares two <see cref="UnmanagedValueLinkedList{T}" /> instances to determine inequality.</summary>
+    /// <param name="left">The <see cref="UnmanagedValueLinkedList{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="UnmanagedValueLinkedList{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+    public static bool operator !=(UnmanagedValueLinkedList<T> left, UnmanagedValueLinkedList<T> right)
+    {
+        return (left._first != right._first)
+            || (left._count != right._count);
+    }
+
     /// <summary>Adds a new node containing a given value after the specified node.</summary>
     /// <param name="node">The node after which the new node should be added.</param>
     /// <param name="value">The value which the new node contains.</param>
     /// <returns>The new node.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="node" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="node" /> does not have a parent.</exception>
-    public Node* AddAfter(Node* node, T value)
+    public UnmanagedValueLinkedListNode<T>* AddAfter(UnmanagedValueLinkedListNode<T>* node, T value)
     {
         ValidateNode(node);
 
-        var result = Allocate<Node>();
+        var result = Allocate<UnmanagedValueLinkedListNode<T>>();
         result->_value = value;
 
         AssertNotNull(node->_next);
@@ -94,7 +115,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
     /// <exception cref="ArgumentNullException"><paramref name="newNode" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="node" /> does not have a parent.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="newNode" /> already has a parent.</exception>
-    public Node* AddAfter(Node* node, Node* newNode)
+    public UnmanagedValueLinkedListNode<T>* AddAfter(UnmanagedValueLinkedListNode<T>* node, UnmanagedValueLinkedListNode<T>* newNode)
     {
         ValidateNode(node);
         ValidateNewNode(newNode);
@@ -112,11 +133,11 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
     /// <returns>The new node.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="node" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="node" /> does not have a parent.</exception>
-    public Node* AddBefore(Node* node, T value)
+    public UnmanagedValueLinkedListNode<T>* AddBefore(UnmanagedValueLinkedListNode<T>* node, T value)
     {
         ValidateNode(node);
 
-        var result = Allocate<Node>();
+        var result = Allocate<UnmanagedValueLinkedListNode<T>>();
         result->_value = value;
 
         InternalInsertNodeBefore(node, result);
@@ -142,7 +163,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
     /// <exception cref="ArgumentNullException"><paramref name="newNode" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="node" /> does not have a parent.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="newNode" /> already has a parent.</exception>
-    public Node* AddBefore(Node* node, Node* newNode)
+    public UnmanagedValueLinkedListNode<T>* AddBefore(UnmanagedValueLinkedListNode<T>* node, UnmanagedValueLinkedListNode<T>* newNode)
     {
         ValidateNode(node);
 
@@ -165,9 +186,9 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
     /// <summary>Adds a new node containing a given value as the first node.</summary>
     /// <param name="value">The value which the new node contains.</param>
     /// <returns>The new node.</returns>
-    public Node* AddFirst(T value)
+    public UnmanagedValueLinkedListNode<T>* AddFirst(T value)
     {
-        var result = Allocate<Node>();
+        var result = Allocate<UnmanagedValueLinkedListNode<T>>();
         result->_value = value;
 
         var first = _first;
@@ -196,7 +217,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
     /// <returns><paramref name="newNode" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="newNode" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="newNode" /> already has a parent.</exception>
-    public Node* AddFirst(Node* newNode)
+    public UnmanagedValueLinkedListNode<T>* AddFirst(UnmanagedValueLinkedListNode<T>* newNode)
     {
         ValidateNewNode(newNode);
         var first = _first;
@@ -223,9 +244,9 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
     /// <summary>Adds a new node containing a given value as the last node.</summary>
     /// <param name="value">The value which the new node contains.</param>
     /// <returns>The new node.</returns>
-    public Node* AddLast(T value)
+    public UnmanagedValueLinkedListNode<T>* AddLast(T value)
     {
-        var result = Allocate<Node>();
+        var result = Allocate<UnmanagedValueLinkedListNode<T>>();
         result->_value = value;
 
         var first = _first;
@@ -248,7 +269,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
     /// <returns><paramref name="newNode" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="newNode" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="newNode" /> already has a parent.</exception>
-    public Node* AddLast(Node* newNode)
+    public UnmanagedValueLinkedListNode<T>* AddLast(UnmanagedValueLinkedListNode<T>* newNode)
     {
         ValidateNewNode(newNode);
 
@@ -298,7 +319,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
     /// <summary>Checks whether the linked list contains a specified node.</summary>
     /// <param name="node">The node to check for in the linked list.</param>
     /// <returns><c>true</c> if <paramref name="node" /> was found in the linked list; otherwise, <c>false</c>.</returns>
-    public bool Contains(Node* node)
+    public bool Contains(UnmanagedValueLinkedListNode<T>* node)
     {
         if (node->HasParent)
         {
@@ -370,16 +391,22 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
         }
     }
 
+    /// <inheritdoc />
+    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedValueLinkedList<T> other) && Equals(other);
+
+    /// <inheritdoc />
+    public bool Equals(UnmanagedValueLinkedList<T> other) => this == other;
+
     /// <summary>Tries to find a node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <returns>The node that contains <paramref name="value" /> if it exists; otherwise, <c>null</c>.</returns>
-    public Node* Find(T value) => Find(value, EqualityComparer<T>.Default);
+    public UnmanagedValueLinkedListNode<T>* Find(T value) => Find(value, EqualityComparer<T>.Default);
 
     /// <summary>Tries to find a node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <param name="comparer">The comparer to use when checking for equality.</param>
     /// <returns>The node that contains <paramref name="value" /> if it exists; otherwise, <c>null</c>.</returns>
-    public Node* Find<TComparer>(T value, TComparer comparer)
+    public UnmanagedValueLinkedListNode<T>* Find<TComparer>(T value, TComparer comparer)
         where TComparer : IEqualityComparer<T>
     {
         var first = _first;
@@ -407,13 +434,13 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
     /// <summary>Tries to find the last node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <returns>The last node that contains <paramref name="value" /> if it exists; otherwise, <c>null</c>.</returns>
-    public Node* FindLast(T value) => FindLast(value, EqualityComparer<T>.Default);
+    public UnmanagedValueLinkedListNode<T>* FindLast(T value) => FindLast(value, EqualityComparer<T>.Default);
 
     /// <summary>Tries to find the last node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <param name="comparer">The comparer to use when checking for equality.</param>
     /// <returns>The last node that contains <paramref name="value" /> if it exists; otherwise, <c>null</c>.</returns>
-    public Node* FindLast<TComparer>(T value, TComparer comparer)
+    public UnmanagedValueLinkedListNode<T>* FindLast<TComparer>(T value, TComparer comparer)
         where TComparer : IEqualityComparer<T>
     {
         var first = _first;
@@ -446,6 +473,9 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
     /// <returns>An enumerator that can iterate through the items in the linked list.</returns>
     public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
+    /// <inheritdoc />
+    public override int GetHashCode() => HashCode.Combine((nuint)_first, _count);
+
     /// <summary>Tries to remove a node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <returns><c>true</c> if a node containing <paramref name="value" /> was removed from the linked list; otherwise, <c>false</c>.</returns>
@@ -473,7 +503,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
     /// <param name="node">The node to remove.</param>
     /// <exception cref="ArgumentNullException"><paramref name="node" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="node" /> does not have a parent.</exception>
-    public void Remove(Node* node)
+    public void Remove(UnmanagedValueLinkedListNode<T>* node)
     {
         ValidateNode(node);
         InternalRemoveNode(node);
@@ -499,7 +529,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
         InternalRemoveNode(last);
     }
 
-    private void InternalInsertNodeBefore(Node* node, Node* newNode)
+    private void InternalInsertNodeBefore(UnmanagedValueLinkedListNode<T>* node, UnmanagedValueLinkedListNode<T>* newNode)
     {
         newNode->_next = node;
 
@@ -514,7 +544,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
         _count++;
     }
 
-    private void InternalInsertNodeToEmptyList(Node* newNode)
+    private void InternalInsertNodeToEmptyList(UnmanagedValueLinkedListNode<T>* newNode)
     {
         Assert(_first is null);
         Assert(_count == 0);
@@ -527,7 +557,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
         _count++;
     }
 
-    private void InternalRemoveNode(Node* node)
+    private void InternalRemoveNode(UnmanagedValueLinkedListNode<T>* node)
     {
         Assert(node->HasParent);
         Assert(Contains(node));
@@ -563,17 +593,17 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
         _count--;
     }
 
-    private void ValidateNewNode(Node* node)
+    private void ValidateNewNode(UnmanagedValueLinkedListNode<T>* node)
     {
         ThrowIfNull(node);
 
         if (node->HasParent)
         {
-            ThrowForInvalidState(nameof(Node.HasParent));
+            ThrowForInvalidState(nameof(UnmanagedValueLinkedListNode<T>.HasParent));
         }
     }
 
-    private void ValidateNode(Node* node)
+    private void ValidateNode(UnmanagedValueLinkedListNode<T>* node)
     {
         ThrowIfNull(node);
 
@@ -583,7 +613,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T> : IDisposable, IEnumera
         }
         else
         {
-            ThrowForInvalidState(nameof(Node.HasParent));
+            ThrowForInvalidState(nameof(UnmanagedValueLinkedListNode<T>.HasParent));
         }
     }
 

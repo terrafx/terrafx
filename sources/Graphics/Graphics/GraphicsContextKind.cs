@@ -1,5 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+#pragma warning disable CA1707 // Identifiers should not contain underscores
+
 namespace TerraFX.Graphics;
 
 /// <summary>Defines a graphics context kind.</summary>
