@@ -4,7 +4,7 @@ using TerraFX.Numerics;
 
 namespace TerraFX.Samples.Graphics;
 
-public struct IdentityVertex
+internal struct IdentityVertex
 {
     public ColorRgba Color;
     public Vector3 Position;

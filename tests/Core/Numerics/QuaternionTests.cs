@@ -8,7 +8,7 @@ namespace TerraFX.UnitTests.Numerics;
 
 /// <summary>Provides a set of tests covering the <see cref="Quaternion" /> struct.</summary>
 [TestFixture(TestOf = typeof(Quaternion))]
-public class QuaternionTests
+public static class QuaternionTests
 {
     /// <summary>Provides validation of the <see cref="Quaternion.Zero" /> property.</summary>
     [Test]
@@ -28,7 +28,7 @@ public class QuaternionTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="M:Quaternion.Create" /> methods.</summary>
+    /// <summary>Provides validation of the <see cref="Quaternion" /> <c>Create</c> methods.</summary>
     [Test]
     public static void CreateTest()
     {

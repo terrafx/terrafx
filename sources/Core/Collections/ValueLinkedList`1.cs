@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -17,12 +18,11 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(ValueLinkedList<>.DebugView))]
-public partial struct ValueLinkedList<T> : IEnumerable<T>
+public partial struct ValueLinkedList<T>
+    : IEnumerable<T>,
+      IEquatable<ValueLinkedList<T>>
 {
-    /// <summary>Gets an empty linked list.</summary>
-    public static ValueLinkedList<T> Empty => new ValueLinkedList<T>();
-
-    private Node? _first;
+    private ValueLinkedListNode<T>? _first;
     private int _count;
 
     /// <summary>Initializes a new instance of the <see cref="ValueLinkedList{T}" /> struct.</summary>
@@ -52,10 +52,30 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     public readonly int Count => _count;
 
     /// <summary>Gets the first node in the linked list or <c>null</c> if the linked list is empty.</summary>
-    public Node? First => _first;
+    public ValueLinkedListNode<T>? First => _first;
 
     /// <summary>Gets the last node in the linked list or <c>null</c> if the linked list is empty.</summary>
-    public Node? Last => _first?._previous;
+    public ValueLinkedListNode<T>? Last => _first?._previous;
+
+    /// <summary>Compares two <see cref="ValueLinkedList{T}" /> instances to determine equality.</summary>
+    /// <param name="left">The <see cref="ValueLinkedList{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="ValueLinkedList{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, false.</returns>
+    public static bool operator ==(ValueLinkedList<T> left, ValueLinkedList<T> right)
+    {
+        return (left._first == right._first)
+            && (left._count == right._count);
+    }
+
+    /// <summary>Compares two <see cref="ValueLinkedList{T}" /> instances to determine inequality.</summary>
+    /// <param name="left">The <see cref="ValueLinkedList{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="ValueLinkedList{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+    public static bool operator !=(ValueLinkedList<T> left, ValueLinkedList<T> right)
+    {
+        return (left._first != right._first)
+            || (left._count != right._count);
+    }
 
     /// <summary>Adds a new node containing a given value after the specified node.</summary>
     /// <param name="node">The node after which the new node should be added.</param>
@@ -63,10 +83,10 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     /// <returns>The new node.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="node" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="node" /> does not have a parent.</exception>
-    public Node AddAfter(Node node, T value)
+    public ValueLinkedListNode<T> AddAfter(ValueLinkedListNode<T> node, T value)
     {
         ValidateNode(node);
-        var result = new Node(value);
+        var result = new ValueLinkedListNode<T>(value);
 
         AssertNotNull(node._next);
         InternalInsertNodeBefore(node._next, result);
@@ -83,7 +103,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     /// <exception cref="ArgumentNullException"><paramref name="newNode" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="node" /> does not have a parent.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="newNode" /> already has a parent.</exception>
-    public Node AddAfter(Node node, Node newNode)
+    public ValueLinkedListNode<T> AddAfter(ValueLinkedListNode<T> node, ValueLinkedListNode<T> newNode)
     {
         ValidateNode(node);
         ValidateNewNode(newNode);
@@ -101,11 +121,11 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     /// <returns>The new node.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="node" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="node" /> does not have a parent.</exception>
-    public Node AddBefore(Node node, T value)
+    public ValueLinkedListNode<T> AddBefore(ValueLinkedListNode<T> node, T value)
     {
         ValidateNode(node);
 
-        var result = new Node(value);
+        var result = new ValueLinkedListNode<T>(value);
         InternalInsertNodeBefore(node, result);
 
         if (node == _first)
@@ -129,7 +149,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     /// <exception cref="ArgumentNullException"><paramref name="newNode" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="node" /> does not have a parent.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="newNode" /> already has a parent.</exception>
-    public Node AddBefore(Node node, Node newNode)
+    public ValueLinkedListNode<T> AddBefore(ValueLinkedListNode<T> node, ValueLinkedListNode<T> newNode)
     {
         ValidateNode(node);
 
@@ -152,9 +172,9 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     /// <summary>Adds a new node containing a given value as the first node.</summary>
     /// <param name="value">The value which the new node contains.</param>
     /// <returns>The new node.</returns>
-    public Node AddFirst(T value)
+    public ValueLinkedListNode<T> AddFirst(T value)
     {
-        var result = new Node(value);
+        var result = new ValueLinkedListNode<T>(value);
         var first = _first;
 
         if (first is null)
@@ -181,7 +201,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     /// <returns><paramref name="newNode" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="newNode" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="newNode" /> already has a parent.</exception>
-    public Node AddFirst(Node newNode)
+    public ValueLinkedListNode<T> AddFirst(ValueLinkedListNode<T> newNode)
     {
         ValidateNewNode(newNode);
         var first = _first;
@@ -208,9 +228,9 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     /// <summary>Adds a new node containing a given value as the last node.</summary>
     /// <param name="value">The value which the new node contains.</param>
     /// <returns>The new node.</returns>
-    public Node AddLast(T value)
+    public ValueLinkedListNode<T> AddLast(T value)
     {
-        var result = new Node(value);
+        var result = new ValueLinkedListNode<T>(value);
         var first = _first;
 
         if (first is null)
@@ -231,7 +251,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     /// <returns><paramref name="newNode" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="newNode" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="newNode" /> already has a parent.</exception>
-    public Node AddLast(Node newNode)
+    public ValueLinkedListNode<T> AddLast(ValueLinkedListNode<T> newNode)
     {
         ValidateNewNode(newNode);
         var first = _first;
@@ -280,8 +300,10 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     /// <summary>Checks whether the linked list contains a specified node.</summary>
     /// <param name="node">The node to check for in the linked list.</param>
     /// <returns><c>true</c> if <paramref name="node" /> was found in the linked list; otherwise, <c>false</c>.</returns>
-    public bool Contains(Node node)
+    public bool Contains(ValueLinkedListNode<T> node)
     {
+        ThrowIfNull(node);
+
         if (node.HasParent)
         {
             var first = _first;
@@ -332,16 +354,22 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
         }
     }
 
+    /// <inheritdoc />
+    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is ValueLinkedList<T> other) && Equals(other);
+
+    /// <inheritdoc />
+    public bool Equals(ValueLinkedList<T> other) => this == other;
+
     /// <summary>Tries to find a node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <returns>The node that contains <paramref name="value" /> if it exists; otherwise, <c>null</c>.</returns>
-    public Node? Find(T value) => Find(value, EqualityComparer<T>.Default);
+    public ValueLinkedListNode<T>? Find(T value) => Find(value, EqualityComparer<T>.Default);
 
     /// <summary>Tries to find a node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <param name="comparer">The comparer to use when checking for equality.</param>
     /// <returns>The node that contains <paramref name="value" /> if it exists; otherwise, <c>null</c>.</returns>
-    public Node? Find<TComparer>(T value, TComparer comparer)
+    public ValueLinkedListNode<T>? Find<TComparer>(T value, TComparer comparer)
         where TComparer : IEqualityComparer<T>
     {
         var first = _first;
@@ -387,13 +415,13 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     /// <summary>Tries to find the last node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <returns>The last node that contains <paramref name="value" /> if it exists; otherwise, <c>null</c>.</returns>
-    public Node? FindLast(T value) => FindLast(value, EqualityComparer<T>.Default);
+    public ValueLinkedListNode<T>? FindLast(T value) => FindLast(value, EqualityComparer<T>.Default);
 
     /// <summary>Tries to find the last node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <param name="comparer">The comparer to use when checking for equality.</param>
     /// <returns>The last node that contains <paramref name="value" /> if it exists; otherwise, <c>null</c>.</returns>
-    public Node? FindLast<TComparer>(T value, TComparer comparer)
+    public ValueLinkedListNode<T>? FindLast<TComparer>(T value, TComparer comparer)
         where TComparer : IEqualityComparer<T>
     {
         var first = _first;
@@ -443,6 +471,9 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     /// <returns>An enumerator that can iterate through the items in the linked list.</returns>
     public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
+    /// <inheritdoc />
+    public override int GetHashCode() => HashCode.Combine(_first, _count);
+
     /// <summary>Tries to remove a node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <returns><c>true</c> if a node containing <paramref name="value" /> was removed from the linked list; otherwise, <c>false</c>.</returns>
@@ -470,7 +501,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
     /// <param name="node">The node to remove.</param>
     /// <exception cref="ArgumentNullException"><paramref name="node" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="node" /> does not have a parent.</exception>
-    public void Remove(Node node)
+    public void Remove(ValueLinkedListNode<T> node)
     {
         ValidateNode(node);
         InternalRemoveNode(node);
@@ -496,7 +527,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
         InternalRemoveNode(last);
     }
 
-    private void InternalInsertNodeBefore(Node node, Node newNode)
+    private void InternalInsertNodeBefore(ValueLinkedListNode<T> node, ValueLinkedListNode<T> newNode)
     {
         newNode._next = node;
 
@@ -511,7 +542,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
         _count++;
     }
 
-    private void InternalInsertNodeToEmptyList(Node newNode)
+    private void InternalInsertNodeToEmptyList(ValueLinkedListNode<T> newNode)
     {
         Assert(_first is null);
         Assert(_count == 0);
@@ -524,7 +555,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
         _count++;
     }
 
-    private void InternalRemoveNode(Node node)
+    private void InternalRemoveNode(ValueLinkedListNode<T> node)
     {
         Assert(node.HasParent);
         Assert(Contains(node));
@@ -560,17 +591,17 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
         _count--;
     }
 
-    private void ValidateNewNode(Node node)
+    private static void ValidateNewNode([NotNull] ValueLinkedListNode<T> node)
     {
         ThrowIfNull(node);
 
         if (node.HasParent)
         {
-            ThrowForInvalidState(nameof(Node.HasParent));
+            ThrowForInvalidState(nameof(ValueLinkedListNode<T>.HasParent));
         }
     }
 
-    private void ValidateNode(Node node)
+    private void ValidateNode([NotNull] ValueLinkedListNode<T> node)
     {
         ThrowIfNull(node);
 
@@ -580,7 +611,7 @@ public partial struct ValueLinkedList<T> : IEnumerable<T>
         }
         else
         {
-            ThrowForInvalidState(nameof(Node.HasParent));
+            ThrowForInvalidState(nameof(ValueLinkedListNode<T>.HasParent));
         }
     }
 

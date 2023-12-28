@@ -14,6 +14,8 @@ using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
+#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
+
 namespace TerraFX.Collections;
 
 /// <summary>Represents a stack of items.</summary>
@@ -21,11 +23,10 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
 [DebuggerTypeProxy(typeof(ValueStack<>.DebugView))]
-public partial struct ValueStack<T> : IEnumerable<T>
+public partial struct ValueStack<T>
+    : IEnumerable<T>,
+      IEquatable<ValueStack<T>>
 {
-    /// <summary>Gets an empty stack.</summary>
-    public static ValueStack<T> Empty => new ValueStack<T>();
-
     private T[] _items;
     private int _count;
 
@@ -108,6 +109,26 @@ public partial struct ValueStack<T> : IEnumerable<T>
     /// <summary>Gets the number of items contained in the stack.</summary>
     public readonly int Count => _count;
 
+    /// <summary>Compares two <see cref="ValueStack{T}" /> instances to determine equality.</summary>
+    /// <param name="left">The <see cref="ValueStack{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="ValueStack{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, false.</returns>
+    public static bool operator ==(ValueStack<T> left, ValueStack<T> right)
+    {
+        return (left._items == right._items)
+            && (left._count == right._count);
+    }
+
+    /// <summary>Compares two <see cref="ValueStack{T}" /> instances to determine inequality.</summary>
+    /// <param name="left">The <see cref="ValueStack{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="ValueStack{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+    public static bool operator !=(ValueStack<T> left, ValueStack<T> right)
+    {
+        return (left._items != right._items)
+            || (left._count != right._count);
+    }
+
     /// <summary>Removes all items from the stack.</summary>
     public void Clear()
     {
@@ -156,9 +177,18 @@ public partial struct ValueStack<T> : IEnumerable<T>
         }
     }
 
+    /// <inheritdoc />
+    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is ValueStack<T> other) && Equals(other);
+
+    /// <inheritdoc />
+    public bool Equals(ValueStack<T> other) => this == other;
+
     /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
     /// <returns>An enumerator that can iterate through the items in the list.</returns>
     public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
+
+    /// <inheritdoc />
+    public override int GetHashCode() => HashCode.Combine(_items, _count);
 
     /// <summary>Gets a reference to the item at the specified index of the list.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>

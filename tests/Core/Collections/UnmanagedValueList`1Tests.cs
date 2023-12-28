@@ -94,7 +94,7 @@ public static class UnmanagedValueListTests
                     .And.Property("ParamName").EqualTo("alignment")
         );
 
-        using (var valueList = new UnmanagedValueList<int>(UnmanagedArray<int>.Empty.AsUnmanagedSpan()))
+        using (var valueList = new UnmanagedValueList<int>(UnmanagedArray.Empty<int>().AsUnmanagedSpan()))
         {
             Assert.That(() => valueList,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -102,7 +102,7 @@ public static class UnmanagedValueListTests
             );
         }
 
-        using (var valueList = new UnmanagedValueList<int>(UnmanagedArray<int>.Empty.AsUnmanagedSpan(), 2))
+        using (var valueList = new UnmanagedValueList<int>(UnmanagedArray.Empty<int>().AsUnmanagedSpan(), 2))
         {
             Assert.That(() => valueList,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -110,7 +110,7 @@ public static class UnmanagedValueListTests
             );
         }
 
-        Assert.That(() => new UnmanagedValueList<int>(UnmanagedArray<int>.Empty.AsUnmanagedSpan(), 3),
+        Assert.That(() => new UnmanagedValueList<int>(UnmanagedArray.Empty<int>().AsUnmanagedSpan(), 3),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
                     .And.Property("ActualValue").EqualTo((nuint)3)
                     .And.Property("ParamName").EqualTo("alignment")
@@ -165,7 +165,7 @@ public static class UnmanagedValueListTests
             );
         }
 
-        using (var valueList = new UnmanagedValueList<int>(UnmanagedArray<int>.Empty, takeOwnership: false))
+        using (var valueList = new UnmanagedValueList<int>(UnmanagedArray.Empty<int>(), takeOwnership: false))
         {
             Assert.That(() => valueList,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -173,7 +173,7 @@ public static class UnmanagedValueListTests
             );
         }
 
-        using (var valueList = new UnmanagedValueList<int>(UnmanagedArray<int>.Empty, takeOwnership: true))
+        using (var valueList = new UnmanagedValueList<int>(UnmanagedArray.Empty<int>(), takeOwnership: true))
         {
             Assert.That(() => valueList,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -446,7 +446,7 @@ public static class UnmanagedValueListTests
                 );
             }
 
-            Assert.That(() => valueList.CopyTo(UnmanagedArray<int>.Empty),
+            Assert.That(() => valueList.CopyTo(UnmanagedArray.Empty<int>()),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
                       .And.Property("ActualValue").EqualTo((nuint)3)
                       .And.Property("ParamName").EqualTo("count")
@@ -455,7 +455,7 @@ public static class UnmanagedValueListTests
 
         using (var valueList = new UnmanagedValueList<int>())
         {
-            Assert.That(() => valueList.CopyTo(UnmanagedArray<int>.Empty),
+            Assert.That(() => valueList.CopyTo(UnmanagedArray.Empty<int>()),
                 Throws.Nothing
             );
         }

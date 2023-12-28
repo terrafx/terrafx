@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using TerraFX.Runtime;
@@ -35,7 +36,7 @@ public static unsafe partial class ExceptionUtilities
         if (value < 0)
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsNegativeMessage, valueExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNegativeMessage, valueExpression);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -50,7 +51,7 @@ public static unsafe partial class ExceptionUtilities
         if (value < 0)
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsNegativeMessage, valueExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNegativeMessage, valueExpression);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -65,7 +66,7 @@ public static unsafe partial class ExceptionUtilities
         if (value < 0)
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsNegativeMessage, valueExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNegativeMessage, valueExpression);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -81,7 +82,7 @@ public static unsafe partial class ExceptionUtilities
         if (!Enum.IsDefined(value))
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsNotDefinedMessage, valueExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotDefinedMessage, valueExpression);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -100,7 +101,7 @@ public static unsafe partial class ExceptionUtilities
             AssertNotNull(indexExpression);
             AssertNotNull(lengthExpression);
 
-            var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexExpression, lengthExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotInSignedBoundsMessage, indexExpression, lengthExpression);
             ThrowArgumentOutOfRangeException(indexExpression, index, message);
         }
     }
@@ -119,7 +120,7 @@ public static unsafe partial class ExceptionUtilities
             AssertNotNull(indexExpression);
             AssertNotNull(lengthExpression);
 
-            var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexExpression, lengthExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotInSignedBoundsMessage, indexExpression, lengthExpression);
             ThrowArgumentOutOfRangeException(indexExpression, index, message);
         }
     }
@@ -138,7 +139,7 @@ public static unsafe partial class ExceptionUtilities
             AssertNotNull(indexExpression);
             AssertNotNull(lengthExpression);
 
-            var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexExpression, lengthExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotInSignedBoundsMessage, indexExpression, lengthExpression);
             ThrowArgumentOutOfRangeException(indexExpression, index, message);
         }
     }
@@ -157,7 +158,7 @@ public static unsafe partial class ExceptionUtilities
             AssertNotNull(indexExpression);
             AssertNotNull(lengthExpression);
 
-            var message = string.Format(Resources.ValueIsNotInUnsignedBoundsMessage, indexExpression, lengthExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotInUnsignedBoundsMessage, indexExpression, lengthExpression);
             ThrowArgumentOutOfRangeException(indexExpression, index, message);
         }
     }
@@ -176,7 +177,7 @@ public static unsafe partial class ExceptionUtilities
             AssertNotNull(indexExpression);
             AssertNotNull(lengthExpression);
 
-            var message = string.Format(Resources.ValueIsNotInUnsignedBoundsMessage, indexExpression, lengthExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotInUnsignedBoundsMessage, indexExpression, lengthExpression);
             ThrowArgumentOutOfRangeException(indexExpression, index, message);
         }
     }
@@ -195,7 +196,7 @@ public static unsafe partial class ExceptionUtilities
             AssertNotNull(indexExpression);
             AssertNotNull(lengthExpression);
 
-            var message = string.Format(Resources.ValueIsNotInUnsignedBoundsMessage, indexExpression, lengthExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotInUnsignedBoundsMessage, indexExpression, lengthExpression);
             ThrowArgumentOutOfRangeException(indexExpression, index, message);
         }
     }
@@ -214,7 +215,7 @@ public static unsafe partial class ExceptionUtilities
             AssertNotNull(indexExpression);
             AssertNotNull(lengthExpression);
 
-            var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexExpression, lengthExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotInSignedBoundsMessage, indexExpression, lengthExpression);
             ThrowArgumentOutOfRangeException(indexExpression, index, message);
         }
     }
@@ -233,7 +234,7 @@ public static unsafe partial class ExceptionUtilities
             AssertNotNull(indexExpression);
             AssertNotNull(lengthExpression);
 
-            var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexExpression, lengthExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotInSignedBoundsMessage, indexExpression, lengthExpression);
             ThrowArgumentOutOfRangeException(indexExpression, index, message);
         }
     }
@@ -252,7 +253,7 @@ public static unsafe partial class ExceptionUtilities
             AssertNotNull(indexExpression);
             AssertNotNull(lengthExpression);
 
-            var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexExpression, lengthExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotInSignedBoundsMessage, indexExpression, lengthExpression);
             ThrowArgumentOutOfRangeException(indexExpression, index, message);
         }
     }
@@ -271,7 +272,7 @@ public static unsafe partial class ExceptionUtilities
             AssertNotNull(indexExpression);
             AssertNotNull(lengthExpression);
 
-            var message = string.Format(Resources.ValueIsNotInUnsignedBoundsMessage, indexExpression, lengthExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotInUnsignedBoundsMessage, indexExpression, lengthExpression);
             ThrowArgumentOutOfRangeException(indexExpression, index, message);
         }
     }
@@ -290,7 +291,7 @@ public static unsafe partial class ExceptionUtilities
             AssertNotNull(indexExpression);
             AssertNotNull(lengthExpression);
 
-            var message = string.Format(Resources.ValueIsNotInUnsignedBoundsMessage, indexExpression, lengthExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotInUnsignedBoundsMessage, indexExpression, lengthExpression);
             ThrowArgumentOutOfRangeException(indexExpression, index, message);
         }
     }
@@ -309,7 +310,7 @@ public static unsafe partial class ExceptionUtilities
             AssertNotNull(indexExpression);
             AssertNotNull(lengthExpression);
 
-            var message = string.Format(Resources.ValueIsNotInUnsignedBoundsMessage, indexExpression, lengthExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotInUnsignedBoundsMessage, indexExpression, lengthExpression);
             ThrowArgumentOutOfRangeException(indexExpression, index, message);
         }
     }
@@ -324,7 +325,7 @@ public static unsafe partial class ExceptionUtilities
         if (!MathUtilities.IsPow2(value))
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsNotPow2Message, value);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotPow2Message, value);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -339,7 +340,7 @@ public static unsafe partial class ExceptionUtilities
         if (!MathUtilities.IsPow2(value))
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsNotPow2Message, value);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotPow2Message, value);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -354,7 +355,7 @@ public static unsafe partial class ExceptionUtilities
         if (!MathUtilities.IsPow2(value))
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsNotPow2Message, value);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotPow2Message, value);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -367,7 +368,7 @@ public static unsafe partial class ExceptionUtilities
     {
         if (Thread.CurrentThread != expectedThread)
         {
-            var message = string.Format(Resources.InvalidThreadMessage, expectedThread);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.InvalidThreadMessage, expectedThread);
             ThrowInvalidOperationException(message);
         }
     }
@@ -382,7 +383,7 @@ public static unsafe partial class ExceptionUtilities
         if (value != 0)
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsNotZeroMessage, valueExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotZeroMessage, valueExpression);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -397,7 +398,7 @@ public static unsafe partial class ExceptionUtilities
         if (value != 0)
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsNotZeroMessage, valueExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotZeroMessage, valueExpression);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -412,7 +413,7 @@ public static unsafe partial class ExceptionUtilities
         if (value != 0)
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsNotZeroMessage, valueExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotZeroMessage, valueExpression);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -427,7 +428,7 @@ public static unsafe partial class ExceptionUtilities
         if (value != 0)
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsNotZeroMessage, valueExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotZeroMessage, valueExpression);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -442,7 +443,7 @@ public static unsafe partial class ExceptionUtilities
         if (value != 0)
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsNotZeroMessage, valueExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotZeroMessage, valueExpression);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -457,7 +458,7 @@ public static unsafe partial class ExceptionUtilities
         if (value != 0)
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsNotZeroMessage, valueExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotZeroMessage, valueExpression);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -518,7 +519,7 @@ public static unsafe partial class ExceptionUtilities
         if (value == 0)
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsZeroMessage, valueExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsZeroMessage, valueExpression);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -533,7 +534,7 @@ public static unsafe partial class ExceptionUtilities
         if (value == 0)
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsZeroMessage, valueExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsZeroMessage, valueExpression);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -548,7 +549,7 @@ public static unsafe partial class ExceptionUtilities
         if (value == 0)
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsZeroMessage, valueExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsZeroMessage, valueExpression);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -563,7 +564,7 @@ public static unsafe partial class ExceptionUtilities
         if (value == 0)
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsZeroMessage, valueExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsZeroMessage, valueExpression);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -578,7 +579,7 @@ public static unsafe partial class ExceptionUtilities
         if (value == 0)
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsZeroMessage, valueExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsZeroMessage, valueExpression);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
@@ -593,7 +594,7 @@ public static unsafe partial class ExceptionUtilities
         if (value == 0)
         {
             AssertNotNull(valueExpression);
-            var message = string.Format(Resources.ValueIsZeroMessage, valueExpression);
+            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsZeroMessage, valueExpression);
             ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }

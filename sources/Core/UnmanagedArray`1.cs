@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -17,12 +18,14 @@ namespace TerraFX;
 /// <typeparam name="T">The type of the items contained by the array.</typeparam>
 [DebuggerDisplay("Alignment = {Alignment}; IsNull = {IsNull}; Length = {Length}")]
 [DebuggerTypeProxy(typeof(UnmanagedArray<>.DebugView))]
-public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerable<T>
+public readonly unsafe partial struct UnmanagedArray<T>
+    : IDisposable,
+      IEnumerable<T>,
+      IEquatable<UnmanagedArray<T>>
     where T : unmanaged
 {
-    /// <summary>Gets an empty array.</summary>
-    public static UnmanagedArray<T> Empty { get; } = new UnmanagedArray<T>(
-        (Metadata*)RuntimeHelpers.AllocateTypeAssociatedMemory(typeof(UnmanagedArray<T>), sizeof(Metadata))
+    internal static readonly UnmanagedArray<T> s_empty = new UnmanagedArray<T>(
+        (UnmanagedArray<T>.Metadata*)RuntimeHelpers.AllocateTypeAssociatedMemory(typeof(UnmanagedArray<T>), sizeof(Metadata))
     );
 
     private readonly Metadata* _data;
@@ -30,7 +33,7 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
     /// <summary>Initializes a new instance of the <see cref="UnmanagedArray{T}" /> struct.</summary>
     public UnmanagedArray()
     {
-        _data = Empty._data;
+        _data = s_empty._data;
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedArray{T}" /> struct.</summary>
@@ -65,7 +68,7 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
         }
         else
         {
-            data = Empty._data;
+            data = s_empty._data;
         }
 
         _data = data;
@@ -106,6 +109,18 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is greater than or equal to <see cref="Length" />.</exception>
     public ref T this[nuint index] => ref *GetPointer(index);
 
+    /// <summary>Compares two <see cref="UnmanagedArray{T}" /> instances to determine equality.</summary>
+    /// <param name="left">The <see cref="UnmanagedArray{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="UnmanagedArray{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, false.</returns>
+    public static bool operator ==(UnmanagedArray<T> left, UnmanagedArray<T> right) => left._data == right._data;
+
+    /// <summary>Compares two <see cref="UnmanagedArray{T}" /> instances to determine inequality.</summary>
+    /// <param name="left">The <see cref="UnmanagedArray{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="UnmanagedArray{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+    public static bool operator !=(UnmanagedArray<T> left, UnmanagedArray<T> right) => left._data != right._data;
+
     /// <summary>Implicitly converts the array to a span.</summary>
     /// <param name="array">The array to convert.</param>
     /// <returns>A span that covers the same memory as <paramref name="array" />.</returns>
@@ -115,17 +130,6 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
     /// <param name="array">The array to convert.</param>
     /// <returns>A readonly span that covers the same memory as <paramref name="array" />.</returns>
     public static implicit operator UnmanagedReadOnlySpan<T>(UnmanagedArray<T> array) => new UnmanagedReadOnlySpan<T>(array);
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        var data = _data;
-
-        if (data != Empty._data)
-        {
-            Free(data);
-        }
-    }
 
     /// <summary>Converts the array to a span.</summary>
     /// <returns>A span that covers the array.</returns>
@@ -198,9 +202,29 @@ public readonly unsafe partial struct UnmanagedArray<T> : IDisposable, IEnumerab
         CopyArrayUnsafe(destination.GetPointerUnsafe(0), &data->Item, length);
     }
 
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        var data = _data;
+
+        if (data != s_empty._data)
+        {
+            Free(data);
+        }
+    }
+
+    /// <inheritdoc />
+    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedArray<T> other) && Equals(other);
+
+    /// <inheritdoc />
+    public bool Equals(UnmanagedArray<T> other) => this == other;
+
     /// <summary>Gets an enumerator that can iterate through the items in the array.</summary>
     /// <returns>An enumerator that can iterate through the items in the array.</returns>
     public Enumerator GetEnumerator() => new Enumerator(this);
+
+    /// <inheritdoc />
+    public override int GetHashCode() => ((nuint)_data).GetHashCode();
 
     /// <summary>Gets a pointer to the item at the specified index of the array.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>

@@ -3,6 +3,8 @@
 using System;
 using System.Reflection;
 
+#pragma warning disable CA1062 // Validate arguments of public methods
+
 namespace TerraFX.Graphics.Advanced;
 
 /// <summary>An object which is created for a graphics command queue.</summary>

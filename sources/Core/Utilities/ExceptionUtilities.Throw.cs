@@ -4,10 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using TerraFX.Runtime;
 using TerraFX.Threading;
+
+#pragma warning disable CA2201 // Do not raise reserved exception types
 
 namespace TerraFX.Utilities;
 
@@ -37,7 +40,7 @@ public static partial class ExceptionUtilities
     [DoesNotReturn]
     public static void ThrowArgumentNullException(string paramName)
     {
-        var message = string.Format(Resources.ValueIsNullMessage, paramName);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNullMessage, paramName);
         throw new ArgumentNullException(paramName, message);
     }
 
@@ -73,7 +76,7 @@ public static partial class ExceptionUtilities
     [DoesNotReturn]
     public static void ThrowExternalException(string methodName, int errorCode)
     {
-        var message = string.Format(Resources.UnmanagedMethodFailedMessage, methodName, errorCode);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.UnmanagedMethodFailedMessage, methodName, errorCode);
         throw new ExternalException(message, errorCode);
     }
 
@@ -147,7 +150,7 @@ public static partial class ExceptionUtilities
     public static void ThrowKeyNotFoundException<TKey>(TKey key, string collectionName)
         where TKey : notnull
     {
-        var message = string.Format(Resources.InvalidKeyMessage, key, collectionName);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.InvalidKeyMessage, key, collectionName);
         throw new KeyNotFoundException(message);
     }
 
@@ -160,7 +163,7 @@ public static partial class ExceptionUtilities
     public static void ThrowKeyNotFoundException<TKey>(TKey key, string collectionName, Exception innerException)
         where TKey : notnull
     {
-        var message = string.Format(Resources.InvalidKeyMessage, key, collectionName);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.InvalidKeyMessage, key, collectionName);
         throw new KeyNotFoundException(message, innerException);
     }
 
@@ -182,7 +185,7 @@ public static partial class ExceptionUtilities
     [DoesNotReturn]
     public static void ThrowObjectDisposedException(string valueName)
     {
-        var message = string.Format(Resources.ObjectDisposedOrDisposingMessage, valueName);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.ObjectDisposedOrDisposingMessage, valueName);
         throw new ObjectDisposedException(message);
     }
 
@@ -192,7 +195,7 @@ public static partial class ExceptionUtilities
     [DoesNotReturn]
     public static void ThrowOutOfMemoryException(ulong size)
     {
-        var message = string.Format(Resources.AllocationFailedMessage, size);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.AllocationFailedMessage, size);
         throw new OutOfMemoryException(message);
     }
 
@@ -203,7 +206,7 @@ public static partial class ExceptionUtilities
     [DoesNotReturn]
     public static void ThrowOutOfMemoryException(ulong size, Exception innerException)
     {
-        var message = string.Format(Resources.AllocationFailedMessage, size);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.AllocationFailedMessage, size);
         throw new OutOfMemoryException(message, innerException);
     }
 
@@ -213,7 +216,7 @@ public static partial class ExceptionUtilities
     [DoesNotReturn]
     public static void ThrowOutOfMemoryException(nuint size)
     {
-        var message = string.Format(Resources.AllocationFailedMessage, size);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.AllocationFailedMessage, size);
         throw new OutOfMemoryException(message);
     }
 
@@ -224,7 +227,7 @@ public static partial class ExceptionUtilities
     [DoesNotReturn]
     public static void ThrowOutOfMemoryException(nuint size, Exception innerException)
     {
-        var message = string.Format(Resources.AllocationFailedMessage, size);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.AllocationFailedMessage, size);
         throw new OutOfMemoryException(message, innerException);
     }
 
@@ -235,7 +238,7 @@ public static partial class ExceptionUtilities
     [DoesNotReturn]
     public static void ThrowOutOfMemoryException(ulong count, ulong size)
     {
-        var message = string.Format(Resources.ArrayAllocationFailedMessage, count, size);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.ArrayAllocationFailedMessage, count, size);
         throw new OutOfMemoryException(message);
     }
 
@@ -247,7 +250,7 @@ public static partial class ExceptionUtilities
     [DoesNotReturn]
     public static void ThrowOutOfMemoryException(ulong count, ulong size, Exception innerException)
     {
-        var message = string.Format(Resources.ArrayAllocationFailedMessage, count, size);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.ArrayAllocationFailedMessage, count, size);
         throw new OutOfMemoryException(message, innerException);
     }
 
@@ -258,7 +261,7 @@ public static partial class ExceptionUtilities
     [DoesNotReturn]
     public static void ThrowOutOfMemoryException(nuint count, nuint size)
     {
-        var message = string.Format(Resources.ArrayAllocationFailedMessage, count, size);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.ArrayAllocationFailedMessage, count, size);
         throw new OutOfMemoryException(message);
     }
 
@@ -270,7 +273,7 @@ public static partial class ExceptionUtilities
     [DoesNotReturn]
     public static void ThrowOutOfMemoryException(nuint count, nuint size, Exception innerException)
     {
-        var message = string.Format(Resources.ArrayAllocationFailedMessage, count, size);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.ArrayAllocationFailedMessage, count, size);
         throw new OutOfMemoryException(message, innerException);
     }
 
@@ -281,7 +284,7 @@ public static partial class ExceptionUtilities
     [DoesNotReturn]
     public static void ThrowTimeoutException(string methodName, int millisecondsTimeout)
     {
-        var message = string.Format(Resources.MethodTimeoutMessage, methodName, millisecondsTimeout);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.MethodTimeoutMessage, methodName, millisecondsTimeout);
         throw new TimeoutException(message);
     }
 
@@ -293,7 +296,7 @@ public static partial class ExceptionUtilities
     [DoesNotReturn]
     public static void ThrowTimeoutException(string methodName, int millisecondsTimeout, Exception innerException)
     {
-        var message = string.Format(Resources.MethodTimeoutMessage, methodName, millisecondsTimeout);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.MethodTimeoutMessage, methodName, millisecondsTimeout);
         throw new TimeoutException(message, innerException);
     }
 
@@ -304,7 +307,7 @@ public static partial class ExceptionUtilities
     [DoesNotReturn]
     public static void ThrowTimeoutException(string methodName, TimeSpan timeout)
     {
-        var message = string.Format(Resources.MethodTimeoutMessage, methodName, timeout.TotalMilliseconds);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.MethodTimeoutMessage, methodName, timeout.TotalMilliseconds);
         throw new TimeoutException(message);
     }
 
@@ -316,7 +319,7 @@ public static partial class ExceptionUtilities
     [DoesNotReturn]
     public static void ThrowTimeoutException(string methodName, TimeSpan timeout, Exception innerException)
     {
-        var message = string.Format(Resources.MethodTimeoutMessage, methodName, timeout.TotalMilliseconds);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.MethodTimeoutMessage, methodName, timeout.TotalMilliseconds);
         throw new TimeoutException(message, innerException);
     }
 

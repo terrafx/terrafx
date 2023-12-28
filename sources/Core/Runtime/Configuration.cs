@@ -5,6 +5,8 @@ using System.Globalization;
 using static TerraFX.Utilities.AppContextUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
+#pragma warning disable CA1724 // Type names should not match namespaces
+
 namespace TerraFX.Runtime;
 
 /// <summary>Provides various configuration switches and values for TerraFX.</summary>

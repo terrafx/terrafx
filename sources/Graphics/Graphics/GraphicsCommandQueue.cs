@@ -9,6 +9,8 @@ using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
+#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
+
 namespace TerraFX.Graphics;
 
 /// <summary>Represents a queue of graphics commands.</summary>

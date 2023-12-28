@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Diagnostics;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
@@ -53,6 +54,7 @@ public abstract unsafe class GraphicsContext : GraphicsCommandQueueObject
 
             if (Device.D3D12DeviceVersion >= 4)
             {
+                Debug.Assert(OperatingSystem.IsWindowsVersionAtLeast(10, 0, 19043, 0));
                 var d3d12Device4 = (ID3D12Device4*)Device.D3D12Device;
                 ThrowExternalExceptionIfFailed(d3d12Device4->CreateCommandList1(nodeMask: 0, d3d12CommandListType, D3D12_COMMAND_LIST_FLAG_NONE, __uuidof<ID3D12GraphicsCommandList>(), (void**)&d3d12GraphicsCommandList));
             }
@@ -116,7 +118,7 @@ public abstract unsafe class GraphicsContext : GraphicsCommandQueueObject
     {
         if (isDisposing)
         {
-            var fence = Fence;
+            var fence = _fence;
             fence.Wait();
             fence.Reset();
 

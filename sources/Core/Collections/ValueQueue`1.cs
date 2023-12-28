@@ -14,6 +14,8 @@ using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
+#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
+
 namespace TerraFX.Collections;
 
 /// <summary>Represents a queue of items.</summary>
@@ -21,11 +23,10 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
 [DebuggerTypeProxy(typeof(ValueQueue<>.DebugView))]
-public partial struct ValueQueue<T> : IEnumerable<T>
+public partial struct ValueQueue<T>
+    : IEnumerable<T>,
+      IEquatable<ValueQueue<T>>
 {
-    /// <summary>Gets an empty queue.</summary>
-    public static ValueQueue<T> Empty => new ValueQueue<T>();
-
     private T[] _items;
     private int _count;
     private int _head;
@@ -111,6 +112,30 @@ public partial struct ValueQueue<T> : IEnumerable<T>
 
     /// <summary>Gets the number of items contained in the queue.</summary>
     public readonly int Count => _count;
+
+    /// <summary>Compares two <see cref="ValueQueue{T}" /> instances to determine equality.</summary>
+    /// <param name="left">The <see cref="ValueQueue{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="ValueQueue{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, false.</returns>
+    public static bool operator ==(ValueQueue<T> left, ValueQueue<T> right)
+    {
+        return (left._items == right._items)
+            && (left._count == right._count)
+            && (left._head == right._head)
+            && (left._tail == right._tail);
+    }
+
+    /// <summary>Compares two <see cref="ValueQueue{T}" /> instances to determine inequality.</summary>
+    /// <param name="left">The <see cref="ValueQueue{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="ValueQueue{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+    public static bool operator !=(ValueQueue<T> left, ValueQueue<T> right)
+    {
+        return (left._items != right._items)
+            || (left._count != right._count)
+            || (left._head != right._head)
+            || (left._tail != right._tail);
+    }
 
     /// <summary>Removes all items from the queue.</summary>
     public void Clear()
@@ -237,9 +262,18 @@ public partial struct ValueQueue<T> : IEnumerable<T>
         }
     }
 
+    /// <inheritdoc />
+    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is ValueQueue<T> other) && Equals(other);
+
+    /// <inheritdoc />
+    public bool Equals(ValueQueue<T> other) => this == other;
+
     /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
     /// <returns>An enumerator that can iterate through the items in the list.</returns>
     public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
+
+    /// <inheritdoc />
+    public override int GetHashCode() => HashCode.Combine(_items, _count, _head, _tail);
 
     /// <summary>Gets a reference to the item at the specified index of the list.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>

@@ -51,8 +51,8 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
             {
                 ThrowForLastErrorIfZero(hWnd = CreateWindowExW(
                     WS_EX_OVERLAPPEDWINDOW,
-                    (ushort*)classAtom,
-                    (ushort*)lpWindowName,
+                    (char*)classAtom,
+                    lpWindowName,
                     WS_OVERLAPPEDWINDOW,
                     X: CW_USEDEFAULT,
                     Y: CW_USEDEFAULT,
@@ -344,7 +344,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
 
             fixed (char* pTitle = title)
             {
-                ThrowExternalExceptionIfFalse(SetWindowTextW(_handle, (ushort*)pTitle));
+                ThrowExternalExceptionIfFalse(SetWindowTextW(_handle, pTitle));
             }
         }
     }
@@ -560,7 +560,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
         if (result == TRUE)
         {
             // We only need to update the title if the text was set
-            _title = GetUtf16Span((ushort*)lParam).GetString() ?? "";
+            _title = GetUtf16Span((char*)lParam).GetString() ?? "";
         }
 
         return result;

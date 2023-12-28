@@ -12,7 +12,7 @@ public partial struct UnmanagedValueLinkedList<T>
     public unsafe struct ItemsEnumerator : IRefEnumerator<T>
     {
         private readonly UnmanagedValueLinkedList<T> _linkedList;
-        private Node* _current;
+        private UnmanagedValueLinkedListNode<T>* _current;
         private nuint _index;
 
         internal ItemsEnumerator(UnmanagedValueLinkedList<T> linkedList)

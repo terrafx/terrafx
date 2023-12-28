@@ -5,6 +5,7 @@ using TerraFX.ApplicationModel;
 using TerraFX.Collections;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics;
@@ -103,10 +104,11 @@ public class HelloSierpinski : HelloWindow
         constantBufferView.UnmapAndWrite();
     }
 
-    protected override void Draw(GraphicsRenderContext graphicsRenderContext)
+    protected override void Draw(GraphicsRenderContext renderContext)
     {
-        _sierpinskiPrimitive.Draw(graphicsRenderContext);
-        base.Draw(graphicsRenderContext);
+        ThrowIfNull(renderContext);
+        _sierpinskiPrimitive.Draw(renderContext);
+        base.Draw(renderContext);
     }
 
     private unsafe GraphicsPrimitive CreateSierpinskiPrimitive(GraphicsCopyContext copyContext)

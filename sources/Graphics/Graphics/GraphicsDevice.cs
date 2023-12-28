@@ -26,7 +26,7 @@ using static TerraFX.Utilities.UnsafeUtilities;
 namespace TerraFX.Graphics;
 
 /// <summary>A graphics device which provides state management and isolation for a graphics adapter.</summary>
-public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisposable
+public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
 {
     private ValueList<GraphicsBuffer> _buffers;
     private readonly ValueMutex _buffersMutex;
@@ -368,7 +368,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
     }
 
     /// <summary>Creates a new graphics pipeline signature.</summary>
-    /// <param name="inputs">The pipeline inputs for the pipeline signature or <see cref="UnmanagedArray{T}.Empty" /> if none exist.</param>
+    /// <param name="inputs">The pipeline inputs for the pipeline signature or <see cref="UnmanagedArray.Empty{T}()" /> if none exist.</param>
     /// <returns>A new graphics pipeline signature.</returns>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     /// <remarks>Ownership of <paramref name="inputs" /> is given to the created pipeline signature.</remarks>
@@ -378,7 +378,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
 
         var createOptions = new GraphicsPipelineSignatureCreateOptions {
             Inputs = inputs,
-            Resources = UnmanagedArray<GraphicsPipelineResource>.Empty,
+            Resources = UnmanagedArray.Empty<GraphicsPipelineResource>(),
             TakeInputsOwnership = true,
             TakeResourcesOwnership = true,
         };
@@ -386,8 +386,8 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject, IDisp
     }
 
     /// <summary>Creates a new graphics pipeline signature.</summary>
-    /// <param name="inputs">The pipeline inputs for the pipeline signature or <see cref="UnmanagedArray{T}.Empty" /> if none exist.</param>
-    /// <param name="resources">The pipeline resources for the pipeline signature or <see cref="UnmanagedArray{T}.Empty" /> if none exist.</param>
+    /// <param name="inputs">The pipeline inputs for the pipeline signature or <see cref="UnmanagedArray.Empty{T}()" /> if none exist.</param>
+    /// <param name="resources">The pipeline resources for the pipeline signature or <see cref="UnmanagedArray.Empty{T}()" /> if none exist.</param>
     /// <returns>A new graphics pipeline signature.</returns>
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     /// <remarks>Ownership of <paramref name="inputs" /> is given to the created pipeline signature.</remarks>

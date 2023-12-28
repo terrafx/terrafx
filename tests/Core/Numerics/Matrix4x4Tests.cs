@@ -11,7 +11,7 @@ namespace TerraFX.UnitTests.Numerics;
 
 /// <summary>Provides a set of tests covering the <see cref="Matrix4x4" /> struct.</summary>
 [TestFixture(TestOf = typeof(Matrix4x4))]
-public class Matrix4x4Tests
+public static class Matrix4x4Tests
 {
     /// <summary>Provides validation of the <see cref="Matrix4x4.Zero" /> property.</summary>
     [Test]
@@ -31,7 +31,7 @@ public class Matrix4x4Tests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="M:Matrix4x4.Create" /> methods.</summary>
+    /// <summary>Provides validation of the <see cref="Matrix4x4" /> <c>Create</c> methods.</summary>
     [Test]
     public static void CreateTest()
     {

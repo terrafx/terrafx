@@ -4,6 +4,8 @@ using TerraFX.Collections;
 using TerraFX.Threading;
 using static TerraFX.Utilities.UnsafeUtilities;
 
+#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
+
 namespace TerraFX.Graphics;
 
 /// <summary>Represents a queue of graphics copy commands.</summary>

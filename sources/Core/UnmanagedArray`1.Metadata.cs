@@ -4,7 +4,7 @@ namespace TerraFX;
 
 public partial struct UnmanagedArray<T>
 {
-    private struct Metadata
+    internal struct Metadata
     {
         public nuint Length;
         public nuint Alignment;

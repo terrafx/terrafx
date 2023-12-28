@@ -7,11 +7,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
-using static TerraFX.Utilities.UnsafeUtilities;
+
+#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
 
 namespace TerraFX.Collections;
 
@@ -20,12 +22,12 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
 [DebuggerTypeProxy(typeof(UnmanagedValueQueue<>.DebugView))]
-public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T>
+public unsafe partial struct UnmanagedValueQueue<T>
+    : IDisposable,
+      IEnumerable<T>,
+      IEquatable<UnmanagedValueQueue<T>>
     where T : unmanaged
 {
-    /// <summary>Gets an empty queue.</summary>
-    public static UnmanagedValueQueue<T> Empty => new UnmanagedValueQueue<T>();
-
     private UnmanagedArray<T> _items;
     private nuint _count;
     private nuint _head;
@@ -34,7 +36,7 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueQueue{T}" /> struct.</summary>
     public UnmanagedValueQueue()
     {
-        _items = UnmanagedArray<T>.Empty;
+        _items = UnmanagedArray.Empty<T>();
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueQueue{T}" /> struct.</summary>
@@ -53,7 +55,7 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
             {
                 ThrowIfNotPow2(alignment);
             }
-            _items = UnmanagedArray<T>.Empty;
+            _items = UnmanagedArray.Empty<T>();
         }
     }
 
@@ -75,7 +77,7 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
             {
                 ThrowIfNotPow2(alignment);
             }
-            _items = UnmanagedArray<T>.Empty;
+            _items = UnmanagedArray.Empty<T>();
         }
 
         _count = span.Length;
@@ -116,6 +118,30 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
 
     /// <summary>Gets the number of items contained in the queue.</summary>
     public readonly nuint Count => _count;
+
+    /// <summary>Compares two <see cref="UnmanagedValueQueue{T}" /> instances to determine equality.</summary>
+    /// <param name="left">The <see cref="UnmanagedValueQueue{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="UnmanagedValueQueue{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, false.</returns>
+    public static bool operator ==(UnmanagedValueQueue<T> left, UnmanagedValueQueue<T> right)
+    {
+        return (left._items == right._items)
+            && (left._count == right._count)
+            && (left._head == right._head)
+            && (left._tail == right._tail);
+    }
+
+    /// <summary>Compares two <see cref="UnmanagedValueQueue{T}" /> instances to determine inequality.</summary>
+    /// <param name="left">The <see cref="UnmanagedValueQueue{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="UnmanagedValueQueue{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+    public static bool operator !=(UnmanagedValueQueue<T> left, UnmanagedValueQueue<T> right)
+    {
+        return (left._items != right._items)
+            || (left._count != right._count)
+            || (left._head != right._head)
+            || (left._tail != right._tail);
+    }
 
     /// <summary>Removes all items from the queue.</summary>
     public void Clear()
@@ -232,9 +258,18 @@ public unsafe partial struct UnmanagedValueQueue<T> : IDisposable, IEnumerable<T
         }
     }
 
+    /// <inheritdoc />
+    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedValueQueue<T> other) && Equals(other);
+
+    /// <inheritdoc />
+    public bool Equals(UnmanagedValueQueue<T> other) => this == other;
+
     /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
     /// <returns>An enumerator that can iterate through the items in the list.</returns>
     public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
+
+    /// <inheritdoc />
+    public override int GetHashCode() => HashCode.Combine(_items, _count, _head, _tail);
 
     /// <summary>Gets a pointer to the item at the specified index of the queue.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>

@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace TerraFX;
 
@@ -11,12 +12,11 @@ namespace TerraFX;
 /// <typeparam name="T">The type of items contained in the span.</typeparam>
 [DebuggerDisplay("IsEmpty = {IsEmpty}; Length = {Length}")]
 [DebuggerTypeProxy(typeof(UnmanagedReadOnlySpan<>.DebugView))]
-public readonly unsafe partial struct UnmanagedReadOnlySpan<T> : IEnumerable<T>
+public readonly unsafe partial struct UnmanagedReadOnlySpan<T>
+    : IEnumerable<T>,
+      IEquatable<UnmanagedReadOnlySpan<T>>
     where T : unmanaged
 {
-    /// <summary>Gets an empty span.</summary>
-    public static UnmanagedReadOnlySpan<T> Empty => new UnmanagedReadOnlySpan<T>();
-
     private readonly UnmanagedSpan<T> _span;
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedReadOnlySpan{T}" /> struct.</summary>
@@ -36,8 +36,8 @@ public readonly unsafe partial struct UnmanagedReadOnlySpan<T> : IEnumerable<T>
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedReadOnlySpan{T}" /> struct.</summary>
     /// <inheritdoc cref="UnmanagedSpan{T}.UnmanagedSpan(T*, nuint)" />
-    public UnmanagedReadOnlySpan(T* pointer, nuint length)
-        : this(new UnmanagedSpan<T>(pointer, length)) { }
+    public UnmanagedReadOnlySpan(T* firstItem, nuint length)
+        : this(new UnmanagedSpan<T>(firstItem, length)) { }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedReadOnlySpan{T}" /> struct.</summary>
     /// <param name="span">The underlying span for the readonly span.</param>
@@ -58,6 +58,18 @@ public readonly unsafe partial struct UnmanagedReadOnlySpan<T> : IEnumerable<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is greater than or equal to <see cref="Length" />.</exception>
     public ref readonly T this[nuint index] => ref _span[index];
 
+    /// <summary>Compares two <see cref="UnmanagedReadOnlySpan{T}" /> instances to determine equality.</summary>
+    /// <param name="left">The <see cref="UnmanagedReadOnlySpan{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="UnmanagedReadOnlySpan{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, false.</returns>
+    public static bool operator ==(UnmanagedReadOnlySpan<T> left, UnmanagedReadOnlySpan<T> right) => left._span == right._span;
+
+    /// <summary>Compares two <see cref="UnmanagedReadOnlySpan{T}" /> instances to determine inequality.</summary>
+    /// <param name="left">The <see cref="UnmanagedReadOnlySpan{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="UnmanagedReadOnlySpan{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+    public static bool operator !=(UnmanagedReadOnlySpan<T> left, UnmanagedReadOnlySpan<T> right) => left._span != right._span;
+
     /// <inheritdoc cref="UnmanagedSpan{T}.AsSpan()" />
     public ReadOnlySpan<T> AsSpan() => _span.AsSpan();
 
@@ -73,8 +85,17 @@ public readonly unsafe partial struct UnmanagedReadOnlySpan<T> : IEnumerable<T>
     /// <inheritdoc cref="UnmanagedSpan{T}.CopyTo(UnmanagedSpan{T})" />
     public void CopyTo(UnmanagedSpan<T> destination) => _span.CopyTo(destination);
 
+    /// <inheritdoc />
+    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedReadOnlySpan<T> other) && Equals(other);
+
+    /// <inheritdoc />
+    public bool Equals(UnmanagedReadOnlySpan<T> other) => this == other;
+
     /// <inheritdoc cref="UnmanagedSpan{T}.GetEnumerator()" />
     public Enumerator GetEnumerator() => new Enumerator(this);
+
+    /// <inheritdoc />
+    public override int GetHashCode() => _span.GetHashCode();
 
     /// <inheritdoc cref="UnmanagedSpan{T}.GetPointer(nuint)" />
     public T* GetPointer(nuint index) => _span.GetPointer(index);

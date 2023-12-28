@@ -1,12 +1,10 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
+using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.WinForms;
@@ -14,7 +12,7 @@ namespace TerraFX.WinForms;
 /// <summary>Defines a graphics surface usable by WinForms.</summary>
 public sealed unsafe class WinFormsGraphicsSurface : IGraphicsSurface
 {
-    private static readonly IntPtr s_entryPointModule = Marshal.GetHINSTANCE(Assembly.GetEntryAssembly()!.Modules.First());
+    private static readonly IntPtr s_entryPointModule = GetModuleHandleW(null);
 
     private readonly Control _control;
     private Vector2 _size;

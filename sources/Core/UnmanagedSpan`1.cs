@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
@@ -15,12 +16,11 @@ namespace TerraFX;
 /// <typeparam name="T">The type of items contained in the span.</typeparam>
 [DebuggerDisplay("IsEmpty = {IsEmpty}; Length = {Length}")]
 [DebuggerTypeProxy(typeof(UnmanagedSpan<>.DebugView))]
-public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
+public readonly unsafe partial struct UnmanagedSpan<T>
+    : IEnumerable<T>,
+      IEquatable<UnmanagedSpan<T>>
     where T : unmanaged
 {
-    /// <summary>Gets an empty span.</summary>
-    public static UnmanagedSpan<T> Empty => new UnmanagedSpan<T>();
-
     private readonly nuint _length;
     private readonly T* _items;
 
@@ -81,20 +81,20 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedSpan{T}" /> struct.</summary>
-    /// <param name="pointer">A pointer to the first item the span will contain.</param>
+    /// <param name="firstItem">A pointer to the first item the span will contain.</param>
     /// <param name="length">The length, in items, of the span.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="pointer" /> is null and <paramref name="length" /> is not <c>zero</c>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="firstItem" /> is null and <paramref name="length" /> is not <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="length" /> is greater than the remaining amount of address space.</exception>
-    public UnmanagedSpan(T* pointer, nuint length)
+    public UnmanagedSpan(T* firstItem, nuint length)
     {
-        if (pointer == null)
+        if (firstItem == null)
         {
             ThrowIfNotZero(length);
         }
-        ThrowIfNotInInsertBounds(length * SizeOf<T>(), nuint.MaxValue - (nuint)pointer + 1);
+        ThrowIfNotInInsertBounds(length * SizeOf<T>(), nuint.MaxValue - (nuint)firstItem + 1);
 
         _length = length;
-        _items = pointer;
+        _items = firstItem;
     }
 
     /// <summary><c>true</c> if the span is empty; otherwise, <c>false</c>.</summary>
@@ -108,6 +108,22 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
     /// <returns>The item that exists at <paramref name="index" /> in the span.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is greater than or equal to <see cref="Length" />.</exception>
     public ref T this[nuint index] => ref *GetPointer(index);
+
+    /// <summary>Compares two <see cref="UnmanagedSpan{T}" /> instances to determine equality.</summary>
+    /// <param name="left">The <see cref="UnmanagedSpan{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="UnmanagedSpan{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, false.</returns>
+    public static bool operator ==(UnmanagedSpan<T> left, UnmanagedSpan<T> right)
+        => (left._length == right._length)
+        && (left._items == right._items);
+
+    /// <summary>Compares two <see cref="UnmanagedSpan{T}" /> instances to determine inequality.</summary>
+    /// <param name="left">The <see cref="UnmanagedSpan{T}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="UnmanagedSpan{T}" /> to compare with <paramref name="left" />.</param>
+    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+    public static bool operator !=(UnmanagedSpan<T> left, UnmanagedSpan<T> right)
+        => (left._length != right._length)
+        || (left._items != right._items);
 
     /// <summary>Implicitly converts the span to a readonly span.</summary>
     /// <param name="span">The span to convert.</param>
@@ -185,9 +201,18 @@ public readonly unsafe partial struct UnmanagedSpan<T> : IEnumerable<T>
         CopyArrayUnsafe(destination.GetPointerUnsafe(0), items, length);
     }
 
+    /// <inheritdoc />
+    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedSpan<T> other) && Equals(other);
+
+    /// <inheritdoc />
+    public bool Equals(UnmanagedSpan<T> other) => this == other;
+
     /// <summary>Gets an enumerator that can iterate through the items in the span.</summary>
     /// <returns>An enumerator that can iterate through the items in the span.</returns>
     public Enumerator GetEnumerator() => new Enumerator(this);
+
+    /// <inheritdoc />
+    public override int GetHashCode() => HashCode.Combine(_length, (nuint)_items);
 
     /// <summary>Gets a pointer to the item at the specified index of the span.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>

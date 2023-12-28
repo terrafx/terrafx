@@ -164,5 +164,5 @@ public sealed unsafe class UIDispatcher : UIServiceObject
         ExitRequested?.Invoke(this, EventArgs.Empty);
     }
 
-    private void RequestExitUnsafe() => PostQuitMessage(0);
+    private static void RequestExitUnsafe() => PostQuitMessage(0);
 }

@@ -102,7 +102,7 @@ public static class AssertionUtilitiesTests
     [Test]
     public static unsafe void AssertNotNullUnmanagedArrayTest()
     {
-        Assert.That(() => AssertionUtilities.AssertNotNull(UnmanagedArray<int>.Empty),
+        Assert.That(() => AssertionUtilities.AssertNotNull(UnmanagedArray.Empty<int>()),
             Throws.Nothing
         );
 

@@ -4,6 +4,7 @@ using System;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics;
@@ -98,10 +99,11 @@ public sealed class HelloTextureTransform : HelloWindow
         constantBufferView.UnmapAndWrite();
     }
 
-    protected override void Draw(GraphicsRenderContext graphicsRenderContext)
+    protected override void Draw(GraphicsRenderContext renderContext)
     {
-        _trianglePrimitive.Draw(graphicsRenderContext);
-        base.Draw(graphicsRenderContext);
+        ThrowIfNull(renderContext);
+        _trianglePrimitive.Draw(renderContext);
+        base.Draw(renderContext);
     }
 
     private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsCopyContext copyContext)

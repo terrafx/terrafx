@@ -7,7 +7,7 @@ namespace TerraFX.UnitTests.Numerics;
 
 /// <summary>Provides a set of tests covering the <see cref="Vector3" /> struct.</summary>
 [TestFixture(TestOf = typeof(Vector3))]
-public class Vector3Tests
+public static class Vector3Tests
 {
     /// <summary>Provides validation of the <see cref="Vector3.Zero" /> property.</summary>
     [Test]
@@ -54,7 +54,7 @@ public class Vector3Tests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="M:Vector3.Create" /> methods.</summary>
+    /// <summary>Provides validation of the <see cref="Vector3" /> <c>Create</c> methods.</summary>
     [Test]
     public static void CreateTest()
     {

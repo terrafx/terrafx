@@ -1,5 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using System.Runtime.CompilerServices;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
@@ -48,7 +49,9 @@ public sealed unsafe class GraphicsRenderTarget : GraphicsSwapchainObject
             var d3d12RtvDescriptorHandleIncrementSize = Device.D3D12RtvDescriptorSize;
             var d3d12RtvDescriptorHandleForHeapStart = Swapchain.D3D12RtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 
-            D3D12_CPU_DESCRIPTOR_HANDLE.InitOffsetted(out var d3d12RtvDescriptorHandle, d3d12RtvDescriptorHandleForHeapStart, _index, d3d12RtvDescriptorHandleIncrementSize);
+            Unsafe.SkipInit(out D3D12_CPU_DESCRIPTOR_HANDLE d3d12RtvDescriptorHandle);
+
+            D3D12_CPU_DESCRIPTOR_HANDLE.InitOffsetted(ref d3d12RtvDescriptorHandle, d3d12RtvDescriptorHandleForHeapStart, _index, d3d12RtvDescriptorHandleIncrementSize);
             return d3d12RtvDescriptorHandle;
         }
     }

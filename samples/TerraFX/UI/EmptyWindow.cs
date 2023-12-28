@@ -5,6 +5,8 @@ using TerraFX.ApplicationModel;
 using TerraFX.UI;
 using TerraFX.Utilities;
 
+#pragma warning disable CA2213 // Disposable fields should be disposed
+
 namespace TerraFX.Samples.UI;
 
 public sealed class EmptyWindow : Sample
