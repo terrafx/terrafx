@@ -11,20 +11,15 @@ namespace TerraFX.Collections;
 
 /// <summary>Represents a node in a linked list.</summary>
 /// <typeparam name="T">The type of the items contained in the linked list.</typeparam>
-public unsafe struct UnmanagedValueLinkedListNode<T> : IEquatable<UnmanagedValueLinkedListNode<T>>
+/// <remarks>Initializes a new instance of the <see cref="UnmanagedValueLinkedListNode{T}" /> class.</remarks>
+/// <param name="value">The value held by the node.</param>
+public unsafe struct UnmanagedValueLinkedListNode<T>(T value) : IEquatable<UnmanagedValueLinkedListNode<T>>
     where T : unmanaged
 {
     internal UnmanagedValueLinkedListNode<T>* _next;
     internal UnmanagedValueLinkedListNode<T>* _previous;
-    internal T _value;
+    internal T _value = value;
     internal bool _isFirstNode;
-
-    /// <summary>Initializes a new instance of the <see cref="UnmanagedValueLinkedListNode{T}" /> class.</summary>
-    /// <param name="value">The value held by the node.</param>
-    public UnmanagedValueLinkedListNode(T value)
-    {
-        _value = value;
-    }
 
     /// <summary>Gets <c>true</c> if the node belongs to a linked list; otherwise, <c>false</c>.</summary>
     public bool HasParent => _next is not null;

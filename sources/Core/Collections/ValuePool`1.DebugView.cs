@@ -7,14 +7,9 @@ namespace TerraFX.Collections;
 
 public partial struct ValuePool<T>
 {
-    internal sealed class DebugView
+    internal sealed class DebugView(ValuePool<T> pool)
     {
-        private readonly ValuePool<T> _pool;
-
-        public DebugView(ValuePool<T> pool)
-        {
-            _pool = pool;
-        }
+        private readonly ValuePool<T> _pool = pool;
 
         public int AvailableCount => _pool._availableItems.Count;
 

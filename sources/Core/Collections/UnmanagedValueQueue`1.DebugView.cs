@@ -9,14 +9,9 @@ namespace TerraFX.Collections;
 
 public partial struct UnmanagedValueQueue<T>
 {
-    internal sealed class DebugView
+    internal sealed class DebugView(UnmanagedValueQueue<T> queue)
     {
-        private readonly UnmanagedValueQueue<T> _queue;
-
-        public DebugView(UnmanagedValueQueue<T> queue)
-        {
-            _queue = queue;
-        }
+        private readonly UnmanagedValueQueue<T> _queue = queue;
 
         public nuint Count => _queue._count;
 
