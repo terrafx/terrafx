@@ -7,23 +7,18 @@ using static TerraFX.Utilities.MathUtilities;
 
 namespace TerraFX;
 
-public partial struct UnmanagedReadOnlySpan<T>
+public unsafe partial struct UnmanagedReadOnlySpan<T>
 {
-    internal sealed class DebugView
+    internal sealed class DebugView(UnmanagedReadOnlySpan<T> span)
     {
-        private readonly UnmanagedReadOnlySpan<T> _span;
-
-        public DebugView(UnmanagedReadOnlySpan<T> span)
-        {
-            _span = span;
-        }
+        private readonly UnmanagedReadOnlySpan<T> _span = span;
 
         public bool IsEmpty => _span.IsEmpty;
 
         public nuint Length => _span.Length;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        public unsafe T[] Items
+        public T[] Items
         {
             get
             {

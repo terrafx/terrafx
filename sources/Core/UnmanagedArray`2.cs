@@ -16,27 +16,29 @@ namespace TerraFX;
 
 /// <summary>Represents a non-resizable collection of items of a given type.</summary>
 /// <typeparam name="T">The type of the items contained by the array.</typeparam>
+/// <typeparam name="TData">The type of the additional data carried by the array.</typeparam>
 [DebuggerDisplay("Alignment = {Alignment}; IsNull = {IsNull}; Length = {Length}")]
-[DebuggerTypeProxy(typeof(UnmanagedArray<>.DebugView))]
-public readonly unsafe partial struct UnmanagedArray<T>
+[DebuggerTypeProxy(typeof(UnmanagedArray<,>.DebugView))]
+public readonly unsafe partial struct UnmanagedArray<T, TData>
     : IDisposable,
       IEnumerable<T>,
-      IEquatable<UnmanagedArray<T>>
+      IEquatable<UnmanagedArray<T, TData>>
     where T : unmanaged
+    where TData : unmanaged
 {
-    internal static readonly UnmanagedArray<T> s_empty = new UnmanagedArray<T>(
-        (Metadata*)RuntimeHelpers.AllocateTypeAssociatedMemory(typeof(UnmanagedArray<T>), sizeof(Metadata))
+    internal static readonly UnmanagedArray<T, TData> s_empty = new UnmanagedArray<T, TData>(
+        (Metadata*)RuntimeHelpers.AllocateTypeAssociatedMemory(typeof(UnmanagedArray<T, TData>), sizeof(Metadata))
     );
 
     internal readonly Metadata* _metadata;
 
-    /// <summary>Initializes a new instance of the <see cref="UnmanagedArray{T}" /> struct.</summary>
+    /// <summary>Initializes a new instance of the <see cref="UnmanagedArray{T, TData}" /> struct.</summary>
     public UnmanagedArray()
     {
         this = s_empty;
     }
 
-    /// <summary>Initializes a new instance of the <see cref="UnmanagedArray{T}" /> struct.</summary>
+    /// <summary>Initializes a new instance of the <see cref="UnmanagedArray{T, TData}" /> struct.</summary>
     /// <param name="length">The length, in items, of the array.</param>
     /// <param name="alignment">The alignment, in bytes, of the items in the array or <c>zero</c> to use the system default.</param>
     /// <param name="zero"><c>true</c> if the items in the array should be zeroed; otherwise, <c>false</c>.</param>
@@ -90,6 +92,16 @@ public readonly unsafe partial struct UnmanagedArray<T>
         }
     }
 
+    /// <summary>Gets the additional data carried by the array.</summary>
+    public ref TData Data
+    {
+        get
+        {
+            AssertNotNull(this);
+            return ref _metadata->Data;
+        }
+    }
+
     /// <summary><c>true</c> if the array is <c>null</c>; otherwise, <c>false</c>.</summary>
     public bool IsNull => _metadata is null;
 
@@ -109,28 +121,28 @@ public readonly unsafe partial struct UnmanagedArray<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is greater than or equal to <see cref="Length" />.</exception>
     public ref T this[nuint index] => ref *this.GetPointer(index);
 
-    /// <summary>Compares two <see cref="UnmanagedArray{T}" /> instances to determine equality.</summary>
-    /// <param name="left">The <see cref="UnmanagedArray{T}" /> to compare with <paramref name="right" />.</param>
-    /// <param name="right">The <see cref="UnmanagedArray{T}" /> to compare with <paramref name="left" />.</param>
+    /// <summary>Compares two <see cref="UnmanagedArray{T, TData}" /> instances to determine equality.</summary>
+    /// <param name="left">The <see cref="UnmanagedArray{T, TData}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="UnmanagedArray{T, TData}" /> to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, false.</returns>
-    public static bool operator ==(UnmanagedArray<T> left, UnmanagedArray<T> right) => left._metadata == right._metadata;
+    public static bool operator ==(UnmanagedArray<T, TData> left, UnmanagedArray<T, TData> right) => left._metadata == right._metadata;
 
-    /// <summary>Compares two <see cref="UnmanagedArray{T}" /> instances to determine inequality.</summary>
-    /// <param name="left">The <see cref="UnmanagedArray{T}" /> to compare with <paramref name="right" />.</param>
-    /// <param name="right">The <see cref="UnmanagedArray{T}" /> to compare with <paramref name="left" />.</param>
+    /// <summary>Compares two <see cref="UnmanagedArray{T, TData}" /> instances to determine inequality.</summary>
+    /// <param name="left">The <see cref="UnmanagedArray{T, TData}" /> to compare with <paramref name="right" />.</param>
+    /// <param name="right">The <see cref="UnmanagedArray{T, TData}" /> to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
-    public static bool operator !=(UnmanagedArray<T> left, UnmanagedArray<T> right) => left._metadata != right._metadata;
+    public static bool operator !=(UnmanagedArray<T, TData> left, UnmanagedArray<T, TData> right) => left._metadata != right._metadata;
 
     /// <summary>Implicitly converts the array to a span.</summary>
     /// <param name="array">The array to convert.</param>
     /// <returns>A span that covers the same memory as <paramref name="array" />.</returns>
-    public static implicit operator UnmanagedSpan<T>(UnmanagedArray<T> array)
+    public static implicit operator UnmanagedSpan<T>(UnmanagedArray<T, TData> array)
         => !array.IsNull ? new UnmanagedSpan<T>(array.GetPointerUnsafe(), array.Length) : UnmanagedSpan.Empty<T>();
 
     /// <summary>Implicitly converts the array to a readonly span.</summary>
     /// <param name="array">The array to convert.</param>
     /// <returns>A readonly span that covers the same memory as <paramref name="array" />.</returns>
-    public static implicit operator UnmanagedReadOnlySpan<T>(UnmanagedArray<T> array) => (UnmanagedSpan<T>)array;
+    public static implicit operator UnmanagedReadOnlySpan<T>(UnmanagedArray<T, TData> array) => (UnmanagedSpan<T>)array;
 
     /// <inheritdoc />
     public void Dispose()
@@ -142,10 +154,10 @@ public readonly unsafe partial struct UnmanagedArray<T>
     }
 
     /// <inheritdoc />
-    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedArray<T> other) && Equals(other);
+    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedArray<T, TData> other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(UnmanagedArray<T> other) => this == other;
+    public bool Equals(UnmanagedArray<T, TData> other) => this == other;
 
     /// <summary>Gets an enumerator that can iterate through the items in the array.</summary>
     /// <returns>An enumerator that can iterate through the items in the array.</returns>

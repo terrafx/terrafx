@@ -6,7 +6,7 @@ using TerraFX.Collections;
 
 namespace TerraFX;
 
-public unsafe partial struct UnmanagedArray<T>
+public partial struct UnmanagedArray<T>
 {
     /// <summary>An enumerator which can iterate through the items in an array.</summary>
     public struct Enumerator : IRefEnumerator<T>
@@ -21,10 +21,10 @@ public unsafe partial struct UnmanagedArray<T>
         }
 
         /// <inheritdoc />
-        public T Current => CurrentRef;
+        public readonly T Current => CurrentRef;
 
         /// <inheritdoc />
-        public ref readonly T CurrentRef => ref _array.GetReferenceUnsafe(_index);
+        public readonly ref readonly T CurrentRef => ref _array.GetReferenceUnsafe(_index);
 
         /// <inheritdoc />
         public bool MoveNext()
@@ -32,7 +32,7 @@ public unsafe partial struct UnmanagedArray<T>
             var succeeded = true;
             var index = unchecked(_index + 1);
 
-            if (index == _array._data->Length)
+            if (index == _array.Length)
             {
                 index--;
                 succeeded = false;
@@ -45,8 +45,8 @@ public unsafe partial struct UnmanagedArray<T>
         /// <inheritdoc />
         public void Reset() => _index = nuint.MaxValue;
 
-        object IEnumerator.Current => Current;
+        readonly object IEnumerator.Current => Current;
 
-        void IDisposable.Dispose() { }
+        readonly void IDisposable.Dispose() { }
     }
 }

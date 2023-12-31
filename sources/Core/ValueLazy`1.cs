@@ -42,10 +42,10 @@ public partial struct ValueLazy<T> : IEquatable<ValueLazy<T>>
     }
 
     /// <summary><c>true</c> if the value has already been created; otherwise, <c>false</c>.</summary>
-    public bool IsValueCreated => _state == Created;
+    public readonly bool IsValueCreated => _state == Created;
 
     /// <summary><c>true</c> if the creating the value faulted; otherwise, <c>false</c>.</summary>
-    public bool IsValueFaulted => _state == Faulted;
+    public readonly bool IsValueFaulted => _state == Faulted;
 
     /// <summary>Gets the value for the instance.</summary>
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -65,7 +65,7 @@ public partial struct ValueLazy<T> : IEquatable<ValueLazy<T>>
     }
 
     /// <summary>Gets the underlying value if it has been created; otherwise, <c>default</c>.</summary>
-    public T? ValueOrDefault => IsValueCreated ? _value : default;
+    public readonly T? ValueOrDefault => IsValueCreated ? _value : default;
 
     /// <summary>Gets a reference to the underlying value for the instance.</summary>
     /// <remarks>This property is unsafe as it returns a reference to a struct field.</remarks>
@@ -121,13 +121,13 @@ public partial struct ValueLazy<T> : IEquatable<ValueLazy<T>>
     }
 
     /// <inheritdoc />
-    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is ValueLazy<T> other) && Equals(other);
+    public override readonly bool Equals([NotNullWhen(true)] object? obj) => (obj is ValueLazy<T> other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(ValueLazy<T> other) => this == other;
+    public readonly bool Equals(ValueLazy<T> other) => this == other;
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine(_factory, _value, _state);
+    public override readonly int GetHashCode() => HashCode.Combine(_factory, _value, _state);
 
     /// <summary>Resets the instance so the value can be recreated.</summary>
     /// <param name="factory">The factory method to call when initializing the value.</param>
@@ -143,7 +143,7 @@ public partial struct ValueLazy<T> : IEquatable<ValueLazy<T>>
     }
 
     /// <inheritdoc />
-    public override string ToString() => IsValueCreated ? _value!.ToString()! : string.Empty;
+    public override readonly string ToString() => IsValueCreated ? _value!.ToString()! : string.Empty;
 
     private void CreateValue()
     {

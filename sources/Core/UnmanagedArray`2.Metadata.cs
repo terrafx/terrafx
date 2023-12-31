@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace TerraFX;
 
-public unsafe partial struct UnmanagedArray<T>
+public unsafe partial struct UnmanagedArray<T, TData>
 {
     internal struct Metadata
     {
@@ -12,6 +12,7 @@ public unsafe partial struct UnmanagedArray<T>
 
         public nuint Length;
         public nuint Alignment;
+        public TData Data;
         public T Item;
 
         private static nuint GetOffsetOf_Item()

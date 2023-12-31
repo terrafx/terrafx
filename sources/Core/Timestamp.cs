@@ -6,7 +6,9 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX;
 
 /// <summary>Defines a timestamp.</summary>
-public readonly struct Timestamp
+/// <remarks>Initializes a new instance of the <see cref="Timestamp" /> struct.</remarks>
+/// <param name="ticks">The number of 100-nanosecond ticks represented by the instance.</param>
+public readonly struct Timestamp(long ticks)
     : IComparable,
       IComparable<Timestamp>,
       IEquatable<Timestamp>,
@@ -29,14 +31,7 @@ public readonly struct Timestamp
     /// <summary>The number of ticks that occur per second.</summary>
     public const long TicksPerSecond = TimeSpan.TicksPerSecond;
 
-    private readonly long _ticks;
-
-    /// <summary>Initializes a new instance of the <see cref="Timestamp" /> struct.</summary>
-    /// <param name="ticks">The number of 100-nanosecond ticks represented by the instance.</param>
-    public Timestamp(long ticks)
-    {
-        _ticks = ticks;
-    }
+    private readonly long _ticks = ticks;
 
     /// <summary>Gets the number of 100-nanosecond ticks represented by the current instance.</summary>
     public long Ticks => _ticks;
