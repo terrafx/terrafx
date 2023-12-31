@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -12,7 +13,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Advanced;
 
 /// <summary>An object which is disposable.</summary>
-public abstract class DisposableObject : IDisposable
+public abstract class DisposableObject : IDisposable, INameable
 {
     private string _name;
     private volatile uint _isDisposed;
@@ -28,8 +29,21 @@ public abstract class DisposableObject : IDisposable
     /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
     public bool IsDisposed => _isDisposed != 0;
 
-    /// <summary>Gets the name of the object.</summary>
-    public string Name => _name;
+    /// <inheritdoc />
+    [AllowNull]
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? GetType().Name;
+            SetNameUnsafe(_name);
+        }
+    }
 
     /// <inheritdoc />
     public void Dispose()
@@ -39,14 +53,6 @@ public abstract class DisposableObject : IDisposable
             Dispose(isDisposing: true);
             GC.SuppressFinalize(this);
         }
-    }
-
-    /// <summary>Sets the name of the object.</summary>
-    /// <param name="value">The new name of the object or <c>null</c> to use <see cref="MemberInfo.Name" />.</param>
-    public void SetName(string? value)
-    {
-        _name = value ?? GetType().Name;
-        SetNameUnsafe(_name);
     }
 
     /// <inheritdoc />

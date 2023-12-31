@@ -37,7 +37,7 @@ public sealed unsafe class GraphicsAdapter : GraphicsServiceObject
         _description = GetUtf16Span(in dxgiAdapterDesc.Description[0], 128).GetString() ?? string.Empty;
         _dxgiAdapterDesc = dxgiAdapterDesc;
 
-        SetName(_description);
+        Name = _description;
 
         _devices = new ValueList<GraphicsDevice>();
         _devicesMutex = new ValueMutex();
