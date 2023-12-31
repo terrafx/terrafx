@@ -66,33 +66,34 @@ public static class UnmanagedValueListTests
     [Test]
     public static void CtorUnmanagedReadOnlySpanNUIntTest()
     {
-        using var array = new UnmanagedArray<int>(3);
-
-        array[0] = 1;
-        array[1] = 2;
-        array[2] = 3;
-
-        using (var valueList = new UnmanagedValueList<int>(array))
+        using (var array = new UnmanagedArray<int>(3))
         {
-            Assert.That(() => valueList,
-                Has.Property("Capacity").EqualTo((nuint)3)
-                   .And.Count.EqualTo((nuint)3)
+            array[0] = 1;
+            array[1] = 2;
+            array[2] = 3;
+
+            using (var valueList = new UnmanagedValueList<int>(array, takeOwnership: false))
+            {
+                Assert.That(() => valueList,
+                    Has.Property("Capacity").EqualTo((nuint)3)
+                       .And.Count.EqualTo((nuint)3)
+                );
+            }
+
+            using (var valueList = new UnmanagedValueList<int>(array, 2))
+            {
+                Assert.That(() => valueList,
+                    Has.Property("Capacity").EqualTo((nuint)3)
+                       .And.Count.EqualTo((nuint)3)
+                );
+            }
+
+            Assert.That(() => new UnmanagedValueList<int>(array, 3),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                        .And.Property("ActualValue").EqualTo((nuint)3)
+                        .And.Property("ParamName").EqualTo("alignment")
             );
         }
-
-        using (var valueList = new UnmanagedValueList<int>(array, 2))
-        {
-            Assert.That(() => valueList,
-                Has.Property("Capacity").EqualTo((nuint)3)
-                   .And.Count.EqualTo((nuint)3)
-            );
-        }
-
-        Assert.That(() => new UnmanagedValueList<int>(array, 3),
-            Throws.InstanceOf<ArgumentOutOfRangeException>()
-                    .And.Property("ActualValue").EqualTo((nuint)3)
-                    .And.Property("ParamName").EqualTo("alignment")
-        );
 
         using (var valueList = new UnmanagedValueList<int>(UnmanagedArray.Empty<int>().AsUnmanagedSpan()))
         {
