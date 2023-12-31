@@ -113,7 +113,7 @@ jobs:
   publish-nightlies-azure:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' }}
-    needs: [ windows-x64, windows-x86, sign-nuget-preview ]
+    needs: [ windows-x64, sign-nuget-preview ]
     steps:
     - uses: actions/download-artifact@v3
       with:
@@ -129,7 +129,7 @@ jobs:
   publish-nightlies-github:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' }}
-    needs: [ windows-x64, windows-x86, sign-nuget-preview ]
+    needs: [ windows-x64, sign-nuget-preview ]
     steps:
     - uses: actions/download-artifact@v3
       with:
