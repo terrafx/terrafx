@@ -6,17 +6,17 @@ using TerraFX.Collections;
 
 namespace TerraFX;
 
-public partial struct UnmanagedReadOnlySpan<T>
+public partial struct UnmanagedArray<T, TData>
 {
-    /// <summary>An enumerator which can iterate through the items in a span.</summary>
+    /// <summary>An enumerator which can iterate through the items in an array.</summary>
     public struct Enumerator : IRefEnumerator<T>
     {
-        private readonly UnmanagedReadOnlySpan<T> _span;
+        private readonly UnmanagedArray<T, TData> _array;
         private nuint _index;
 
-        internal Enumerator(UnmanagedReadOnlySpan<T> span)
+        internal Enumerator(UnmanagedArray<T, TData> array)
         {
-            _span = span;
+            _array = array;
             _index = nuint.MaxValue;
         }
 
@@ -24,7 +24,7 @@ public partial struct UnmanagedReadOnlySpan<T>
         public readonly T Current => CurrentRef;
 
         /// <inheritdoc />
-        public readonly ref readonly T CurrentRef => ref _span.GetReferenceUnsafe(_index);
+        public readonly ref readonly T CurrentRef => ref _array.GetReferenceUnsafe(_index);
 
         /// <inheritdoc />
         public bool MoveNext()
@@ -32,7 +32,7 @@ public partial struct UnmanagedReadOnlySpan<T>
             var succeeded = true;
             var index = unchecked(_index + 1);
 
-            if (index == _span.Length)
+            if (index == _array.Length)
             {
                 index--;
                 succeeded = false;

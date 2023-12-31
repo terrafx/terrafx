@@ -7,13 +7,15 @@ using static TerraFX.Utilities.MathUtilities;
 
 namespace TerraFX;
 
-public unsafe partial struct UnmanagedArray<T>
+public unsafe partial struct UnmanagedArray<T, TData>
 {
-    internal sealed class DebugView(UnmanagedArray<T> array)
+    internal sealed class DebugView(UnmanagedArray<T, TData> array)
     {
-        private readonly UnmanagedArray<T> _array = array;
+        private readonly UnmanagedArray<T, TData> _array = array;
 
         public nuint Alignment => _array.Alignment;
+
+        public TData Data => _array.Data;
 
         public bool IsNull => _array.IsNull;
 

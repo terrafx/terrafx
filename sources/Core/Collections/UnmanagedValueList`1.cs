@@ -188,7 +188,7 @@ public unsafe partial struct UnmanagedValueList<T>
     ///     <para>This method is because other operations may invalidate the backing array.</para>
     ///     <para>This method is because it gives access to uninitialized memory in the backing array when <see cref="Count" /> is less than <see cref="Capacity" />.</para>
     /// </remarks>
-    public UnmanagedSpan<T> AsUnmanagedSpanUnsafe() => new UnmanagedSpan<T>(_items);
+    public UnmanagedSpan<T> AsUnmanagedSpanUnsafe() => _items;
 
     /// <summary>Removes all items from the list.</summary>
     public void Clear() => _count = 0;

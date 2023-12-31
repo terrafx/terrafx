@@ -63,6 +63,15 @@ public static unsafe class AssertionUtilities
     public static void AssertNotNull<T>(UnmanagedArray<T> array)
         where T : unmanaged => Assert(!array.IsNull);
 
+    /// <summary>Asserts that <paramref name="array" /> is not <c>null</c>.</summary>
+    /// <typeparam name="T">The type of items in <paramref name="array" />.</typeparam>
+    /// <typeparam name="TData">The type of the additional data carried by the array.</typeparam>
+    /// <param name="array">The array to assert is not <c>null</c>.</param>
+    [Conditional("DEBUG")]
+    public static void AssertNotNull<T, TData>(UnmanagedArray<T, TData> array)
+        where T : unmanaged
+        where TData : unmanaged => Assert(!array.IsNull);
+
     /// <summary>Asserts that <paramref name="value" /> is not <c>null</c>.</summary>
     /// <param name="value">The value to assert is not <c>null</c>.</param>
     [Conditional("DEBUG")]
