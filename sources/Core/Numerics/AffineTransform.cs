@@ -11,7 +11,11 @@ using static TerraFX.Utilities.VectorUtilities;
 namespace TerraFX.Numerics;
 
 /// <summary>Defines an affine transformation.</summary>
-public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
+public struct AffineTransform
+    : IEquatable<AffineTransform>,
+      IFormattable,
+      ISpanFormattable,
+      IUtf8SpanFormattable
 {
     /// <summary>Gets a transform where all components are zero.</summary>
     public static AffineTransform Zero => Create(Quaternion.Zero, Vector3.Zero, Vector3.Zero);
@@ -268,6 +272,152 @@ public struct AffineTransform : IEquatable<AffineTransform>, IFormattable
     public override string ToString() => ToString(format: null, formatProvider: null);
 
     /// <inheritdoc />
-    public string ToString(string? format, IFormatProvider? formatProvider)
-        => $"{nameof(AffineTransform)} {{ {nameof(Rotation)} = {_rotation.ToString(format, formatProvider)}, {nameof(Scale)} = {_scale.ToString(format, formatProvider)}, {nameof(Translation)} = {_translation.ToString(format, formatProvider)} }}";
+    public string ToString(string? format = null, IFormatProvider? formatProvider = null)
+        => $"AffineTransform {{ Rotation = {Rotation.ToString(format, formatProvider)}, Scale = {Scale.ToString(format, formatProvider)}, Translation = {Translation.ToString(format, formatProvider)} }}";
+
+    /// <inheritdoc />
+    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    {
+        var numWritten = 0;
+
+        if (!"AffineTransform { Rotation = ".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        var partLength = "AffineTransform { Rotation = ".Length;
+
+        numWritten += partLength;
+        destination = destination.Slice(numWritten);
+
+        if (!Rotation.TryFormat(destination, out partLength, format, provider))
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!", Scale = ".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        partLength = ", Scale = ".Length;
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!Scale.TryFormat(destination, out partLength, format, provider))
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!", Translation = ".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        partLength = ", Translation = ".Length;
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!Translation.TryFormat(destination, out partLength, format, provider))
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!" }".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        partLength = " }".Length;
+
+        charsWritten = numWritten + partLength;
+        return true;
+    }
+
+    /// <inheritdoc />
+    public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    {
+        var numWritten = 0;
+
+        if (!"AffineTransform { Rotation = "u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        var partLength = "AffineTransform { Rotation = "u8.Length;
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(numWritten);
+
+        if (!Rotation.TryFormat(utf8Destination, out partLength, format, provider))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!", Scale = "u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        partLength = ", Scale = "u8.Length;
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!Scale.TryFormat(utf8Destination, out partLength, format, provider))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!", Translation = "u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        partLength = ", Translation = "u8.Length;
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!Translation.TryFormat(utf8Destination, out partLength, format, provider))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!" }"u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        partLength = " }"u8.Length;
+
+        bytesWritten = numWritten + partLength;
+        return true;
+    }
 }

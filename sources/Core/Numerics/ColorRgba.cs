@@ -13,7 +13,11 @@ using static TerraFX.Utilities.VectorUtilities;
 namespace TerraFX.Numerics;
 
 /// <summary>Defines a red-green-blue-alpha color triple.</summary>
-public readonly struct ColorRgba : IEquatable<ColorRgba>, IFormattable
+public readonly struct ColorRgba
+    : IEquatable<ColorRgba>,
+      IFormattable,
+      ISpanFormattable,
+      IUtf8SpanFormattable
 {
     private readonly Vector128<float> _value;
 
@@ -101,24 +105,192 @@ public readonly struct ColorRgba : IEquatable<ColorRgba>, IFormattable
     public override string ToString() => ToString(format: null, formatProvider: null);
 
     /// <inheritdoc />
-    public string ToString(string? format, IFormatProvider? formatProvider)
-    {
-        var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
+    public string ToString(string? format = null, IFormatProvider? formatProvider = null)
+        => $"ColorRgba {{ Red = {Red.ToString(format, formatProvider)}, Green = {Green.ToString(format, formatProvider)}, Blue = {Blue.ToString(format, formatProvider)}, Alpha = {Alpha.ToString(format, formatProvider)} }}";
 
-        return new StringBuilder(9 + (separator.Length * 3))
-            .Append('<')
-            .Append(Red.ToString(format, formatProvider))
-            .Append(separator)
-            .Append(' ')
-            .Append(Green.ToString(format, formatProvider))
-            .Append(separator)
-            .Append(' ')
-            .Append(Blue.ToString(format, formatProvider))
-            .Append(separator)
-            .Append(' ')
-            .Append(Alpha.ToString(format, formatProvider))
-            .Append('>')
-            .ToString();
+    /// <inheritdoc />
+    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    {
+        var numWritten = 0;
+
+        if (!"ColorRgba { Red = ".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        var partLength = "ColorRgba { Red = ".Length;
+
+        numWritten += partLength;
+        destination = destination.Slice(numWritten);
+
+        if (!Red.TryFormat(destination, out partLength, format, provider))
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!", Green = ".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        partLength = ", Green = ".Length;
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!Green.TryFormat(destination, out partLength, format, provider))
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!", Blue = ".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        partLength = ", Blue = ".Length;
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!Blue.TryFormat(destination, out partLength, format, provider))
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!", Alpha = ".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        partLength = ", Alpha = ".Length;
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!Alpha.TryFormat(destination, out partLength, format, provider))
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!" }".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        partLength = " }".Length;
+
+        charsWritten = numWritten + partLength;
+        return true;
+    }
+
+    /// <inheritdoc />
+    public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    {
+        var numWritten = 0;
+
+        if (!"ColorRgba { Red = "u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        var partLength = "ColorRgba { Red = "u8.Length;
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(numWritten);
+
+        if (!Red.TryFormat(utf8Destination, out partLength, format, provider))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!", Green = "u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        partLength = ", Green = "u8.Length;
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!Green.TryFormat(utf8Destination, out partLength, format, provider))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!", Blue = "u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        partLength = ", Blue = "u8.Length;
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!Blue.TryFormat(utf8Destination, out partLength, format, provider))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!", Alpha = "u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        partLength = ", Alpha = "u8.Length;
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!Alpha.TryFormat(utf8Destination, out partLength, format, provider))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!" }"u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        partLength = " }"u8.Length;
+
+        bytesWritten = numWritten + partLength;
+        return true;
     }
 
     /// <summary>Creates a new <see cref="ColorRgba" /> instance with <see cref="Red" /> set to the specified value.</summary>

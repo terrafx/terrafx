@@ -9,7 +9,11 @@ using System.Runtime.CompilerServices;
 namespace TerraFX.Numerics;
 
 /// <summary>Defines a bounding sphere.</summary>
-public struct BoundingSphere : IEquatable<BoundingSphere>, IFormattable
+public struct BoundingSphere
+    : IEquatable<BoundingSphere>,
+      IFormattable,
+      ISpanFormattable,
+      IUtf8SpanFormattable
 {
     /// <summary>Gets a bounding sphere with zero radius.</summary>
     public static BoundingSphere Zero => CreateFromRadius(Vector3.Zero, 0.0f);
@@ -102,6 +106,114 @@ public struct BoundingSphere : IEquatable<BoundingSphere>, IFormattable
     public override string ToString() => ToString(format: null, formatProvider: null);
 
     /// <inheritdoc />
-    public string ToString(string? format, IFormatProvider? formatProvider)
-        => $"{nameof(BoundingSphere)} {{ {nameof(Center)} = {_center.ToString(format, formatProvider)}, {nameof(Radius)} = {_radius.ToString(format, formatProvider)} }}";
+    public string ToString(string? format = null, IFormatProvider? formatProvider = null)
+        => $"BoundingSphere {{ Center = {Center.ToString(format, formatProvider)}, Radius = {Radius.ToString(format, formatProvider)} }}";
+
+    /// <inheritdoc />
+    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    {
+        var numWritten = 0;
+
+        if (!"BoundingSphere { Center = ".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        var partLength = "BoundingSphere { Center = ".Length;
+
+        numWritten += partLength;
+        destination = destination.Slice(numWritten);
+
+        if (!Center.TryFormat(destination, out partLength, format, provider))
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!", Radius = ".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        partLength = ", Radius = ".Length;
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!Radius.TryFormat(destination, out partLength, format, provider))
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!" }".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        partLength = " }".Length;
+
+        charsWritten = numWritten + partLength;
+        return true;
+    }
+
+    /// <inheritdoc />
+    public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    {
+        var numWritten = 0;
+
+        if (!"BoundingSphere { Center = "u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        var partLength = "BoundingSphere { Center = "u8.Length;
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(numWritten);
+
+        if (!Center.TryFormat(utf8Destination, out partLength, format, provider))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!", Radius = "u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        partLength = ", Radius = "u8.Length;
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!Radius.TryFormat(utf8Destination, out partLength, format, provider))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!" }"u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        partLength = " }"u8.Length;
+
+        bytesWritten = numWritten + partLength;
+        return true;
+    }
 }

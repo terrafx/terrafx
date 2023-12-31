@@ -17,7 +17,11 @@ using SysVector4 = System.Numerics.Vector4;
 namespace TerraFX.Numerics;
 
 /// <summary>Defines a 4x4 row-major matrix.</summary>
-public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
+public struct Matrix4x4
+    : IEquatable<Matrix4x4>,
+      IFormattable,
+      ISpanFormattable,
+      IUtf8SpanFormattable
 {
     /// <summary>Defines a matrix where all components are zero.</summary>
     public static Matrix4x4 Zero => Create(Vector128<float>.Zero, Vector128<float>.Zero, Vector128<float>.Zero, Vector128<float>.Zero);
@@ -908,6 +912,190 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     public override string ToString() => ToString(format: null, formatProvider: null);
 
     /// <inheritdoc />
-    public string ToString(string? format, IFormatProvider? formatProvider)
-        => $"{nameof(Matrix4x4)} {{ {nameof(X)} = {_x.ToString(format, formatProvider)}, {nameof(Y)} = {_y.ToString(format, formatProvider)}, {nameof(Z)} = {_z.ToString(format, formatProvider)}, {nameof(W)} = {_w.ToString(format, formatProvider)} }}";
+    public string ToString(string? format = null, IFormatProvider? formatProvider = null)
+        => $"Matrix4x4 {{ X = {X.ToString(format, formatProvider)}, Y = {Y.ToString(format, formatProvider)}, Z = {Z.ToString(format, formatProvider)}, W = {W.ToString(format, formatProvider)} }}";
+
+    /// <inheritdoc />
+    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    {
+        var numWritten = 0;
+
+        if (!"Matrix4x4 { X = ".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        var partLength = "Matrix4x4 { X = ".Length;
+
+        numWritten += partLength;
+        destination = destination.Slice(numWritten);
+
+        if (!X.TryFormat(destination, out partLength, format, provider))
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!", Y = ".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        partLength = ", Y = ".Length;
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!Y.TryFormat(destination, out partLength, format, provider))
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!", Z = ".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        partLength = ", Z = ".Length;
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!Z.TryFormat(destination, out partLength, format, provider))
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!", W = ".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        partLength = ", W = ".Length;
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!W.TryFormat(destination, out partLength, format, provider))
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!" }".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        partLength = " }".Length;
+
+        charsWritten = numWritten + partLength;
+        return true;
+    }
+
+    /// <inheritdoc />
+    public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    {
+        var numWritten = 0;
+
+        if (!"Matrix4x4 { X = "u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        var partLength = "Matrix4x4 { X = "u8.Length;
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(numWritten);
+
+        if (!X.TryFormat(utf8Destination, out partLength, format, provider))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!", Y = "u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        partLength = ", Y = "u8.Length;
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!Y.TryFormat(utf8Destination, out partLength, format, provider))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!", Z = "u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        partLength = ", Z = "u8.Length;
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!Z.TryFormat(utf8Destination, out partLength, format, provider))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!", W = "u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        partLength = ", W = "u8.Length;
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!W.TryFormat(utf8Destination, out partLength, format, provider))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!" }"u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        partLength = " }"u8.Length;
+
+        bytesWritten = numWritten + partLength;
+        return true;
+    }
 }
