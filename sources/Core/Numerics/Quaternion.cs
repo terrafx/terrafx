@@ -16,7 +16,11 @@ using SysVector4 = System.Numerics.Vector4;
 namespace TerraFX.Numerics;
 
 /// <summary>Defines a quaternion which encodes a rotation as an axis-angle.</summary>
-public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
+public readonly struct Quaternion
+    : IEquatable<Quaternion>,
+      IFormattable,
+      ISpanFormattable,
+      IUtf8SpanFormattable
 {
     /// <summary>Defines a quaternion where all components are zero.</summary>
     public static Quaternion Zero => Create(0.0f, 0.0f, 0.0f, 0.0f);
@@ -425,11 +429,119 @@ public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
     public override int GetHashCode() => HashCode.Combine(X, Y, Z, W);
 
     /// <inheritdoc />
-    public override string ToString() => _value.ToString();
+    public override string ToString() => ToString(format: null, formatProvider: null);
 
     /// <inheritdoc />
-    public string ToString(string? format, IFormatProvider? formatProvider)
-        => $"{nameof(Quaternion)} {{ {nameof(Axis)} = {Axis.ToString(format, formatProvider)}, {nameof(Angle)} = {Angle.ToString(format, formatProvider)} }}";
+    public string ToString(string? format = null, IFormatProvider? formatProvider = null)
+        => $"Quaternion {{ Axis = {Axis.ToString(format, formatProvider)}, Angle = {Angle.ToString(format, formatProvider)} }}";
+
+    /// <inheritdoc />
+    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    {
+        var numWritten = 0;
+
+        if (!"Quaternion { Axis = ".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        var partLength = "Quaternion { Axis = ".Length;
+
+        numWritten += partLength;
+        destination = destination.Slice(numWritten);
+
+        if (!Axis.TryFormat(destination, out partLength, format, provider))
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!", Angle = ".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        partLength = ", Angle = ".Length;
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!Angle.TryFormat(destination, out partLength, format, provider))
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        destination = destination.Slice(partLength);
+
+        if (!" }".TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+        partLength = " }".Length;
+
+        charsWritten = numWritten + partLength;
+        return true;
+    }
+
+    /// <inheritdoc />
+    public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    {
+        var numWritten = 0;
+
+        if (!"Quaternion { Axis = "u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        var partLength = "Quaternion { Axis = "u8.Length;
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(numWritten);
+
+        if (!Axis.TryFormat(utf8Destination, out partLength, format, provider))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!", Angle = "u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        partLength = ", Angle = "u8.Length;
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!Angle.TryFormat(utf8Destination, out partLength, format, provider))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        numWritten += partLength;
+        utf8Destination = utf8Destination.Slice(partLength);
+
+        if (!" }"u8.TryCopyTo(utf8Destination))
+        {
+            bytesWritten = 0;
+            return false;
+        }
+        partLength = " }"u8.Length;
+
+        bytesWritten = numWritten + partLength;
+        return true;
+    }
 
     /// <summary>Creates a new quaternion with <see cref="Angle" /> set to the specified value.</summary>
     /// <param name="angle">The new angle of the quaternion.</param>

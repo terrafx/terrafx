@@ -10,7 +10,9 @@ public readonly struct Timestamp
     : IComparable,
       IComparable<Timestamp>,
       IEquatable<Timestamp>,
-      IFormattable
+      IFormattable,
+      ISpanFormattable,
+      IUtf8SpanFormattable
 {
     /// <summary>The number of ticks that occur per day.</summary>
     public const long TicksPerDay = TimeSpan.TicksPerDay;
@@ -112,14 +114,11 @@ public readonly struct Timestamp
         {
             return CompareTo(other);
         }
-        else
+        else if (obj is not null)
         {
-            if (obj is not null)
-            {
-                ThrowForInvalidType(obj.GetType(), typeof(Timestamp));
-            }
-            return 1;
+            ThrowForInvalidType(obj.GetType(), typeof(Timestamp));
         }
+        return 1;
     }
 
     /// <inheritdoc />
@@ -138,11 +137,13 @@ public readonly struct Timestamp
     public override string ToString() => ToString(format: null, formatProvider: null);
 
     /// <inheritdoc />
-    public string ToString(string? format) => ToString(format, formatProvider: null);
+    public string ToString(string? format = null, IFormatProvider? formatProvider = null) => _ticks.ToString(format, formatProvider);
 
     /// <inheritdoc />
-    public string ToString(IFormatProvider? formatProvider) => ToString(format: null, formatProvider);
+    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+        => _ticks.TryFormat(destination, out charsWritten, format, provider);
 
     /// <inheritdoc />
-    public string ToString(string? format, IFormatProvider? formatProvider) => _ticks.ToString(format, formatProvider);
+    public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+        => _ticks.TryFormat(utf8Destination, out bytesWritten, format, provider);
 }
