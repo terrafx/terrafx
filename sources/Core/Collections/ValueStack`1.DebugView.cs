@@ -10,14 +10,9 @@ namespace TerraFX.Collections;
 
 public partial struct ValueStack<T>
 {
-    internal sealed class DebugView
+    internal sealed class DebugView(ValueStack<T> stack)
     {
-        private readonly ValueStack<T> _stack;
-
-        public DebugView(ValueStack<T> stack)
-        {
-            _stack = stack;
-        }
+        private readonly ValueStack<T> _stack = stack;
 
         public int Capacity => _stack.Capacity;
 

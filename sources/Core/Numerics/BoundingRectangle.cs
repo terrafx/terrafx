@@ -54,7 +54,7 @@ public struct BoundingRectangle
     public Vector2 Center
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _center;
         }
@@ -70,7 +70,7 @@ public struct BoundingRectangle
     public Vector2 Extent
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _extent;
         }
@@ -86,7 +86,7 @@ public struct BoundingRectangle
     public float Height
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _extent.Y * 2.0f;
         }
@@ -102,7 +102,7 @@ public struct BoundingRectangle
     public Vector2 Location
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _center - _extent;
         }
@@ -117,7 +117,7 @@ public struct BoundingRectangle
     public Vector2 Size
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _extent * 2.0f;
         }
@@ -132,7 +132,7 @@ public struct BoundingRectangle
     public float Width
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _extent.X * 2.0f;
         }
@@ -148,7 +148,7 @@ public struct BoundingRectangle
     public float X
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _center.X - _extent.X;
         }
@@ -164,7 +164,7 @@ public struct BoundingRectangle
     public float Y
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _center.Y - _extent.Y;
         }
@@ -199,27 +199,27 @@ public struct BoundingRectangle
     }
 
     /// <inheritdoc />
-    public override bool Equals(object? obj) => (obj is BoundingRectangle other) && Equals(other);
+    public override readonly bool Equals(object? obj) => (obj is BoundingRectangle other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(BoundingRectangle other)
+    public readonly bool Equals(BoundingRectangle other)
     {
         return _center.Equals(other._center)
             && _extent.Equals(other._extent);
     }
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine(_center, _extent);
+    public override readonly int GetHashCode() => HashCode.Combine(_center, _extent);
 
     /// <inheritdoc />
-    public override string ToString() => ToString(format: null, formatProvider: null);
+    public override readonly string ToString() => ToString(format: null, formatProvider: null);
 
     /// <inheritdoc />
-    public string ToString(string? format = null, IFormatProvider? formatProvider = null)
+    public readonly string ToString(string? format = null, IFormatProvider? formatProvider = null)
         => $"BoundingRectangle {{ Center = {Center.ToString(format, formatProvider)}, Extent = {Extent.ToString(format, formatProvider)} }}";
 
     /// <inheritdoc />
-    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    public readonly bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
     {
         var numWritten = 0;
 
@@ -273,7 +273,7 @@ public struct BoundingRectangle
     }
 
     /// <inheritdoc />
-    public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    public readonly bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
     {
         var numWritten = 0;
 

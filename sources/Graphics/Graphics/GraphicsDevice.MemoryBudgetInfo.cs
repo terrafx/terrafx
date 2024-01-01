@@ -49,7 +49,7 @@ public partial class GraphicsDevice
             }
         }
 
-        public void Dispose() => RWLock.Dispose();
+        public readonly void Dispose() => RWLock.Dispose();
 
         public ulong GetTotalAllocatedMemoryRegionByteLengthAtLastUpdate(int memoryManagerKindIndex)
         {

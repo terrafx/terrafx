@@ -9,14 +9,9 @@ namespace TerraFX.Collections;
 
 public partial struct UnmanagedValuePool<T>
 {
-    internal sealed unsafe class DebugView
+    internal sealed unsafe class DebugView(UnmanagedValuePool<T> pool)
     {
-        private readonly UnmanagedValuePool<T> _pool;
-
-        public DebugView(UnmanagedValuePool<T> pool)
-        {
-            _pool = pool;
-        }
+        private readonly UnmanagedValuePool<T> _pool = pool;
 
         public nuint AvailableCount => _pool._availableItems.Count;
 

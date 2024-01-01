@@ -11,29 +11,24 @@ namespace TerraFX.Collections;
 
 /// <summary>Represents a node in a linked list.</summary>
 /// <typeparam name="T">The type of the items contained in the linked list.</typeparam>
-public unsafe struct UnmanagedValueLinkedListNode<T> : IEquatable<UnmanagedValueLinkedListNode<T>>
+/// <remarks>Initializes a new instance of the <see cref="UnmanagedValueLinkedListNode{T}" /> class.</remarks>
+/// <param name="value">The value held by the node.</param>
+public unsafe struct UnmanagedValueLinkedListNode<T>(T value) : IEquatable<UnmanagedValueLinkedListNode<T>>
     where T : unmanaged
 {
     internal UnmanagedValueLinkedListNode<T>* _next;
     internal UnmanagedValueLinkedListNode<T>* _previous;
-    internal T _value;
+    internal T _value = value;
     internal bool _isFirstNode;
 
-    /// <summary>Initializes a new instance of the <see cref="UnmanagedValueLinkedListNode{T}" /> class.</summary>
-    /// <param name="value">The value held by the node.</param>
-    public UnmanagedValueLinkedListNode(T value)
-    {
-        _value = value;
-    }
-
     /// <summary>Gets <c>true</c> if the node belongs to a linked list; otherwise, <c>false</c>.</summary>
-    public bool HasParent => _next is not null;
+    public readonly bool HasParent => _next is not null;
 
     /// <summary>Gets <c>true</c> if the node is the first node in a linked list; otherwise, <c>false</c>.</summary>
-    public bool IsFirstNode => _isFirstNode;
+    public readonly bool IsFirstNode => _isFirstNode;
 
     /// <summary>Gets the next node in the linked list or <c>null</c> if none exists.</summary>
-    public UnmanagedValueLinkedListNode<T>* Next
+    public readonly UnmanagedValueLinkedListNode<T>* Next
     {
         get
         {
@@ -43,7 +38,7 @@ public unsafe struct UnmanagedValueLinkedListNode<T> : IEquatable<UnmanagedValue
     }
 
     /// <summary>Gets the previous node in the linked list or <c>null</c> if none exists.</summary>
-    public UnmanagedValueLinkedListNode<T>* Previous
+    public readonly UnmanagedValueLinkedListNode<T>* Previous
     {
         get
         {
@@ -55,7 +50,7 @@ public unsafe struct UnmanagedValueLinkedListNode<T> : IEquatable<UnmanagedValue
     /// <summary>Gets or sets the value held by the node.</summary>
     public T Value
     {
-        get
+        readonly get
         {
             return _value;
         }
@@ -86,22 +81,16 @@ public unsafe struct UnmanagedValueLinkedListNode<T> : IEquatable<UnmanagedValue
     /// <param name="left">The <see cref="UnmanagedValueLinkedListNode{T}" /> to compare with <paramref name="right" />.</param>
     /// <param name="right">The <see cref="UnmanagedValueLinkedListNode{T}" /> to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
-    public static bool operator !=(UnmanagedValueLinkedListNode<T> left, UnmanagedValueLinkedListNode<T> right)
-    {
-        return (left._next != right._next)
-            || (left._previous != right._previous)
-            || !EqualityComparer<T>.Default.Equals(left._value, right._value)
-            || (left._isFirstNode != right._isFirstNode);
-    }
+    public static bool operator !=(UnmanagedValueLinkedListNode<T> left, UnmanagedValueLinkedListNode<T> right) => !(left == right);
 
     /// <inheritdoc />
-    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedValueLinkedListNode<T> other) && Equals(other);
+    public override readonly bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedValueLinkedListNode<T> other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(UnmanagedValueLinkedListNode<T> other) => this == other;
+    public readonly bool Equals(UnmanagedValueLinkedListNode<T> other) => this == other;
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine((nuint)_next, (nuint)_previous, _value, _isFirstNode);
+    public override readonly int GetHashCode() => HashCode.Combine((nuint)_next, (nuint)_previous, _value, _isFirstNode);
 
     internal void Invalidate()
     {

@@ -18,7 +18,7 @@ public partial struct UnmanagedValuePool<T>
         }
 
         /// <inheritdoc />
-        public T Current => _enumerator.Current;
+        public readonly T Current => _enumerator.Current;
 
         /// <inheritdoc />
         public ref readonly T CurrentRef => ref _enumerator.CurrentRef;
@@ -31,6 +31,6 @@ public partial struct UnmanagedValuePool<T>
 
         object? IEnumerator.Current => Current;
 
-        void IDisposable.Dispose() { }
+        readonly void IDisposable.Dispose() { }
     }
 }

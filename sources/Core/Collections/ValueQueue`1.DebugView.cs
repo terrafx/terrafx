@@ -6,18 +6,15 @@
 using System;
 using System.Diagnostics;
 
+#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
+
 namespace TerraFX.Collections;
 
 public partial struct ValueQueue<T>
 {
-    internal sealed class DebugView
+    internal sealed class DebugView(ValueQueue<T> queue)
     {
-        private readonly ValueQueue<T> _queue;
-
-        public DebugView(ValueQueue<T> queue)
-        {
-            _queue = queue;
-        }
+        private readonly ValueQueue<T> _queue = queue;
 
         public int Capacity => _queue.Capacity;
 

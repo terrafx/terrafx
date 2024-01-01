@@ -9,14 +9,9 @@ namespace TerraFX;
 
 public readonly partial struct UnmanagedSpan<T>
 {
-    internal sealed class DebugView
+    internal sealed class DebugView(UnmanagedSpan<T> span)
     {
-        private readonly UnmanagedSpan<T> _span;
-
-        public DebugView(UnmanagedSpan<T> span)
-        {
-            _span = span;
-        }
+        private readonly UnmanagedSpan<T> _span = span;
 
         public bool IsEmpty => _span.IsEmpty;
 

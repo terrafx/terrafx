@@ -203,7 +203,7 @@ public static unsafe class UnsafeUtilities
 
         if (length == 0)
         {
-            return UnmanagedArray.Empty<T>();
+            return [];
         }
 
         var destination = new UnmanagedArray<T>(length, alignment);
@@ -224,7 +224,7 @@ public static unsafe class UnsafeUtilities
 
         if (length == 0)
         {
-            return UnmanagedArray.Empty<T>();
+            return [];
         }
 
         var destination = new UnmanagedArray<T>(length, alignment);

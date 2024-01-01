@@ -20,7 +20,7 @@ public struct GraphicsMemoryBudget
     public ulong EstimatedMemoryByteUsage;
 
     /// <summary>Gets the total length, in bytes, of allocated memory regions used for the memory budget.</summary>
-    public ulong TotalAllocatedMemoryRegionByteLength => TotalByteLength - TotalFreeMemoryRegionByteLength;
+    public readonly ulong TotalAllocatedMemoryRegionByteLength => TotalByteLength - TotalFreeMemoryRegionByteLength;
 
     /// <summary>Gets the total length, in bytes, of memory managers used for the memory budget.</summary>
     public ulong TotalByteLength;

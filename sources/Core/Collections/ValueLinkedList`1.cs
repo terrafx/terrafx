@@ -52,10 +52,10 @@ public partial struct ValueLinkedList<T>
     public readonly int Count => _count;
 
     /// <summary>Gets the first node in the linked list or <c>null</c> if the linked list is empty.</summary>
-    public ValueLinkedListNode<T>? First => _first;
+    public readonly ValueLinkedListNode<T>? First => _first;
 
     /// <summary>Gets the last node in the linked list or <c>null</c> if the linked list is empty.</summary>
-    public ValueLinkedListNode<T>? Last => _first?._previous;
+    public readonly ValueLinkedListNode<T>? Last => _first?._previous;
 
     /// <summary>Compares two <see cref="ValueLinkedList{T}" /> instances to determine equality.</summary>
     /// <param name="left">The <see cref="ValueLinkedList{T}" /> to compare with <paramref name="right" />.</param>
@@ -71,11 +71,7 @@ public partial struct ValueLinkedList<T>
     /// <param name="left">The <see cref="ValueLinkedList{T}" /> to compare with <paramref name="right" />.</param>
     /// <param name="right">The <see cref="ValueLinkedList{T}" /> to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
-    public static bool operator !=(ValueLinkedList<T> left, ValueLinkedList<T> right)
-    {
-        return (left._first != right._first)
-            || (left._count != right._count);
-    }
+    public static bool operator !=(ValueLinkedList<T> left, ValueLinkedList<T> right) => !(left == right);
 
     /// <summary>Adds a new node containing a given value after the specified node.</summary>
     /// <param name="node">The node after which the new node should be added.</param>
@@ -288,19 +284,19 @@ public partial struct ValueLinkedList<T>
     /// <summary>Checks whether the linked list contains a specified item.</summary>
     /// <param name="value">The item to check for in the linked list.</param>
     /// <returns><c>true</c> if a node containing <paramref name="value" /> was found in the linked list; otherwise, <c>false</c>.</returns>
-    public bool Contains(T value) => Contains(value, EqualityComparer<T>.Default);
+    public readonly bool Contains(T value) => Contains(value, EqualityComparer<T>.Default);
 
     /// <summary>Checks whether the linked list contains a specified item.</summary>
     /// <param name="value">The item to check for in the linked list.</param>
     /// <param name="comparer">The comparer to use when checking for equality.</param>
     /// <returns><c>true</c> if a node containing <paramref name="value" /> was found in the linked list; otherwise, <c>false</c>.</returns>
-    public bool Contains<TComparer>(T value, TComparer comparer)
+    public readonly bool Contains<TComparer>(T value, TComparer comparer)
         where TComparer : IEqualityComparer<T> => Find(value, comparer) is not null;
 
     /// <summary>Checks whether the linked list contains a specified node.</summary>
     /// <param name="node">The node to check for in the linked list.</param>
     /// <returns><c>true</c> if <paramref name="node" /> was found in the linked list; otherwise, <c>false</c>.</returns>
-    public bool Contains(ValueLinkedListNode<T> node)
+    public readonly bool Contains(ValueLinkedListNode<T> node)
     {
         ThrowIfNull(node);
 
@@ -331,7 +327,7 @@ public partial struct ValueLinkedList<T>
     /// <summary>Copies the values contained by the nodes in the linked list to a given destination.</summary>
     /// <param name="destination">The destination span where the items should be copied.</param>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="Count" /> is greater than <paramref name="destination" />.</exception>
-    public void CopyTo(Span<T> destination)
+    public readonly void CopyTo(Span<T> destination)
     {
         ThrowIfNotInInsertBounds(destination.Length, _count);
 
@@ -355,21 +351,21 @@ public partial struct ValueLinkedList<T>
     }
 
     /// <inheritdoc />
-    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is ValueLinkedList<T> other) && Equals(other);
+    public override readonly bool Equals([NotNullWhen(true)] object? obj) => (obj is ValueLinkedList<T> other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(ValueLinkedList<T> other) => this == other;
+    public readonly bool Equals(ValueLinkedList<T> other) => this == other;
 
     /// <summary>Tries to find a node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <returns>The node that contains <paramref name="value" /> if it exists; otherwise, <c>null</c>.</returns>
-    public ValueLinkedListNode<T>? Find(T value) => Find(value, EqualityComparer<T>.Default);
+    public readonly ValueLinkedListNode<T>? Find(T value) => Find(value, EqualityComparer<T>.Default);
 
     /// <summary>Tries to find a node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <param name="comparer">The comparer to use when checking for equality.</param>
     /// <returns>The node that contains <paramref name="value" /> if it exists; otherwise, <c>null</c>.</returns>
-    public ValueLinkedListNode<T>? Find<TComparer>(T value, TComparer comparer)
+    public readonly ValueLinkedListNode<T>? Find<TComparer>(T value, TComparer comparer)
         where TComparer : IEqualityComparer<T>
     {
         var first = _first;
@@ -415,13 +411,13 @@ public partial struct ValueLinkedList<T>
     /// <summary>Tries to find the last node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <returns>The last node that contains <paramref name="value" /> if it exists; otherwise, <c>null</c>.</returns>
-    public ValueLinkedListNode<T>? FindLast(T value) => FindLast(value, EqualityComparer<T>.Default);
+    public readonly ValueLinkedListNode<T>? FindLast(T value) => FindLast(value, EqualityComparer<T>.Default);
 
     /// <summary>Tries to find the last node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <param name="comparer">The comparer to use when checking for equality.</param>
     /// <returns>The last node that contains <paramref name="value" /> if it exists; otherwise, <c>null</c>.</returns>
-    public ValueLinkedListNode<T>? FindLast<TComparer>(T value, TComparer comparer)
+    public readonly ValueLinkedListNode<T>? FindLast<TComparer>(T value, TComparer comparer)
         where TComparer : IEqualityComparer<T>
     {
         var first = _first;
@@ -469,10 +465,10 @@ public partial struct ValueLinkedList<T>
 
     /// <summary>Gets an enumerator that can iterate through the items in the linked list.</summary>
     /// <returns>An enumerator that can iterate through the items in the linked list.</returns>
-    public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
+    public readonly ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine(_first, _count);
+    public override readonly int GetHashCode() => HashCode.Combine(_first, _count);
 
     /// <summary>Tries to remove a node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
@@ -601,7 +597,7 @@ public partial struct ValueLinkedList<T>
         }
     }
 
-    private void ValidateNode([NotNull] ValueLinkedListNode<T> node)
+    private readonly void ValidateNode([NotNull] ValueLinkedListNode<T> node)
     {
         ThrowIfNull(node);
 
@@ -615,7 +611,7 @@ public partial struct ValueLinkedList<T>
         }
     }
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+    readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }

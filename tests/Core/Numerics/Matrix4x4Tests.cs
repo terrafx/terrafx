@@ -5,7 +5,6 @@ using static TerraFX.Utilities.VectorUtilities;
 using SysMatrix4x4 = System.Numerics.Matrix4x4;
 
 // Not a correct fix for mutable structs
-#pragma warning disable IDE0200
 
 namespace TerraFX.UnitTests.Numerics;
 

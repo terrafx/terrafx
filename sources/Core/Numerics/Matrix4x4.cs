@@ -249,7 +249,7 @@ public struct Matrix4x4
     public Vector4 X
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return Vector4.Create(_x);
         }
@@ -265,7 +265,7 @@ public struct Matrix4x4
     public Vector4 Y
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return Vector4.Create(_y);
         }
@@ -281,7 +281,7 @@ public struct Matrix4x4
     public Vector4 Z
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return Vector4.Create(_z);
         }
@@ -297,7 +297,7 @@ public struct Matrix4x4
     public Vector4 W
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return Vector4.Create(_w);
         }
@@ -310,7 +310,7 @@ public struct Matrix4x4
     }
 
     /// <summary>Gets the determinant of the matrix.</summary>
-    public float Determinant
+    public readonly float Determinant
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
@@ -894,10 +894,10 @@ public struct Matrix4x4
     public SysMatrix4x4 AsSystemMatrix4x4() => As<Matrix4x4, SysMatrix4x4>(ref this);
 
     /// <inheritdoc />
-    public override bool Equals(object? obj) => (obj is Matrix4x4 other) && Equals(other);
+    public override readonly bool Equals(object? obj) => (obj is Matrix4x4 other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(Matrix4x4 other)
+    public readonly bool Equals(Matrix4x4 other)
     {
         return _x.Equals(other._x)
             && _y.Equals(other._y)
@@ -906,17 +906,17 @@ public struct Matrix4x4
     }
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine(_x, _y, _z, _w);
+    public override readonly int GetHashCode() => HashCode.Combine(_x, _y, _z, _w);
 
     /// <inheritdoc />
-    public override string ToString() => ToString(format: null, formatProvider: null);
+    public override readonly string ToString() => ToString(format: null, formatProvider: null);
 
     /// <inheritdoc />
-    public string ToString(string? format = null, IFormatProvider? formatProvider = null)
+    public readonly string ToString(string? format = null, IFormatProvider? formatProvider = null)
         => $"Matrix4x4 {{ X = {X.ToString(format, formatProvider)}, Y = {Y.ToString(format, formatProvider)}, Z = {Z.ToString(format, formatProvider)}, W = {W.ToString(format, formatProvider)} }}";
 
     /// <inheritdoc />
-    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    public readonly bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
     {
         var numWritten = 0;
 
@@ -1008,7 +1008,7 @@ public struct Matrix4x4
     }
 
     /// <inheritdoc />
-    public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    public readonly bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
     {
         var numWritten = 0;
 

@@ -13,10 +13,16 @@ public static partial class Resources
     /// <summary>Gets a localized composite format string similar to <c>The allocation of '{0}x{1}' bytes failed</c>.</summary>
     public static CompositeFormat ArrayAllocationFailedMessage { get; } = CompositeFormat.Parse(GetString(nameof(ArrayAllocationFailedMessage)));
 
-    /// <summary>Gets a localized composite format string similar to <c>The queue is empty</c>.</summary>
+    /// <summary>Gets a localized string similar to <c>The dictionary was concurrently read or written</c>.</summary>
+    public static string DictionaryConcurrentReadOrWriteMessage { get; } = GetString(nameof(DictionaryConcurrentReadOrWriteMessage));
+
+    /// <summary>Gets a localized composite format string similar to <c>A value associated with the key '{0}' already exists in the dictionary.</c></summary>
+    public static CompositeFormat DictionaryExistingKey { get; } = CompositeFormat.Parse(GetString(nameof(DictionaryExistingKey)));
+
+    /// <summary>Gets a localized string similar to <c>The queue is empty</c>.</summary>
     public static string EmptyQueueMessage { get; } = GetString(nameof(EmptyQueueMessage));
 
-    /// <summary>Gets a localized composite format string similar to <c>The stack is empty</c>.</summary>
+    /// <summary>Gets a localized string similar to <c>The stack is empty</c>.</summary>
     public static string EmptyStackMessage { get; } = GetString(nameof(EmptyStackMessage));
 
     /// <summary>Gets a localized composite format string similar to <c>'{0}' has an invalid flag combination</c>.</summary>
@@ -46,10 +52,10 @@ public static partial class Resources
     /// <summary>Gets a localized composite format string similar to <c>'{0}' failed to complete within '{1}' ms</c>.</summary>
     public static CompositeFormat MethodTimeoutMessage { get; } = CompositeFormat.Parse(GetString(nameof(MethodTimeoutMessage)));
 
-    /// <summary>Gets a localized composite format string similar to <c>One or more of the required features is not available</c>.</summary>
+    /// <summary>Gets a localized string similar to <c>One or more of the required features is not available</c>.</summary>
     public static string MissingRequiredFeaturesMessage { get; } = GetString(nameof(MissingRequiredFeaturesMessage));
 
-    /// <summary>Gets a localized composite format string similar to <c>The given code path is not currently implemented</c>.</summary>
+    /// <summary>Gets a localized string similar to <c>The given code path is not currently implemented</c>.</summary>
     public static string NotImplementedMessage { get; } = GetString(nameof(NotImplementedMessage));
 
     /// <summary>Gets a localized composite format string similar to <c>'{0}' is disposed or being disposed</c>.</summary>
@@ -58,7 +64,7 @@ public static partial class Resources
     /// <summary>Gets a localized composite format string similar to <c>'{0}' is not currently being disposed</c>.</summary>
     public static CompositeFormat ObjectNotDisposingMessage { get; } = CompositeFormat.Parse(GetString(nameof(ObjectNotDisposingMessage)));
 
-    /// <summary>Gets a localized composite format string similar to <c>The previous state was not 'Disposing'</c>.</summary>
+    /// <summary>Gets a localized string similar to <c>The previous state was not 'Disposing'</c>.</summary>
     public static string PreviousStateNotDisposingMessage { get; } = GetString(nameof(PreviousStateNotDisposingMessage));
 
     /// <summary>Gets a localized composite format string similar to <c>Transitioning the state from '{0}' to '{1}' failed</c>.</summary>

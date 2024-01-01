@@ -20,10 +20,10 @@ public partial struct ValueList<T>
         }
 
         /// <inheritdoc />
-        public T Current => CurrentRef;
+        public readonly T Current => CurrentRef;
 
         /// <inheritdoc />
-        public ref readonly T CurrentRef => ref _list.GetReferenceUnsafe(_index);
+        public readonly ref readonly T CurrentRef => ref _list.GetReferenceUnsafe(_index);
 
         /// <inheritdoc />
         public bool MoveNext()
@@ -44,8 +44,8 @@ public partial struct ValueList<T>
         /// <inheritdoc />
         public void Reset() => _index = -1;
 
-        object? IEnumerator.Current => Current;
+        readonly object? IEnumerator.Current => Current;
 
-        void IDisposable.Dispose() { }
+        readonly void IDisposable.Dispose() { }
     }
 }

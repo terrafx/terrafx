@@ -54,7 +54,7 @@ public struct BoundingBox
     public Vector3 Center
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _center;
         }
@@ -70,7 +70,7 @@ public struct BoundingBox
     public float Depth
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _extent.Z * 2.0f;
         }
@@ -86,7 +86,7 @@ public struct BoundingBox
     public Vector3 Extent
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _extent;
         }
@@ -102,7 +102,7 @@ public struct BoundingBox
     public float Height
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _extent.Y * 2.0f;
         }
@@ -118,7 +118,7 @@ public struct BoundingBox
     public Vector3 Location
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _center - _extent;
         }
@@ -133,7 +133,7 @@ public struct BoundingBox
     public Vector3 Size
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _extent * 2.0f;
         }
@@ -148,7 +148,7 @@ public struct BoundingBox
     public float Width
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _extent.X * 2.0f;
         }
@@ -164,7 +164,7 @@ public struct BoundingBox
     public float X
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _center.X - _extent.X;
         }
@@ -180,7 +180,7 @@ public struct BoundingBox
     public float Y
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _center.Y - _extent.Y;
         }
@@ -196,7 +196,7 @@ public struct BoundingBox
     public float Z
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _center.Z - _extent.Z;
         }
@@ -231,27 +231,27 @@ public struct BoundingBox
     }
 
     /// <inheritdoc />
-    public override bool Equals(object? obj) => (obj is BoundingBox other) && Equals(other);
+    public override readonly bool Equals(object? obj) => (obj is BoundingBox other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(BoundingBox other)
+    public readonly bool Equals(BoundingBox other)
     {
         return _center.Equals(other._center)
             && _extent.Equals(other._extent);
     }
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine(_center, _extent);
+    public override readonly int GetHashCode() => HashCode.Combine(_center, _extent);
 
     /// <inheritdoc />
-    public override string ToString() => ToString(format: null, formatProvider: null);
+    public override readonly string ToString() => ToString(format: null, formatProvider: null);
 
     /// <inheritdoc />
-    public string ToString(string? format = null, IFormatProvider? formatProvider = null)
+    public readonly string ToString(string? format = null, IFormatProvider? formatProvider = null)
         => $"BoundingBox {{ Center = {Center.ToString(format, formatProvider)}, Extent = {Extent.ToString(format, formatProvider)} }}";
 
     /// <inheritdoc />
-    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    public readonly bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
     {
         var numWritten = 0;
 
@@ -305,7 +305,7 @@ public struct BoundingBox
     }
 
     /// <inheritdoc />
-    public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    public readonly bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
     {
         var numWritten = 0;
 

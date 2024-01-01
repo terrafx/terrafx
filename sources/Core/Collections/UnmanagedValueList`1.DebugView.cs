@@ -9,14 +9,9 @@ namespace TerraFX.Collections;
 
 public partial struct UnmanagedValueList<T>
 {
-    internal sealed unsafe class DebugView
+    internal sealed unsafe class DebugView(UnmanagedValueList<T> list)
     {
-        private readonly UnmanagedValueList<T> _list;
-
-        public DebugView(UnmanagedValueList<T> list)
-        {
-            _list = list;
-        }
+        private readonly UnmanagedValueList<T> _list = list;
 
         public nuint Count => _list._count;
 
