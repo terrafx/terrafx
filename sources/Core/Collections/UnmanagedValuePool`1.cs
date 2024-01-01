@@ -26,8 +26,8 @@ public unsafe partial struct UnmanagedValuePool<T>
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValuePool{T}" /> struct.</summary>
     public UnmanagedValuePool()
     {
-        _availableItems = UnmanagedValueQueue.Empty<T>();
-        _items = UnmanagedValueList.Empty<T>();
+        _availableItems = [];
+        _items = [];
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValuePool{T}" /> struct.</summary>
@@ -42,7 +42,7 @@ public unsafe partial struct UnmanagedValuePool<T>
     public readonly nuint AvailableCount => _availableItems.Count;
 
     /// <summary>Gets an enumerator that can iterate through the available items in the pool.</summary>
-    public AvailableItemsEnumerator AvailableItems => new AvailableItemsEnumerator(this);
+    public readonly AvailableItemsEnumerator AvailableItems => new AvailableItemsEnumerator(this);
 
     /// <summary>Gets the number of items that can be contained by the pool without being resized.</summary>
     public readonly nuint Capacity => _items.Capacity;
@@ -64,11 +64,7 @@ public unsafe partial struct UnmanagedValuePool<T>
     /// <param name="left">The <see cref="UnmanagedValuePool{T}" /> to compare with <paramref name="right" />.</param>
     /// <param name="right">The <see cref="UnmanagedValuePool{T}" /> to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
-    public static bool operator !=(UnmanagedValuePool<T> left, UnmanagedValuePool<T> right)
-    {
-        return (left._availableItems != right._availableItems)
-            || (left._items != right._items);
-    }
+    public static bool operator !=(UnmanagedValuePool<T> left, UnmanagedValuePool<T> right) => !(left == right);
 
     /// <summary>Removes all items from the pool.</summary>
     public void Clear()
@@ -79,17 +75,17 @@ public unsafe partial struct UnmanagedValuePool<T>
 
 
     /// <inheritdoc />
-    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedValuePool<T> other) && Equals(other);
+    public override readonly bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedValuePool<T> other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(UnmanagedValuePool<T> other) => this == other;
+    public readonly bool Equals(UnmanagedValuePool<T> other) => this == other;
 
     /// <summary>Gets an enumerator that can iterate through the items in the pool.</summary>
     /// <returns>An enumerator that can iterate through the items in the pool.</returns>
-    public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
+    public readonly ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine(_availableItems, _items);
+    public override readonly int GetHashCode() => HashCode.Combine(_availableItems, _items);
 
     /// <summary>Removes the first occurrence of an item from the pool.</summary>
     /// <param name="item">The item to remove from the pool.</param>
@@ -158,9 +154,9 @@ public unsafe partial struct UnmanagedValuePool<T>
         Return(item);
     }
 
-    internal ref T GetReferenceUnsafe(nuint index) => ref _items.GetReferenceUnsafe(index);
+    internal readonly ref T GetReferenceUnsafe(nuint index) => ref _items.GetReferenceUnsafe(index);
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+    readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }

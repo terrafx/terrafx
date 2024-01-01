@@ -28,10 +28,10 @@ public struct VolatileState : IEquatable<VolatileState>
     private volatile uint _value;
 
     /// <summary>Gets a value that indicates whether the object is being disposed or is already disposed.</summary>
-    public bool IsDisposedOrDisposing => _value >= Disposing;
+    public readonly bool IsDisposedOrDisposing => _value >= Disposing;
 
     /// <summary>Gets a value that indicates whether the object is not being disposed and is not already disposed.</summary>
-    public bool IsNotDisposedOrDisposing => _value < Disposing;
+    public readonly bool IsNotDisposedOrDisposing => _value < Disposing;
 
     /// <summary>Compares two <see cref="VolatileState" /> instances to determine equality.</summary>
     /// <param name="left">The <see cref="VolatileState" /> to compare with <paramref name="right" />.</param>
@@ -61,13 +61,13 @@ public struct VolatileState : IEquatable<VolatileState>
     }
 
     /// <inheritdoc />
-    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is VolatileState other) && Equals(other);
+    public override readonly bool Equals([NotNullWhen(true)] object? obj) => (obj is VolatileState other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(VolatileState other) => this == other;
+    public readonly bool Equals(VolatileState other) => this == other;
 
     /// <inheritdoc />
-    public override int GetHashCode() => _value.GetHashCode();
+    public override readonly int GetHashCode() => _value.GetHashCode();
 
     /// <summary>Transititions the object to a new state.</summary>
     /// <param name="to">The state to transition to.</param>

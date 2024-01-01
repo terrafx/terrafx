@@ -7,7 +7,6 @@ using NUnit.Framework;
 using TerraFX.Collections;
 
 // Not a correct fix for mutable structs
-#pragma warning disable IDE0200
 
 namespace TerraFX.UnitTests.Collections;
 

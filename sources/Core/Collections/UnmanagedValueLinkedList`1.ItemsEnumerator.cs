@@ -72,6 +72,6 @@ public partial struct UnmanagedValueLinkedList<T>
 
         object? IEnumerator.Current => Current;
 
-        void IDisposable.Dispose() { }
+        readonly void IDisposable.Dispose() { }
     }
 }

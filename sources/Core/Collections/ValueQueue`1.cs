@@ -35,7 +35,7 @@ public partial struct ValueQueue<T>
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
     public ValueQueue()
     {
-        _items = Array.Empty<T>();
+        _items = [];
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
@@ -44,7 +44,7 @@ public partial struct ValueQueue<T>
     public ValueQueue(int capacity)
     {
         ThrowIfNegative(capacity);
-        _items = (capacity != 0) ? GC.AllocateUninitializedArray<T>(capacity) : Array.Empty<T>();
+        _items = (capacity != 0) ? GC.AllocateUninitializedArray<T>(capacity) : [];
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>
@@ -71,7 +71,7 @@ public partial struct ValueQueue<T>
         }
         else
         {
-            _items = Array.Empty<T>();
+            _items = [];
         }
 
         _count = span.Length;
@@ -129,13 +129,7 @@ public partial struct ValueQueue<T>
     /// <param name="left">The <see cref="ValueQueue{T}" /> to compare with <paramref name="right" />.</param>
     /// <param name="right">The <see cref="ValueQueue{T}" /> to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
-    public static bool operator !=(ValueQueue<T> left, ValueQueue<T> right)
-    {
-        return (left._items != right._items)
-            || (left._count != right._count)
-            || (left._head != right._head)
-            || (left._tail != right._tail);
-    }
+    public static bool operator !=(ValueQueue<T> left, ValueQueue<T> right) => !(left == right);
 
     /// <summary>Removes all items from the queue.</summary>
     public void Clear()
@@ -263,17 +257,17 @@ public partial struct ValueQueue<T>
     }
 
     /// <inheritdoc />
-    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is ValueQueue<T> other) && Equals(other);
+    public override readonly bool Equals([NotNullWhen(true)] object? obj) => (obj is ValueQueue<T> other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(ValueQueue<T> other) => this == other;
+    public readonly bool Equals(ValueQueue<T> other) => this == other;
 
     /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
     /// <returns>An enumerator that can iterate through the items in the list.</returns>
-    public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
+    public readonly ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine(_items, _count, _head, _tail);
+    public override readonly int GetHashCode() => HashCode.Combine(_items, _count, _head, _tail);
 
     /// <summary>Gets a reference to the item at the specified index of the list.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
@@ -282,7 +276,7 @@ public partial struct ValueQueue<T>
     ///     <para>This method is because other operations may invalidate the backing array.</para>
     ///     <para>This method is because it does not validate that <paramref name="index" /> is less than <see cref="Capacity" />.</para>
     /// </remarks>
-    public ref T GetReferenceUnsafe(int index)
+    public readonly ref T GetReferenceUnsafe(int index)
     {
         var count = _count;
 
@@ -490,7 +484,7 @@ public partial struct ValueQueue<T>
         _tail = _count;
     }
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+    readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }

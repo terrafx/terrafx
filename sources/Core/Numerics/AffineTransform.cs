@@ -186,7 +186,7 @@ public struct AffineTransform
     public Quaternion Rotation
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _rotation;
         }
@@ -202,7 +202,7 @@ public struct AffineTransform
     public Vector3 Scale
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _scale;
         }
@@ -218,7 +218,7 @@ public struct AffineTransform
     public Vector3 Translation
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _translation;
         }
@@ -255,10 +255,10 @@ public struct AffineTransform
     }
 
     /// <inheritdoc />
-    public override bool Equals(object? obj) => (obj is AffineTransform other) && Equals(other);
+    public override readonly bool Equals(object? obj) => (obj is AffineTransform other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(AffineTransform other)
+    public readonly bool Equals(AffineTransform other)
     {
         return _rotation.Equals(other._rotation)
             && _scale.Equals(other._scale)
@@ -266,17 +266,17 @@ public struct AffineTransform
     }
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine(_rotation, _scale, _translation);
+    public override readonly int GetHashCode() => HashCode.Combine(_rotation, _scale, _translation);
 
     /// <inheritdoc />
-    public override string ToString() => ToString(format: null, formatProvider: null);
+    public override readonly string ToString() => ToString(format: null, formatProvider: null);
 
     /// <inheritdoc />
-    public string ToString(string? format = null, IFormatProvider? formatProvider = null)
+    public readonly string ToString(string? format = null, IFormatProvider? formatProvider = null)
         => $"AffineTransform {{ Rotation = {Rotation.ToString(format, formatProvider)}, Scale = {Scale.ToString(format, formatProvider)}, Translation = {Translation.ToString(format, formatProvider)} }}";
 
     /// <inheritdoc />
-    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    public readonly bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
     {
         var numWritten = 0;
 
@@ -349,7 +349,7 @@ public struct AffineTransform
     }
 
     /// <inheritdoc />
-    public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    public readonly bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
     {
         var numWritten = 0;
 

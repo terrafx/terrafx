@@ -38,7 +38,6 @@ public static class Configuration
     /// <summary><c>true</c> if TerraFX is current running in a 64-bit process; otherwise, <c>false</c>.</summary>
     public static bool Is64BitProcess { get; } = SizeOf<nuint>() == 8;
 
-#pragma warning disable CA1805 // Do not initialize unnecessarily
     /// <summary><c>true</c> if TerraFX was built with the <c>Debug</c> configuration; otherwise, <c>false</c>.</summary>
     /// <remarks>This value is not configurable via an <see cref="AppContext" /> switch.</remarks>
 #if DEBUG
@@ -46,7 +45,6 @@ public static class Configuration
 #else
     public static bool IsDebug { get; } = false;
 #endif
-#pragma warning restore CA1805 // Do not initialize unnecessarily
 
     /// <summary><c>true</c> if TerraFX was built with the <c>Release</c> configuration; otherwise, <c>false</c>.</summary>
     /// <remarks>This value is not configurable via an <see cref="AppContext" /> switch.</remarks>

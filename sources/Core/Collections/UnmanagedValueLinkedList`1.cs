@@ -55,10 +55,10 @@ public unsafe partial struct UnmanagedValueLinkedList<T>
     public readonly nuint Count => _count;
 
     /// <summary>Gets the first node in the linked list or <c>null</c> if the linked list is empty.</summary>
-    public UnmanagedValueLinkedListNode<T>* First => _first;
+    public readonly UnmanagedValueLinkedListNode<T>* First => _first;
 
     /// <summary>Gets the last node in the linked list or <c>null</c> if the linked list is empty.</summary>
-    public UnmanagedValueLinkedListNode<T>* Last
+    public readonly UnmanagedValueLinkedListNode<T>* Last
     {
         get
         {
@@ -81,11 +81,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T>
     /// <param name="left">The <see cref="UnmanagedValueLinkedList{T}" /> to compare with <paramref name="right" />.</param>
     /// <param name="right">The <see cref="UnmanagedValueLinkedList{T}" /> to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
-    public static bool operator !=(UnmanagedValueLinkedList<T> left, UnmanagedValueLinkedList<T> right)
-    {
-        return (left._first != right._first)
-            || (left._count != right._count);
-    }
+    public static bool operator !=(UnmanagedValueLinkedList<T> left, UnmanagedValueLinkedList<T> right) => !(left == right);
 
     /// <summary>Adds a new node containing a given value after the specified node.</summary>
     /// <param name="node">The node after which the new node should be added.</param>
@@ -307,19 +303,19 @@ public unsafe partial struct UnmanagedValueLinkedList<T>
     /// <summary>Checks whether the linked list contains a specified item.</summary>
     /// <param name="value">The item to check for in the linked list.</param>
     /// <returns><c>true</c> if a node containing <paramref name="value" /> was found in the linked list; otherwise, <c>false</c>.</returns>
-    public bool Contains(T value) => Contains(value, EqualityComparer<T>.Default);
+    public readonly bool Contains(T value) => Contains(value, EqualityComparer<T>.Default);
 
     /// <summary>Checks whether the linked list contains a specified item.</summary>
     /// <param name="value">The item to check for in the linked list.</param>
     /// <param name="comparer">The comparer to use when checking for equality.</param>
     /// <returns><c>true</c> if a node containing <paramref name="value" /> was found in the linked list; otherwise, <c>false</c>.</returns>
-    public bool Contains<TComparer>(T value, TComparer comparer)
+    public readonly bool Contains<TComparer>(T value, TComparer comparer)
         where TComparer : IEqualityComparer<T> => Find(value, comparer) is not null;
 
     /// <summary>Checks whether the linked list contains a specified node.</summary>
     /// <param name="node">The node to check for in the linked list.</param>
     /// <returns><c>true</c> if <paramref name="node" /> was found in the linked list; otherwise, <c>false</c>.</returns>
-    public bool Contains(UnmanagedValueLinkedListNode<T>* node)
+    public readonly bool Contains(UnmanagedValueLinkedListNode<T>* node)
     {
         if (node->HasParent)
         {
@@ -348,7 +344,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T>
     /// <summary>Copies the values contained by the nodes in the linked list to a given destination.</summary>
     /// <param name="destination">The destination span where the items should be copied.</param>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="Count" /> is greater than <paramref name="destination" />.</exception>
-    public void CopyTo(UnmanagedSpan<T> destination)
+    public readonly void CopyTo(UnmanagedSpan<T> destination)
     {
         ThrowIfNotInInsertBounds(destination.Length, _count);
 
@@ -372,7 +368,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T>
     }
 
     /// <inheritdoc />
-    public void Dispose()
+    public readonly void Dispose()
     {
         var first = _first;
         var current = first;
@@ -392,21 +388,21 @@ public unsafe partial struct UnmanagedValueLinkedList<T>
     }
 
     /// <inheritdoc />
-    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedValueLinkedList<T> other) && Equals(other);
+    public override readonly bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedValueLinkedList<T> other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(UnmanagedValueLinkedList<T> other) => this == other;
+    public readonly bool Equals(UnmanagedValueLinkedList<T> other) => this == other;
 
     /// <summary>Tries to find a node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <returns>The node that contains <paramref name="value" /> if it exists; otherwise, <c>null</c>.</returns>
-    public UnmanagedValueLinkedListNode<T>* Find(T value) => Find(value, EqualityComparer<T>.Default);
+    public readonly UnmanagedValueLinkedListNode<T>* Find(T value) => Find(value, EqualityComparer<T>.Default);
 
     /// <summary>Tries to find a node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <param name="comparer">The comparer to use when checking for equality.</param>
     /// <returns>The node that contains <paramref name="value" /> if it exists; otherwise, <c>null</c>.</returns>
-    public UnmanagedValueLinkedListNode<T>* Find<TComparer>(T value, TComparer comparer)
+    public readonly UnmanagedValueLinkedListNode<T>* Find<TComparer>(T value, TComparer comparer)
         where TComparer : IEqualityComparer<T>
     {
         var first = _first;
@@ -434,13 +430,13 @@ public unsafe partial struct UnmanagedValueLinkedList<T>
     /// <summary>Tries to find the last node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <returns>The last node that contains <paramref name="value" /> if it exists; otherwise, <c>null</c>.</returns>
-    public UnmanagedValueLinkedListNode<T>* FindLast(T value) => FindLast(value, EqualityComparer<T>.Default);
+    public readonly UnmanagedValueLinkedListNode<T>* FindLast(T value) => FindLast(value, EqualityComparer<T>.Default);
 
     /// <summary>Tries to find the last node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
     /// <param name="comparer">The comparer to use when checking for equality.</param>
     /// <returns>The last node that contains <paramref name="value" /> if it exists; otherwise, <c>null</c>.</returns>
-    public UnmanagedValueLinkedListNode<T>* FindLast<TComparer>(T value, TComparer comparer)
+    public readonly UnmanagedValueLinkedListNode<T>* FindLast<TComparer>(T value, TComparer comparer)
         where TComparer : IEqualityComparer<T>
     {
         var first = _first;
@@ -471,10 +467,10 @@ public unsafe partial struct UnmanagedValueLinkedList<T>
 
     /// <summary>Gets an enumerator that can iterate through the items in the linked list.</summary>
     /// <returns>An enumerator that can iterate through the items in the linked list.</returns>
-    public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
+    public readonly ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine((nuint)_first, _count);
+    public override readonly int GetHashCode() => HashCode.Combine((nuint)_first, _count);
 
     /// <summary>Tries to remove a node in the linked list that contains a specified value.</summary>
     /// <param name="value">The value to check for in the linked list.</param>
@@ -593,7 +589,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T>
         _count--;
     }
 
-    private void ValidateNewNode(UnmanagedValueLinkedListNode<T>* node)
+    private readonly void ValidateNewNode(UnmanagedValueLinkedListNode<T>* node)
     {
         ThrowIfNull(node);
 
@@ -603,7 +599,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T>
         }
     }
 
-    private void ValidateNode(UnmanagedValueLinkedListNode<T>* node)
+    private readonly void ValidateNode(UnmanagedValueLinkedListNode<T>* node)
     {
         ThrowIfNull(node);
 
@@ -617,7 +613,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T>
         }
     }
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+    readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }

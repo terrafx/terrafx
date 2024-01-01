@@ -39,7 +39,7 @@ public struct BoundingSphere
     public Vector3 Center
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _center;
         }
@@ -55,7 +55,7 @@ public struct BoundingSphere
     public float Radius
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
+        readonly get
         {
             return _radius;
         }
@@ -90,27 +90,27 @@ public struct BoundingSphere
     }
 
     /// <inheritdoc />
-    public override bool Equals(object? obj) => (obj is BoundingSphere other) && Equals(other);
+    public override readonly bool Equals(object? obj) => (obj is BoundingSphere other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(BoundingSphere other)
+    public readonly bool Equals(BoundingSphere other)
     {
         return _center.Equals(other._center)
             && _radius.Equals(other._radius);
     }
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine(_center, _radius);
+    public override readonly int GetHashCode() => HashCode.Combine(_center, _radius);
 
     /// <inheritdoc />
-    public override string ToString() => ToString(format: null, formatProvider: null);
+    public override readonly string ToString() => ToString(format: null, formatProvider: null);
 
     /// <inheritdoc />
-    public string ToString(string? format = null, IFormatProvider? formatProvider = null)
+    public readonly string ToString(string? format = null, IFormatProvider? formatProvider = null)
         => $"BoundingSphere {{ Center = {Center.ToString(format, formatProvider)}, Radius = {Radius.ToString(format, formatProvider)} }}";
 
     /// <inheritdoc />
-    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    public readonly bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
     {
         var numWritten = 0;
 
@@ -164,7 +164,7 @@ public struct BoundingSphere
     }
 
     /// <inheritdoc />
-    public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    public readonly bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
     {
         var numWritten = 0;
 

@@ -80,9 +80,7 @@ public readonly unsafe partial struct UnmanagedSpan<T>
     /// <param name="left">The <see cref="UnmanagedSpan{T}" /> to compare with <paramref name="right" />.</param>
     /// <param name="right">The <see cref="UnmanagedSpan{T}" /> to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
-    public static bool operator !=(UnmanagedSpan<T> left, UnmanagedSpan<T> right)
-        => (left._length != right._length)
-        || (left._items != right._items);
+    public static bool operator !=(UnmanagedSpan<T> left, UnmanagedSpan<T> right) => !(left == right);
 
     /// <summary>Implicitly converts the span to a readonly span.</summary>
     /// <param name="span">The span to convert.</param>

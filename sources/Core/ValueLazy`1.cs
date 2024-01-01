@@ -99,10 +99,7 @@ public partial struct ValueLazy<T> : IEquatable<ValueLazy<T>>
     /// <param name="left">The <see cref="ValueLazy{T}" /> to compare with <paramref name="right" />.</param>
     /// <param name="right">The <see cref="ValueLazy{T}" /> to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
-    public static bool operator !=(ValueLazy<T> left, ValueLazy<T> right)
-        => (left._factory != right._factory)
-        || !EqualityComparer<T>.Default.Equals(left._value, right._value)
-        || (left._state != right._state);
+    public static bool operator !=(ValueLazy<T> left, ValueLazy<T> right) => !(left == right);
 
     /// <inheritdoc cref="IDisposable.Dispose()" />
     /// <param name="action">The action to call, if the value was created, which performs the appropriate disposal.</param>

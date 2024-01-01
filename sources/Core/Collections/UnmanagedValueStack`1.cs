@@ -34,7 +34,7 @@ public unsafe partial struct UnmanagedValueStack<T>
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueStack{T}" /> struct.</summary>
     public UnmanagedValueStack()
     {
-        _items = UnmanagedArray.Empty<T>();
+        _items = [];
     }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueStack{T}" /> struct.</summary>
@@ -53,7 +53,7 @@ public unsafe partial struct UnmanagedValueStack<T>
             {
                 ThrowIfNotPow2(alignment);
             }
-            _items = UnmanagedArray.Empty<T>();
+            _items = [];
         }
     }
 
@@ -75,7 +75,7 @@ public unsafe partial struct UnmanagedValueStack<T>
             {
                 ThrowIfNotPow2(alignment);
             }
-            _items = UnmanagedArray.Empty<T>();
+            _items = [];
         }
 
         _count = span.Length;
@@ -131,11 +131,7 @@ public unsafe partial struct UnmanagedValueStack<T>
     /// <param name="left">The <see cref="UnmanagedValueStack{T}" /> to compare with <paramref name="right" />.</param>
     /// <param name="right">The <see cref="UnmanagedValueStack{T}" /> to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
-    public static bool operator !=(UnmanagedValueStack<T> left, UnmanagedValueStack<T> right)
-    {
-        return (left._items != right._items)
-            || (left._count != right._count);
-    }
+    public static bool operator !=(UnmanagedValueStack<T> left, UnmanagedValueStack<T> right) => !(left == right);
 
     /// <summary>Removes all items from the stack.</summary>
     public void Clear() => _count = 0;
@@ -164,7 +160,7 @@ public unsafe partial struct UnmanagedValueStack<T>
     }
 
     /// <inheritdoc />
-    public void Dispose() => _items.Dispose();
+    public readonly void Dispose() => _items.Dispose();
 
     /// <summary>Ensures the capacity of the stack is at least the specified value.</summary>
     /// <param name="capacity">The minimum capacity the stack should support.</param>
@@ -180,23 +176,23 @@ public unsafe partial struct UnmanagedValueStack<T>
     }
 
     /// <inheritdoc />
-    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedValueStack<T> other) && Equals(other);
+    public override readonly bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedValueStack<T> other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(UnmanagedValueStack<T> other) => this == other;
+    public readonly bool Equals(UnmanagedValueStack<T> other) => this == other;
 
     /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
     /// <returns>An enumerator that can iterate through the items in the list.</returns>
-    public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
+    public readonly ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine(_items, _count);
+    public override readonly int GetHashCode() => HashCode.Combine(_items, _count);
 
     /// <summary>Gets a pointer to the item at the specified index of the stack.</summary>
     /// <param name="index">The index of the item to get a pointer to.</param>
     /// <returns>A pointer to the item that exists at <paramref name="index" /> in the stack.</returns>
     /// <remarks>This method is because other operations may invalidate the backing array.</remarks>
-    public T* GetPointerUnsafe(nuint index)
+    public readonly T* GetPointerUnsafe(nuint index)
     {
         T* item;
         var count = _count;
@@ -212,7 +208,7 @@ public unsafe partial struct UnmanagedValueStack<T>
     ///     <para>This method is because other operations may invalidate the backing array.</para>
     ///     <para>This method is because it does not validate that <paramref name="index" /> is less than <see cref="Count" />.</para>
     /// </remarks>
-    public ref T GetReferenceUnsafe(nuint index) => ref *GetPointerUnsafe(index);
+    public readonly ref T GetReferenceUnsafe(nuint index) => ref *GetPointerUnsafe(index);
 
     /// <summary>Peeks at the item at the top of the stack.</summary>
     /// <returns>The item at the top of the stack.</returns>
@@ -362,7 +358,7 @@ public unsafe partial struct UnmanagedValueStack<T>
         _items = newItems;
     }
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+    readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }

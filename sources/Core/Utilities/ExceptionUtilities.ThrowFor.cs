@@ -13,6 +13,28 @@ namespace TerraFX.Utilities;
 
 public static unsafe partial class ExceptionUtilities
 {
+    /// <summary>Throws an <see cref="InvalidOperationException" /> for a dictionary that was concurrently read or written.</summary>
+    /// <exception cref="InvalidOperationException">The dictionary was concurrently read or written.</exception>
+    [DoesNotReturn]
+    public static void ThrowForDictionaryConcurrentReadOrWrite()
+    {
+        var message = Resources.DictionaryConcurrentReadOrWriteMessage;
+        ThrowInvalidOperationException(message);
+    }
+
+    /// <summary>Throws an <see cref="ArgumentException" /> for a dictionary that already contains a specified key.</summary>
+    /// <param name="key">The key of the value that already exists in the dictionary.</param>
+    /// <param name="keyExpression">The expression of the key that caused the exception.</param>
+    /// <exception cref="InvalidOperationException">A value associated with <paramref name="key" /> already exists in the dictionary.</exception>
+    [DoesNotReturn]
+    public static void ThrowForDictionaryExistingKey<TKey>(TKey key, [CallerArgumentExpression(nameof(key))] string? keyExpression = null)
+        where TKey : notnull
+    {
+        AssertNotNull(keyExpression);
+        var message = string.Format(CultureInfo.InvariantCulture, Resources.DictionaryExistingKey, key);
+        ThrowArgumentException(message, keyExpression);
+    }
+
     /// <summary>Throws an <see cref="InvalidOperationException" /> for an empty queue.</summary>
     /// <exception cref="InvalidOperationException">The queue is empty.</exception>
     [DoesNotReturn]

@@ -33,7 +33,7 @@ public partial struct ValueList<T>
     /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>
     public ValueList()
     {
-        _items = Array.Empty<T>();
+        _items = [];
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>
@@ -43,7 +43,7 @@ public partial struct ValueList<T>
     {
         ThrowIfNegative(capacity);
 
-        _items = (capacity != 0) ? GC.AllocateUninitializedArray<T>(capacity) : Array.Empty<T>();
+        _items = (capacity != 0) ? GC.AllocateUninitializedArray<T>(capacity) : [];
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>
@@ -70,7 +70,7 @@ public partial struct ValueList<T>
         }
         else
         {
-            _items = Array.Empty<T>();
+            _items = [];
         }
 
         _count = span.Length;
@@ -116,9 +116,9 @@ public partial struct ValueList<T>
     /// <param name="index">The index of the item to get or set.</param>
     /// <returns>The item that exists at <paramref name="index" /> in the list.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.</exception>
-    public T this[int index]
+    public readonly T this[int index]
     {
-        readonly get
+        get
         {
             ThrowIfNotInBounds(index, _count);
             return _items[index];
@@ -145,11 +145,7 @@ public partial struct ValueList<T>
     /// <param name="left">The <see cref="ValueList{T}" /> to compare with <paramref name="right" />.</param>
     /// <param name="right">The <see cref="ValueList{T}" /> to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
-    public static bool operator !=(ValueList<T> left, ValueList<T> right)
-    {
-        return (left._items != right._items)
-            || (left._count != right._count);
-    }
+    public static bool operator !=(ValueList<T> left, ValueList<T> right) => !(left == right);
 
     /// <summary>Adds an item to the list.</summary>
     /// <param name="item">The item to add to the list.</param>
@@ -179,7 +175,7 @@ public partial struct ValueList<T>
     ///     <para>This method is unsafe because other operations may invalidate the backing array.</para>
     ///     <para>This method is unsafe because it gives access to uninitialized memory in the backing array when <see cref="Count" /> is less than <see cref="Capacity" />.</para>
     /// </remarks>
-    public Span<T> AsSpanUnsafe() => new Span<T>(_items);
+    public readonly Span<T> AsSpanUnsafe() => new Span<T>(_items);
 
     /// <summary>Converts the backing array for the list to a span starting at the specified index and continuing for the specified number of items.</summary>
     /// <param name="start">The index of the first item to include in the span.</param>
@@ -189,7 +185,7 @@ public partial struct ValueList<T>
     ///     <para>This method is unsafe because other operations may invalidate the backing array.</para>
     ///     <para>This method is unsafe because it can give access to uninitialized memory in the backing array when <see cref="Count" /> is less than <see cref="Capacity" />.</para>
     /// </remarks>
-    public Span<T> AsSpanUnsafe(int start, int length) => new Span<T>(_items, start, length);
+    public readonly Span<T> AsSpanUnsafe(int start, int length) => new Span<T>(_items, start, length);
 
     /// <summary>Removes all items from the list.</summary>
     public void Clear()
@@ -229,26 +225,26 @@ public partial struct ValueList<T>
     }
 
     /// <inheritdoc />
-    public override bool Equals([NotNullWhen(true)] object? obj) => (obj is ValueList<T> other) && Equals(other);
+    public override readonly bool Equals([NotNullWhen(true)] object? obj) => (obj is ValueList<T> other) && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(ValueList<T> other) => this == other;
+    public readonly bool Equals(ValueList<T> other) => this == other;
 
     /// <summary>Gets an enumerator that can iterate through the items in the list.</summary>
     /// <returns>An enumerator that can iterate through the items in the list.</returns>
-    public ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
+    public readonly ItemsEnumerator GetEnumerator() => new ItemsEnumerator(this);
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine(_items, _count);
+    public override readonly int GetHashCode() => HashCode.Combine(_items, _count);
 
     /// <summary>Gets a reference to the item at the specified index of the list.</summary>
-    /// <param name="index">The index of the item to get a pointer to.</param>
+    /// <param name="index">The index of the item to get a reference to.</param>
     /// <returns>A reference to the item that exists at <paramref name="index" /> in the list.</returns>
     /// <remarks>
-    ///     <para>This method is because other operations may invalidate the backing array.</para>
-    ///     <para>This method is because it does not validate that <paramref name="index" /> is less than <see cref="Capacity" />.</para>
+    ///     <para>This method is unsafe because other operations may invalidate the backing array.</para>
+    ///     <para>This method is unsafe because it does not validate that <paramref name="index" /> is less than <see cref="Capacity" />.</para>
     /// </remarks>
-    public ref T GetReferenceUnsafe(int index)
+    public readonly ref T GetReferenceUnsafe(int index)
     {
         AssertNotNull(_items);
         Assert(unchecked((uint)index <= (uint)Capacity));
@@ -377,7 +373,7 @@ public partial struct ValueList<T>
         _items = newItems;
     }
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+    readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }

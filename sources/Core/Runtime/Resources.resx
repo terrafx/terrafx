@@ -123,6 +123,12 @@
   <data name="ArrayAllocationFailedMessage" xml:space="preserve">
     <value>The allocation of '{0}x{1}' bytes failed</value>
   </data>
+  <data name="DictionaryConcurrentReadOrWriteMessage" xml:space="preserve">
+    <value>The dictionary was concurrently read or written</value>
+  </data>
+  <data name="DictionaryExistingKey" xml:space="preserve">
+    <value>A value associated with the key '{0}' already exists in the dictionary.</value>
+  </data>
   <data name="EmptyQueueMessage" xml:space="preserve">
     <value>The queue is empty</value>
   </data>
