@@ -61,12 +61,12 @@ public static class ValueListTests
     [Test]
     public static void CtorReadOnlySpanTest()
     {
-        Assert.That(() => new ValueList<int>(new int[] { 1, 2, 3 }.AsSpan()),
+        Assert.That(() => new ValueList<int>([1, 2, 3]),
             Has.Property("Capacity").EqualTo(3)
                .And.Count.EqualTo(3)
         );
 
-        Assert.That(() => new ValueList<int>(Array.Empty<int>().AsSpan()),
+        Assert.That(() => new ValueList<int>([]),
             Has.Property("Capacity").EqualTo(0)
                .And.Count.EqualTo(0)
         );
@@ -81,22 +81,22 @@ public static class ValueListTests
     [Test]
     public static void CtorArrayBooleanTest()
     {
-        Assert.That(() => new ValueList<int>(new int[] { 1, 2, 3 }, takeOwnership: false),
+        Assert.That(() => new ValueList<int>([1, 2, 3], takeOwnership: false),
             Has.Property("Capacity").EqualTo(3)
                .And.Count.EqualTo(3)
         );
 
-        Assert.That(() => new ValueList<int>(new int[] { 1, 2, 3 }, takeOwnership: true),
+        Assert.That(() => new ValueList<int>([1, 2, 3], takeOwnership: true),
             Has.Property("Capacity").EqualTo(3)
                .And.Count.EqualTo(3)
         );
 
-        Assert.That(() => new ValueList<int>(Array.Empty<int>(), takeOwnership: false),
+        Assert.That(() => new ValueList<int>([], takeOwnership: false),
             Has.Property("Capacity").EqualTo(0)
                .And.Count.EqualTo(0)
         );
 
-        Assert.That(() => new ValueList<int>(Array.Empty<int>(), takeOwnership: true),
+        Assert.That(() => new ValueList<int>([], takeOwnership: true),
             Has.Property("Capacity").EqualTo(0)
                .And.Count.EqualTo(0)
         );
@@ -163,7 +163,7 @@ public static class ValueListTests
                   .And.Property("ParamName").EqualTo("index")
         );
 
-        valueList = new ValueList<int>();
+        valueList = [];
 
         Assert.That(() => valueList[0] = 4,
             Throws.InstanceOf<ArgumentOutOfRangeException>()
@@ -172,7 +172,7 @@ public static class ValueListTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueList{T}.Add(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueList.Add{T}(ref ValueList{T}, T)" /> method.</summary>
     [Test]
     public static void AddTest()
     {
@@ -200,9 +200,9 @@ public static class ValueListTests
             Is.EqualTo(5)
         );
 
-        valueList = new ValueList<int> {
+        valueList = [
             6
-        };
+        ];
 
         Assert.That(() => valueList,
             Has.Property("Capacity").EqualTo(1)
@@ -214,7 +214,7 @@ public static class ValueListTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueList{T}.Clear" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueList.Clear{T}(ref ValueList{T})" /> method.</summary>
     [Test]
     public static void ClearTest()
     {
@@ -226,7 +226,7 @@ public static class ValueListTests
                .And.Count.EqualTo(0)
         );
 
-        valueList = new ValueList<int>();
+        valueList = [];
         valueList.Clear();
 
         Assert.That(() => valueList,
@@ -235,7 +235,7 @@ public static class ValueListTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueList{T}.Contains(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueList.Contains{T}(ref readonly ValueList{T}, T)" /> method.</summary>
     [Test]
     public static void ContainsTest()
     {
@@ -249,14 +249,14 @@ public static class ValueListTests
             Is.False
         );
 
-        valueList = new ValueList<int>();
+        valueList = [];
 
         Assert.That(() => valueList.Contains(0),
             Is.False
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueList{T}.CopyTo(Span{T})" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueList.CopyTo{T}(ref readonly ValueList{T}, Span{T})" /> method.</summary>
     [Test]
     public static void CopyToTest()
     {
@@ -281,14 +281,14 @@ public static class ValueListTests
                   .And.Property("ParamName").EqualTo("destination")
         );
 
-        valueList = new ValueList<int>();
+        valueList = [];
 
         Assert.That(() => valueList.CopyTo(Array.Empty<int>()),
             Throws.Nothing
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueList{T}.EnsureCapacity(int)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueList.EnsureCapacity{T}(ref ValueList{T}, int)" /> method.</summary>
     [Test]
     public static void EnsureCapacityTest()
     {
@@ -329,7 +329,7 @@ public static class ValueListTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueList{T}.IndexOf(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueList.IndexOf{T}(ref readonly ValueList{T}, T)" /> method.</summary>
     [Test]
     public static void IndexOfTest()
     {
@@ -343,14 +343,14 @@ public static class ValueListTests
             Is.EqualTo(-1)
         );
 
-        valueList = new ValueList<int>();
+        valueList = [];
 
         Assert.That(() => valueList.IndexOf(0),
             Is.EqualTo(-1)
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueList{T}.Insert(int, T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueList.Insert{T}(ref ValueList{T}, int, T)" /> method.</summary>
     [Test]
     public static void InsertTest()
     {
@@ -372,7 +372,7 @@ public static class ValueListTests
                   .And.Property("ParamName").EqualTo("index")
         );
 
-        valueList = new ValueList<int>();
+        valueList = [];
         valueList.Insert(0, 1);
 
         Assert.That(() => valueList,
@@ -385,7 +385,7 @@ public static class ValueListTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueList{T}.Remove(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueList.Remove{T}(ref ValueList{T}, T)" /> method.</summary>
     [Test]
     public static void RemoveTest()
     {
@@ -412,14 +412,14 @@ public static class ValueListTests
             Is.False
         );
 
-        valueList = new ValueList<int>();
+        valueList = [];
 
         Assert.That(() => valueList.Remove(0),
             Is.False
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueList{T}.RemoveAt(int)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueList.RemoveAt{T}(ref ValueList{T}, int)" /> method.</summary>
     [Test]
     public static void RemoveAtTest()
     {
@@ -451,7 +451,7 @@ public static class ValueListTests
                   .And.Property("ParamName").EqualTo("index")
         );
 
-        valueList = new ValueList<int>();
+        valueList = [];
 
         Assert.That(() => valueList.RemoveAt(0),
             Throws.InstanceOf<ArgumentOutOfRangeException>()
@@ -460,7 +460,7 @@ public static class ValueListTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueList{T}.TrimExcess(float)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueList.TrimExcess{T}(ref ValueList{T}, float)" /> method.</summary>
     [Test]
     public static void TrimExcessTest()
     {
@@ -490,7 +490,7 @@ public static class ValueListTests
                .And.Count.EqualTo(5)
         );
 
-        valueList = new ValueList<int>();
+        valueList = [];
         valueList.TrimExcess();
 
         Assert.That(() => valueList,

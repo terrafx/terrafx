@@ -37,7 +37,7 @@ public sealed unsafe class UIService : DisposableObject
     {
         _classAtom = CreateClassAtom();
 
-        _dispatchers = new Dictionary<Thread, UIDispatcher>();
+        _dispatchers = [];
         _dispatchersLock = new ValueReaderWriterLock();
 
         static ushort CreateClassAtom()

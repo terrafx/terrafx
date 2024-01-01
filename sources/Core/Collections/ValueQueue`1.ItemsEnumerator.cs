@@ -3,6 +3,8 @@
 using System;
 using System.Collections;
 
+#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
+
 namespace TerraFX.Collections;
 
 public partial struct ValueQueue<T>

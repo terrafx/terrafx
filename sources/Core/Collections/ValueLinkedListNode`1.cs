@@ -1,6 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-// This file includes code based on the ICollectionDebugView<T> class from https://github.com/dotnet/runtime/
+// This file includes code based on the LinkedList<T>.Node class from https://github.com/dotnet/runtime/
 // The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
 namespace TerraFX.Collections;
@@ -58,11 +58,4 @@ public sealed class ValueLinkedListNode<T>(T value)
 
     /// <summary>Gets a reference to the value held by the node.</summary>
     public ref T ValueRef => ref _value;
-
-    internal void Invalidate()
-    {
-        _next = null;
-        _previous = null;
-        _isFirstNode = false;
-    }
 }

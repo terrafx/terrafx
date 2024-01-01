@@ -52,7 +52,7 @@ public sealed unsafe class GraphicsTexture : GraphicsResource
         _bytesPerLayer = bytesPerLayer;
         _bytesPerRow = bytesPerRow;
 
-        _textureViews = new ValueList<GraphicsTextureView>();
+        _textureViews = [];
         _textureViewsMutex = new ValueMutex();
 
         UnmanagedArray<D3D12_PLACED_SUBRESOURCE_FOOTPRINT> GetD3D12PlacedSubresourceFootprints()

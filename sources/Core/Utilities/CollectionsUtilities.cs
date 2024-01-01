@@ -31,7 +31,7 @@ public static unsafe class CollectionsUtilities
     /// <summary>Disposes the items in a list.</summary>
     /// <typeparam name="TDisposable">The type of the items in the list.</typeparam>
     /// <param name="list">The list whose items are to be disposed.</param>
-    public static void Dispose<TDisposable>(ref this ValueList<TDisposable> list)
+    public static void Dispose<TDisposable>(this ref ValueList<TDisposable> list)
         where TDisposable : IDisposable
     {
         for (var index = list.Count - 1; index >= 0; index--)
@@ -45,7 +45,7 @@ public static unsafe class CollectionsUtilities
     /// <summary>Disposes the items in a pool.</summary>
     /// <typeparam name="TDisposable">The type of the items in the pool.</typeparam>
     /// <param name="pool">The pool whose items are to be disposed.</param>
-    public static void Dispose<TDisposable>(ref this ValuePool<TDisposable> pool)
+    public static void Dispose<TDisposable>(this ref ValuePool<TDisposable> pool)
         where TDisposable : IDisposable
     {
         for (var index = pool.Count - 1; index >= 0; index--)
@@ -59,7 +59,7 @@ public static unsafe class CollectionsUtilities
     /// <summary>Disposes the items in a list.</summary>
     /// <typeparam name="TDisposable">The type of the items in the list.</typeparam>
     /// <param name="list">The list whose items are to be disposed.</param>
-    public static void Dispose<TDisposable>(ref this UnmanagedValueList<TDisposable> list)
+    public static void Dispose<TDisposable>(this ref UnmanagedValueList<TDisposable> list)
         where TDisposable : unmanaged, IDisposable
     {
         for (var index = list.Count - 1; index >= 0; index--)
@@ -73,7 +73,7 @@ public static unsafe class CollectionsUtilities
     /// <summary>Disposes the items in a pool.</summary>
     /// <typeparam name="TDisposable">The type of the items in the pool.</typeparam>
     /// <param name="pool">The pool whose items are to be disposed.</param>
-    public static void Dispose<TDisposable>(ref this UnmanagedValuePool<TDisposable> pool)
+    public static void Dispose<TDisposable>(this ref UnmanagedValuePool<TDisposable> pool)
         where TDisposable : unmanaged, IDisposable
     {
         for (var index = pool.Count - 1; index >= 0; index--)

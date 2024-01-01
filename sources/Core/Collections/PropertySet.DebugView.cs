@@ -27,7 +27,7 @@ public partial class PropertySet
             get
             {
                 var items = new KeyValuePair<string, object>[_propertySet.Count];
-                _propertySet._items.CopyTo(items, 0);
+                _propertySet._items.CopyTo(items);
                 return items;
             }
         }

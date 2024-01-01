@@ -73,7 +73,7 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
         _mutex = new ValueMutex();
 
         _emptyMemoryAllocator = null;
-        _memoryAllocators = new ValueList<GraphicsMemoryAllocator>();
+        _memoryAllocators = [];
 
         for (var index = 0; index < MinimumMemoryAllocatorCount; index++)
         {

@@ -39,7 +39,7 @@ public sealed unsafe class GraphicsAdapter : GraphicsServiceObject
 
         Name = _description;
 
-        _devices = new ValueList<GraphicsDevice>();
+        _devices = [];
         _devicesMutex = new ValueMutex();
     }
 

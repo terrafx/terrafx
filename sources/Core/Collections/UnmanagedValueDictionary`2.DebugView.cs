@@ -4,6 +4,7 @@
 // The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.MathUtilities;
@@ -21,18 +22,18 @@ public unsafe partial struct UnmanagedValueDictionary<TKey, TValue>
         public nuint Count => (uint)_dictionary._count;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        public (TKey Key, TValue Value)[] Items
+        public KeyValuePair<TKey, TValue>[] Items
         {
             get
             {
                 ref readonly var dictionary = ref _dictionary;
 
                 var count = Min((uint)dictionary._count, MaxArrayLength);
-                var items = GC.AllocateUninitializedArray<(TKey Key, TValue Value)>((int)count);
+                var items = GC.AllocateUninitializedArray<KeyValuePair<TKey, TValue>>((int)count);
 
-                fixed ((TKey Key, TValue Value)* pItems = items)
+                fixed (KeyValuePair<TKey, TValue>* pItems = items)
                 {
-                    var span = new UnmanagedSpan<(TKey Key, TValue Value)>(pItems, count);
+                    var span = new UnmanagedSpan<KeyValuePair<TKey, TValue>>(pItems, count);
                     dictionary.CopyTo(span);
                 }
                 return items;

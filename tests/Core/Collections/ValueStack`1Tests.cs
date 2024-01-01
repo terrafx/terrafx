@@ -63,12 +63,12 @@ public static class ValueStackTests
     [Test]
     public static void CtorReadOnlySpanTest()
     {
-        Assert.That(() => new ValueStack<int>(new int[] { 1, 2, 3 }.AsSpan()),
+        Assert.That(() => new ValueStack<int>([1, 2, 3]),
             Has.Property("Capacity").EqualTo(3)
                .And.Count.EqualTo(3)
         );
 
-        Assert.That(() => new ValueStack<int>(Array.Empty<int>().AsSpan()),
+        Assert.That(() => new ValueStack<int>([]),
             Has.Property("Capacity").EqualTo(0)
                .And.Count.EqualTo(0)
         );
@@ -83,22 +83,22 @@ public static class ValueStackTests
     [Test]
     public static void CtorArrayBooleanTest()
     {
-        Assert.That(() => new ValueStack<int>(new int[] { 1, 2, 3 }, takeOwnership: false),
+        Assert.That(() => new ValueStack<int>([1, 2, 3], takeOwnership: false),
             Has.Property("Capacity").EqualTo(3)
                .And.Count.EqualTo(3)
         );
 
-        Assert.That(() => new ValueStack<int>(new int[] { 1, 2, 3 }, takeOwnership: true),
+        Assert.That(() => new ValueStack<int>([1, 2, 3], takeOwnership: true),
             Has.Property("Capacity").EqualTo(3)
                .And.Count.EqualTo(3)
         );
 
-        Assert.That(() => new ValueStack<int>(Array.Empty<int>(), takeOwnership: false),
+        Assert.That(() => new ValueStack<int>([], takeOwnership: false),
             Has.Property("Capacity").EqualTo(0)
                .And.Count.EqualTo(0)
         );
 
-        Assert.That(() => new ValueStack<int>(Array.Empty<int>(), takeOwnership: true),
+        Assert.That(() => new ValueStack<int>([], takeOwnership: true),
             Has.Property("Capacity").EqualTo(0)
                .And.Count.EqualTo(0)
         );
@@ -114,7 +114,7 @@ public static class ValueStackTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueStack{T}.Clear" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueStack.Clear{T}(ref ValueStack{T})" /> method.</summary>
     [Test]
     public static void ClearTest()
     {
@@ -161,7 +161,7 @@ public static class ValueStackTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueStack{T}.Contains(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueStack.Contains{T}(ref readonly ValueStack{T}, T)" /> method.</summary>
     [Test]
     public static void ContainsTest()
     {
@@ -209,7 +209,7 @@ public static class ValueStackTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueStack{T}.CopyTo(Span{T})" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueStack.CopyTo{T}(ref readonly ValueStack{T}, Span{T})" /> method.</summary>
     [Test]
     public static void CopyToTest()
     {
@@ -260,7 +260,7 @@ public static class ValueStackTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueStack{T}.EnsureCapacity(int)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueStack.EnsureCapacity{T}(ref ValueStack{T}, int)" /> method.</summary>
     [Test]
     public static void EnsureCapacityTest()
     {
@@ -301,7 +301,7 @@ public static class ValueStackTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueStack{T}.Peek()" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueStack.Peek{T}(ref readonly ValueStack{T})" /> method.</summary>
     [Test]
     public static void PeekTest()
     {
@@ -344,7 +344,7 @@ public static class ValueStackTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueStack{T}.Peek(int)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueStack.Peek{T}(ref readonly ValueStack{T}, int)" /> method.</summary>
     [Test]
     public static void PeekInt32Test()
     {
@@ -401,7 +401,7 @@ public static class ValueStackTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueStack{T}.Pop()" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueStack.Pop{T}(ref ValueStack{T})" /> method.</summary>
     [Test]
     public static void PopTest()
     {
@@ -460,7 +460,7 @@ public static class ValueStackTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueStack{T}.Push(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueStack.Push{T}(ref ValueStack{T}, T)" /> method.</summary>
     [Test]
     public static void PushTest()
     {
@@ -500,7 +500,7 @@ public static class ValueStackTests
 
 
 
-    /// <summary>Provides validation of the <see cref="ValueStack{T}.TrimExcess(float)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueStack.TrimExcess{T}(ref ValueStack{T}, float)" /> method.</summary>
     [Test]
     public static void TrimExcessTest()
     {
@@ -553,7 +553,7 @@ public static class ValueStackTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueStack{T}.TryPeek(out T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueStack.TryPeek{T}(ref readonly ValueStack{T}, out T)" /> method.</summary>
     [Test]
     public static void TryPeekTest()
     {
@@ -591,7 +591,7 @@ public static class ValueStackTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueStack{T}.TryPeek(int, out T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueStack.TryPeek{T}(ref readonly ValueStack{T}, int, out T)" /> method.</summary>
     [Test]
     public static void TryPeekInt32Test()
     {
@@ -639,7 +639,7 @@ public static class ValueStackTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueStack{T}.TryPop(out T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueStack.TryPop{T}(ref ValueStack{T}, out T)" /> method.</summary>
     [Test]
     public static void TryPopTest()
     {

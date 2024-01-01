@@ -71,22 +71,22 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
         var d3d12Device = CreateD3D12Device(out _d3d12DeviceVersion);
         _d3d12Device.Attach(d3d12Device);
 
-        _buffers = new ValueList<GraphicsBuffer>();
+        _buffers = [];
         _buffersMutex = new ValueMutex();
 
-        _fences = new ValueList<GraphicsFence>();
+        _fences = [];
         _fencesMutex = new ValueMutex();
 
-        _pipelineSignatures = new ValueList<GraphicsPipelineSignature>();
+        _pipelineSignatures = [];
         _pipelineSignaturesMutex = new ValueMutex();
 
-        _renderPasses = new ValueList<GraphicsRenderPass>();
+        _renderPasses = [];
         _renderPassesMutex = new ValueMutex();
 
-        _shaders = new ValueList<GraphicsShader>();
+        _shaders = [];
         _shadersMutex = new ValueMutex();
 
-        _textures = new ValueList<GraphicsTexture>();
+        _textures = [];
         _texturesMutex = new ValueMutex();
 
         _computeQueue = new GraphicsComputeCommandQueue(this);
@@ -378,7 +378,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
 
         var createOptions = new GraphicsPipelineSignatureCreateOptions {
             Inputs = inputs,
-            Resources = UnmanagedArray.Empty<GraphicsPipelineResource>(),
+            Resources = [],
             TakeInputsOwnership = true,
             TakeResourcesOwnership = true,
         };

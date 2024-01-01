@@ -9,10 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.MathUtilities;
-using static TerraFX.Utilities.UnsafeUtilities;
 
 #pragma warning disable CA1711 // Identifiers should not have incorrect suffix
 
@@ -27,8 +24,8 @@ public partial struct ValueStack<T>
     : IEnumerable<T>,
       IEquatable<ValueStack<T>>
 {
-    private T[] _items;
-    private int _count;
+    internal T[] _items;
+    internal int _count;
 
     /// <summary>Initializes a new instance of the <see cref="ValueStack{T}" /> struct.</summary>
     public ValueStack()
@@ -125,54 +122,6 @@ public partial struct ValueStack<T>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
     public static bool operator !=(ValueStack<T> left, ValueStack<T> right) => !(left == right);
 
-    /// <summary>Removes all items from the stack.</summary>
-    public void Clear()
-    {
-        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>() && (_items is not null))
-        {
-            Array.Clear(_items, 0, Count);
-        }
-
-        _count = 0;
-    }
-
-    /// <summary>Checks whether the stack contains a specified item.</summary>
-    /// <param name="item">The item to check for in the stack.</param>
-    /// <returns><c>true</c> if <paramref name="item" /> was found in the stack; otherwise, <c>false</c>.</returns>
-    public readonly bool Contains(T item)
-    {
-        var items = _items;
-
-        if (items is not null)
-        {
-            var count = Count;
-            return (count != 0) && Array.LastIndexOf(items, item, count - 1) >= 0;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    /// <summary>Copies the items of the stack to a span.</summary>
-    /// <param name="destination">The span to which the items will be copied.</param>
-    /// <exception cref="ArgumentException"><see cref="Count" /> is greater than the length of <paramref name="destination" />.</exception>
-    public readonly void CopyTo(Span<T> destination) => _items.AsSpan(0, Count).CopyTo(destination);
-
-    /// <summary>Ensures the capacity of the stack is at least the specified value.</summary>
-    /// <param name="capacity">The minimum capacity the stack should support.</param>
-    /// <remarks>This method does not throw if <paramref name="capacity" /> is negative and instead does nothing.</remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void EnsureCapacity(int capacity)
-    {
-        var currentCapacity = Capacity;
-
-        if (capacity > currentCapacity)
-        {
-            Resize(capacity, currentCapacity);
-        }
-    }
-
     /// <inheritdoc />
     public override readonly bool Equals([NotNullWhen(true)] object? obj) => (obj is ValueStack<T> other) && Equals(other);
 
@@ -185,160 +134,6 @@ public partial struct ValueStack<T>
 
     /// <inheritdoc />
     public override readonly int GetHashCode() => HashCode.Combine(_items, _count);
-
-    /// <summary>Gets a reference to the item at the specified index of the list.</summary>
-    /// <param name="index">The index of the item to get a pointer to.</param>
-    /// <returns>A reference to the item that exists at <paramref name="index" /> in the list.</returns>
-    /// <remarks>
-    ///     <para>This method is because other operations may invalidate the backing array.</para>
-    ///     <para>This method is because it does not validate that <paramref name="index" /> is less than <see cref="Capacity" />.</para>
-    /// </remarks>
-    public readonly ref T GetReferenceUnsafe(int index)
-    {
-        var count = Count;
-        return ref (((uint)index < (uint)count) ? ref _items.GetReferenceUnsafe(count - (index + 1)) : ref NullRef<T>());
-    }
-
-    /// <summary>Peeks at the item at the top of the stack.</summary>
-    /// <returns>The item at the top of the stack.</returns>
-    /// <exception cref="InvalidOperationException">The stack is empty.</exception>
-    public readonly T Peek()
-    {
-        if (!TryPeek(out var item))
-        {
-            ThrowForEmptyStack();
-        }
-        return item;
-    }
-
-    /// <summary>Peeks at item at the specified index of the stack.</summary>
-    /// <param name="index">The index from the top of the stack of the item at which to peek.</param>
-    /// <returns>The item at the specified index of the stack.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is <c>negative</c> or greater than or equal to <see cref="Count" />.</exception>
-    public readonly T Peek(int index)
-    {
-        if (!TryPeek(index, out var item))
-        {
-            ThrowIfNotInBounds(index, Count);
-        }
-        return item!;
-    }
-
-    /// <summary>Pops the item from the top of the stack.</summary>
-    /// <returns>The item at the top of the stack.</returns>
-    /// <exception cref="InvalidOperationException">The stack is empty.</exception>
-    public T Pop()
-    {
-        if (!TryPop(out var item))
-        {
-            ThrowForEmptyStack();
-        }
-        return item;
-    }
-
-    /// <summary>Pushes an item to the top of the stack.</summary>
-    /// <param name="item">The item to push to the top of the stack.</param>
-    public void Push(T item)
-    {
-        var count = Count;
-        var newCount = count + 1;
-
-        EnsureCapacity(count + 1);
-
-        _count = newCount;
-        _items[count] = item;
-    }
-
-    /// <summary>Trims any excess capacity, up to a given threshold, from the stack.</summary>
-    /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any excess will not be trimmed.</param>
-    /// <remarks>This methods clamps <paramref name="threshold" /> to between <c>zero</c> and <c>one</c>, inclusive.</remarks>
-    public void TrimExcess(float threshold = 1.0f)
-    {
-        var count = Count;
-        var minCount = (int)(Capacity * Clamp(threshold, 0.0f, 1.0f));
-
-        if (count < minCount)
-        {
-            var newItems = GC.AllocateUninitializedArray<T>(count);
-            CopyTo(newItems);
-            _items = newItems;
-        }
-    }
-
-    /// <summary>Tries to peek the item at the top of the stack.</summary>
-    /// <param name="item">When <c>true</c> is returned, this contains the item at the top of the stack.</param>
-    /// <returns><c>true</c> if the stack was not empty; otherwise, <c>false</c>.</returns>
-    public readonly bool TryPeek([MaybeNullWhen(false)] out T item)
-    {
-        var count = Count;
-
-        if (count != 0)
-        {
-            item = _items[count - 1];
-            return true;
-        }
-        else
-        {
-            item = default!;
-            return false;
-        }
-    }
-
-    /// <summary>Tries to peek the item at the top of the stack.</summary>
-    /// <param name="index">The index from the top of the stack of the item at which to peek.</param>
-    /// <param name="item">When <c>true</c> is returned, this contains the item at the top of the stack.</param>
-    /// <returns><c>true</c> if the stack was not empty and <paramref name="index" /> is less than <see cref="Count" />; otherwise, <c>false</c>.</returns>
-    public readonly bool TryPeek(int index, [MaybeNullWhen(false)] out T item)
-    {
-        var count = Count;
-
-        if (unchecked((uint)index < (uint)count))
-        {
-            item = _items[count - (index + 1)];
-            return true;
-        }
-        else
-        {
-            item = default!;
-            return false;
-        }
-    }
-
-    /// <summary>Tries to pop an item from the top of the stack.</summary>
-    /// <param name="item">When <c>true</c> is returned, this contains the item from the top of the stack.</param>
-    /// <returns><c>true</c> if the stack was not empty; otherwise, <c>false</c>.</returns>
-    public bool TryPop([MaybeNullWhen(false)] out T item)
-    {
-        var count = Count;
-        var newCount = count - 1;
-
-        if (count == 0)
-        {
-            item = default!;
-            return false;
-        }
-
-        _count = newCount;
-
-        var items = _items;
-        item = _items[newCount];
-
-        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
-        {
-            items[newCount] = default!;
-        }
-
-        return true;
-    }
-
-    private void Resize(int capacity, int currentCapacity)
-    {
-        var newCapacity = Max(capacity, currentCapacity * 2);
-        var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
-
-        CopyTo(newItems);
-        _items = newItems;
-    }
 
     readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

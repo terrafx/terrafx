@@ -8,7 +8,7 @@ namespace TerraFX.Utilities;
 /// <summary>Defines extension methods for types in the graphics namespace.</summary>
 public static class GraphicsUtilities
 {
-    private static readonly uint[] s_sizeMap = new uint[(int)GraphicsFormat.COUNT__] {
+    private static readonly uint[] s_sizeMap = [
         0,  // Unknown
 
         16, // R32G32B32A32_SFLOAT
@@ -111,7 +111,7 @@ public static class GraphicsUtilities
         4,  // YUY2
 
         2,  // B4G4R4A4_UNORM
-    };
+    ];
 
     /// <summary>Gets the size, in bytes, of a graphics format.</summary>
     /// <param name="format">The format for which to get its size.</param>

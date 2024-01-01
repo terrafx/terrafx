@@ -16,7 +16,7 @@ namespace TerraFX.Utilities;
 
 internal static unsafe partial class D3D12Utilities
 {
-    private static readonly DXGI_FORMAT[] s_dxgiFormatMap = new DXGI_FORMAT[(int)GraphicsFormat.COUNT__] {
+    private static readonly DXGI_FORMAT[] s_dxgiFormatMap = [
         DXGI_FORMAT_UNKNOWN,                    // Unknown
 
         DXGI_FORMAT_R32G32B32A32_FLOAT,         // R32G32B32A32_SFLOAT
@@ -119,15 +119,15 @@ internal static unsafe partial class D3D12Utilities
         DXGI_FORMAT_YUY2,                       // YUY2
 
         DXGI_FORMAT_B4G4R4A4_UNORM,             // B4G4R4A4_UNORM
-    };
+    ];
 
-    private static readonly D3D12_COMMAND_LIST_TYPE[] s_d3d12CommandListTypeMap = new D3D12_COMMAND_LIST_TYPE[(int)GraphicsContextKind.COUNT__] {
+    private static readonly D3D12_COMMAND_LIST_TYPE[] s_d3d12CommandListTypeMap = [
         (D3D12_COMMAND_LIST_TYPE)(-1),      // Unknown
 
         D3D12_COMMAND_LIST_TYPE_DIRECT,     // Render
         D3D12_COMMAND_LIST_TYPE_COPY,       // Copy
         D3D12_COMMAND_LIST_TYPE_COMPUTE,    // Compute
-    };      
+    ];      
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DXGI_FORMAT AsDxgiFormat(this GraphicsFormat format) => s_dxgiFormatMap[(uint)format];

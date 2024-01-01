@@ -28,7 +28,7 @@ public sealed unsafe class UIDispatcher : UIServiceObject
         ThrowIfNull(parentThread);
         _parentThread = parentThread;
 
-        _windows = new Dictionary<HWND, UIWindow>();
+        _windows = [];
         _windowsLock = new ValueReaderWriterLock();
     }
 

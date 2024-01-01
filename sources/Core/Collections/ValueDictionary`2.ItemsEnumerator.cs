@@ -5,19 +5,22 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static TerraFX.Utilities.UnsafeUtilities;
+
+#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
 
 namespace TerraFX.Collections;
 
 public partial struct ValueDictionary<TKey, TValue>
 {
     /// <summary>An enumerator which can iterate through the items in a dictionary.</summary>
-    public struct ItemsEnumerator : IRefEnumerator<(TKey Key, TValue Value)>
+    public struct ItemsEnumerator : IRefEnumerator<KeyValuePair<TKey, TValue>>
     {
         private readonly ValueDictionary<TKey, TValue> _dictionary;
         private int _index;
-        private (TKey Key, TValue Value) _current;
+        private KeyValuePair<TKey, TValue> _current;
 
         internal ItemsEnumerator(ValueDictionary<TKey, TValue> dictionary)
         {
@@ -26,10 +29,10 @@ public partial struct ValueDictionary<TKey, TValue>
         }
 
         /// <inheritdoc />
-        public readonly (TKey Key, TValue Value) Current => CurrentRef;
+        public readonly KeyValuePair<TKey, TValue> Current => CurrentRef;
 
         /// <inheritdoc />
-        public readonly ref readonly (TKey Key, TValue Value) CurrentRef => ref Unsafe.AsRef(in _current);
+        public readonly ref readonly KeyValuePair<TKey, TValue> CurrentRef => ref Unsafe.AsRef(in _current);
 
         /// <inheritdoc />
         public bool MoveNext()
@@ -54,7 +57,7 @@ public partial struct ValueDictionary<TKey, TValue>
 
                     if (entry.Next >= -1)
                     {
-                        _current = (entry.Key, entry.Value);
+                        _current = new KeyValuePair<TKey, TValue>(entry.Key, entry.Value);
                         break;
                     }
 

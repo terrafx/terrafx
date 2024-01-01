@@ -29,7 +29,7 @@ public partial struct UnmanagedValuePool<T>
         /// <inheritdoc />
         public void Reset() => _enumerator.Reset();
 
-        object? IEnumerator.Current => Current;
+        readonly object? IEnumerator.Current => Current;
 
         readonly void IDisposable.Dispose() { }
     }

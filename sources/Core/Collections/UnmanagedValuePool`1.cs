@@ -5,8 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using TerraFX.Threading;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections;
 
@@ -16,12 +14,13 @@ namespace TerraFX.Collections;
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
 [DebuggerTypeProxy(typeof(UnmanagedValuePool<>.DebugView))]
 public unsafe partial struct UnmanagedValuePool<T>
-    : IEnumerable<T>,
+    : IDisposable,
+      IEnumerable<T>,
       IEquatable<UnmanagedValuePool<T>>
     where T : unmanaged
 {
-    private UnmanagedValueQueue<T> _availableItems;
-    private UnmanagedValueList<T> _items;
+    internal UnmanagedValueQueue<T> _availableItems;
+    internal UnmanagedValueList<T> _items;
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValuePool{T}" /> struct.</summary>
     public UnmanagedValuePool()
@@ -66,13 +65,12 @@ public unsafe partial struct UnmanagedValuePool<T>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
     public static bool operator !=(UnmanagedValuePool<T> left, UnmanagedValuePool<T> right) => !(left == right);
 
-    /// <summary>Removes all items from the pool.</summary>
-    public void Clear()
+    /// <inheritdoc />
+    public readonly void Dispose()
     {
-        _items.Clear();
-        _availableItems.Clear();
+        _availableItems.Dispose();
+        _items.Dispose();
     }
-
 
     /// <inheritdoc />
     public override readonly bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedValuePool<T> other) && Equals(other);
@@ -86,75 +84,6 @@ public unsafe partial struct UnmanagedValuePool<T>
 
     /// <inheritdoc />
     public override readonly int GetHashCode() => HashCode.Combine(_availableItems, _items);
-
-    /// <summary>Removes the first occurrence of an item from the pool.</summary>
-    /// <param name="item">The item to remove from the pool.</param>
-    /// <returns><c>true</c> if <paramref name="item" /> was removed from the pool; otherwise, <c>false</c>.</returns>
-    public bool Remove(T item)
-    {
-        var result = _items.Remove(item);
-
-        if (result)
-        {
-            _ = _availableItems.Remove(item);
-        }
-
-        return result;
-    }
-
-    /// <summary>Removes the first occurrence of an item from the pool.</summary>
-    /// <param name="item">The item to remove from the pool.</param>
-    /// <param name="mutex">The mutex to use when removing an item from the pool.</param>
-    /// <returns><c>true</c> if <paramref name="item" /> was removed from the pool; otherwise, <c>false</c>.</returns>
-    public bool Remove(T item, ValueMutex mutex)
-    {
-        using var disposableMutex = new DisposableMutex(mutex, isExternallySynchronized: false);
-        return Remove(item);
-    }
-
-    /// <summary>Rents an item from the pool, creating a new item if none are available.</summary>
-    /// <param name="createItem">A pointer to the function to invoke if a new item needs to be created.</param>
-    /// <returns>A rented item.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="createItem" /> is <c>null</c>.</exception>
-    public T Rent(delegate*<T> createItem)
-    {
-        ThrowIfNull(createItem);
-
-        if (!_availableItems.TryDequeue(out var item))
-        {
-            item = createItem();
-            _items.Add(item);
-        }
-
-        return item;
-    }
-
-    /// <summary>Rents an item from the pool, creating a new item if none are available.</summary>
-    /// <param name="createItem">A pointer to the function to invoke if a new item needs to be created.</param>
-    /// <param name="mutex">The mutex to use when renting an item from the pool.</param>
-    /// <returns>A rented item.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="createItem" /> is <c>null</c>.</exception>
-    public T Rent(delegate*<T> createItem, ValueMutex mutex)
-    {
-        using var disposableMutex = new DisposableMutex(mutex, isExternallySynchronized: false);
-        return Rent(createItem);
-    }
-
-    /// <summary>Returns an item to the pool.</summary>
-    /// <param name="item">The item that should be returned to the pool.</param>
-    public void Return(T item) => _availableItems.Enqueue(item);
-
-    /// <summary>Returns an item to the pool.</summary>
-    /// <param name="item">The item that should be returned to the pool.</param>
-    /// <param name="mutex">The mutex to use when renting an item from the pool.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="item" /> is <c>null</c>.</exception>
-    public void Return(T item, ValueMutex mutex)
-    {
-        using var disposableMutex = new DisposableMutex(mutex, isExternallySynchronized: false);
-        Return(item);
-    }
-
-    internal readonly ref T GetReferenceUnsafe(nuint index) => ref _items.GetReferenceUnsafe(index);
 
     readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
