@@ -31,7 +31,7 @@ public partial class GraphicsMemoryAllocator
             MemoryAllocatorInfo.OnFree = createOptions.OnFree;
 
             _memoryRegions = new ValueLinkedList<GraphicsMemoryRegion>();
-            _freeMemoryRegionsByByteLength = new ValueList<ValueLinkedListNode<GraphicsMemoryRegion>>();
+            _freeMemoryRegionsByByteLength = [];
 
             ClearUnsafe();
         }

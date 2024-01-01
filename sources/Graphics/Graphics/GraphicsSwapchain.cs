@@ -49,7 +49,7 @@ public sealed unsafe class GraphicsSwapchain : GraphicsRenderPassObject
 
         _fence = Device.CreateFence(isSignaled: false);
         _renderTargetFormat = createOptions.RenderTargetFormat;
-        _renderTargets = Array.Empty<GraphicsRenderTarget>();
+        _renderTargets = [];
         _surface = createOptions.Surface;
 
         var dxgiSwapchain = CreateDxgiSwapchain(out var renderTargetCount, out _dxgiSwapchainVersion);

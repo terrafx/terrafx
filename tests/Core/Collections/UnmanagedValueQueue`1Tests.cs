@@ -167,7 +167,7 @@ public static class UnmanagedValueQueueTests
             );
         }
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(UnmanagedArray.Empty<int>(), takeOwnership: false))
+        using (var valueQueue = new UnmanagedValueQueue<int>([], takeOwnership: false))
         {
             Assert.That(() => valueQueue,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -175,7 +175,7 @@ public static class UnmanagedValueQueueTests
             );
         }
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(UnmanagedArray.Empty<int>(), takeOwnership: true))
+        using (var valueQueue = new UnmanagedValueQueue<int>([], takeOwnership: true))
         {
             Assert.That(() => valueQueue,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -210,7 +210,7 @@ public static class UnmanagedValueQueueTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue{T}.Clear" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue.Clear{T}(ref UnmanagedValueQueue{T})" /> method.</summary>
     [Test]
     public static void ClearTest()
     {
@@ -220,7 +220,7 @@ public static class UnmanagedValueQueueTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: false))
+        var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: false);
         {
             valueQueue.Clear();
 
@@ -229,8 +229,9 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)0)
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: false))
+        valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: false);
         {
             _ = valueQueue.Dequeue();
 
@@ -242,8 +243,9 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)0)
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true))
+        valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true);
         {
             _ = valueQueue.Dequeue();
 
@@ -257,8 +259,9 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)0)
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>())
+        valueQueue = new UnmanagedValueQueue<int>();
         {
             valueQueue.Clear();
 
@@ -267,9 +270,10 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)0)
             );
         }
+        valueQueue.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue{T}.Contains(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue.Contains{T}(ref readonly UnmanagedValueQueue{T}, T)" /> method.</summary>
     [Test]
     public static void ContainsTest()
     {
@@ -279,7 +283,7 @@ public static class UnmanagedValueQueueTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true))
+        var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true);
         {
             Assert.That(() => valueQueue.Contains(1),
                 Is.True
@@ -316,16 +320,18 @@ public static class UnmanagedValueQueueTests
                 Is.True
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>())
+        valueQueue = new UnmanagedValueQueue<int>();
         {
             Assert.That(() => valueQueue.Contains(0),
                 Is.False
             );
         }
+        valueQueue.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue{T}.CopyTo(UnmanagedSpan{T})" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue.CopyTo{T}(ref readonly UnmanagedValueQueue{T}, UnmanagedSpan{T})" /> method.</summary>
     [Test]
     public static void CopyToUnmanagedSpanTest()
     {
@@ -335,7 +341,7 @@ public static class UnmanagedValueQueueTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true))
+        var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true);
         {
             using (var destination = new UnmanagedArray<int>(3))
             {
@@ -436,16 +442,18 @@ public static class UnmanagedValueQueueTests
                       .And.Property("ParamName").EqualTo("count")
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>())
+        valueQueue = new UnmanagedValueQueue<int>();
         {
             Assert.That(() => valueQueue.CopyTo(UnmanagedArray.Empty<int>()),
                 Throws.Nothing
             );
         }
+        valueQueue.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue{T}.Dequeue()" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue.Dequeue{T}(ref UnmanagedValueQueue{T})" /> method.</summary>
     [Test]
     public static void DequeueTest()
     {
@@ -455,7 +463,7 @@ public static class UnmanagedValueQueueTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: false))
+        var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: false);
         {
             Assert.That(() => valueQueue.Dequeue(),
                 Is.EqualTo(1)
@@ -473,8 +481,9 @@ public static class UnmanagedValueQueueTests
                 Throws.InvalidOperationException
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true))
+        valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true);
         {
             _ = valueQueue.Dequeue();
             valueQueue.Enqueue(4);
@@ -504,16 +513,18 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)0)
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>())
+        valueQueue = new UnmanagedValueQueue<int>();
         {
             Assert.That(() => valueQueue.Dequeue(),
                 Throws.InvalidOperationException
             );
         }
+        valueQueue.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue{T}.Enqueue(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue.Enqueue{T}(ref UnmanagedValueQueue{T}, T)" /> method.</summary>
     [Test]
     public static void EnqueueTest()
     {
@@ -523,7 +534,7 @@ public static class UnmanagedValueQueueTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: false))
+        var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: false);
         {
             valueQueue.Enqueue(4);
 
@@ -544,8 +555,9 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)5)
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true))
+        valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true);
         {
             _ = valueQueue.Dequeue();
             valueQueue.Enqueue(5);
@@ -555,8 +567,9 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)3)
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>())
+        valueQueue = new UnmanagedValueQueue<int>();
         {
             valueQueue.Enqueue(6);
 
@@ -565,9 +578,10 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)1)
             );
         }
+        valueQueue.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue{T}.EnsureCapacity(nuint)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue.EnsureCapacity{T}(ref UnmanagedValueQueue{T}, nuint)" /> method.</summary>
     [Test]
     public static void EnsureCapacityTest()
     {
@@ -577,37 +591,40 @@ public static class UnmanagedValueQueueTests
         array[1] = 2;
         array[2] = 3;
 
-        using var valueQueue = new UnmanagedValueQueue<int>(array);
-        valueQueue.EnsureCapacity(0);
+        var valueQueue = new UnmanagedValueQueue<int>(array);
+        {
+            valueQueue.EnsureCapacity(0);
 
-        Assert.That(() => valueQueue,
-            Has.Property("Capacity").EqualTo((nuint)3)
-               .And.Count.EqualTo((nuint)3)
-        );
+            Assert.That(() => valueQueue,
+                Has.Property("Capacity").EqualTo((nuint)3)
+                   .And.Count.EqualTo((nuint)3)
+            );
 
-        valueQueue.EnsureCapacity(3);
+            valueQueue.EnsureCapacity(3);
 
-        Assert.That(() => valueQueue,
-            Has.Property("Capacity").EqualTo((nuint)3)
-               .And.Count.EqualTo((nuint)3)
-        );
+            Assert.That(() => valueQueue,
+                Has.Property("Capacity").EqualTo((nuint)3)
+                   .And.Count.EqualTo((nuint)3)
+            );
 
-        valueQueue.EnsureCapacity(4);
+            valueQueue.EnsureCapacity(4);
 
-        Assert.That(() => valueQueue,
-            Has.Property("Capacity").EqualTo((nuint)6)
-               .And.Count.EqualTo((nuint)3)
-        );
+            Assert.That(() => valueQueue,
+                Has.Property("Capacity").EqualTo((nuint)6)
+                   .And.Count.EqualTo((nuint)3)
+            );
 
-        valueQueue.EnsureCapacity(16);
+            valueQueue.EnsureCapacity(16);
 
-        Assert.That(() => valueQueue,
-            Has.Property("Capacity").EqualTo((nuint)16)
-               .And.Count.EqualTo((nuint)3)
-        );
+            Assert.That(() => valueQueue,
+                Has.Property("Capacity").EqualTo((nuint)16)
+                   .And.Count.EqualTo((nuint)3)
+            );
+        }
+        valueQueue.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.Peek()" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.Peek{T}(ref readonly ValueQueue{T})" /> method.</summary>
     [Test]
     public static void PeekTest()
     {
@@ -617,7 +634,7 @@ public static class UnmanagedValueQueueTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true))
+        var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true);
         {
             Assert.That(() => valueQueue.Peek(),
                 Is.EqualTo(1)
@@ -649,16 +666,18 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)5)
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>())
+        valueQueue = new UnmanagedValueQueue<int>();
         {
             Assert.That(() => valueQueue.Peek(),
                 Throws.InvalidOperationException
             );
         }
+        valueQueue.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue{T}.Peek(nuint)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue.Peek{T}(ref readonly UnmanagedValueQueue{T}, nuint)" /> method.</summary>
     [Test]
     public static void PeekNUIntTest()
     {
@@ -668,7 +687,7 @@ public static class UnmanagedValueQueueTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true))
+        var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true);
         {
             Assert.That(() => valueQueue.Peek(0),
                 Is.EqualTo(1)
@@ -712,8 +731,9 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)5)
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>())
+        valueQueue = new UnmanagedValueQueue<int>();
         {
             Assert.That(() => valueQueue.Peek(0),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
@@ -721,9 +741,10 @@ public static class UnmanagedValueQueueTests
                       .And.Property("ParamName").EqualTo("index")
             );
         }
+        valueQueue.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.Remove(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.Remove{T}(ref ValueQueue{T}, T)" /> method.</summary>
     [Test]
     public static void RemoveTest()
     {
@@ -734,7 +755,7 @@ public static class UnmanagedValueQueueTests
         array[2] = 3;
         array[3] = 4;
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true))
+        var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true);
         {
             Assert.That(() => valueQueue.Remove(1),
                 Is.True
@@ -772,16 +793,18 @@ public static class UnmanagedValueQueueTests
                 Is.EquivalentTo(new int[] { 3, 4, 2 })
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>())
+        valueQueue = new UnmanagedValueQueue<int>();
         {
             Assert.That(() => valueQueue.Remove(0),
                 Is.False
             );
         }
+        valueQueue.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue{T}.TrimExcess" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue.TrimExcess{T}(ref UnmanagedValueQueue{T}, float)" /> method.</summary>
     [Test]
     public static void TrimExcessTest()
     {
@@ -791,7 +814,7 @@ public static class UnmanagedValueQueueTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: false))
+        var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: false);
         {
             valueQueue.TrimExcess();
 
@@ -800,8 +823,9 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)3)
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: false))
+        valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: false);
         {
             _ = valueQueue.Dequeue();
 
@@ -813,8 +837,9 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)3)
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true))
+        valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true);
         {
             valueQueue.Enqueue(4);
             valueQueue.Enqueue(5);
@@ -834,8 +859,9 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)5)
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>())
+        valueQueue = new UnmanagedValueQueue<int>();
         {
             valueQueue.TrimExcess();
 
@@ -844,9 +870,10 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)0)
             );
         }
+        valueQueue.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.TryDequeue(out T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.TryDequeue{T}(ref ValueQueue{T}, out T)" /> method.</summary>
     [Test]
     public static void TryDequeueTest()
     {
@@ -856,7 +883,7 @@ public static class UnmanagedValueQueueTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true))
+        var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true);
         {
             var result = valueQueue.TryDequeue(out var value);
 
@@ -884,16 +911,18 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)2)
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>())
+        valueQueue = new UnmanagedValueQueue<int>();
         {
             Assert.That(() => valueQueue.TryDequeue(out _),
                 Is.False
             );
         }
+        valueQueue.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.TryPeek(out T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.TryPeek{T}(ref readonly ValueQueue{T}, out T)" /> method.</summary>
     [Test]
     public static void TryPeekTest()
     {
@@ -903,7 +932,7 @@ public static class UnmanagedValueQueueTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true))
+        var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true);
         {
             var result = valueQueue.TryPeek(out var value);
 
@@ -931,16 +960,18 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)4)
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>())
+        valueQueue = new UnmanagedValueQueue<int>();
         {
             Assert.That(() => valueQueue.TryPeek(out _),
                 Is.False
             );
         }
+        valueQueue.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue{T}.TryPeek(nuint, out T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueQueue.TryPeek{T}(ref readonly UnmanagedValueQueue{T}, nuint, out T)" /> method.</summary>
     [Test]
     public static void TryPeekNUIntTest()
     {
@@ -950,7 +981,7 @@ public static class UnmanagedValueQueueTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true))
+        var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true);
         {
             var result = valueQueue.TryPeek(0, out var value);
 
@@ -988,12 +1019,14 @@ public static class UnmanagedValueQueueTests
                    .And.Count.EqualTo((nuint)4)
             );
         }
+        valueQueue.Dispose();
 
-        using (var valueQueue = new UnmanagedValueQueue<int>())
+        valueQueue = new UnmanagedValueQueue<int>();
         {
             Assert.That(() => valueQueue.TryPeek(0, out _),
                 Is.False
             );
         }
+        valueQueue.Dispose();
     }
 }

@@ -16,7 +16,7 @@ namespace TerraFX.Samples;
 
 public static unsafe class Program
 {
-    private static readonly Sample[] s_graphicsSamples = {
+    private static readonly Sample[] s_graphicsSamples = [
         new EnumerateGraphicsAdapters("Graphics.EnumerateGraphicsAdapters"),
         new HelloWindow("Graphics.HelloWindow"),
         new HelloTriangle("Graphics.HelloTriangle"),
@@ -29,11 +29,11 @@ public static unsafe class Program
         new HelloSmoke("Graphics.HelloSmoke", true),
         new HelloSierpinskiPyramid("Graphics.HelloSierpinskiPyramid", 5),
         new HelloSierpinskiQuad("Graphics.HelloSierpinskiQuad", 6),
-    };
+    ];
 
-    private static readonly Sample[] s_uiSamples = {
+    private static readonly Sample[] s_uiSamples = [
         new EmptyWindow("UI.EmptyWindow"),
-    };
+    ];
 
     private static IEnumerable<Sample> AllSamples
     {

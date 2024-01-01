@@ -4,6 +4,7 @@
 // The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 #pragma warning disable CA1711 // Identifiers should not have incorrect suffix
@@ -21,12 +22,12 @@ public partial struct ValueDictionary<TKey, TValue>
         public int Count => _dictionary._count;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        public (TKey Key, TValue Value)[] Items
+        public KeyValuePair<TKey, TValue>[] Items
         {
             get
             {
                 ref readonly var dictionary = ref _dictionary;
-                var items = GC.AllocateUninitializedArray<(TKey Key, TValue Value)>(dictionary._count);
+                var items = GC.AllocateUninitializedArray<KeyValuePair<TKey, TValue>>(dictionary._count);
 
                 dictionary.CopyTo(items);
                 return items;

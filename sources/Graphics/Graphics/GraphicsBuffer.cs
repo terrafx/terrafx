@@ -30,7 +30,7 @@ public sealed unsafe class GraphicsBuffer : GraphicsResource
     {
         device.AddBuffer(this);
 
-        _bufferViews = new ValueList<GraphicsBufferView>();
+        _bufferViews = [];
         _bufferViewsMutex = new ValueMutex();
 
         _d3d12GpuVirtualAddress = D3D12Resource->GetGPUVirtualAddress();

@@ -166,7 +166,7 @@ public static class UnmanagedValueListTests
             );
         }
 
-        using (var valueList = new UnmanagedValueList<int>(UnmanagedArray.Empty<int>(), takeOwnership: false))
+        using (var valueList = new UnmanagedValueList<int>([], takeOwnership: false))
         {
             Assert.That(() => valueList,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -174,7 +174,7 @@ public static class UnmanagedValueListTests
             );
         }
 
-        using (var valueList = new UnmanagedValueList<int>(UnmanagedArray.Empty<int>(), takeOwnership: true))
+        using (var valueList = new UnmanagedValueList<int>([], takeOwnership: true))
         {
             Assert.That(() => valueList,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -279,7 +279,7 @@ public static class UnmanagedValueListTests
         }
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueList{T}.Add(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueList.Add{T}(ref UnmanagedValueList{T}, T)" /> method.</summary>
     [Test]
     public static void AddTest()
     {
@@ -289,7 +289,7 @@ public static class UnmanagedValueListTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueList = new UnmanagedValueList<int>(array, takeOwnership: true))
+        var valueList = new UnmanagedValueList<int>(array, takeOwnership: true);
         {
             valueList.Add(4);
 
@@ -313,8 +313,9 @@ public static class UnmanagedValueListTests
                 Is.EqualTo(5)
             );
         }
+        valueList.Dispose();
 
-        using (var valueList = new UnmanagedValueList<int>())
+        valueList = [];
         {
             valueList.Add(6);
 
@@ -327,9 +328,11 @@ public static class UnmanagedValueListTests
                 Is.EqualTo(6)
             );
         }
+
+        valueList.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueList{T}.Clear" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueList.Clear{T}(ref UnmanagedValueList{T})" /> method.</summary>
     [Test]
     public static void ClearTest()
     {
@@ -339,7 +342,7 @@ public static class UnmanagedValueListTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueList = new UnmanagedValueList<int>(array, takeOwnership: true))
+        var valueList = new UnmanagedValueList<int>(array, takeOwnership: true);
         {
             valueList.Clear();
 
@@ -348,8 +351,9 @@ public static class UnmanagedValueListTests
                    .And.Count.EqualTo((nuint)0)
             );
         }
+        valueList.Dispose();
 
-        using (var valueList = new UnmanagedValueList<int>())
+        valueList = [];
         {
             valueList.Clear();
 
@@ -358,9 +362,10 @@ public static class UnmanagedValueListTests
                    .And.Count.EqualTo((nuint)0)
             );
         }
+        valueList.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueList{T}.Contains(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueList.Contains{T}(ref readonly UnmanagedValueList{T}, T)" /> method.</summary>
     [Test]
     public static void ContainsTest()
     {
@@ -370,7 +375,7 @@ public static class UnmanagedValueListTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueList = new UnmanagedValueList<int>(array, takeOwnership: true))
+        var valueList = new UnmanagedValueList<int>(array, takeOwnership: true);
         {
             Assert.That(() => valueList.Contains(1),
                 Is.True
@@ -380,16 +385,18 @@ public static class UnmanagedValueListTests
                 Is.False
             );
         }
+        valueList.Dispose();
 
-        using (var valueList = new UnmanagedValueList<int>())
+        valueList = [];
         {
             Assert.That(() => valueList.Contains(0),
                 Is.False
             );
         }
+        valueList.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueList{T}.CopyTo(UnmanagedSpan{T})" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueList.CopyTo{T}(ref readonly UnmanagedValueList{T}, UnmanagedSpan{T})" /> method.</summary>
     [Test]
     public static void CopyToUnmanagedSpanTest()
     {
@@ -399,7 +406,7 @@ public static class UnmanagedValueListTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueList = new UnmanagedValueList<int>(array, takeOwnership: true))
+        var valueList = new UnmanagedValueList<int>(array, takeOwnership: true);
         {
             using (var destination = new UnmanagedArray<int>(3))
             {
@@ -453,16 +460,18 @@ public static class UnmanagedValueListTests
                       .And.Property("ParamName").EqualTo("count")
             );
         }
+        valueList.Dispose();
 
-        using (var valueList = new UnmanagedValueList<int>())
+        valueList = [];
         {
             Assert.That(() => valueList.CopyTo(UnmanagedArray.Empty<int>()),
                 Throws.Nothing
             );
         }
+        valueList.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueList{T}.EnsureCapacity(nuint)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueList.EnsureCapacity{T}(ref UnmanagedValueList{T}, nuint)" /> method.</summary>
     [Test]
     public static void EnsureCapacityTest()
     {
@@ -472,37 +481,40 @@ public static class UnmanagedValueListTests
         array[1] = 2;
         array[2] = 3;
 
-        using var valueList = new UnmanagedValueList<int>(array);
-        valueList.EnsureCapacity(0);
+        var valueList = new UnmanagedValueList<int>(array);
+        {
+            valueList.EnsureCapacity(0);
 
-        Assert.That(() => valueList,
-            Has.Property("Capacity").EqualTo((nuint)3)
-               .And.Count.EqualTo((nuint)3)
-        );
+            Assert.That(() => valueList,
+                Has.Property("Capacity").EqualTo((nuint)3)
+                   .And.Count.EqualTo((nuint)3)
+            );
 
-        valueList.EnsureCapacity(3);
+            valueList.EnsureCapacity(3);
 
-        Assert.That(() => valueList,
-            Has.Property("Capacity").EqualTo((nuint)3)
-               .And.Count.EqualTo((nuint)3)
-        );
+            Assert.That(() => valueList,
+                Has.Property("Capacity").EqualTo((nuint)3)
+                   .And.Count.EqualTo((nuint)3)
+            );
 
-        valueList.EnsureCapacity(4);
+            valueList.EnsureCapacity(4);
 
-        Assert.That(() => valueList,
-            Has.Property("Capacity").EqualTo((nuint)6)
-               .And.Count.EqualTo((nuint)3)
-        );
+            Assert.That(() => valueList,
+                Has.Property("Capacity").EqualTo((nuint)6)
+                   .And.Count.EqualTo((nuint)3)
+            );
 
-        valueList.EnsureCapacity(16);
+            valueList.EnsureCapacity(16);
 
-        Assert.That(() => valueList,
-            Has.Property("Capacity").EqualTo((nuint)16)
-               .And.Count.EqualTo((nuint)3)
-        );
+            Assert.That(() => valueList,
+                Has.Property("Capacity").EqualTo((nuint)16)
+                   .And.Count.EqualTo((nuint)3)
+            );
+        }
+        valueList.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueList{T}.Insert(nuint, T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueList.Insert{T}(ref UnmanagedValueList{T}, nuint, T)" /> method.</summary>
     [Test]
     public static void InsertTest()
     {
@@ -512,7 +524,7 @@ public static class UnmanagedValueListTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueList = new UnmanagedValueList<int>(array, takeOwnership: true))
+        var valueList = new UnmanagedValueList<int>(array, takeOwnership: true);
         {
             valueList.Insert(3, 4);
 
@@ -531,8 +543,9 @@ public static class UnmanagedValueListTests
                       .And.Property("ParamName").EqualTo("index")
             );
         }
+        valueList.Dispose();
 
-        using (var valueList = new UnmanagedValueList<int>())
+        valueList = [];
         {
             valueList.Insert(0, 1);
 
@@ -545,9 +558,10 @@ public static class UnmanagedValueListTests
                 Is.EqualTo(1)
             );
         }
+        valueList.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueList{T}.Remove(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueList.Remove{T}(ref UnmanagedValueList{T}, T)" /> method.</summary>
     [Test]
     public static void RemoveTest()
     {
@@ -557,7 +571,7 @@ public static class UnmanagedValueListTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueList = new UnmanagedValueList<int>(array, takeOwnership: true))
+        var valueList = new UnmanagedValueList<int>(array, takeOwnership: true);
         {
             Assert.That(() => valueList.Remove(1),
                 Is.True
@@ -580,16 +594,18 @@ public static class UnmanagedValueListTests
                 Is.False
             );
         }
+        valueList.Dispose();
 
-        using (var valueList = new UnmanagedValueList<int>())
+        valueList = [];
         {
             Assert.That(() => valueList.Remove(0),
                 Is.False
             );
         }
+        valueList.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueList{T}.RemoveAt(nuint)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueList.RemoveAt{T}(ref UnmanagedValueList{T}, nuint)" /> method.</summary>
     [Test]
     public static void RemoveAtTest()
     {
@@ -599,7 +615,7 @@ public static class UnmanagedValueListTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueList = new UnmanagedValueList<int>(array, takeOwnership: true))
+        var valueList = new UnmanagedValueList<int>(array, takeOwnership: true);
         {
             valueList.RemoveAt(0);
 
@@ -622,8 +638,9 @@ public static class UnmanagedValueListTests
                       .And.Property("ParamName").EqualTo("index")
             );
         }
+        valueList.Dispose();
 
-        using (var valueList = new UnmanagedValueList<int>())
+        valueList = [];
         {
             Assert.That(() => valueList.RemoveAt(0),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
@@ -631,9 +648,10 @@ public static class UnmanagedValueListTests
                       .And.Property("ParamName").EqualTo("index")
             );
         }
+        valueList.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueList{T}.TrimExcess" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueList.TrimExcess{T}(ref UnmanagedValueList{T}, float)" /> method.</summary>
     [Test]
     public static void TrimExcessTest()
     {
@@ -643,7 +661,7 @@ public static class UnmanagedValueListTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueList = new UnmanagedValueList<int>(array, takeOwnership: true))
+        var valueList = new UnmanagedValueList<int>(array, takeOwnership: true);
         {
             valueList.TrimExcess();
 
@@ -670,8 +688,9 @@ public static class UnmanagedValueListTests
                    .And.Count.EqualTo((nuint)5)
             );
         }
+        valueList.Dispose();
 
-        using (var valueList = new UnmanagedValueList<int>())
+        valueList = [];
         {
             valueList.TrimExcess();
 
@@ -680,9 +699,10 @@ public static class UnmanagedValueListTests
                    .And.Count.EqualTo((nuint)0)
             );
         }
+        valueList.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueList{T}.TryGetIndexOf(T, out nuint)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueList.TryGetIndexOf{T}(ref readonly UnmanagedValueList{T}, T, out nuint)" /> method.</summary>
     [Test]
     public static void TryGetIndexOfTest()
     {

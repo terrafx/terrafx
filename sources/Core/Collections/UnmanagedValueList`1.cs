@@ -8,11 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
-using TerraFX.Threading;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
 
 namespace TerraFX.Collections;
@@ -28,8 +24,8 @@ public unsafe partial struct UnmanagedValueList<T>
       IEquatable<UnmanagedValueList<T>>
     where T : unmanaged
 {
-    private UnmanagedArray<T> _items;
-    private nuint _count;
+    internal UnmanagedArray<T> _items;
+    internal nuint _count;
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedValueList{T}" /> struct.</summary>
     public UnmanagedValueList()
@@ -152,77 +148,8 @@ public unsafe partial struct UnmanagedValueList<T>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
     public static bool operator !=(UnmanagedValueList<T> left, UnmanagedValueList<T> right) => !(left == right);
 
-    /// <summary>Adds an item to the list.</summary>
-    /// <param name="item">The item to add to the list.</param>
-    public void Add(T item)
-    {
-        var count = _count;
-        var newCount = count + 1;
-
-        EnsureCapacity(count + 1);
-
-        _count = newCount;
-        _items[count] = item;
-    }
-
-    /// <summary>Adds an item to the list.</summary>
-    /// <param name="item">The item to add to the list.</param>
-    /// <param name="mutex">The mutex to use when adding <paramref name="item" /> to the list.</param>
-    public void Add(T item, ValueMutex mutex)
-    {
-        using var disposableMutex = new DisposableMutex(mutex, isExternallySynchronized: false);
-        Add(item);
-    }
-
-    /// <summary>Converts the backing array for the list to a span.</summary>
-    /// <returns>A span that covers the backing array for the list.</returns>
-    public readonly Span<T> AsSpanUnsafe() => AsUnmanagedSpanUnsafe().AsSpan();
-
-    /// <summary>Converts the backing array for the list to an unmanaged span.</summary>
-    /// <returns>An unmanaged span that covers the backing array for the list.</returns>
-    /// <remarks>
-    ///     <para>This method is because other operations may invalidate the backing array.</para>
-    ///     <para>This method is because it gives access to uninitialized memory in the backing array when <see cref="Count" /> is less than <see cref="Capacity" />.</para>
-    /// </remarks>
-    public readonly UnmanagedSpan<T> AsUnmanagedSpanUnsafe() => _items;
-
-    /// <summary>Removes all items from the list.</summary>
-    public void Clear() => _count = 0;
-
-    /// <summary>Checks whether the list contains a specified item.</summary>
-    /// <param name="item">The item to check for in the list.</param>
-    /// <returns><c>true</c> if <paramref name="item" /> was found in the list; otherwise, <c>false</c>.</returns>
-    public readonly bool Contains(T item) => TryGetIndexOf(item, out _);
-
-    /// <summary>Copies the items of the list to a span.</summary>
-    /// <param name="destination">The span to which the items will be copied.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><see cref="Count" /> is greater than the length of <paramref name="destination" />.</exception>
-    public readonly void CopyTo(UnmanagedSpan<T> destination)
-    {
-        var count = _count;
-
-        if (count != 0)
-        {
-            ThrowIfNotInInsertBounds(count, destination.Length);
-            CopyArrayUnsafe(destination.GetPointerUnsafe(0), _items.GetPointerUnsafe(0), count);
-        }
-    }
-
     /// <inheritdoc />
     public readonly void Dispose() => _items.Dispose();
-
-    /// <summary>Ensures the capacity of the list is at least the specified value.</summary>
-    /// <param name="capacity">The minimum capacity the list should support.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void EnsureCapacity(nuint capacity)
-    {
-        var currentCapacity = Capacity;
-
-        if (capacity > currentCapacity)
-        {
-            Resize(capacity, currentCapacity);
-        }
-    }
 
     /// <inheritdoc />
     public override readonly bool Equals([NotNullWhen(true)] object? obj) => (obj is UnmanagedValueList<T> other) && Equals(other);
@@ -236,166 +163,6 @@ public unsafe partial struct UnmanagedValueList<T>
 
     /// <inheritdoc />
     public override readonly int GetHashCode() => HashCode.Combine(_items, _count);
-
-    /// <summary>Gets a pointer to the item at the specified index of the list.</summary>
-    /// <param name="index">The index of the item to get a pointer to.</param>
-    /// <returns>A pointer to the item that exists at <paramref name="index" /> in the list.</returns>
-    /// <remarks>
-    ///     <para>This method is because other operations may invalidate the backing array.</para>
-    ///     <para>This method is because it does not validate that <paramref name="index" /> is less than <see cref="Capacity" />.</para>
-    /// </remarks>
-    public readonly T* GetPointerUnsafe(nuint index)
-    {
-        AssertNotNull(_items);
-        Assert(index <= Capacity);
-        return _items.GetPointerUnsafe(index);
-    }
-
-    /// <summary>Gets a reference to the item at the specified index of the list.</summary>
-    /// <param name="index">The index of the item to get a pointer to.</param>
-    /// <returns>A reference to the item that exists at <paramref name="index" /> in the list.</returns>
-    /// <remarks>
-    ///     <para>This method is because other operations may invalidate the backing array.</para>
-    ///     <para>This method is because it does not validate that <paramref name="index" /> is less than <see cref="Capacity" />.</para>
-    /// </remarks>
-    public readonly ref T GetReferenceUnsafe(nuint index) => ref *GetPointerUnsafe(index);
-
-    /// <summary>Inserts an item into list at the specified index.</summary>
-    /// <param name="index">The zero-based index at which <paramref name="item" /> is inserted.</param>
-    /// <param name="item">The item to insert into the list.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is negative or greater than <see cref="Count" />.</exception>
-    public void Insert(nuint index, T item)
-    {
-        var count = _count;
-        ThrowIfNotInInsertBounds(index, count);
-
-        var newCount = count + 1;
-        EnsureCapacity(newCount);
-
-        var items = _items;
-
-        if (index != newCount)
-        {
-            CopyArrayUnsafe(items.GetPointerUnsafe(index), items.GetPointerUnsafe(index + 1), count - index);
-        }
-
-        _count = newCount;
-        items[index] = item;
-    }
-
-    /// <summary>Removes the first occurrence of an item from the list.</summary>
-    /// <param name="item">The item to remove from the list.</param>
-    /// <returns><c>true</c> if <paramref name="item" /> was removed from the list; otherwise, <c>false</c>.</returns>
-    public bool Remove(T item)
-    {
-        if (TryGetIndexOf(item, out var index))
-        {
-            RemoveAt(index);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    /// <summary>Removes the first occurrence of an item from the list.</summary>
-    /// <param name="item">The item to remove from the list.</param>
-    /// <param name="mutex">The mutex to use when removing <paramref name="item" /> from the list.</param>
-    /// <returns><c>true</c> if <paramref name="item" /> was removed from the list; otherwise, <c>false</c>.</returns>
-    public bool Remove(T item, ValueMutex mutex)
-    {
-        using var disposableMutex = new DisposableMutex(mutex, isExternallySynchronized: false);
-        return Remove(item);
-    }
-
-    /// <summary>Removes the item at the specified index from the list.</summary>
-    /// <param name="index">The zero-based index of the item to remove.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.</exception>
-    public void RemoveAt(nuint index)
-    {
-        var count = _count;
-        ThrowIfNotInBounds(index, count);
-
-        var newCount = count - 1;
-        var items = _items;
-
-        if (index < newCount)
-        {
-            CopyArrayUnsafe(items.GetPointerUnsafe(index), items.GetPointerUnsafe(index + 1), newCount - index);
-        }
-
-        _count = newCount;
-    }
-
-    /// <summary>Sets the number of items contained in the list.</summary>
-    /// <param name="count">The new number of items contained in the list.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="count" /> is greater than <see cref="Capacity" />.</exception>
-    /// <remarks>
-    ///     <para>This method allows you to explicitly shrink the list down to zero or grow it up to <see cref="Capacity" />.</para>
-    ///     <para>This method is because growing the count may leak uninitialized memory.</para>
-    /// </remarks>
-    public void SetCountUnsafe(nuint count)
-    {
-        ThrowIfNotInInsertBounds(count, Capacity);
-        _count = count;
-    }
-
-    /// <summary>Trims any excess capacity, up to a given threshold, from the list.</summary>
-    /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any excess will not be trimmed.</param>
-    /// <remarks>This methods clamps <paramref name="threshold" /> to between <c>zero</c> and <c>one</c>, inclusive.</remarks>
-    public void TrimExcess(float threshold = 1.0f)
-    {
-        var count = _count;
-        var minCount = (nuint)(Capacity * Clamp(threshold, 0.0f, 1.0f));
-
-        if (count < minCount)
-        {
-            var items = _items;
-
-            var alignment = !items.IsNull ? items.Alignment : 0;
-            var newItems = new UnmanagedArray<T>(count, alignment);
-
-            CopyTo(newItems);
-            items.Dispose();
-
-            _items = newItems;
-        }
-    }
-
-    /// <summary>Tries to get the index of a given item in the list.</summary>
-    /// <param name="item">The item for which to get its index..</param>
-    /// <param name="index">When <c>true</c> is returned, this contains the index of <paramref name="item" />.</param>
-    /// <returns><c>true</c> if <paramref name="item" /> was found in the list; otherwise, <c>false</c>.</returns>
-    public readonly bool TryGetIndexOf(T item, out nuint index)
-    {
-        var items = _items;
-
-        if (!items.IsNull)
-        {
-            return TryGetIndexOfUnsafe(items.GetPointerUnsafe(0), _count, item, out index);
-        }
-        else
-        {
-            index = 0;
-            return false;
-        }
-    }
-
-    private void Resize(nuint capacity, nuint currentCapacity)
-    {
-        var items = _items;
-
-        var newCapacity = Max(capacity, currentCapacity * 2);
-        var alignment = !items.IsNull ? items.Alignment : 0;
-
-        var newItems = new UnmanagedArray<T>(newCapacity, alignment);
-
-        CopyTo(newItems);
-        items.Dispose();
-
-        _items = newItems;
-    }
 
     readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

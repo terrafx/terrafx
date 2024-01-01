@@ -5,6 +5,8 @@ using System.Diagnostics;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.MathUtilities;
 
+#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
+
 namespace TerraFX.Collections;
 
 public partial struct UnmanagedValueQueue<T>

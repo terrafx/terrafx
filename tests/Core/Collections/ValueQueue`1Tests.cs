@@ -63,12 +63,12 @@ public static class ValueQueueTests
     [Test]
     public static void CtorReadOnlySpanTest()
     {
-        Assert.That(() => new ValueQueue<int>(new int[] { 1, 2, 3 }.AsSpan()),
+        Assert.That(() => new ValueQueue<int>([1, 2, 3]),
             Has.Property("Capacity").EqualTo(3)
                .And.Count.EqualTo(3)
         );
 
-        Assert.That(() => new ValueQueue<int>(Array.Empty<int>().AsSpan()),
+        Assert.That(() => new ValueQueue<int>([]),
             Has.Property("Capacity").EqualTo(0)
                .And.Count.EqualTo(0)
         );
@@ -83,22 +83,22 @@ public static class ValueQueueTests
     [Test]
     public static void CtorArrayBooleanTest()
     {
-        Assert.That(() => new ValueQueue<int>(new int[] { 1, 2, 3 }, takeOwnership: false),
+        Assert.That(() => new ValueQueue<int>([1, 2, 3], takeOwnership: false),
             Has.Property("Capacity").EqualTo(3)
                .And.Count.EqualTo(3)
         );
 
-        Assert.That(() => new ValueQueue<int>(new int[] { 1, 2, 3 }, takeOwnership: true),
+        Assert.That(() => new ValueQueue<int>([1, 2, 3], takeOwnership: true),
             Has.Property("Capacity").EqualTo(3)
                .And.Count.EqualTo(3)
         );
 
-        Assert.That(() => new ValueQueue<int>(Array.Empty<int>(), takeOwnership: false),
+        Assert.That(() => new ValueQueue<int>([], takeOwnership: false),
             Has.Property("Capacity").EqualTo(0)
                .And.Count.EqualTo(0)
         );
 
-        Assert.That(() => new ValueQueue<int>(Array.Empty<int>(), takeOwnership: true),
+        Assert.That(() => new ValueQueue<int>([], takeOwnership: true),
             Has.Property("Capacity").EqualTo(0)
                .And.Count.EqualTo(0)
         );
@@ -114,7 +114,7 @@ public static class ValueQueueTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.Clear" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.Clear{T}(ref ValueQueue{T})" /> method.</summary>
     [Test]
     public static void ClearTest()
     {
@@ -161,7 +161,7 @@ public static class ValueQueueTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.Contains(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.Contains{T}(ref readonly ValueQueue{T}, T)" /> method.</summary>
     [Test]
     public static void ContainsTest()
     {
@@ -209,7 +209,7 @@ public static class ValueQueueTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.CopyTo(Span{T})" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.CopyTo{T}(ref readonly ValueQueue{T}, Span{T})" /> method.</summary>
     [Test]
     public static void CopyToTest()
     {
@@ -260,7 +260,7 @@ public static class ValueQueueTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.Dequeue()" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.Dequeue{T}(ref ValueQueue{T})" /> method.</summary>
     [Test]
     public static void DequeueTest()
     {
@@ -319,7 +319,7 @@ public static class ValueQueueTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.Enqueue(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.Enqueue{T}(ref ValueQueue{T}, T)" /> method.</summary>
     [Test]
     public static void EnqueueTest()
     {
@@ -357,7 +357,7 @@ public static class ValueQueueTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.EnsureCapacity(int)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.EnsureCapacity{T}(ref ValueQueue{T}, int)" /> method.</summary>
     [Test]
     public static void EnsureCapacityTest()
     {
@@ -398,7 +398,7 @@ public static class ValueQueueTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.Peek()" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.Peek{T}(ref readonly ValueQueue{T})" /> method.</summary>
     [Test]
     public static void PeekTest()
     {
@@ -441,7 +441,7 @@ public static class ValueQueueTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.Peek(int)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.Peek{T}(ref readonly ValueQueue{T}, int)" /> method.</summary>
     [Test]
     public static void PeekInt32Test()
     {
@@ -498,7 +498,7 @@ public static class ValueQueueTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.Remove(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.Remove{T}(ref ValueQueue{T}, T)" /> method.</summary>
     [Test]
     public static void RemoveTest()
     {
@@ -541,7 +541,7 @@ public static class ValueQueueTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.TrimExcess(float)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.TrimExcess{T}(ref ValueQueue{T}, float)" /> method.</summary>
     [Test]
     public static void TrimExcessTest()
     {
@@ -594,7 +594,7 @@ public static class ValueQueueTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.TryDequeue(out T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.TryDequeue{T}(ref ValueQueue{T}, out T)" /> method.</summary>
     [Test]
     public static void TryDequeueTest()
     {
@@ -632,7 +632,7 @@ public static class ValueQueueTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.TryPeek(out T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.TryPeek{T}(ref readonly ValueQueue{T}, out T)" /> method.</summary>
     [Test]
     public static void TryPeekTest()
     {
@@ -670,7 +670,7 @@ public static class ValueQueueTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ValueQueue{T}.TryPeek(int, out T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueQueue.TryPeek{T}(ref readonly ValueQueue{T}, int, out T)" /> method.</summary>
     [Test]
     public static void TryPeekInt32Test()
     {

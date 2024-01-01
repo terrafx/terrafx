@@ -9,7 +9,7 @@ namespace TerraFX.Collections;
 
 public partial struct ValueDictionary<TKey, TValue>
 {
-    private struct Entry
+    internal struct Entry
     {
         public int HashCode;
         public int Next;

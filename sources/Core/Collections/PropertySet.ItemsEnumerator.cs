@@ -1,35 +1,33 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-// This file includes code based on the UnmanagedValueDictionary<TKey, TValue> class from https://github.com/dotnet/runtime/
-// The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Collections;
 
-public partial struct UnmanagedValueDictionary<TKey, TValue>
+public partial class PropertySet
 {
-    /// <summary>An enumerator which can iterate through the items in a dictionary.</summary>
-    public struct ItemsEnumerator : IRefEnumerator<KeyValuePair<TKey, TValue>>
+    /// <summary>An enumerator which can iterate through the items in a property set.</summary>
+    public struct ItemsEnumerator : IRefEnumerator<KeyValuePair<string, object>>
     {
-        private readonly UnmanagedValueDictionary<TKey, TValue> _dictionary;
+        private readonly PropertySet _propertySet;
         private int _index;
-        private KeyValuePair<TKey, TValue> _current;
+        private KeyValuePair<string, object> _current;
 
-        internal ItemsEnumerator(UnmanagedValueDictionary<TKey, TValue> dictionary)
+        internal ItemsEnumerator(PropertySet propertySet)
         {
-            _dictionary = dictionary;
+            _propertySet = propertySet;
             _index = -1;
         }
 
         /// <inheritdoc />
-        public readonly KeyValuePair<TKey, TValue> Current => CurrentRef;
+        public readonly KeyValuePair<string, object> Current => CurrentRef;
 
         /// <inheritdoc />
-        public readonly ref readonly KeyValuePair<TKey, TValue> CurrentRef => ref Unsafe.AsRef(in _current);
+        public readonly ref readonly KeyValuePair<string, object> CurrentRef => ref Unsafe.AsRef(in _current);
 
         /// <inheritdoc />
         public bool MoveNext()
@@ -37,7 +35,7 @@ public partial struct UnmanagedValueDictionary<TKey, TValue>
             var succeeded = true;
 
             var index = unchecked(_index + 1);
-            var count = _dictionary._count;
+            var count = _propertySet._items._count;
 
             if (index == count)
             {
@@ -46,15 +44,15 @@ public partial struct UnmanagedValueDictionary<TKey, TValue>
             }
             else
             {
-                var entries = _dictionary._entries;
+                var entries = _propertySet._items._entries;
 
                 while (index < count)
                 {
-                    ref var entry = ref entries.GetReferenceUnsafe((uint)index);
+                    ref var entry = ref entries.GetReferenceUnsafe(index);
 
                     if (entry.Next >= -1)
                     {
-                        _current = new KeyValuePair<TKey, TValue>(entry.Key, entry.Value);
+                        _current = new KeyValuePair<string, object>(entry.Key, entry.Value);
                         break;
                     }
 

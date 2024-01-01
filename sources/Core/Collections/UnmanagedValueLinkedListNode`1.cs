@@ -1,6 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-// This file includes code based on the ICollectionDebugView<T> class from https://github.com/dotnet/runtime/
+// This file includes code based on the LinkedList<T>.Node class from https://github.com/dotnet/runtime/
 // The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
@@ -91,11 +91,4 @@ public unsafe struct UnmanagedValueLinkedListNode<T>(T value) : IEquatable<Unman
 
     /// <inheritdoc />
     public override readonly int GetHashCode() => HashCode.Combine((nuint)_next, (nuint)_previous, _value, _isFirstNode);
-
-    internal void Invalidate()
-    {
-        _next = null;
-        _previous = null;
-        _isFirstNode = false;
-    }
 }

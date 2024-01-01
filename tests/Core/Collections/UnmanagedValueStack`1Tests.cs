@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using TerraFX.Collections;
 
@@ -167,7 +168,7 @@ public static class UnmanagedValueStackTests
             );
         }
 
-        using (var valueStack = new UnmanagedValueStack<int>(UnmanagedArray.Empty<int>(), takeOwnership: false))
+        using (var valueStack = new UnmanagedValueStack<int>([], takeOwnership: false))
         {
             Assert.That(() => valueStack,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -175,7 +176,7 @@ public static class UnmanagedValueStackTests
             );
         }
 
-        using (var valueStack = new UnmanagedValueStack<int>(UnmanagedArray.Empty<int>(), takeOwnership: true))
+        using (var valueStack = new UnmanagedValueStack<int>([], takeOwnership: true))
         {
             Assert.That(() => valueStack,
                 Has.Property("Capacity").EqualTo((nuint)0)
@@ -210,7 +211,7 @@ public static class UnmanagedValueStackTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueStack{T}.Clear" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueStack.Clear{T}(ref UnmanagedValueStack{T})" /> method.</summary>
     [Test]
     public static void ClearTest()
     {
@@ -220,7 +221,7 @@ public static class UnmanagedValueStackTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: false))
+        var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: false);
         {
             valueStack.Clear();
 
@@ -229,8 +230,9 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)0)
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: false))
+        valueStack = new UnmanagedValueStack<int>(array, takeOwnership: false);
         {
             _ = valueStack.Pop();
 
@@ -242,8 +244,9 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)0)
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true))
+        valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true);
         {
             _ = valueStack.Pop();
 
@@ -257,8 +260,9 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)0)
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>())
+        valueStack = new UnmanagedValueStack<int>();
         {
             valueStack.Clear();
 
@@ -267,9 +271,10 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)0)
             );
         }
+        valueStack.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueStack{T}.Contains(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueStack.Contains{T}(ref readonly UnmanagedValueStack{T}, T)" /> method.</summary>
     [Test]
     public static void ContainsTest()
     {
@@ -279,7 +284,7 @@ public static class UnmanagedValueStackTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true))
+        var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true);
         {
             Assert.That(() => valueStack.Contains(1),
                 Is.True
@@ -316,16 +321,18 @@ public static class UnmanagedValueStackTests
                 Is.True
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>())
+        valueStack = new UnmanagedValueStack<int>();
         {
             Assert.That(() => valueStack.Contains(0),
                 Is.False
             );
         }
+        valueStack.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueStack{T}.CopyTo(UnmanagedSpan{T})" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueStack.CopyTo{T}(ref readonly UnmanagedValueStack{T}, UnmanagedSpan{T})" /> method.</summary>
     [Test]
     public static void CopyToUnmanagedSpanTest()
     {
@@ -335,7 +342,7 @@ public static class UnmanagedValueStackTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueStack = new UnmanagedValueStack<int>(array))
+        var valueStack = new UnmanagedValueStack<int>(array);
         {
             using (var destination = new UnmanagedArray<int>(3))
             {
@@ -436,16 +443,18 @@ public static class UnmanagedValueStackTests
                       .And.Property("ParamName").EqualTo("count")
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>())
+        valueStack = new UnmanagedValueStack<int>();
         {
             Assert.That(() => valueStack.CopyTo(UnmanagedArray.Empty<int>()),
                 Throws.Nothing
             );
         }
+        valueStack.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueStack{T}.EnsureCapacity(nuint)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueStack.EnsureCapacity{T}(ref UnmanagedValueStack{T}, nuint)" /> method.</summary>
     [Test]
     public static void EnsureCapacityTest()
     {
@@ -455,37 +464,40 @@ public static class UnmanagedValueStackTests
         array[1] = 2;
         array[2] = 3;
 
-        using var valueStack = new UnmanagedValueStack<int>(array);
-        valueStack.EnsureCapacity(0);
+        var valueStack = new UnmanagedValueStack<int>(array);
+        {
+            valueStack.EnsureCapacity(0);
 
-        Assert.That(() => valueStack,
-            Has.Property("Capacity").EqualTo((nuint)3)
-               .And.Count.EqualTo((nuint)3)
-        );
+            Assert.That(() => valueStack,
+                Has.Property("Capacity").EqualTo((nuint)3)
+                   .And.Count.EqualTo((nuint)3)
+            );
 
-        valueStack.EnsureCapacity(3);
+            valueStack.EnsureCapacity(3);
 
-        Assert.That(() => valueStack,
-            Has.Property("Capacity").EqualTo((nuint)3)
-               .And.Count.EqualTo((nuint)3)
-        );
+            Assert.That(() => valueStack,
+                Has.Property("Capacity").EqualTo((nuint)3)
+                   .And.Count.EqualTo((nuint)3)
+            );
 
-        valueStack.EnsureCapacity(4);
+            valueStack.EnsureCapacity(4);
 
-        Assert.That(() => valueStack,
-            Has.Property("Capacity").EqualTo((nuint)6)
-               .And.Count.EqualTo((nuint)3)
-        );
+            Assert.That(() => valueStack,
+                Has.Property("Capacity").EqualTo((nuint)6)
+                   .And.Count.EqualTo((nuint)3)
+            );
 
-        valueStack.EnsureCapacity(16);
+            valueStack.EnsureCapacity(16);
 
-        Assert.That(() => valueStack,
-            Has.Property("Capacity").EqualTo((nuint)16)
-               .And.Count.EqualTo((nuint)3)
-        );
+            Assert.That(() => valueStack,
+                Has.Property("Capacity").EqualTo((nuint)16)
+                   .And.Count.EqualTo((nuint)3)
+            );
+        }
+        valueStack.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="ValueStack{T}.Peek()" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueStack.Peek{T}(ref readonly ValueStack{T})" /> method.</summary>
     [Test]
     public static void PeekTest()
     {
@@ -495,7 +507,7 @@ public static class UnmanagedValueStackTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true))
+        var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true);
         {
             Assert.That(() => valueStack.Peek(),
                 Is.EqualTo(3)
@@ -527,16 +539,18 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)5)
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>())
+        valueStack = new UnmanagedValueStack<int>();
         {
             Assert.That(() => valueStack.Peek(),
                 Throws.InvalidOperationException
             );
         }
+        valueStack.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueStack{T}.Peek(nuint)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueStack.Peek{T}(ref readonly UnmanagedValueStack{T}, nuint)" /> method.</summary>
     [Test]
     public static void PeekNUIntTest()
     {
@@ -546,7 +560,7 @@ public static class UnmanagedValueStackTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true))
+        var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true);
         {
             Assert.That(() => valueStack.Peek(0),
                 Is.EqualTo(3)
@@ -590,8 +604,9 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)5)
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>())
+        valueStack = new UnmanagedValueStack<int>();
         {
             Assert.That(() => valueStack.Peek(0),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
@@ -599,9 +614,10 @@ public static class UnmanagedValueStackTests
                       .And.Property("ParamName").EqualTo("index")
             );
         }
+        valueStack.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueStack{T}.Pop()" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueStack.Pop{T}(ref UnmanagedValueStack{T})" /> method.</summary>
     [Test]
     public static void PopTest()
     {
@@ -611,7 +627,7 @@ public static class UnmanagedValueStackTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: false))
+        var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: false);
         {
             Assert.That(() => valueStack.Pop(),
                 Is.EqualTo(3)
@@ -629,8 +645,9 @@ public static class UnmanagedValueStackTests
                 Throws.InvalidOperationException
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true))
+        valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true);
         {
             _ = valueStack.Pop();
             valueStack.Push(4);
@@ -660,16 +677,18 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)0)
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>())
+        valueStack = new UnmanagedValueStack<int>();
         {
             Assert.That(() => valueStack.Pop(),
                 Throws.InvalidOperationException
             );
         }
+        valueStack.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueStack{T}.Push(T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueStack.Push{T}(ref UnmanagedValueStack{T}, T)" /> method.</summary>
     [Test]
     public static void PushTest()
     {
@@ -679,7 +698,7 @@ public static class UnmanagedValueStackTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: false))
+        var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: false);
         {
             valueStack.Push(4);
 
@@ -700,8 +719,9 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)5)
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true))
+        valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true);
         {
             _ = valueStack.Pop();
             valueStack.Push(5);
@@ -711,8 +731,9 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)3)
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>())
+        valueStack = new UnmanagedValueStack<int>();
         {
             valueStack.Push(6);
 
@@ -721,9 +742,10 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)1)
             );
         }
+        valueStack.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueStack{T}.TrimExcess" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueStack.TrimExcess{T}(ref UnmanagedValueStack{T}, float)" /> method.</summary>
     [Test]
     public static void TrimExcessTest()
     {
@@ -733,7 +755,7 @@ public static class UnmanagedValueStackTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: false))
+        var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: false);
         {
             valueStack.TrimExcess();
 
@@ -742,8 +764,9 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)3)
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: false))
+        valueStack = new UnmanagedValueStack<int>(array, takeOwnership: false);
         {
             _ = valueStack.Pop();
 
@@ -755,8 +778,9 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)3)
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true))
+        valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true);
         {
             valueStack.Push(4);
             valueStack.Push(5);
@@ -776,8 +800,9 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)5)
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>())
+        valueStack = new UnmanagedValueStack<int>();
         {
             valueStack.TrimExcess();
 
@@ -786,9 +811,10 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)0)
             );
         }
+        valueStack.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="ValueStack{T}.TryPeek(out T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueStack.TryPeek{T}(ref readonly ValueStack{T}, out T)" /> method.</summary>
     [Test]
     public static void TryPeekTest()
     {
@@ -798,7 +824,7 @@ public static class UnmanagedValueStackTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true))
+        var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true);
         {
             var result = valueStack.TryPeek(out var value);
 
@@ -826,16 +852,18 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)4)
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>())
+        valueStack = new UnmanagedValueStack<int>();
         {
             Assert.That(() => valueStack.TryPeek(out _),
                 Is.False
             );
         }
+        valueStack.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="UnmanagedValueStack{T}.TryPeek(nuint, out T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="UnmanagedValueStack.TryPeek{T}(ref readonly UnmanagedValueStack{T}, nuint, out T)" /> method.</summary>
     [Test]
     public static void TryPeekNUIntTest()
     {
@@ -845,7 +873,7 @@ public static class UnmanagedValueStackTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true))
+        var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true);
         {
             var result = valueStack.TryPeek(0, out var value);
 
@@ -883,16 +911,18 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)4)
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>())
+        valueStack = new UnmanagedValueStack<int>();
         {
             Assert.That(() => valueStack.TryPeek(0, out _),
                 Is.False
             );
         }
+        valueStack.Dispose();
     }
 
-    /// <summary>Provides validation of the <see cref="ValueStack{T}.TryPop(out T)" /> method.</summary>
+    /// <summary>Provides validation of the <see cref="ValueStack.TryPop{T}(ref ValueStack{T}, out T)" /> method.</summary>
     [Test]
     public static void TryPopTest()
     {
@@ -902,7 +932,7 @@ public static class UnmanagedValueStackTests
         array[1] = 2;
         array[2] = 3;
 
-        using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true))
+        var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true);
         {
             var result = valueStack.TryPop(out var value);
 
@@ -930,12 +960,14 @@ public static class UnmanagedValueStackTests
                    .And.Count.EqualTo((nuint)2)
             );
         }
+        valueStack.Dispose();
 
-        using (var valueStack = new UnmanagedValueStack<int>())
+        valueStack = new UnmanagedValueStack<int>();
         {
             Assert.That(() => valueStack.TryPop(out _),
                 Is.False
             );
         }
+        valueStack.Dispose();
     }
 }
