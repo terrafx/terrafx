@@ -53,6 +53,9 @@ public partial struct ValueLinkedList<T>
     /// <summary>Gets the first node in the linked list or <c>null</c> if the linked list is empty.</summary>
     public readonly ValueLinkedListNode<T>? First => _first;
 
+    /// <summary><c>true</c> if the linked list is <c>empty</c>; otherwise, <c>false</c>.</summary>
+    public readonly bool IsEmpty => _count == 0;
+
     /// <summary>Gets the last node in the linked list or <c>null</c> if the linked list is empty.</summary>
     public readonly ValueLinkedListNode<T>? Last => _first?._previous;
 

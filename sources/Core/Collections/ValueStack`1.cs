@@ -106,6 +106,9 @@ public partial struct ValueStack<T>
     /// <summary>Gets the number of items contained in the stack.</summary>
     public readonly int Count => _count;
 
+    /// <summary><c>true</c> if the stack is <c>empty</c>; otherwise, <c>false</c>.</summary>
+    public readonly bool IsEmpty => _count == 0;
+
     /// <summary>Compares two <see cref="ValueStack{T}" /> instances to determine equality.</summary>
     /// <param name="left">The <see cref="ValueStack{T}" /> to compare with <paramref name="right" />.</param>
     /// <param name="right">The <see cref="ValueStack{T}" /> to compare with <paramref name="left" />.</param>

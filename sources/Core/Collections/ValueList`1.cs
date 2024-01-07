@@ -107,6 +107,9 @@ public partial struct ValueList<T>
     /// <summary>Gets the number of items contained in the list.</summary>
     public readonly int Count => _count;
 
+    /// <summary><c>true</c> if the list is <c>empty</c>; otherwise, <c>false</c>.</summary>
+    public readonly bool IsEmpty => _count == 0;
+
     /// <summary>Gets or sets the item at the specified index in the list.</summary>
     /// <param name="index">The index of the item to get or set.</param>
     /// <returns>The item that exists at <paramref name="index" /> in the list.</returns>

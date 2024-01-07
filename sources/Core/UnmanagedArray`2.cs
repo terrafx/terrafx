@@ -102,6 +102,9 @@ public readonly unsafe partial struct UnmanagedArray<T, TData>
         }
     }
 
+    /// <summary><c>true</c> if the array is empty; otherwise, <c>false</c>.</summary>
+    public bool IsEmpty => this == s_empty;
+
     /// <summary><c>true</c> if the array is <c>null</c>; otherwise, <c>false</c>.</summary>
     public bool IsNull => _metadata is null;
 

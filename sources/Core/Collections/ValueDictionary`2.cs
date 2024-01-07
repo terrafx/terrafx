@@ -124,6 +124,9 @@ public partial struct ValueDictionary<TKey, TValue>
         }
     }
 
+    /// <summary><c>true</c> if the dictionary is <c>empty</c>; otherwise, <c>false</c>.</summary>
+    public readonly bool IsEmpty => Count == 0;
+
     /// <summary>Gets or sets the value, associated with a specified key, in the dictionary.</summary>
     /// <param name="key">The key of the value to get or set.</param>
     /// <returns>The value associated with <paramref name="key" />.</returns>
