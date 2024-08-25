@@ -4,28 +4,19 @@ using System;
 using TerraFX.Graphics.Advanced;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-#pragma warning disable CA1062 // Validate arguments of public methods
-
 namespace TerraFX.Graphics;
 
 /// <summary>Represents a set of vertices and indices used as part of a single draw operation.</summary>
-public sealed class GraphicsPrimitive : GraphicsPipelineObject
+/// <remarks>Initializes a new instance of the <see cref="GraphicsPrimitive" /> class.</remarks>
+/// <param name="pipeline">The pipeline for which the graphics primitive was created.</param>
+/// <param name="vertexBufferView">The vertex buffer view for the primitive.</param>
+/// <param name="indexBufferView">The index buffer view for the primitive or <c>null</c> if none exists.</param>
+/// <param name="resourceViews">The resource views for the primitive or <c>empty</c> if none exists.</param>
+public sealed class GraphicsPrimitive(GraphicsPipeline pipeline, GraphicsBufferView vertexBufferView, GraphicsBufferView? indexBufferView = null, ReadOnlySpan<GraphicsResourceView> resourceViews = default) : GraphicsPipelineObject(pipeline)
 {
-    private readonly GraphicsBufferView? _indexBufferView;
-    private readonly GraphicsPipelineDescriptorSet? _pipelineDescriptorSet;
-    private readonly GraphicsBufferView _vertexBufferView;
-
-    /// <summary>Initializes a new instance of the <see cref="GraphicsPrimitive" /> class.</summary>
-    /// <param name="pipeline">The pipeline for which the graphics primitive was created.</param>
-    /// <param name="vertexBufferView">The vertex buffer view for the primitive.</param>
-    /// <param name="indexBufferView">The index buffer view for the primitive or <c>null</c> if none exists.</param>
-    /// <param name="resourceViews">The resource views for the primitive or <c>empty</c> if none exists.</param>
-    public GraphicsPrimitive(GraphicsPipeline pipeline, GraphicsBufferView vertexBufferView, GraphicsBufferView? indexBufferView = null, ReadOnlySpan<GraphicsResourceView> resourceViews = default) : base(pipeline)
-    {
-        _indexBufferView = indexBufferView;
-        _pipelineDescriptorSet = !resourceViews.IsEmpty ? pipeline.CreateDescriptorSet(resourceViews) : null;
-        _vertexBufferView = vertexBufferView;
-    }
+    private readonly GraphicsBufferView? _indexBufferView = indexBufferView;
+    private readonly GraphicsPipelineDescriptorSet? _pipelineDescriptorSet = !resourceViews.IsEmpty ? pipeline.CreateDescriptorSet(resourceViews) : null;
+    private readonly GraphicsBufferView _vertexBufferView = vertexBufferView;
 
     /// <summary>Gets the index buffer view for the primitive or <c>null</c> if none exists.</summary>
     public GraphicsBufferView? IndexBufferView => _indexBufferView;

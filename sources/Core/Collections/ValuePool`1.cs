@@ -48,6 +48,9 @@ public unsafe partial struct ValuePool<T>
     /// <summary>Gets the number of items contained in the pool.</summary>
     public readonly int Count => _items.Count;
 
+    /// <summary><c>true</c> if the pool  is <c>empty</c>; otherwise, <c>false</c>.</summary>
+    public readonly bool IsEmpty => Count == 0;
+
     /// <summary>Compares two <see cref="ValuePool{T}" /> instances to determine equality.</summary>
     /// <param name="left">The <see cref="ValuePool{T}" /> to compare with <paramref name="right" />.</param>
     /// <param name="right">The <see cref="ValuePool{T}" /> to compare with <paramref name="left" />.</param>

@@ -8,16 +8,12 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
-public sealed class HelloTexture : HelloWindow
+public sealed class HelloTexture(string name) : HelloWindow(name)
 {
     private GraphicsPrimitive _trianglePrimitive = null!;
     private GraphicsTexture _texture2D = null!;
     private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
-
-    public HelloTexture(string name) : base(name)
-    {
-    }
 
     public override void Cleanup()
     {
@@ -78,9 +74,9 @@ public sealed class HelloTexture : HelloWindow
         return new GraphicsPrimitive(
             graphicsPipeline,
             CreateVertexBufferView(copyContext, _vertexBuffer, uploadBuffer, aspectRatio: surface.PixelWidth / surface.PixelHeight),
-            resourceViews: new GraphicsResourceView[1] {
+            resourceViews: [
                 CreateTexture2DView(copyContext, _texture2D, uploadBuffer)
-            }
+            ]
         );
 
         static GraphicsTextureView CreateTexture2DView(GraphicsCopyContext copyContext, GraphicsTexture texture2D, GraphicsBuffer uploadBuffer)

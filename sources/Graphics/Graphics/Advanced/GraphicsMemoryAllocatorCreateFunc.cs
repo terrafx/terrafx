@@ -4,22 +4,15 @@ using System;
 using System.Runtime.InteropServices;
 using TerraFX.Advanced;
 
-#pragma warning disable CA1815 // Override equals and operator equals on value types
-
 namespace TerraFX.Graphics.Advanced;
 
 /// <summary>Defines a function which creates a graphics memory allocator.</summary>
+/// <remarks>Initializes a new instance of the <see cref="GraphicsMemoryAllocatorCreateFunc" /> struct.</remarks>
+/// <param name="value">A pointer to the function that will be called in <see cref="Invoke" />.</param>
 [StructLayout(LayoutKind.Auto)]
-public readonly unsafe struct GraphicsMemoryAllocatorCreateFunc
+public readonly unsafe struct GraphicsMemoryAllocatorCreateFunc(delegate*<GraphicsDeviceObject, in GraphicsMemoryAllocatorCreateOptions, GraphicsMemoryAllocator> value)
 {
-    private readonly delegate*<GraphicsDeviceObject, in GraphicsMemoryAllocatorCreateOptions, GraphicsMemoryAllocator> _value;
-
-    /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryAllocatorCreateFunc" /> struct.</summary>
-    /// <param name="value">A pointer to the function that will be called in <see cref="Invoke" />.</param>
-    public GraphicsMemoryAllocatorCreateFunc(delegate*<GraphicsDeviceObject, in GraphicsMemoryAllocatorCreateOptions, GraphicsMemoryAllocator> value)
-    {
-        _value = value;
-    }
+    private readonly delegate*<GraphicsDeviceObject, in GraphicsMemoryAllocatorCreateOptions, GraphicsMemoryAllocator> _value = value;
 
     /// <summary>Gets <c>true</c> if the backing function pointer is not null; otherwise, <c>false</c>.</summary>
     public bool IsNotNull => _value is not null;

@@ -359,6 +359,12 @@ public static unsafe class MemoryUtilities
                     SmallClear(destination, length);
                     break;
                 }
+
+                default:
+                {
+                    ThrowUnreachableException();
+                    break;
+                }
             }
         }
 
@@ -446,6 +452,17 @@ public static unsafe class MemoryUtilities
                 case 1:
                 {
                     WriteUnaligned<byte>(destination, default);
+                    break;
+                }
+
+                case 0:
+                {
+                    break;
+                }
+
+                default:
+                {
+                    ThrowUnreachableException();
                     break;
                 }
             }
@@ -774,6 +791,17 @@ public static unsafe class MemoryUtilities
                     WriteUnaligned(destination, value);
                     break;
                 }
+
+                case 0:
+                {
+                    break;
+                }
+
+                default:
+                {
+                    ThrowUnreachableException();
+                    break;
+                }
             }
         }
 
@@ -824,6 +852,12 @@ public static unsafe class MemoryUtilities
                 case 0:
                 {
                     SmallCopy(destination, source, length);
+                    break;
+                }
+
+                default:
+                {
+                    ThrowUnreachableException();
                     break;
                 }
             }

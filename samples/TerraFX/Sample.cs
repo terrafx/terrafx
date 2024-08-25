@@ -17,25 +17,17 @@ using GC = System.GC;
 
 namespace TerraFX.Samples;
 
-public abstract unsafe class Sample : IDisposable
+public abstract unsafe class Sample(string name) : IDisposable
 {
-    private readonly string _assemblyPath;
-    private readonly string _name;
+    private readonly string _assemblyPath = Path.GetDirectoryName(AppContext.BaseDirectory)!;
+    private readonly string _name = name;
     private TimeSpan _timeout;
-
-    protected Sample(string name)
-    {
-        _assemblyPath = Path.GetDirectoryName(AppContext.BaseDirectory)!;
-        _name = name;
-    }
 
     ~Sample() => Dispose(isDisposing: false);
 
-    // ps_5_0
-    private static ReadOnlySpan<sbyte> D3D12CompileTarget_ps_5_0 => new sbyte[] { 0x70, 0x73, 0x5F, 0x35, 0x5F, 0x30, 0x00 };
+    private static ReadOnlySpan<byte> D3D12CompileTarget_ps_5_0 => "ps_5_0"u8;
 
-    // vs_5_0
-    private static ReadOnlySpan<sbyte> D3D12CompileTarget_vs_5_0 => new sbyte[] { 0x76, 0x73, 0x5F, 0x35, 0x5F, 0x30, 0x00 };
+    private static ReadOnlySpan<byte> D3D12CompileTarget_vs_5_0 => "vs_5_0"u8;
 
     public string Name => _name;
 
@@ -80,7 +72,7 @@ public abstract unsafe class Sample : IDisposable
             ID3DBlob* d3dShaderBlob = null;
             ID3DBlob* d3dShaderErrorBlob = null;
 
-            var result = D3DCompileFromFile(assetPath, pDefines: null, D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).GetPointerUnsafe(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &d3dShaderErrorBlob);
+            var result = D3DCompileFromFile(assetPath, pDefines: null, D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, (sbyte*)GetD3D12CompileTarget(kind).GetPointerUnsafe(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &d3dShaderErrorBlob);
 
             if (result.SUCCEEDED)
             {
@@ -102,6 +94,7 @@ public abstract unsafe class Sample : IDisposable
                     }
 
                     default:
+                    case GraphicsShaderKind.Unknown:
                     {
                         ThrowForInvalidKind(kind);
                         break;
@@ -109,7 +102,6 @@ public abstract unsafe class Sample : IDisposable
                 }
             }
 
-#pragma warning disable CA1508 // Avoid dead conditional code
             if (d3dShaderBlob != null)
             {
                 _ = d3dShaderBlob->Release();
@@ -119,7 +111,6 @@ public abstract unsafe class Sample : IDisposable
             {
                 _ = d3dShaderErrorBlob->Release();
             }
-#pragma warning restore CA1508 // Avoid dead conditional code
 
             if (result.FAILED)
             {
@@ -132,9 +123,9 @@ public abstract unsafe class Sample : IDisposable
             return graphicsShader;
         }
 
-        static ReadOnlySpan<sbyte> GetD3D12CompileTarget(GraphicsShaderKind graphicsShaderKind)
+        static ReadOnlySpan<byte> GetD3D12CompileTarget(GraphicsShaderKind graphicsShaderKind)
         {
-            ReadOnlySpan<sbyte> d3d12CompileTarget;
+            ReadOnlySpan<byte> d3d12CompileTarget;
 
             switch (graphicsShaderKind)
             {
@@ -151,6 +142,7 @@ public abstract unsafe class Sample : IDisposable
                 }
 
                 default:
+                case GraphicsShaderKind.Unknown:
                 {
                     ThrowNotImplementedException();
                     d3d12CompileTarget = default;

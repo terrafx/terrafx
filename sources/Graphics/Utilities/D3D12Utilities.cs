@@ -127,7 +127,7 @@ internal static unsafe partial class D3D12Utilities
         D3D12_COMMAND_LIST_TYPE_DIRECT,     // Render
         D3D12_COMMAND_LIST_TYPE_COPY,       // Copy
         D3D12_COMMAND_LIST_TYPE_COMPUTE,    // Compute
-    ];      
+    ];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DXGI_FORMAT AsDxgiFormat(this GraphicsFormat format) => s_dxgiFormatMap[(uint)format];

@@ -240,5 +240,5 @@ public sealed unsafe class GraphicsBuffer : GraphicsResource
         bufferView = succeeded ? new GraphicsBufferView(this, in createOptions, in memoryRegion) : null;
 
         return succeeded;
-    }   
+    }
 }

@@ -9,9 +9,9 @@ using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
-public sealed class HelloSmoke : HelloWindow
+public sealed class HelloSmoke(string name, bool isQuickAndDirty) : HelloWindow(name)
 {
-    private readonly bool _isQuickAndDirty;
+    private readonly bool _isQuickAndDirty = isQuickAndDirty;
 
     private GraphicsBuffer _constantBuffer = null!;
     private GraphicsBuffer _indexBuffer = null!;
@@ -20,11 +20,6 @@ public sealed class HelloSmoke : HelloWindow
     private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
     private float _texturePosition;
-
-    public HelloSmoke(string name, bool isQuickAndDirty) : base(name)
-    {
-        _isQuickAndDirty = isQuickAndDirty;
-    }
 
     public override void Cleanup()
     {
@@ -121,11 +116,11 @@ public sealed class HelloSmoke : HelloWindow
             graphicsPipeline,
             CreateVertexBufferView(copyContext, _vertexBuffer, uploadBuffer, aspectRatio: surface.PixelWidth / surface.PixelHeight),
             CreateIndexBufferView(copyContext, _indexBuffer, uploadBuffer),
-            new GraphicsResourceView[3] {
+            [
                 CreateConstantBufferView(constantBuffer),
                 CreateConstantBufferView(constantBuffer),
                 CreateTexture3DView(copyContext, _texture3D, uploadBuffer, _isQuickAndDirty),
-            }
+            ]
         );
 
         static GraphicsBufferView CreateConstantBufferView(GraphicsBuffer constantBuffer)

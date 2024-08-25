@@ -73,7 +73,7 @@ public struct BoundingSphere
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(BoundingSphere left, BoundingSphere right)
-    { 
+    {
         return (left._center == right._center)
             && (left._radius == right._radius);
     }
@@ -84,7 +84,7 @@ public struct BoundingSphere
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator !=(BoundingSphere left, BoundingSphere right)
-    { 
+    {
         return (left._center != right._center)
             || (left._radius != right._radius);
     }

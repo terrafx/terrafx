@@ -5,7 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -60,6 +59,9 @@ public sealed partial class PropertySet : IPropertySet
 
     /// <inheritdoc />
     public int Count => _items.Count;
+
+    /// <summary><c>true</c> if the property set is <c>empty</c>; otherwise, <c>false</c>.</summary>
+    public bool IsEmpty => _items.Count == 0;
 
     /// <summary>Gets a collection containing the keys for the property set.</summary>
     public KeyCollection Keys => new KeyCollection(this);

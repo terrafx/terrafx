@@ -119,6 +119,11 @@ public sealed unsafe class GraphicsSwapchain : GraphicsRenderPassObject
                 }
 
                 default:
+                case GraphicsSurfaceKind.Unknown:
+                case GraphicsSurfaceKind.Android:
+                case GraphicsSurfaceKind.Wayland:
+                case GraphicsSurfaceKind.Xcb:
+                case GraphicsSurfaceKind.Xlib:
                 {
                     ThrowForInvalidKind(surface.Kind);
                     dxgiSwapchain = null;

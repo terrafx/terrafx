@@ -11,8 +11,6 @@ using System.Diagnostics.CodeAnalysis;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
 
-#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
-
 namespace TerraFX.Collections;
 
 /// <summary>Represents a queue of unmanaged items.</summary>
@@ -116,6 +114,9 @@ public unsafe partial struct UnmanagedValueQueue<T>
 
     /// <summary>Gets the number of items contained in the queue.</summary>
     public readonly nuint Count => _count;
+
+    /// <summary><c>true</c> if the queue is <c>empty</c>; otherwise, <c>false</c>.</summary>
+    public readonly bool IsEmpty => _count == 0;
 
     /// <summary>Compares two <see cref="UnmanagedValueQueue{T}" /> instances to determine equality.</summary>
     /// <param name="left">The <see cref="UnmanagedValueQueue{T}" /> to compare with <paramref name="right" />.</param>

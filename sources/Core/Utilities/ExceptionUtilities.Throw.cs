@@ -324,6 +324,11 @@ public static partial class ExceptionUtilities
     }
 
     /// <summary>Throws an <see cref="UnreachableException" />.</summary>
+    /// <exception cref="UnreachableException">The program executed an instruction that was thought to be unreachable.</exception>
+    [DoesNotReturn]
+    public static void ThrowUnreachableException() => throw new UnreachableException();
+
+    /// <summary>Throws an <see cref="UnreachableException" />.</summary>
     /// <param name="message">The message detailing the cause of the exception.</param>
     /// <exception cref="UnreachableException"><paramref name="message" /></exception>
     [DoesNotReturn]

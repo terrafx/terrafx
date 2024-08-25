@@ -21,7 +21,7 @@ public static class ValueDictionary
 
     /// <summary>Gets an empty dictionary.</summary>
     public static ValueDictionary<TKey, TValue> Empty<TKey, TValue>()
-        where TKey : notnull => new ValueDictionary<TKey, TValue>();
+        where TKey : notnull => [];
 
     /// <summary>Adds a value, associated with the specified key, to the dictionary.</summary>
     /// <param name="dictionary">The dictionary to which the value should be added.</param>

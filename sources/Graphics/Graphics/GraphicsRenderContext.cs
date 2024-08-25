@@ -148,7 +148,7 @@ public sealed unsafe class GraphicsRenderContext : GraphicsContext
 
         for (var index = 0; index < vertexBufferViews.Length; index++)
         {
-            var vertexBufferView = (GraphicsBufferView)vertexBufferViews[index];
+            var vertexBufferView = vertexBufferViews[index];
             ThrowIfNull(vertexBufferView);
 
             d3d12VertexBufferViews[index] = new D3D12_VERTEX_BUFFER_VIEW {

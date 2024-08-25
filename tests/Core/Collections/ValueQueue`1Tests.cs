@@ -248,14 +248,14 @@ public static class ValueQueueTests
             Is.EquivalentTo(new int[] { 3, 4, 5, 6, 0, 0 })
         );
 
-        Assert.That(() => valueQueue.CopyTo(Array.Empty<int>()),
+        Assert.That(() => valueQueue.CopyTo([]),
             Throws.ArgumentException
                   .And.Property("ParamName").EqualTo("destination")
         );
 
         valueQueue = new ValueQueue<int>();
 
-        Assert.That(() => valueQueue.CopyTo(Array.Empty<int>()),
+        Assert.That(() => valueQueue.CopyTo([]),
             Throws.Nothing
         );
     }

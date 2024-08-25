@@ -5,18 +5,12 @@ using TerraFX.ApplicationModel;
 using TerraFX.UI;
 using TerraFX.Utilities;
 
-#pragma warning disable CA2213 // Disposable fields should be disposed
-
 namespace TerraFX.Samples.UI;
 
-public sealed class EmptyWindow : Sample
+public sealed class EmptyWindow(string name) : Sample(name)
 {
     private UIWindow _window = null!;
     private TimeSpan _elapsedTime;
-
-    public EmptyWindow(string name) : base(name)
-    {
-    }
 
     public UIWindow Window => _window;
 

@@ -2,8 +2,6 @@
 
 using System.Runtime.InteropServices;
 
-#pragma warning disable CA1815 // Override equals and operator equals on value types
-
 namespace TerraFX.Graphics.Advanced;
 
 /// <summary>The options used when creating a graphics buffer.</summary>

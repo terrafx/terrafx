@@ -9,17 +9,13 @@ using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
-public sealed class HelloTransform : HelloWindow
+public sealed class HelloTransform(string name) : HelloWindow(name)
 {
     private GraphicsBuffer _constantBuffer = null!;
     private GraphicsPrimitive _trianglePrimitive = null!;
     private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
     private float _trianglePrimitiveTranslationX;
-
-    public HelloTransform(string name) : base(name)
-    {
-    }
 
     public override void Cleanup()
     {
@@ -108,10 +104,10 @@ public sealed class HelloTransform : HelloWindow
         return new GraphicsPrimitive(
             graphicsPipeline,
             CreateVertexBufferView(copyContext, _vertexBuffer, uploadBuffer, aspectRatio: surface.PixelWidth / surface.PixelHeight),
-            resourceViews: new GraphicsResourceView[2] {
+            resourceViews: [
                 CreateConstantBufferView(constantBuffer),
                 CreateConstantBufferView(constantBuffer),
-            }
+            ]
         );
 
         static GraphicsBufferView CreateConstantBufferView(GraphicsBuffer constantBuffer)

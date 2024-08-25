@@ -76,7 +76,6 @@ public static unsafe class Program
 
     private static void PrintHelp()
     {
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
         Console.WriteLine("General Options");
         Console.WriteLine("    ALL:     Indicates that all samples should be run.");
         Console.WriteLine();
@@ -87,7 +86,6 @@ public static unsafe class Program
         {
             Console.WriteLine($"    {sample.Name}");
         }
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
     }
 
     private static void Run(Sample sample, TimeSpan timeout, Vector2? windowLocation, Vector2? windowSize)

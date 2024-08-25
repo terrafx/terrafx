@@ -11,6 +11,7 @@
   -->
 
   <PropertyGroup>
+    <RootNamespace>TerraFX.UnitTests</RootNamespace>
     <TerraFXProjectCategory>tests</TerraFXProjectCategory>
   </PropertyGroup>
 

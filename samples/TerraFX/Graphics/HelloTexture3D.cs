@@ -16,7 +16,7 @@ namespace TerraFX.Samples.Graphics;
 /// * ConstBuffer (transformation matrix as in HelloConstBuffer, but here to animate the 3D texture coordinates)
 /// Will show a quad cutting through the RGB cube and being animated to move back and forth in texture coordinate space.
 /// </summary>
-public class HelloTexture3D : HelloWindow
+public class HelloTexture3D(string name) : HelloWindow(name)
 {
     private GraphicsBuffer _constantBuffer = null!;
     private GraphicsBuffer _indexBuffer = null!;
@@ -25,10 +25,6 @@ public class HelloTexture3D : HelloWindow
     private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
     private float _texturePosition;
-
-    public HelloTexture3D(string name) : base(name)
-    {
-    }
 
     public override void Cleanup()
     {
@@ -129,11 +125,11 @@ public class HelloTexture3D : HelloWindow
             graphicsPipeline,
             CreateVertexBufferView(copyContext, _vertexBuffer, uploadBuffer, aspectRatio: surface.PixelWidth / surface.PixelHeight),
             CreateIndexBufferView(copyContext, _indexBuffer, uploadBuffer),
-            new GraphicsResourceView[3] {
+            [
                 CreateConstantBufferView(constantBuffer),
                 CreateConstantBufferView(constantBuffer),
                 CreateTexture3DView(copyContext, _texture3D, uploadBuffer),
-            }
+            ]
         );
 
         static GraphicsBufferView CreateConstantBufferView(GraphicsBuffer constantBuffer)

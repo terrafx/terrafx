@@ -69,12 +69,12 @@ public struct VolatileState : IEquatable<VolatileState>
     /// <inheritdoc />
     public override readonly int GetHashCode() => _value.GetHashCode();
 
-    /// <summary>Transititions the object to a new state.</summary>
+    /// <summary>Transitions the object to a new state.</summary>
     /// <param name="to">The state to transition to.</param>
     /// <returns>The previous state of the object.</returns>
     public uint Transition(uint to) => Exchange(ref _value, to);
 
-    /// <summary>Transititions the object to a new state.</summary>
+    /// <summary>Transitions the object to a new state.</summary>
     /// <param name="from">The state to transition from.</param>
     /// <param name="to">The state to transition to.</param>
     /// <exception cref="InvalidOperationException">Transitioning the state from '<paramref name="from" />' to '<paramref name="to" />' failed.</exception>

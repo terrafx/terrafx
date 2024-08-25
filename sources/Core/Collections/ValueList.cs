@@ -14,7 +14,7 @@ namespace TerraFX.Collections;
 public static class ValueList
 {
     /// <summary>Gets an empty list.</summary>
-    public static ValueList<T> Empty<T>() => new ValueList<T>();
+    public static ValueList<T> Empty<T>() => [];
 
     /// <summary>Adds an item to the list.</summary>
     /// <param name="list">The list to which the item should be added.</param>

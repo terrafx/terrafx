@@ -248,14 +248,14 @@ public static class ValueStackTests
             Is.EquivalentTo(new int[] { 1, 2, 5, 6, 0, 0 })
         );
 
-        Assert.That(() => valueStack.CopyTo(Array.Empty<int>()),
+        Assert.That(() => valueStack.CopyTo([]),
             Throws.ArgumentException
                   .And.Property("ParamName").EqualTo("destination")
         );
 
         valueStack = new ValueStack<int>();
 
-        Assert.That(() => valueStack.CopyTo(Array.Empty<int>()),
+        Assert.That(() => valueStack.CopyTo([]),
             Throws.Nothing
         );
     }

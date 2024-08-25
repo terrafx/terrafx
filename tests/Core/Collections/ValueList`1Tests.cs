@@ -276,14 +276,14 @@ public static class ValueListTests
             Is.EquivalentTo(new int[] { 1, 2, 3, 0, 0, 0 })
         );
 
-        Assert.That(() => valueList.CopyTo(Array.Empty<int>()),
+        Assert.That(() => valueList.CopyTo([]),
             Throws.ArgumentException
                   .And.Property("ParamName").EqualTo("destination")
         );
 
         valueList = [];
 
-        Assert.That(() => valueList.CopyTo(Array.Empty<int>()),
+        Assert.That(() => valueList.CopyTo([]),
             Throws.Nothing
         );
     }

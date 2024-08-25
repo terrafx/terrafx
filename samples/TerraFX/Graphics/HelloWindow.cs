@@ -8,21 +8,15 @@ using TerraFX.Numerics;
 using TerraFX.UI;
 using TerraFX.Utilities;
 
-#pragma warning disable CA2213 // Disposable fields should be disposed
-
 namespace TerraFX.Samples.Graphics;
 
-public class HelloWindow : Sample
+public class HelloWindow(string name) : Sample(name)
 {
     private GraphicsDevice _graphicsDevice = null!;
     private GraphicsRenderPass _renderPass = null!;
     private UIWindow _window = null!;
     private TimeSpan _elapsedTime;
     private uint _secondsOfLastFpsUpdate;
-
-    public HelloWindow(string name) : base(name)
-    {
-    }
 
     public GraphicsDevice GraphicsDevice => _graphicsDevice;
 

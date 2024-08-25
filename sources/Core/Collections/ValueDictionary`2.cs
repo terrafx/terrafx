@@ -12,8 +12,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
-
 namespace TerraFX.Collections;
 
 /// <summary>Represents a collection of key/value pairs that are organized based on the key.</summary>
@@ -101,7 +99,7 @@ public partial struct ValueDictionary<TKey, TValue>
         this(capacity: (source is not null) && source.TryGetNonEnumeratedCount(out var count) ? count : 0, comparer)
     {
         ThrowIfNull(source);
-        
+
         foreach ((var key, var value) in source)
         {
             this.Add(key, value);
@@ -123,6 +121,9 @@ public partial struct ValueDictionary<TKey, TValue>
             return (entries is not null) ? entries.Length : 0;
         }
     }
+
+    /// <summary><c>true</c> if the dictionary is <c>empty</c>; otherwise, <c>false</c>.</summary>
+    public readonly bool IsEmpty => Count == 0;
 
     /// <summary>Gets or sets the value, associated with a specified key, in the dictionary.</summary>
     /// <param name="key">The key of the value to get or set.</param>

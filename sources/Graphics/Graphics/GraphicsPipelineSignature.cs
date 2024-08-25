@@ -108,6 +108,7 @@ public sealed unsafe class GraphicsPipelineSignature : GraphicsDeviceObject
                         }
 
                         default:
+                        case GraphicsPipelineResourceKind.Unknown:
                         {
                             ThrowForInvalidKind(resource.Kind);
                             break;
@@ -176,6 +177,7 @@ public sealed unsafe class GraphicsPipelineSignature : GraphicsDeviceObject
                         }
 
                         default:
+                        case GraphicsPipelineResourceKind.Unknown:
                         {
                             ThrowForInvalidKind(resource.Kind);
                             break;

@@ -1772,7 +1772,7 @@ public static class VectorUtilities
         {
             return Vector128.Create(
                 lower.GetLower(),
-                AdvSimd.DuplicateSelectedScalarToVector64(upper, 0) 
+                AdvSimd.DuplicateSelectedScalarToVector64(upper, 0)
             );
         }
         else
@@ -3119,7 +3119,7 @@ public static class VectorUtilities
             return SoftwareFallback(addend, left, scalar);
         }
 
-        static Vector128<float> SoftwareFallback(Vector128<float> addend, Vector128< float> left, float right)
+        static Vector128<float> SoftwareFallback(Vector128<float> addend, Vector128<float> left, float right)
         {
             return Vector128.Create(
                 addend.GetX() + (left.GetX() * right),

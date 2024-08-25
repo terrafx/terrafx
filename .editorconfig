@@ -249,7 +249,7 @@ dotnet_style_operator_placement_when_wrapping = beginning_of_line
 dotnet_style_prefer_auto_properties = false:error
 dotnet_style_prefer_compound_assignment = true:error
 dotnet_style_prefer_conditional_expression_over_assignment = true:suggestion
-dotnet_style_prefer_conditional_expression_over_return = true:suggestion
+dotnet_style_prefer_conditional_expression_over_return = true:none
 dotnet_style_prefer_inferred_anonymous_type_member_names = true:error
 dotnet_style_prefer_inferred_tuple_names = true:error
 dotnet_style_prefer_is_null_check_over_reference_equality_method = true:error
@@ -322,6 +322,7 @@ csharp_prefer_braces = true:error
 csharp_prefer_simple_default_expression = true:error
 csharp_prefer_simple_using_statement = true:error
 csharp_prefer_static_local_function = true:error
+csharp_prefer_system_threading_lock = true:error
 csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:error
 
 ###############################################################################
@@ -448,8 +449,10 @@ csharp_style_prefer_index_operator = false:error
 csharp_style_prefer_method_group_conversion = true:suggestion
 csharp_style_prefer_not_pattern = true:error
 csharp_style_prefer_pattern_matching = true:error
+csharp_style_prefer_primary_constructors = true:suggestion
 csharp_style_prefer_range_operator = false:error
 csharp_style_prefer_switch_expression = true:error
+csharp_style_prefer_top_level_statements = true:suggestion
 
 csharp_style_throw_expression = true:error
 

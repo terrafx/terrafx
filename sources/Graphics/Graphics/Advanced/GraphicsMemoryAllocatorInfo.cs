@@ -3,8 +3,6 @@
 using System.Runtime.InteropServices;
 using TerraFX.Advanced;
 
-#pragma warning disable CA1815 // Override equals and operator equals on value types
-
 namespace TerraFX.Graphics.Advanced;
 
 /// <summary>Defines information common to all graphics memory allocators.</summary>

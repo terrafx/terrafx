@@ -3,23 +3,16 @@
 using System;
 using System.Reflection;
 
-#pragma warning disable CA1062 // Validate arguments of public methods
-
 namespace TerraFX.Graphics.Advanced;
 
 /// <summary>An object which is created for a graphics adapter.</summary>
-public abstract class GraphicsAdapterObject : GraphicsServiceObject
+/// <remarks>Initializes a new instance of the <see cref="GraphicsAdapterObject" /> class.</remarks>
+/// <param name="adapter">The adapter for which the object is being created.</param>
+/// <param name="name">The name of the object or <c>null</c> to use <see cref="MemberInfo.Name" />.</param>
+/// <exception cref="ArgumentNullException"><paramref name="adapter" /> is <c>null</c>.</exception>
+public abstract class GraphicsAdapterObject(GraphicsAdapter adapter, string? name = null) : GraphicsServiceObject(adapter.Service, name)
 {
-    private readonly GraphicsAdapter _adapter;
-
-    /// <summary>Initializes a new instance of the <see cref="GraphicsAdapterObject" /> class.</summary>
-    /// <param name="adapter">The adapter for which the object is being created.</param>
-    /// <param name="name">The name of the object or <c>null</c> to use <see cref="MemberInfo.Name" />.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="adapter" /> is <c>null</c>.</exception>
-    protected GraphicsAdapterObject(GraphicsAdapter adapter, string? name = null) : base(adapter.Service, name)
-    {
-        _adapter = adapter;
-    }
+    private readonly GraphicsAdapter _adapter = adapter;
 
     /// <summary>Gets the adapter for which the object was created.</summary>
     public GraphicsAdapter Adapter => _adapter;
