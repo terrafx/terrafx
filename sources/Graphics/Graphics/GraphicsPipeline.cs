@@ -88,7 +88,7 @@ public sealed unsafe class GraphicsPipeline : GraphicsRenderPassObject
                         alignedByteOffset = AlignUp(alignedByteOffset, inputByteAlignment);
 
                         d3d12InputElementDescs[index] = new D3D12_INPUT_ELEMENT_DESC {
-                            SemanticName = GetSemanticName(input.Kind).GetPointerUnsafe(),
+                            SemanticName = (sbyte*)GetSemanticName(input.Kind).GetPointerUnsafe(),
                             SemanticIndex = 0,
                             Format = input.Format.AsDxgiFormat(),
                             InputSlot = 0,
@@ -133,41 +133,38 @@ public sealed unsafe class GraphicsPipeline : GraphicsRenderPassObject
             return GetLatestD3D12PipelineState(d3d12PipelineState, out d3d12PipelineStateVersion);
         }
 
-        static ReadOnlySpan<sbyte> GetSemanticName(GraphicsPipelineInputKind pipelineInputKind)
+        static ReadOnlySpan<byte> GetSemanticName(GraphicsPipelineInputKind pipelineInputKind)
         {
-            ReadOnlySpan<sbyte> inputElementSemanticName;
+            ReadOnlySpan<byte> inputElementSemanticName;
 
             switch (pipelineInputKind)
             {
                 case GraphicsPipelineInputKind.Position:
                 {
-                    // POSITION
-                    inputElementSemanticName = new sbyte[] { 0x50, 0x4F, 0x53, 0x49, 0x54, 0x49, 0x4F, 0x4E, 0x00 };
+                    inputElementSemanticName = "POSITION"u8;
                     break;
                 }
 
                 case GraphicsPipelineInputKind.Color:
                 {
-                    // COLOR
-                    inputElementSemanticName = new sbyte[] { 0x43, 0x4F, 0x4C, 0x4F, 0x52, 0x00 };
+                    inputElementSemanticName = "COLOR"u8;
                     break;
                 }
 
                 case GraphicsPipelineInputKind.Normal:
                 {
-                    // NORMAL
-                    inputElementSemanticName = new sbyte[] { 0x4E, 0x4F, 0x52, 0x4D, 0x41, 0x4C, 0x00 };
+                    inputElementSemanticName = "NORMAL"u8;
                     break;
                 }
 
                 case GraphicsPipelineInputKind.TextureCoordinate:
                 {
-                    // TEXCOORD
-                    inputElementSemanticName = new sbyte[] { 0x54, 0x45, 0x58, 0x43, 0x4F, 0x4F, 0x52, 0x44, 0x00 };
+                    inputElementSemanticName = "TEXCOORD"u8;
                     break;
                 }
 
                 default:
+                case GraphicsPipelineInputKind.Unknown:
                 {
                     inputElementSemanticName = default;
                     break;

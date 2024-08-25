@@ -214,7 +214,7 @@ public struct BoundingBox
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(BoundingBox left, BoundingBox right)
-    { 
+    {
         return (left._center == right._center)
             && (left._extent == right._extent);
     }
@@ -225,7 +225,7 @@ public struct BoundingBox
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator !=(BoundingBox left, BoundingBox right)
-    { 
+    {
         return (left._center != right._center)
             || (left._extent != right._extent);
     }

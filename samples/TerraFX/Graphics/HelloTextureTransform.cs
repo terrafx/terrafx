@@ -15,7 +15,7 @@ namespace TerraFX.Samples.Graphics;
 /// The moving is via a translation matrix similar to HelloConstBuffer.
 ///   It has the same DX12 setup, but different translation math.
 /// </summary>
-public sealed class HelloTextureTransform : HelloWindow
+public sealed class HelloTextureTransform(string name) : HelloWindow(name)
 {
     private GraphicsBuffer _constantBuffer = null!;
     private GraphicsPrimitive _trianglePrimitive = null!;
@@ -23,10 +23,6 @@ public sealed class HelloTextureTransform : HelloWindow
     private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
     private float _trianglePrimitiveTranslationAngle;
-
-    public HelloTextureTransform(string name) : base(name)
-    {
-    }
 
     public override void Cleanup()
     {
@@ -119,11 +115,11 @@ public sealed class HelloTextureTransform : HelloWindow
         return new GraphicsPrimitive(
             graphicsPipeline,
             CreateVertexBufferView(copyContext, _vertexBuffer, uploadBuffer, aspectRatio: surface.PixelWidth / surface.PixelHeight),
-            resourceViews: new GraphicsResourceView[3] {
+            resourceViews: [
                 CreateConstantBufferView(constantBuffer),
                 CreateConstantBufferView(constantBuffer),
                 CreateTexture2DView(copyContext, _texture2D, uploadBuffer),
-            }
+            ]
         );
 
         static GraphicsBufferView CreateConstantBufferView(GraphicsBuffer constantBuffer)

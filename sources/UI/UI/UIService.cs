@@ -71,7 +71,7 @@ public sealed unsafe class UIService : DisposableObject
         {
             var desktopWindowHandle = GetDesktopWindow();
 
-            var desktopClassName = stackalloc char[256]; // 256 is the maximum length of WNDCLASSEX.lpszClassName
+            var desktopClassName = stackalloc char[256]; // 256 is the maximum length of a WNDCLASSEX class name
             ThrowForLastErrorIfZero(GetClassNameW(desktopWindowHandle, desktopClassName, 256));
 
             WNDCLASSEXW desktopWindowClass;

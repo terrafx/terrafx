@@ -16,8 +16,8 @@
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
     <OutputType>Exe</OutputType>
+    <RootNamespace>TerraFX.Samples</RootNamespace>
     <TerraFXProjectCategory>samples</TerraFXProjectCategory>
   </PropertyGroup>
 

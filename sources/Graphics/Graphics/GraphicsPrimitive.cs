@@ -4,8 +4,6 @@ using System;
 using TerraFX.Graphics.Advanced;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-#pragma warning disable CA1062 // Validate arguments of public methods
-
 namespace TerraFX.Graphics;
 
 /// <summary>Represents a set of vertices and indices used as part of a single draw operation.</summary>

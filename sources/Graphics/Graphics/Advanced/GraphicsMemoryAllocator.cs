@@ -117,7 +117,7 @@ public abstract unsafe partial class GraphicsMemoryAllocator
     /// <param name="byteLength">The length, in bytes, of the memory region to allocate.</param>
     /// <param name="byteAlignment">The alignment, in bytes, of the memory region to allocate.</param>
     /// <param name="memoryRegion">On return, contains the allocated memory region or <c>default</c> if the allocation failed.</param>
-    /// <returns><c>true</c> if a memory region was sucesfully allocated; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if a memory region was successfully allocated; otherwise, <c>false</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="byteLength" /> is <c>zero</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="byteAlignment" /> is not zero or a <c>power of two</c>.</exception>
     public bool TryAllocate(nuint byteLength, [Optional] nuint byteAlignment, out GraphicsMemoryRegion memoryRegion)
@@ -141,7 +141,7 @@ public abstract unsafe partial class GraphicsMemoryAllocator
     /// <param name="byteLength">The length, in bytes, of the memory region to allocate.</param>
     /// <param name="byteAlignment">The alignment, in bytes, of the memory region to allocate.</param>
     /// <param name="memoryRegion">On return, contains the allocated memory region or <c>default</c> if the allocation failed.</param>
-    /// <returns><c>true</c> if a memory region was sucesfully allocated; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if a memory region was successfully allocated; otherwise, <c>false</c>.</returns>
     /// <remarks>This method is unsafe because it does not perform most parameter or state validation.</remarks>
     protected abstract bool TryAllocateUnsafe(nuint byteLength, nuint byteAlignment, out GraphicsMemoryRegion memoryRegion);
 

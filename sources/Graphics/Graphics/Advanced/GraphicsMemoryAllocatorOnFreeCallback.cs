@@ -2,8 +2,6 @@
 
 using System.Runtime.InteropServices;
 
-#pragma warning disable CA1815 // Override equals and operator equals on value types
-
 namespace TerraFX.Graphics.Advanced;
 
 /// <summary>Defines a function which is raised when a graphics memory region is freed.</summary>

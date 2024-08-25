@@ -961,6 +961,8 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
             }
 
             default:
+            case D3D12_HEAP_TYPE_CUSTOM:
+            case D3D12_HEAP_TYPE_GPU_UPLOAD:
             {
                 ThrowForInvalidKind(memoryManager.D3D12HeapType);
                 break;
@@ -996,6 +998,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
             memoryManagerIndex += resourceKind switch {
                 GraphicsResourceKind.Buffer => 0,
                 GraphicsResourceKind.Texture => 1,
+                GraphicsResourceKind.Unknown => -1,
                 _ => -1
             };
         }

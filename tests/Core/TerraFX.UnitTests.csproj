@@ -6,11 +6,6 @@
     <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- CA1861: Avoid constant arrays as arguments -->
-    <NoWarn>$(NoWarn);CA1861</NoWarn>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\sources\Core\TerraFX.csproj" />
   </ItemGroup>

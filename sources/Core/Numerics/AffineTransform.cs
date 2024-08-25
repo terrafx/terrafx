@@ -236,7 +236,7 @@ public struct AffineTransform
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(AffineTransform left, AffineTransform right)
-    { 
+    {
         return (left._rotation == right._rotation)
             && (left._scale == right._scale)
             && (left._translation == right._translation);
@@ -248,7 +248,7 @@ public struct AffineTransform
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator !=(AffineTransform left, AffineTransform right)
-    { 
+    {
         return (left._rotation != right._rotation)
             || (left._scale != right._scale)
             || (left._translation != right._translation);

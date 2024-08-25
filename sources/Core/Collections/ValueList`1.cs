@@ -48,7 +48,7 @@ public partial struct ValueList<T>
     {
         // This is an extension method and throws ArgumentNullException if null
         var items = source.ToArray();
-        
+
         _items = items;
         _count = items.Length;
     }

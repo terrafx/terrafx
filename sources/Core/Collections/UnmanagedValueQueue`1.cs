@@ -11,8 +11,6 @@ using System.Diagnostics.CodeAnalysis;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
 
-#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
-
 namespace TerraFX.Collections;
 
 /// <summary>Represents a queue of unmanaged items.</summary>

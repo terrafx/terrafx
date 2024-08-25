@@ -39,7 +39,7 @@ public partial struct UnmanagedArray<T, TData>
             }
 
             _index = index;
-            return succeeded;            
+            return succeeded;
         }
 
         /// <inheritdoc />

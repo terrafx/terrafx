@@ -9,11 +9,11 @@ using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
-public sealed class HelloInstancing : HelloWindow
+public sealed class HelloInstancing(string name) : HelloWindow(name)
 {
     private const uint InstanceCount = 128;
 
-    private readonly Random _rng;
+    private readonly Random _rng = new Random(Seed: 20170526);
 
     private float _aspectRatio = 1.0f;
     private GraphicsBuffer _constantBuffer = null!;
@@ -22,11 +22,6 @@ public sealed class HelloInstancing : HelloWindow
     private UnmanagedArray<AffineTransform> _trianglePrimitivePerSecondDelta;
     private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
-
-    public HelloInstancing(string name) : base(name)
-    {
-        _rng = new Random(Seed: 20170526);
-    }
 
     public override void Cleanup()
     {
@@ -167,10 +162,10 @@ public sealed class HelloInstancing : HelloWindow
         return new GraphicsPrimitive(
             graphicsPipeline,
             CreateVertexBufferView(copyContext, _vertexBuffer, uploadBuffer, _aspectRatio),
-            resourceViews: new GraphicsResourceView[2] {
+            resourceViews: [
                 CreateConstantBufferView(constantBuffer, 1),
                 CreateConstantBufferView(constantBuffer, instanceCount),
-            }
+            ]
         );
 
         static GraphicsBufferView CreateConstantBufferView(GraphicsBuffer constantBuffer, uint instanceCount)

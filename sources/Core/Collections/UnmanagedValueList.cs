@@ -18,7 +18,7 @@ public static unsafe class UnmanagedValueList
 {
     /// <summary>Gets an empty list.</summary>
     public static UnmanagedValueList<T> Empty<T>()
-        where T : unmanaged => new UnmanagedValueList<T>();
+        where T : unmanaged => [];
 
     /// <summary>Adds an item to the list.</summary>
     /// <param name="list">The list to which the item should be added.</param>

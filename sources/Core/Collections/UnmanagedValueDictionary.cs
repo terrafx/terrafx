@@ -25,7 +25,7 @@ public static class UnmanagedValueDictionary
     /// <summary>Gets an empty dictionary.</summary>
     public static UnmanagedValueDictionary<TKey, TValue> Empty<TKey, TValue>()
         where TKey : unmanaged
-        where TValue : unmanaged => new UnmanagedValueDictionary<TKey, TValue>();
+        where TValue : unmanaged => [];
 
     /// <summary>Adds a value, associated with the specified key, to the dictionary.</summary>
     /// <param name="dictionary">The dictionary to which the value should be added.</param>
@@ -86,7 +86,7 @@ public static class UnmanagedValueDictionary
     }
 
     /// <summary>Removes all items from the dictionary.</summary>
-    /// <param name="dictionary">The dictionary which should be cleaered.</param>
+    /// <param name="dictionary">The dictionary which should be cleared.</param>
     public static void Clear<TKey, TValue>(this ref UnmanagedValueDictionary<TKey, TValue> dictionary)
         where TKey : unmanaged
         where TValue : unmanaged

@@ -77,6 +77,7 @@ public sealed unsafe class GraphicsPipelineDescriptorSet : GraphicsPipelineObjec
                     }
 
                     default:
+                    case GraphicsResourceKind.Unknown:
                     {
                         ThrowForInvalidKind(resourceView.Kind);
                         break;
@@ -153,6 +154,7 @@ public sealed unsafe class GraphicsPipelineDescriptorSet : GraphicsPipelineObjec
                             }
 
                             default:
+                            case GraphicsTextureKind.Unknown:
                             {
                                 ThrowForInvalidKind(textureView.Kind);
                                 break;
@@ -164,6 +166,7 @@ public sealed unsafe class GraphicsPipelineDescriptorSet : GraphicsPipelineObjec
                     }
 
                     default:
+                    case GraphicsResourceKind.Unknown:
                     {
                         ThrowForInvalidKind(resourceView.Kind);
                         break;

@@ -38,7 +38,7 @@ public partial struct UnmanagedSpan<T>
                 succeeded = false;
             }
 
-            return succeeded;            
+            return succeeded;
         }
 
         /// <inheritdoc />

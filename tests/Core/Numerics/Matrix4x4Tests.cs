@@ -1,3 +1,5 @@
+// Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
+
 using System.Runtime.Intrinsics;
 using NUnit.Framework;
 using TerraFX.Numerics;
@@ -213,7 +215,7 @@ public static class Matrix4x4Tests
     {
         Assert.That(() => Matrix4x4.CreateFromRotationZ(0.5f),
             Is.EqualTo(Matrix4x4.Create(
-                Vector128.Create(+0.87758255f, 0.47942555f, 0.0f, 0.0f),                
+                Vector128.Create(+0.87758255f, 0.47942555f, 0.0f, 0.0f),
                 Vector128.Create(-0.47942555f, 0.87758255f, 0.0f, 0.0f),
                 UnitZ,
                 UnitW
@@ -520,7 +522,7 @@ public static class Matrix4x4Tests
     [Test]
     public static void AsSystemMatrix4x4Test()
     {
-        Assert.That(() => Matrix4x4.Identity.AsSystemMatrix4x4(),
+        Assert.That(Matrix4x4.Identity.AsSystemMatrix4x4,
             Is.EqualTo(SysMatrix4x4.Identity)
         );
     }

@@ -386,7 +386,7 @@ public struct Matrix4x4
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CompareEqualAll(Matrix4x4 left, in Matrix4x4 right, in Matrix4x4 epsilon)
-    { 
+    {
         return VectorUtilities.CompareEqualAll(left._x, right._x, epsilon._x)
             && VectorUtilities.CompareEqualAll(left._y, right._y, epsilon._y)
             && VectorUtilities.CompareEqualAll(left._z, right._z, epsilon._z)
@@ -790,7 +790,7 @@ public struct Matrix4x4
     /// <returns><c>true</c> if any elements in <paramref name="value" /> are either <see cref="float.PositiveInfinity" /> or <see cref="float.NegativeInfinity" />; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsAnyInfinity(Matrix4x4 value)
-    { 
+    {
         return VectorUtilities.IsAnyInfinity(value._x)
             || VectorUtilities.IsAnyInfinity(value._y)
             || VectorUtilities.IsAnyInfinity(value._z)
@@ -802,7 +802,7 @@ public struct Matrix4x4
     /// <returns><c>true</c> if any elements in <paramref name="value" /> are <see cref="float.NaN" />; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsAnyNaN(Matrix4x4 value)
-    { 
+    {
         return VectorUtilities.IsAnyNaN(value._x)
             || VectorUtilities.IsAnyNaN(value._y)
             || VectorUtilities.IsAnyNaN(value._z)

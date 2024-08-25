@@ -8,15 +8,11 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
-public sealed class HelloTriangle : HelloWindow
+public sealed class HelloTriangle(string name) : HelloWindow(name)
 {
     private GraphicsPrimitive _trianglePrimitive = null!;
     private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
-
-    public HelloTriangle(string name) : base(name)
-    {
-    }
 
     public override void Cleanup()
     {
@@ -38,7 +34,7 @@ public sealed class HelloTriangle : HelloWindow
         base.Initialize(application, timeout, windowLocation, windowSize);
 
         var graphicsDevice = GraphicsDevice;
-        
+
         _uploadBuffer = graphicsDevice.CreateUploadBuffer(64 * 1024);
         _vertexBuffer = graphicsDevice.CreateVertexBuffer(64 * 1024);
 

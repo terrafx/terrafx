@@ -11,8 +11,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
-
 namespace TerraFX.Collections;
 
 /// <summary>Represents a collection of key/value pairs that are organized based on the key.</summary>

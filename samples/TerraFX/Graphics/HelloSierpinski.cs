@@ -10,10 +10,10 @@ using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
-public class HelloSierpinski : HelloWindow
+public class HelloSierpinski(string name, int recursionDepth, SierpinskiShape shape) : HelloWindow(name)
 {
-    private readonly int _recursionDepth;
-    private readonly SierpinskiShape _sierpinskiShape;
+    private readonly int _recursionDepth = recursionDepth;
+    private readonly SierpinskiShape _sierpinskiShape = shape;
 
     private GraphicsBuffer _constantBuffer = null!;
     private GraphicsBuffer _indexBuffer = null!;
@@ -22,12 +22,6 @@ public class HelloSierpinski : HelloWindow
     private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
     private float _texturePosition;
-
-    public HelloSierpinski(string name, int recursionDepth, SierpinskiShape shape) : base(name)
-    {
-        _recursionDepth = recursionDepth;
-        _sierpinskiShape = shape;
-    }
 
     public override void Cleanup()
     {
@@ -128,11 +122,11 @@ public class HelloSierpinski : HelloWindow
             graphicsPipeline,
             CreateVertexBufferView(copyContext, _vertexBuffer, uploadBuffer, in vertices, in normals),
             CreateIndexBufferView(copyContext, _indexBuffer, uploadBuffer, in indices),
-            new GraphicsResourceView[3] {
+            [
                 CreateConstantBufferView(constantBuffer),
                 CreateConstantBufferView(constantBuffer),
                 CreateTexture3DView(copyContext, _texture3D, uploadBuffer),
-            }
+            ]
         );
 
         normals.Dispose();

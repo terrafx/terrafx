@@ -9,8 +9,6 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static TerraFX.Utilities.UnsafeUtilities;
 
-#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
-
 namespace TerraFX.Collections;
 
 public partial struct ValueDictionary<TKey, TValue>

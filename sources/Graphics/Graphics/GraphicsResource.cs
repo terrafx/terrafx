@@ -36,9 +36,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     private volatile uint _mappedCount;
     private readonly ValueMutex _mappedMutex;
 
-#pragma warning disable CA2213 // Disposable fields should be disposed
     private GraphicsMemoryHeap _memoryHeap;
-#pragma warning restore CA2213 // Disposable fields should be disposed
     private readonly GraphicsMemoryRegion _memoryRegion;
 
     private protected GraphicsResource(GraphicsDevice device, in GraphicsBufferCreateOptions createOptions) : this(device, GraphicsResourceKind.Buffer, createOptions.CpuAccess)
@@ -119,6 +117,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
                 D3D12_TEXTURE_LAYOUT_UNKNOWN,
                 D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT
             ),
+            GraphicsTextureKind.Unknown => default,
             _ => default,
         };
 
@@ -161,6 +160,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
         _d3d12DefaultResourceState = cpuAccess switch {
             GraphicsCpuAccess.Read => D3D12_RESOURCE_STATE_COPY_DEST,
             GraphicsCpuAccess.Write => D3D12_RESOURCE_STATE_GENERIC_READ,
+            GraphicsCpuAccess.None => D3D12_RESOURCE_STATE_COMMON,
             _ => D3D12_RESOURCE_STATE_COMMON,
         };
 

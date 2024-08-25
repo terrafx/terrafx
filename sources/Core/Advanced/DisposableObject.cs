@@ -8,8 +8,6 @@ using System.Threading;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-#pragma warning disable CA1063 // Implement IDisposable correctly
-
 namespace TerraFX.Advanced;
 
 /// <summary>An object which is disposable.</summary>

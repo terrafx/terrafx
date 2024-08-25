@@ -10,14 +10,12 @@ using System.Diagnostics.CodeAnalysis;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-#pragma warning disable CA1034 // Nested types should not be visible
-
 namespace TerraFX.Collections;
 
 public partial class PropertySet
 {
     /// <summary>Represents the collection of keys for a property set.</summary>
-    public partial struct ValueCollection
+    public readonly partial struct ValueCollection
         : ICollection,
           ICollection<object>,
           IEquatable<ValueCollection>,
