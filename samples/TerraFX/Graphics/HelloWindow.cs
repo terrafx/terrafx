@@ -10,7 +10,7 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Samples.Graphics;
 
-public class HelloWindow(string name) : Sample(name)
+internal class HelloWindow(string name) : Sample(name)
 {
     private GraphicsDevice _graphicsDevice = null!;
     private GraphicsRenderPass _renderPass = null!;

@@ -11,7 +11,7 @@ using TerraFX.Collections;
 namespace TerraFX.UnitTests.Collections;
 
 /// <summary>Provides a set of tests covering the <see cref="ValueStack{T}" /> struct.</summary>
-public static class ValueStackTests
+internal static class ValueStackTests
 {
     /// <summary>Provides validation of the <see cref="ValueStack{T}.ValueStack()" /> constructor.</summary>
     [Test]

@@ -132,7 +132,7 @@ public partial struct ValueLazy<T> : IEquatable<ValueLazy<T>>
     /// <exception cref="ObjectDisposedException">The lazy value has been disposed.</exception>
     public void Reset(Func<T> factory)
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(ValueLazy<>));
+        ThrowIfDisposedOrDisposing(_state, nameof(ValueLazy<T>));
         ThrowIfNull(factory);
 
         _factory = factory;
@@ -144,7 +144,7 @@ public partial struct ValueLazy<T> : IEquatable<ValueLazy<T>>
 
     private void CreateValue()
     {
-        ThrowIfDisposedOrDisposing(_state, nameof(ValueLazy<>));
+        ThrowIfDisposedOrDisposing(_state, nameof(ValueLazy<T>));
 
         var spinWait = new SpinWait();
 

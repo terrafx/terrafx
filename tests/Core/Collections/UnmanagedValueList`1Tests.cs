@@ -7,7 +7,7 @@ using TerraFX.Collections;
 namespace TerraFX.UnitTests.Collections;
 
 /// <summary>Provides a set of tests covering the <see cref="UnmanagedValueList{T}" /> struct.</summary>
-public static class UnmanagedValueListTests
+internal static class UnmanagedValueListTests
 {
     /// <summary>Provides validation of the <see cref="UnmanagedValueList{T}.UnmanagedValueList()" /> constructor.</summary>
     [Test]

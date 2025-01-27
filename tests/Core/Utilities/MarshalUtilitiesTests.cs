@@ -8,7 +8,7 @@ namespace TerraFX.UnitTests.Utilities;
 
 /// <summary>Provides a set of tests covering the <see cref="MarshalUtilities" /> static class.</summary>
 [TestFixture(TestOf = typeof(MarshalUtilities))]
-public static class MarshalUtilitiesTests
+internal static class MarshalUtilitiesTests
 {
     /// <summary>Provides validation of the <see cref="MarshalUtilities.GetString(ReadOnlySpan{sbyte})" /> method.</summary>
     [Test]

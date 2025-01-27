@@ -3522,7 +3522,7 @@ public static class VectorUtilities
 
     /// <inheritdoc cref="IFormattable.ToString(string?, IFormatProvider?)" />
     public static string ToString(this Vector128<float> self, string? format, IFormatProvider? formatProvider)
-        => $"{nameof(Vector128<>)} {{ X = {self.GetX().ToString(format, formatProvider)}, Y = {self.GetY().ToString(format, formatProvider)}, Z = {self.GetZ().ToString(format, formatProvider)}, W = {self.GetW().ToString(format, formatProvider)} }}";
+        => $"{nameof(Vector128<float>)} {{ X = {self.GetX().ToString(format, formatProvider)}, Y = {self.GetY().ToString(format, formatProvider)}, Z = {self.GetZ().ToString(format, formatProvider)}, W = {self.GetW().ToString(format, formatProvider)} }}";
 
     /// <summary>Sets the x-component of the vector.</summary>
     /// <param name="self">The vector.</param>

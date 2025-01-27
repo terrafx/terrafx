@@ -47,11 +47,9 @@ public partial struct ValueQueue<T>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c>.</exception>
     public ValueQueue(IEnumerable<T> source)
     {
-        // This is an extension method and throws ArgumentNullException if null
-        var items = source.ToArray();
-
-        _items = items;
-        _count = items.Length;
+        ArgumentNullException.ThrowIfNull(source);
+        _items = [.. source];
+        _count = _items.Length;
     }
 
     /// <summary>Initializes a new instance of the <see cref="ValueQueue{T}" /> struct.</summary>

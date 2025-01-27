@@ -15,7 +15,7 @@ namespace TerraFX.Samples.Graphics;
 /// The moving is via a translation matrix similar to HelloConstBuffer.
 ///   It has the same DX12 setup, but different translation math.
 /// </summary>
-public sealed class HelloTextureTransform(string name) : HelloWindow(name)
+internal sealed class HelloTextureTransform(string name) : HelloWindow(name)
 {
     private GraphicsBuffer _constantBuffer = null!;
     private GraphicsPrimitive _trianglePrimitive = null!;

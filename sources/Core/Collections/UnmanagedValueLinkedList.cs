@@ -545,7 +545,7 @@ public static unsafe class UnmanagedValueLinkedList
 
         if (node->HasParent)
         {
-            ThrowForInvalidState(nameof(UnmanagedValueLinkedListNode<>.HasParent));
+            ThrowForInvalidState(nameof(UnmanagedValueLinkedListNode<T>.HasParent));
         }
     }
 
@@ -560,7 +560,7 @@ public static unsafe class UnmanagedValueLinkedList
         }
         else
         {
-            ThrowForInvalidState(nameof(UnmanagedValueLinkedListNode<>.HasParent));
+            ThrowForInvalidState(nameof(UnmanagedValueLinkedListNode<T>.HasParent));
         }
     }
 }

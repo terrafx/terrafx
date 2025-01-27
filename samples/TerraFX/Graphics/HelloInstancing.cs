@@ -9,7 +9,7 @@ using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
-public sealed class HelloInstancing(string name) : HelloWindow(name)
+internal sealed class HelloInstancing(string name) : HelloWindow(name)
 {
     private const uint InstanceCount = 128;
 

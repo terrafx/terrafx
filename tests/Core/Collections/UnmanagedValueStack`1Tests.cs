@@ -9,7 +9,7 @@ using TerraFX.Collections;
 namespace TerraFX.UnitTests.Collections;
 
 /// <summary>Provides a set of tests covering the <see cref="UnmanagedValueStack{T}" /> struct.</summary>
-public static class UnmanagedValueStackTests
+internal static class UnmanagedValueStackTests
 {
     /// <summary>Provides validation of the <see cref="UnmanagedValueStack{T}.UnmanagedValueStack()" /> constructor.</summary>
     [Test]

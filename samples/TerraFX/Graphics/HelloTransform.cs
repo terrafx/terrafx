@@ -9,7 +9,7 @@ using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
-public sealed class HelloTransform(string name) : HelloWindow(name)
+internal sealed class HelloTransform(string name) : HelloWindow(name)
 {
     private GraphicsBuffer _constantBuffer = null!;
     private GraphicsPrimitive _trianglePrimitive = null!;

@@ -8,7 +8,7 @@ namespace TerraFX.UnitTests.Utilities;
 
 /// <summary>Provides a set of tests covering the <see cref="VectorUtilities" /> static class.</summary>
 [TestFixture(TestOf = typeof(VectorUtilities))]
-public static class VectorUtilitiesTests
+internal static class VectorUtilitiesTests
 {
     /// <summary>Provides validation of the <see cref="VectorUtilities.Abs(Vector128{float})" /> method.</summary>
     [Test]

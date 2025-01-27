@@ -11,7 +11,7 @@ namespace TerraFX.UnitTests.Utilities;
 
 /// <summary>Provides a set of tests covering the <see cref="AssertionUtilities" /> static class.</summary>
 [TestFixture(TestOf = typeof(AssertionUtilities))]
-public static class AssertionUtilitiesTests
+internal static class AssertionUtilitiesTests
 {
     /// <summary>Provides validation of the <see cref="AssertionUtilities.Assert(bool, string?)" /> method.</summary>
     [Test]

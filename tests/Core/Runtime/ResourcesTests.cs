@@ -8,7 +8,7 @@ namespace TerraFX.UnitTests.Runtime;
 
 /// <summary>Provides a set of tests covering the <see cref="Resources" /> static class.</summary>
 [TestFixture(TestOf = typeof(Resources))]
-public static class ResourcesTests
+internal static class ResourcesTests
 {
     /// <summary>Provides validation of the <see cref="Resources.AllocationFailedMessage" /> property.</summary>
     [TestCase("en", "The allocation of '{0}' bytes failed")]

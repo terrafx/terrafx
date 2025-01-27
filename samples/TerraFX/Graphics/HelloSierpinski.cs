@@ -10,7 +10,7 @@ using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
-public class HelloSierpinski(string name, int recursionDepth, SierpinskiShape shape) : HelloWindow(name)
+internal class HelloSierpinski(string name, int recursionDepth, SierpinskiShape shape) : HelloWindow(name)
 {
     private readonly int _recursionDepth = recursionDepth;
     private readonly SierpinskiShape _sierpinskiShape = shape;

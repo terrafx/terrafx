@@ -13,7 +13,7 @@ namespace TerraFX.UnitTests.Utilities;
 
 /// <summary>Provides a set of tests covering the <see cref="ExceptionUtilities" /> static class.</summary>
 [TestFixture(TestOf = typeof(ExceptionUtilities))]
-public static class ExceptionUtilitiesTests
+internal static class ExceptionUtilitiesTests
 {
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowArgumentException(string, string)" /> method.</summary>
     [Test]

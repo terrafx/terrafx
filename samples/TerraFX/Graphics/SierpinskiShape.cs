@@ -2,7 +2,7 @@
 
 namespace TerraFX.Samples.Graphics;
 
-public enum SierpinskiShape
+internal enum SierpinskiShape
 {
     Pyramid,
     Quad,

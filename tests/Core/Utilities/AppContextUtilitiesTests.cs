@@ -8,7 +8,7 @@ namespace TerraFX.UnitTests.Utilities;
 
 /// <summary>Provides a set of tests covering the <see cref="AppContextUtilities" /> static class.</summary>
 [TestFixture(TestOf = typeof(AppContextUtilities))]
-public static class AppContextUtilitiesTests
+internal static class AppContextUtilitiesTests
 {
     /// <summary>Provides validation of the <see cref="AppContextUtilities.GetAppContextData(string, bool)" /> method.</summary>
     [Test]

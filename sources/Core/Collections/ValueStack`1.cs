@@ -44,7 +44,7 @@ public partial struct ValueStack<T>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c>.</exception>
     public ValueStack(IEnumerable<T> source)
     {
-        // This is an extension method and throws ArgumentNullException if null
+        ArgumentNullException.ThrowIfNull(source);
         _items = [.. source];
         _count = _items.Length;
     }

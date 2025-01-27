@@ -138,7 +138,7 @@ public partial struct ValueDictionary<TKey, TValue>
 
             if (Unsafe.IsNullRef(in entry))
             {
-                ThrowKeyNotFoundException(key, nameof(Dictionary<,>));
+                ThrowKeyNotFoundException(key, nameof(Dictionary<TKey,TValue>));
             }
 
             return entry.Value;

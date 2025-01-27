@@ -7,7 +7,7 @@ using TerraFX.Numerics;
 namespace TerraFX.UnitTests.Numerics;
 
 /// <summary>Unit tests for <see cref="AffineTransform" />.</summary>
-public static class AffineTransformTests
+internal static class AffineTransformTests
 {
     private static IEnumerable<TestCaseData> TransformConstructorData
     {

@@ -543,7 +543,7 @@ public static class ValueLinkedList
 
         if (node.HasParent)
         {
-            ThrowForInvalidState(nameof(ValueLinkedListNode<>.HasParent));
+            ThrowForInvalidState(nameof(ValueLinkedListNode<T>.HasParent));
         }
     }
 
@@ -557,7 +557,7 @@ public static class ValueLinkedList
         }
         else
         {
-            ThrowForInvalidState(nameof(ValueLinkedListNode<>.HasParent));
+            ThrowForInvalidState(nameof(ValueLinkedListNode<T>.HasParent));
         }
     }
 }

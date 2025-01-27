@@ -11,7 +11,7 @@ using TerraFX.Collections;
 namespace TerraFX.UnitTests.Collections;
 
 /// <summary>Provides a set of tests covering the <see cref="ValueQueue{T}" /> struct.</summary>
-public static class ValueQueueTests
+internal static class ValueQueueTests
 {
     /// <summary>Provides validation of the <see cref="ValueQueue{T}.ValueQueue()" /> constructor.</summary>
     [Test]

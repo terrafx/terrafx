@@ -12,6 +12,8 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections;
 
+#pragma warning disable CA1034 // Nested types should not be visible
+
 public partial class PropertySet
 {
     /// <summary>Represents the collection of keys for a property set.</summary>
@@ -86,9 +88,9 @@ public partial class PropertySet
 
         readonly object ICollection.SyncRoot => _propertySet;
 
-        readonly void ICollection<object>.Add(object item) => ThrowForInvalidState(nameof(ICollection<>.IsReadOnly));
+        readonly void ICollection<object>.Add(object item) => ThrowForInvalidState(nameof(ICollection<object>.IsReadOnly));
 
-        readonly void ICollection<object>.Clear() => ThrowForInvalidState(nameof(ICollection<>.IsReadOnly));
+        readonly void ICollection<object>.Clear() => ThrowForInvalidState(nameof(ICollection<object>.IsReadOnly));
 
         readonly void ICollection<object>.CopyTo(object[] array, int arrayIndex) => CopyTo(array.AsSpan(arrayIndex));
 
@@ -106,7 +108,7 @@ public partial class PropertySet
 
         readonly bool ICollection<object>.Remove(object item)
         {
-            ThrowForInvalidState(nameof(ICollection<>.IsReadOnly));
+            ThrowForInvalidState(nameof(ICollection<object>.IsReadOnly));
             return false;
         }
 

@@ -9,7 +9,7 @@ using TerraFX.Collections;
 namespace TerraFX.UnitTests.Collections;
 
 /// <summary>Provides a set of tests covering the <see cref="ValueList{T}" /> struct.</summary>
-public static class ValueListTests
+internal static class ValueListTests
 {
     /// <summary>Provides validation of the <see cref="ValueList{T}.ValueList()" /> constructor.</summary>
     [Test]
