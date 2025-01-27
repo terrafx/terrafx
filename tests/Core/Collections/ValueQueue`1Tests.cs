@@ -219,7 +219,7 @@ public static class ValueQueueTests
         valueQueue.CopyTo(destination);
 
         Assert.That(() => destination,
-            Is.EquivalentTo(new int[] { 1, 2, 3 })
+            Is.EquivalentTo([1, 2, 3])
         );
 
         _ = valueQueue.Dequeue();
@@ -228,14 +228,14 @@ public static class ValueQueueTests
         valueQueue.CopyTo(destination);
 
         Assert.That(() => destination,
-            Is.EquivalentTo(new int[] { 2, 3, 4 })
+            Is.EquivalentTo([2, 3, 4])
         );
 
         destination = new int[6];
         valueQueue.CopyTo(destination);
 
         Assert.That(() => destination,
-            Is.EquivalentTo(new int[] { 2, 3, 4, 0, 0, 0 })
+            Is.EquivalentTo([2, 3, 4, 0, 0, 0])
         );
 
         _ = valueQueue.Dequeue();
@@ -245,7 +245,7 @@ public static class ValueQueueTests
         valueQueue.CopyTo(destination);
 
         Assert.That(() => destination,
-            Is.EquivalentTo(new int[] { 3, 4, 5, 6, 0, 0 })
+            Is.EquivalentTo([3, 4, 5, 6, 0, 0])
         );
 
         Assert.That(() => valueQueue.CopyTo([]),
@@ -509,13 +509,13 @@ public static class ValueQueueTests
         );
 
         Assert.That(() => valueQueue,
-            Is.EquivalentTo(new int[] { 2, 3, 4 })
+            Is.EquivalentTo([2, 3, 4])
         );
 
         valueQueue.Enqueue(1);
 
         Assert.That(() => valueQueue,
-            Is.EquivalentTo(new int[] { 2, 3, 4, 1 })
+            Is.EquivalentTo([2, 3, 4, 1])
         );
 
         Assert.That(() => valueQueue.Remove(2),
@@ -523,13 +523,13 @@ public static class ValueQueueTests
         );
 
         Assert.That(() => valueQueue,
-            Is.EquivalentTo(new int[] { 3, 4, 1 })
+            Is.EquivalentTo([3, 4, 1])
         );
 
         valueQueue.Enqueue(2);
 
         Assert.That(() => valueQueue,
-            Is.EquivalentTo(new int[] { 3, 4, 1, 2 })
+            Is.EquivalentTo([3, 4, 1, 2])
         );
 
         Assert.That(() => valueQueue.Remove(1),
@@ -537,7 +537,7 @@ public static class ValueQueueTests
         );
 
         Assert.That(() => valueQueue,
-            Is.EquivalentTo(new int[] { 3, 4, 2 })
+            Is.EquivalentTo([3, 4, 2])
         );
     }
 

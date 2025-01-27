@@ -22,7 +22,7 @@ public static class MarshalUtilitiesTests
             Is.EqualTo(string.Empty)
         );
 
-        Assert.That(() => MarshalUtilities.GetString(new sbyte[] { (sbyte)'A', (sbyte)'B', (sbyte)'C' }),
+        Assert.That(() => MarshalUtilities.GetString([(sbyte)'A', (sbyte)'B', (sbyte)'C']),
             Is.EqualTo("ABC")
         );
     }
@@ -39,7 +39,7 @@ public static class MarshalUtilitiesTests
             Is.EqualTo(string.Empty)
         );
 
-        Assert.That(() => MarshalUtilities.GetString(new char[] { 'A', 'B', 'C' }),
+        Assert.That(() => MarshalUtilities.GetString(['A', 'B', 'C']),
             Is.EqualTo("ABC")
         );
     }

@@ -240,7 +240,7 @@ public static unsafe class AppContextUtilities
             value = (data is string stringValue) ? stringValue.Split(';', StringSplitOptions.RemoveEmptyEntries) : defaultValue;
         }
 
-        return value.Distinct().ToArray();
+        return [.. value.Distinct()];
     }
 
     /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>

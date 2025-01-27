@@ -86,9 +86,9 @@ public partial class PropertySet
 
         readonly object ICollection.SyncRoot => _propertySet;
 
-        readonly void ICollection<string>.Add(string item) => ThrowForInvalidState(nameof(ICollection<string>.IsReadOnly));
+        readonly void ICollection<string>.Add(string item) => ThrowForInvalidState(nameof(ICollection<>.IsReadOnly));
 
-        readonly void ICollection<string>.Clear() => ThrowForInvalidState(nameof(ICollection<string>.IsReadOnly));
+        readonly void ICollection<string>.Clear() => ThrowForInvalidState(nameof(ICollection<>.IsReadOnly));
 
         readonly void ICollection<string>.CopyTo(string[] array, int arrayIndex) => CopyTo(array.AsSpan(arrayIndex));
 
@@ -106,7 +106,7 @@ public partial class PropertySet
 
         readonly bool ICollection<string>.Remove(string item)
         {
-            ThrowForInvalidState(nameof(ICollection<string>.IsReadOnly));
+            ThrowForInvalidState(nameof(ICollection<>.IsReadOnly));
             return false;
         }
 

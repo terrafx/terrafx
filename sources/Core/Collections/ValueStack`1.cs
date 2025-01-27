@@ -8,7 +8,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections;
@@ -46,7 +45,7 @@ public partial struct ValueStack<T>
     public ValueStack(IEnumerable<T> source)
     {
         // This is an extension method and throws ArgumentNullException if null
-        _items = source.ToArray();
+        _items = [.. source];
         _count = _items.Length;
     }
 

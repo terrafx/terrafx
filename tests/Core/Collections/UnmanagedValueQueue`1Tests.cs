@@ -762,13 +762,13 @@ public static class UnmanagedValueQueueTests
             );
 
             Assert.That(() => valueQueue,
-                Is.EquivalentTo(new int[] { 2, 3, 4 })
+                Is.EquivalentTo([2, 3, 4])
             );
 
             valueQueue.Enqueue(1);
 
             Assert.That(() => valueQueue,
-                Is.EquivalentTo(new int[] { 2, 3, 4, 1 })
+                Is.EquivalentTo([2, 3, 4, 1])
             );
 
             Assert.That(() => valueQueue.Remove(2),
@@ -776,13 +776,13 @@ public static class UnmanagedValueQueueTests
             );
 
             Assert.That(() => valueQueue,
-                Is.EquivalentTo(new int[] { 3, 4, 1 })
+                Is.EquivalentTo([3, 4, 1])
             );
 
             valueQueue.Enqueue(2);
 
             Assert.That(() => valueQueue,
-                Is.EquivalentTo(new int[] { 3, 4, 1, 2 })
+                Is.EquivalentTo([3, 4, 1, 2])
             );
 
             Assert.That(() => valueQueue.Remove(1),
@@ -790,7 +790,7 @@ public static class UnmanagedValueQueueTests
             );
 
             Assert.That(() => valueQueue,
-                Is.EquivalentTo(new int[] { 3, 4, 2 })
+                Is.EquivalentTo([3, 4, 2])
             );
         }
         valueQueue.Dispose();
