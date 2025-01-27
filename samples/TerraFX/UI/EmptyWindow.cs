@@ -7,7 +7,7 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Samples.UI;
 
-public sealed class EmptyWindow(string name) : Sample(name)
+internal sealed class EmptyWindow(string name) : Sample(name)
 {
     private UIWindow _window = null!;
     private TimeSpan _elapsedTime;

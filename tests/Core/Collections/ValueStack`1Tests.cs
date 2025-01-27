@@ -11,7 +11,7 @@ using TerraFX.Collections;
 namespace TerraFX.UnitTests.Collections;
 
 /// <summary>Provides a set of tests covering the <see cref="ValueStack{T}" /> struct.</summary>
-public static class ValueStackTests
+internal static class ValueStackTests
 {
     /// <summary>Provides validation of the <see cref="ValueStack{T}.ValueStack()" /> constructor.</summary>
     [Test]
@@ -219,7 +219,7 @@ public static class ValueStackTests
         valueStack.CopyTo(destination);
 
         Assert.That(() => destination,
-            Is.EquivalentTo(new int[] { 1, 2, 3 })
+            Is.EquivalentTo([1, 2, 3])
         );
 
         _ = valueStack.Pop();
@@ -228,14 +228,14 @@ public static class ValueStackTests
         valueStack.CopyTo(destination);
 
         Assert.That(() => destination,
-            Is.EquivalentTo(new int[] { 1, 2, 4 })
+            Is.EquivalentTo([1, 2, 4])
         );
 
         destination = new int[6];
         valueStack.CopyTo(destination);
 
         Assert.That(() => destination,
-            Is.EquivalentTo(new int[] { 1, 2, 4, 0, 0, 0 })
+            Is.EquivalentTo([1, 2, 4, 0, 0, 0])
         );
 
         _ = valueStack.Pop();
@@ -245,7 +245,7 @@ public static class ValueStackTests
         valueStack.CopyTo(destination);
 
         Assert.That(() => destination,
-            Is.EquivalentTo(new int[] { 1, 2, 5, 6, 0, 0 })
+            Is.EquivalentTo([1, 2, 5, 6, 0, 0])
         );
 
         Assert.That(() => valueStack.CopyTo([]),

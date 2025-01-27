@@ -12,6 +12,8 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections;
 
+#pragma warning disable CA1034 // Nested types should not be visible
+
 public partial class PropertySet
 {
     /// <summary>Represents the collection of keys for a property set.</summary>

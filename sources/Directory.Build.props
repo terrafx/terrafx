@@ -17,6 +17,17 @@
     <TerraFXProjectCategory>sources</TerraFXProjectCategory>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!--
+      CA1063: Implement IDisposable correctly
+      CA1711: Identifiers should not have incorrect suffix
+      CA1815: Override equals and operator equals on value types
+      CA2000: Dispose objects before losing scope
+      CA2213: Disposable fields should be disposed
+    -->
+    <NoWarn>$(NoWarn);CA1063;CA1711;CA1815;CA2000;CA2213</NoWarn>
+  </PropertyGroup>
+
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.props" />
 
   <ItemGroup>

@@ -6,7 +6,7 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Samples.Graphics;
 
-public sealed class EnumerateGraphicsAdapters(string name) : Sample(name)
+internal sealed class EnumerateGraphicsAdapters(string name) : Sample(name)
 {
     protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
     {

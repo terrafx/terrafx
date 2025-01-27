@@ -8,7 +8,7 @@ namespace TerraFX.UnitTests.Utilities;
 
 /// <summary>Provides a set of tests covering the <see cref="MarshalUtilities" /> static class.</summary>
 [TestFixture(TestOf = typeof(MarshalUtilities))]
-public static class MarshalUtilitiesTests
+internal static class MarshalUtilitiesTests
 {
     /// <summary>Provides validation of the <see cref="MarshalUtilities.GetString(ReadOnlySpan{sbyte})" /> method.</summary>
     [Test]
@@ -22,7 +22,7 @@ public static class MarshalUtilitiesTests
             Is.EqualTo(string.Empty)
         );
 
-        Assert.That(() => MarshalUtilities.GetString(new sbyte[] { (sbyte)'A', (sbyte)'B', (sbyte)'C' }),
+        Assert.That(() => MarshalUtilities.GetString([(sbyte)'A', (sbyte)'B', (sbyte)'C']),
             Is.EqualTo("ABC")
         );
     }
@@ -39,7 +39,7 @@ public static class MarshalUtilitiesTests
             Is.EqualTo(string.Empty)
         );
 
-        Assert.That(() => MarshalUtilities.GetString(new char[] { 'A', 'B', 'C' }),
+        Assert.That(() => MarshalUtilities.GetString(['A', 'B', 'C']),
             Is.EqualTo("ABC")
         );
     }

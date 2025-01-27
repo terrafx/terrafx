@@ -9,7 +9,7 @@ using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
-public sealed class HelloSmoke(string name, bool isQuickAndDirty) : HelloWindow(name)
+internal sealed class HelloSmoke(string name, bool isQuickAndDirty) : HelloWindow(name)
 {
     private readonly bool _isQuickAndDirty = isQuickAndDirty;
 

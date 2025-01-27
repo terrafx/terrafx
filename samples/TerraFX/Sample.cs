@@ -17,7 +17,7 @@ using GC = System.GC;
 
 namespace TerraFX.Samples;
 
-public abstract unsafe class Sample(string name) : IDisposable
+internal abstract unsafe class Sample(string name) : IDisposable
 {
     private readonly string _assemblyPath = Path.GetDirectoryName(AppContext.BaseDirectory)!;
     private readonly string _name = name;

@@ -10,7 +10,7 @@ namespace TerraFX.UnitTests.Numerics;
 
 /// <summary>Provides a set of tests covering the <see cref="Quaternion" /> struct.</summary>
 [TestFixture(TestOf = typeof(Quaternion))]
-public static class QuaternionTests
+internal static class QuaternionTests
 {
     /// <summary>Provides validation of the <see cref="Quaternion.Zero" /> property.</summary>
     [Test]

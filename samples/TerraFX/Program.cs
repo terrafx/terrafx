@@ -14,7 +14,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Samples;
 
-public static unsafe class Program
+internal static unsafe class Program
 {
     private static readonly Sample[] s_graphicsSamples = [
         new EnumerateGraphicsAdapters("Graphics.EnumerateGraphicsAdapters"),

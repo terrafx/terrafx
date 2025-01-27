@@ -42,7 +42,7 @@ public sealed partial class PropertySet : IPropertySet
     public PropertySet(IEnumerable<KeyValuePair<string, object>> items)
     {
         ThrowIfNull(items);
-        _items = new ValueDictionary<string, object>(items);
+        _items = [.. items];
     }
 
     /// <summary>Initializes a new instance of the <see cref="PropertySet" /> class.</summary>
@@ -51,7 +51,7 @@ public sealed partial class PropertySet : IPropertySet
     public PropertySet(IDictionary<string, object> items)
     {
         ThrowIfNull(items);
-        _items = new ValueDictionary<string, object>(items);
+        _items = [.. items];
     }
 
     /// <inheritdoc />

@@ -2,6 +2,6 @@
 
 namespace TerraFX.Samples.Graphics;
 
-public class HelloSierpinskiPyramid(string name, int recursionDepth) : HelloSierpinski(name, recursionDepth, SierpinskiShape.Pyramid)
+internal sealed class HelloSierpinskiPyramid(string name, int recursionDepth) : HelloSierpinski(name, recursionDepth, SierpinskiShape.Pyramid)
 {
 }

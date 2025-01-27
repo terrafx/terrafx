@@ -21,6 +21,15 @@
     <TerraFXProjectCategory>samples</TerraFXProjectCategory>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!--
+      CA1303: Do not pass literals as localized parameters
+      CA1508: Avoid dead conditional code
+      CA2213: Disposable fields should be disposed
+    -->
+    <NoWarn>$(NoWarn);CA1303;CA1508;CA2213</NoWarn>
+  </PropertyGroup>
+
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.props" />
 
   <ItemGroup>

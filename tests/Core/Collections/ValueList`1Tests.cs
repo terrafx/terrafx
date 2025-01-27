@@ -9,7 +9,7 @@ using TerraFX.Collections;
 namespace TerraFX.UnitTests.Collections;
 
 /// <summary>Provides a set of tests covering the <see cref="ValueList{T}" /> struct.</summary>
-public static class ValueListTests
+internal static class ValueListTests
 {
     /// <summary>Provides validation of the <see cref="ValueList{T}.ValueList()" /> constructor.</summary>
     [Test]
@@ -266,14 +266,14 @@ public static class ValueListTests
         valueList.CopyTo(destination);
 
         Assert.That(() => destination,
-            Is.EquivalentTo(new int[] { 1, 2, 3 })
+            Is.EquivalentTo([1, 2, 3])
         );
 
         destination = new int[6];
         valueList.CopyTo(destination);
 
         Assert.That(() => destination,
-            Is.EquivalentTo(new int[] { 1, 2, 3, 0, 0, 0 })
+            Is.EquivalentTo([1, 2, 3, 0, 0, 0])
         );
 
         Assert.That(() => valueList.CopyTo([]),

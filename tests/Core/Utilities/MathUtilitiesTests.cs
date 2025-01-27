@@ -8,7 +8,7 @@ namespace TerraFX.UnitTests.Utilities;
 
 /// <summary>Provides a set of tests covering the <see cref="MathUtilities" /> static class.</summary>
 [TestFixture(TestOf = typeof(MathUtilities))]
-public static class MathUtilitiesTests
+internal static class MathUtilitiesTests
 {
     /// <summary>Provides validation of the <see cref="MathUtilities.Max(double, double)" /> method.</summary>
     [TestCase(-5.0, +5.0, +5.0)]

@@ -16,7 +16,7 @@ namespace TerraFX.Samples.Graphics;
 /// * ConstBuffer (transformation matrix as in HelloConstBuffer, but here to animate the 3D texture coordinates)
 /// Will show a quad cutting through the RGB cube and being animated to move back and forth in texture coordinate space.
 /// </summary>
-public class HelloTexture3D(string name) : HelloWindow(name)
+internal sealed class HelloTexture3D(string name) : HelloWindow(name)
 {
     private GraphicsBuffer _constantBuffer = null!;
     private GraphicsBuffer _indexBuffer = null!;

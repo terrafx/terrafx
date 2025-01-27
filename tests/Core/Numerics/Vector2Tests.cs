@@ -9,7 +9,7 @@ namespace TerraFX.UnitTests.Numerics;
 
 /// <summary>Provides a set of tests covering the <see cref="Vector2" /> struct.</summary>
 [TestFixture(TestOf = typeof(Vector2))]
-public static class Vector2Tests
+internal static class Vector2Tests
 {
     /// <summary>Provides validation of the <see cref="Vector2.Zero" /> property.</summary>
     [Test]

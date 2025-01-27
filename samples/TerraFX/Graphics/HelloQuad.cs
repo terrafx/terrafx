@@ -7,7 +7,7 @@ using TerraFX.Numerics;
 
 namespace TerraFX.Samples.Graphics;
 
-public sealed class HelloQuad(string name) : HelloWindow(name)
+internal sealed class HelloQuad(string name) : HelloWindow(name)
 {
     private GraphicsBuffer _indexBuffer = null!;
     private GraphicsPrimitive _quadPrimitive = null!;
