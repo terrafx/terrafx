@@ -345,7 +345,7 @@ public static class VectorUtilities
         else if (AdvSimd.Arm64.IsSupported)
         {
             var result = AdvSimd.CompareEqual(left, right);
-            return AdvSimd.Arm64.MinAcross(result).ToScalar() != 0;
+            return AdvSimd.Arm64.MinAcross(result.AsUInt32()).ToScalar() != 0;
         }
         else
         {
@@ -381,7 +381,7 @@ public static class VectorUtilities
             var result = AdvSimd.Subtract(left, right);
             result = AdvSimd.Abs(result);
             result = AdvSimd.CompareLessThanOrEqual(result, epsilon);
-            return AdvSimd.Arm64.MinAcross(result).ToScalar() != 0;
+            return AdvSimd.Arm64.MinAcross(result.AsUInt32()).ToScalar() != 0;
         }
         else
         {
@@ -536,7 +536,7 @@ public static class VectorUtilities
         else if (AdvSimd.Arm64.IsSupported)
         {
             var result = AdvSimd.CompareEqual(left, right);
-            return AdvSimd.Arm64.MaxAcross(result).ToScalar() == 0;
+            return AdvSimd.Arm64.MinAcross(result.AsUInt32()).ToScalar() == 0;
         }
         else
         {
@@ -564,7 +564,7 @@ public static class VectorUtilities
         }
         else if (AdvSimd.Arm64.IsSupported)
         {
-            return AdvSimd.Arm64.MinAcross(value).ToScalar() != 0;
+            return AdvSimd.Arm64.MinAcross(value.AsUInt32()).ToScalar() != 0;
         }
         else
         {
@@ -592,7 +592,7 @@ public static class VectorUtilities
         }
         else if (AdvSimd.Arm64.IsSupported)
         {
-            return AdvSimd.Arm64.MaxAcross(value).ToScalar() != 0;
+            return AdvSimd.Arm64.MaxAcross(value.AsUInt32()).ToScalar() != 0;
         }
         else
         {
@@ -1038,7 +1038,7 @@ public static class VectorUtilities
         {
             var lower = value.GetLower();
             return Vector128.Create(
-                AdvSimd.ExtractVector64(value.GetUpper(), lower, 1),
+                AdvSimd.ExtractVector64(lower, value.GetUpper(), 1),
                 lower
             );
         }
@@ -1407,7 +1407,7 @@ public static class VectorUtilities
             var upper = value.GetUpper();
             return Vector128.Create(
                 upper,
-                AdvSimd.ExtractVector64(upper, value.GetLower(), 1)
+                AdvSimd.ExtractVector64(value.GetLower(), upper, 1)
             );
         }
         else
@@ -2057,7 +2057,7 @@ public static class VectorUtilities
         else if (AdvSimd.Arm64.IsSupported)
         {
             return Vector128.Create(
-                AdvSimd.ExtractVector64(lower.GetUpper(), lower.GetLower(), 1),
+                AdvSimd.ExtractVector64(lower.GetLower(), lower.GetUpper(), 1),
                 upper.GetLower()
             );
         }
@@ -2086,8 +2086,8 @@ public static class VectorUtilities
         else if (AdvSimd.Arm64.IsSupported)
         {
             return Vector128.Create(
-                AdvSimd.ExtractVector64(lower.GetUpper(), lower.GetLower(), 1),
-                AdvSimd.ExtractVector64(upper.GetUpper(), upper.GetLower(), 1)
+                AdvSimd.ExtractVector64(lower.GetLower(), lower.GetUpper(), 1),
+                AdvSimd.ExtractVector64(upper.GetLower(), upper.GetUpper(), 1)
             );
         }
         else
@@ -2115,8 +2115,8 @@ public static class VectorUtilities
         else if (AdvSimd.Arm64.IsSupported)
         {
             return Vector128.Create(
-                AdvSimd.ExtractVector64(lower.GetUpper(), lower.GetLower(), 1),
-                AdvSimd.ReverseElement32(AdvSimd.ExtractVector64(upper.GetUpper(), upper.GetLower(), 1).AsInt64()).AsSingle()
+                AdvSimd.ExtractVector64(lower.GetLower(), lower.GetUpper(), 1),
+                AdvSimd.ReverseElement32(AdvSimd.ExtractVector64(upper.GetLower(), upper.GetUpper(), 1).AsInt64()).AsSingle()
             );
         }
         else
@@ -2368,7 +2368,7 @@ public static class VectorUtilities
         {
             return Vector128.Create(
                 AdvSimd.DuplicateSelectedScalarToVector64(lower, 2),
-                AdvSimd.ReverseElement32(AdvSimd.ExtractVector64(upper.GetUpper(), upper.GetLower(), 1).AsInt64()).AsSingle()
+                AdvSimd.ReverseElement32(AdvSimd.ExtractVector64(upper.GetLower(), upper.GetUpper(), 1).AsInt64()).AsSingle()
             );
         }
         else
@@ -2483,7 +2483,7 @@ public static class VectorUtilities
         else if (AdvSimd.Arm64.IsSupported)
         {
             return Vector128.Create(
-                AdvSimd.ExtractVector64(lower.GetLower(), lower.GetUpper(), 1),
+                AdvSimd.ExtractVector64(lower.GetUpper(), lower.GetLower(), 1),
                 AdvSimd.Arm64.InsertSelectedScalar(upper.GetLower(), 1, upper, 3)
             );
         }
@@ -2512,8 +2512,8 @@ public static class VectorUtilities
         else if (AdvSimd.Arm64.IsSupported)
         {
             return Vector128.Create(
-                AdvSimd.ExtractVector64(lower.GetLower(), lower.GetUpper(), 1),
-                AdvSimd.ExtractVector64(upper.GetUpper(), upper.GetLower(), 1)
+                AdvSimd.ExtractVector64(lower.GetUpper(), lower.GetLower(), 1),
+                AdvSimd.ExtractVector64(upper.GetLower(), upper.GetUpper(), 1)
             );
         }
         else
@@ -2782,7 +2782,7 @@ public static class VectorUtilities
         {
             var result = AdvSimd.Abs(value);
             result = AdvSimd.CompareEqual(result, Vector128.Create(float.PositiveInfinity));
-            return AdvSimd.Arm64.MaxAcross(result).ToScalar() != 0;
+            return AdvSimd.Arm64.MaxAcross(result.AsUInt32()).ToScalar() != 0;
         }
         else
         {
