@@ -46,9 +46,9 @@ public static unsafe class UnsafeUtilities
         return MemoryMarshal.CreateReadOnlySpan(ref Unsafe.As<TFrom, TTo>(ref MemoryMarshal.GetReference(span)), span.Length);
     }
 
-    /// <inheritdoc cref="Unsafe.AsPointer{T}(ref T)" />
+    /// <inheritdoc cref="Unsafe.AsPointer{T}(ref readonly T)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* AsPointer<T>(in T source)
+    public static T* AsPointer<T>(ref readonly T source)
         where T : unmanaged => (T*)Unsafe.AsPointer(ref Unsafe.AsRef(in source));
 
     /// <inheritdoc cref="Unsafe.As{TFrom, TTo}(ref TFrom)" />
