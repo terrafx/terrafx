@@ -74,7 +74,7 @@ jobs:
         path: ./artifacts/pkg
     - uses: actions/setup-dotnet@v4
       with:
-        global-json-file: ./global.json
+        dotnet-version: '8.0.x'
         source-url: https://pkgs.terrafx.dev/index.json
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.AZURE_DEVOPS_PAT }}
