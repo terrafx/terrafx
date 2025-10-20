@@ -33,10 +33,29 @@ jobs:
         path: |
           ./artifacts/pkg/**/*
         if-no-files-found: error
+  windows-arm64:
+    runs-on: ${{ matrix.os }}-11-arm
+    strategy:
+      matrix:
+        architecture: [ arm64 ]
+        configuration: [ debug, release ]
+        os: [ windows ]
+    steps:
+    - uses: actions/checkout@v4
+    - run: ./scripts/cibuild.cmd -configuration ${{ matrix.configuration }} -architecture ${{ matrix.architecture }}
+      shell: cmd
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.os }}_${{ matrix.configuration }}_${{ matrix.architecture }}
+        path: |
+          ./artifacts/bin/**/*
+          ./artifacts/log/**/*
+          ./artifacts/tst/**/*
+        if-no-files-found: error
   sign-nuget:
     runs-on: windows-latest
     if: ${{ github.event_name == 'push' }}
-    needs: [ windows-x64 ]
+    needs: [ windows-x64, windows-arm64 ]
     permissions:
       id-token: write
     steps:
