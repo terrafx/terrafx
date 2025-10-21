@@ -95,7 +95,7 @@ public struct Matrix4x4
     public static Matrix4x4 CreateFromAffineTransform(AffineTransform affineTransform)
     {
         var result = CreateFromScale(affineTransform.Scale) * CreateFromQuaternion(affineTransform.Rotation);
-        result._w = Add(result._w, affineTransform.Translation.AsVector128());
+        result._w += affineTransform.Translation.AsVector128();
         return result;
     }
 
@@ -108,11 +108,11 @@ public struct Matrix4x4
         var scaleMatrix = CreateFromScale(affineTransform.Scale);
         var vRotationOrigin = rotationOrigin.AsVector128();
 
-        scaleMatrix._w = Subtract(scaleMatrix._w, vRotationOrigin);
+        scaleMatrix._w -= vRotationOrigin;
 
         var result = scaleMatrix * CreateFromQuaternion(affineTransform.Rotation);
-        result._w = Add(result._w, vRotationOrigin);
-        result._w = Add(result._w, affineTransform.Translation.AsVector128());
+        result._w += vRotationOrigin;
+        result._w += affineTransform.Translation.AsVector128();
         return result;
     }
 
@@ -123,25 +123,25 @@ public struct Matrix4x4
     {
         var vQuaternion = quaternion.Value;
 
-        var q0 = Add(vQuaternion, vQuaternion);
-        var q1 = Multiply(vQuaternion, q0);
-        q1 = BitwiseAnd(q1, Vector128.Create(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000).AsSingle());
+        var q0 = vQuaternion + vQuaternion;
+        var q1 = vQuaternion * q0;
+        q1 &= Vector128.Create(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000).AsSingle();
 
         var v0 = CreateFromYXXW(q1);
         var v1 = CreateFromZZYW(q1);
-        var r0 = Subtract(Vector128.Create(1.0f, 1.0f, 1.0f, 0.0f), v0);
-        r0 = Subtract(r0, v1);
+        var r0 = Vector128.Create(1.0f, 1.0f, 1.0f, 0.0f) - v0;
+        r0 -= v1;
 
         v0 = CreateFromXXYW(vQuaternion);
         v1 = CreateFromZYZW(q0);
-        v0 = Multiply(v0, v1);
+        v0 *= v1;
 
         v1 = CreateFromW(vQuaternion);
         var v2 = CreateFromYZXW(q0);
-        v1 = Multiply(v1, v2);
+        v1 *= v2;
 
-        var r1 = Add(v0, v1);
-        var r2 = Subtract(v0, v1);
+        var r1 = v0 + v1;
+        var r2 = v0 - v1;
 
         v0 = CreateFromYZAB(r1, r2);
         v0 = CreateFromXZWY(v0);
@@ -178,7 +178,7 @@ public struct Matrix4x4
         return Create(
             UnitX,
             tmp,
-            Multiply(CreateFromXZYW(tmp), Vector128.Create(1.0f, -1.0f, 1.0f, 1.0f)),
+            CreateFromXZYW(tmp) * Vector128.Create(1.0f, -1.0f, 1.0f, 1.0f),
             UnitW
         );
     }
@@ -192,7 +192,7 @@ public struct Matrix4x4
         var tmp = CreateFromXWAD(Vector128.CreateScalar(sin), Vector128.CreateScalar(cos));
 
         return Create(
-            Multiply(CreateFromZYXW(tmp), Vector128.Create(1.0f, 1.0f, -1.0f, 1.0f)),
+            CreateFromZYXW(tmp) * Vector128.Create(1.0f, 1.0f, -1.0f, 1.0f),
             UnitY,
             tmp,
             UnitW
@@ -209,7 +209,7 @@ public struct Matrix4x4
 
         return Create(
             tmp,
-            Multiply(CreateFromYXZW(tmp), Vector128.Create(-1.0f, 1.0f, 1.0f, 1.0f)),
+            CreateFromYXZW(tmp) * Vector128.Create(-1.0f, 1.0f, 1.0f, 1.0f),
             UnitZ,
             UnitW
         );
@@ -224,9 +224,9 @@ public struct Matrix4x4
         var vScale = scale.AsVector128();
 
         return Create(
-            BitwiseAnd(vScale, Vector128.Create(0xFFFFFFFF, 0x00000000, 0x00000000, 0x00000000).AsSingle()),
-            BitwiseAnd(vScale, Vector128.Create(0x00000000, 0xFFFFFFFF, 0x00000000, 0x00000000).AsSingle()),
-            BitwiseAnd(vScale, Vector128.Create(0x00000000, 0x00000000, 0xFFFFFFFF, 0x00000000).AsSingle()),
+            vScale & Vector128.Create(0xFFFFFFFF, 0x00000000, 0x00000000, 0x00000000).AsSingle(),
+            vScale & Vector128.Create(0x00000000, 0xFFFFFFFF, 0x00000000, 0x00000000).AsSingle(),
+            vScale & Vector128.Create(0x00000000, 0x00000000, 0xFFFFFFFF, 0x00000000).AsSingle(),
             UnitW
         );
     }
@@ -327,10 +327,10 @@ public struct Matrix4x4
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(Matrix4x4 left, in Matrix4x4 right)
     {
-        return VectorUtilities.CompareEqualAll(left._x, right._x)
-            && VectorUtilities.CompareEqualAll(left._y, right._y)
-            && VectorUtilities.CompareEqualAll(left._z, right._z)
-            && VectorUtilities.CompareEqualAll(left._w, right._w);
+        return Vector128.EqualsAll(left._x, right._x)
+            && Vector128.EqualsAll(left._y, right._y)
+            && Vector128.EqualsAll(left._z, right._z)
+            && Vector128.EqualsAll(left._w, right._w);
     }
 
     /// <summary>Compares two matrices to determine inequality.</summary>
@@ -340,10 +340,10 @@ public struct Matrix4x4
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator !=(Matrix4x4 left, in Matrix4x4 right)
     {
-        return CompareNotEqualAny(left._x, right._x)
-            || CompareNotEqualAny(left._y, right._y)
-            || CompareNotEqualAny(left._z, right._z)
-            || CompareNotEqualAny(left._w, right._w);
+        return !Vector128.EqualsAll(left._x, right._x)
+            || !Vector128.EqualsAll(left._y, right._y)
+            || !Vector128.EqualsAll(left._z, right._z)
+            || !Vector128.EqualsAll(left._w, right._w);
     }
 
     /// <summary>Computes the product of two matrices.</summary>
@@ -368,7 +368,7 @@ public struct Matrix4x4
             var sum2 = MultiplyByY(left._y, right);
             sum2 = MultiplyAddByW(sum2, left._w, right);
 
-            return Add(sum1, sum2);
+            return sum1 + sum2;
         }
     }
 
@@ -433,12 +433,12 @@ public struct Matrix4x4
         var r0 = Normalize(CrossProduct(up.AsVector128(), r2));
         var r1 = CrossProduct(r2, r0);
 
-        var negativePosition = Negate(position.AsVector128());
+        var negativePosition = -position.AsVector128();
 
         var result = Create(
-            r0.WithW(DotProduct(r0, negativePosition).ToScalar()),
-            r1.WithW(DotProduct(r1, negativePosition).ToScalar()),
-            r2.WithW(DotProduct(r2, negativePosition).ToScalar()),
+            r0.WithW(Vector128.Dot(r0, negativePosition)),
+            r1.WithW(Vector128.Dot(r1, negativePosition)),
+            r2.WithW(Vector128.Dot(r2, negativePosition)),
             UnitW
         );
         return Transpose(result);
@@ -724,9 +724,9 @@ public struct Matrix4x4
         var transposedZ = transposedValue._z;
         var transposedW = transposedValue._w;
 
-        var d0 = Multiply(CreateFromXXYY(transposedZ), CreateFromZWZW(transposedW));
-        var d1 = Multiply(CreateFromXXYY(transposedX), CreateFromZWZW(transposedY));
-        var d2 = Multiply(CreateFromXZAC(transposedZ, transposedX), CreateFromYWBD(transposedW, transposedY));
+        var d0 = CreateFromXXYY(transposedZ) * CreateFromZWZW(transposedW);
+        var d1 = CreateFromXXYY(transposedX) * CreateFromZWZW(transposedY);
+        var d2 = CreateFromXZAC(transposedZ, transposedX) * CreateFromYWBD(transposedW, transposedY);
 
         d0 = MultiplyAddNegated(d0, CreateFromZWZW(transposedZ), CreateFromXXYY(transposedW));
         d1 = MultiplyAddNegated(d1, CreateFromZWZW(transposedX), CreateFromXXYY(transposedY));
@@ -735,10 +735,10 @@ public struct Matrix4x4
         var tmp1 = CreateFromYWBB(d0, d2);
         var tmp2 = CreateFromYWDD(d1, d2);
 
-        var c0 = Multiply(CreateFromYZXY(transposedY), CreateFromZXDA(tmp1, d0));
-        var c2 = Multiply(CreateFromZXYX(transposedX), CreateFromYZBC(tmp1, d0));
-        var c4 = Multiply(CreateFromYZXY(transposedW), CreateFromZXDA(tmp2, d1));
-        var c6 = Multiply(CreateFromZXYX(transposedZ), CreateFromYZBC(tmp2, d1));
+        var c0 = CreateFromYZXY(transposedY) * CreateFromZXDA(tmp1, d0);
+        var c2 = CreateFromZXYX(transposedX) * CreateFromYZBC(tmp1, d0);
+        var c4 = CreateFromYZXY(transposedW) * CreateFromZXDA(tmp2, d1);
+        var c6 = CreateFromZXYX(transposedZ) * CreateFromYZBC(tmp2, d1);
 
         var tmp3 = CreateFromXYAA(d0, d2);
         var tmp4 = CreateFromXYCC(d1, d2);
@@ -748,22 +748,22 @@ public struct Matrix4x4
         c4 = MultiplyAddNegated(c4, CreateFromZWYZ(transposedW), CreateFromWXBC(d1, tmp4));
         c6 = MultiplyAddNegated(c6, CreateFromWZWY(transposedZ), CreateFromZYCA(d1, tmp4));
 
-        var v00 = Multiply(CreateFromWXWX(transposedY), CreateFromXWZX(CreateFromZZAB(d0, d2)));
-        var v01 = Multiply(CreateFromYWXZ(transposedX), CreateFromWXYZ(CreateFromXWAB(d0, d2)));
-        var v02 = Multiply(CreateFromWXWX(transposedW), CreateFromXWZX(CreateFromZZCD(d1, d2)));
-        var v03 = Multiply(CreateFromYWXZ(transposedZ), CreateFromWXYZ(CreateFromXWCD(d1, d2)));
+        var v00 = CreateFromWXWX(transposedY) * CreateFromXWZX(CreateFromZZAB(d0, d2));
+        var v01 = CreateFromYWXZ(transposedX) * CreateFromWXYZ(CreateFromXWAB(d0, d2));
+        var v02 = CreateFromWXWX(transposedW) * CreateFromXWZX(CreateFromZZCD(d1, d2));
+        var v03 = CreateFromYWXZ(transposedZ) * CreateFromWXYZ(CreateFromXWCD(d1, d2));
 
-        var c1 = Subtract(c0, v00);
-        c0 = Add(c0, v00);
+        var c1 = c0 - v00;
+        c0 += v00;
 
-        var c3 = Add(c2, v01);
-        c2 = Subtract(c2, v01);
+        var c3 = c2 + v01;
+        c2 -= v01;
 
-        var c5 = Subtract(c4, v02);
-        c4 = Add(c4, v02);
+        var c5 = c4 - v02;
+        c4 += v02;
 
-        var c7 = Add(c6, v03);
-        c6 = Subtract(c6, v03);
+        var c7 = c6 + v03;
+        c6 -= v03;
 
         c0 = CreateFromXZBD(c0, c1);
         c2 = CreateFromXZBD(c2, c3);
@@ -774,14 +774,14 @@ public struct Matrix4x4
         c4 = CreateFromXZYW(c4);
         c6 = CreateFromXZYW(c6);
 
-        var vDeterminant = DotProduct(c0, transposedX);
+        var vDeterminant = Vector128.Create(Vector128.Dot(c0, transposedX));
         determinant = vDeterminant.ToScalar();
 
         return Create(
-            Divide(c0, vDeterminant),
-            Divide(c2, vDeterminant),
-            Divide(c4, vDeterminant),
-            Divide(c6, vDeterminant)
+            c0 / vDeterminant,
+            c2 / vDeterminant,
+            c4 / vDeterminant,
+            c6 / vDeterminant
         );
     }
 
@@ -865,9 +865,9 @@ public struct Matrix4x4
         var vW_ZZYY = CreateFromZZYY(vW);
         var vW_WWWZ = CreateFromWWWZ(vW);
 
-        var p0 = Multiply(vZ_YXXX, vW_ZZYY);
-        var p1 = Multiply(vZ_YXXX, vW_WWWZ);
-        var p2 = Multiply(vZ_ZZYY, vW_WWWZ);
+        var p0 = vZ_YXXX * vW_ZZYY;
+        var p1 = vZ_YXXX * vW_WWWZ;
+        var p2 = vZ_ZZYY * vW_WWWZ;
 
         p0 = MultiplyAddNegated(p0, vZ_ZZYY, vW_YXXX);
         p1 = MultiplyAddNegated(p1, vZ_WWWZ, vW_YXXX);
@@ -879,13 +879,13 @@ public struct Matrix4x4
         var vY_ZZYY = CreateFromZZYY(vY);
         var vY_WWWZ = CreateFromWWWZ(vY);
 
-        var s = Multiply(value._x, Vector128.Create(1.0f, -1.0f, 1.0f, -1.0f));
-        var r = Multiply(vY_WWWZ, p0);
+        var s = value._x * Vector128.Create(1.0f, -1.0f, 1.0f, -1.0f);
+        var r = vY_WWWZ * p0;
 
         r = MultiplyAddNegated(r, vY_ZZYY, p1);
         r = MultiplyAdd(r, vY_YXXX, p2);
 
-        return DotProduct(s, r);
+        return Vector128.Create(Vector128.Dot(s, r));
     }
 
     /// <summary>Reinterprets the current instance as a new <see cref="SysMatrix4x4" />.</summary>

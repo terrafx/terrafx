@@ -10,157 +10,6 @@ namespace TerraFX.UnitTests.Utilities;
 [TestFixture(TestOf = typeof(VectorUtilities))]
 internal static class VectorUtilitiesTests
 {
-    /// <summary>Provides validation of the <see cref="VectorUtilities.Abs(Vector128{float})" /> method.</summary>
-    [Test]
-    public static void AbsTest()
-    {
-        Assert.That(() => VectorUtilities.Abs(Vector128.Create(-1.0f, 2.0f, -3.0f, 4.0f)),
-            Is.EqualTo(Vector128.Create(1.0f, 2.0f, 3.0f, 4.0f))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.Add(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void AddTest()
-    {
-        Assert.That(() => VectorUtilities.Add(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f), Vector128.Create(4.0f, 5.0f, 6.0f, 7.0f)),
-            Is.EqualTo(Vector128.Create(4.0f, 6.0f, 8.0f, 10.0f))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.BitwiseAnd(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void BitwiseAndTest()
-    {
-        Assert.That(() => VectorUtilities.BitwiseAnd(Vector128.Create(1.0f, 2.0f, 3.0f, 4.0f), Vector128.Create(0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000).AsSingle()),
-            Is.EqualTo(Vector128.Create(1.0f, 0.0f, 3.0f, 0.0f))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.BitwiseAndNot(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void BitwiseAndNotTest()
-    {
-        Assert.That(() => VectorUtilities.BitwiseAndNot(Vector128.Create(1.0f, 2.0f, 3.0f, 4.0f), Vector128.Create(0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000).AsSingle()),
-            Is.EqualTo(Vector128.Create(0.0f, 2.0f, 0.0f, 4.0f))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.BitwiseOr(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void BitwiseOrTest()
-    {
-        Assert.That(() => VectorUtilities.BitwiseOr(Vector128.Create(-0.0f, 0.0f, -0.0f, 0.0f), Vector128.Create(1.0f, 2.0f, 3.0f, 4.0f)),
-            Is.EqualTo(Vector128.Create(-1.0f, 2.0f, -3.0f, 4.0f))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.BitwiseXor(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void BitwiseXorTest()
-    {
-        Assert.That(() => VectorUtilities.BitwiseXor(Vector128.Create(-0.0f, -0.0f, -0.0f, -0.0f), Vector128.Create(-1.0f, 2.0f, -3.0f, 4.0f)),
-            Is.EqualTo(Vector128.Create(1.0f, -2.0f, 3.0f, -4.0f))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.CompareEqual(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void CompareEqualTest()
-    {
-        Assert.That(() => VectorUtilities.CompareEqual(Vector128.Create(1.0f, 2.0f, 3.0f, 4.0f), Vector128.Create(1.0f, -2.0f, 3.0f, -4.0f)).AsUInt32(),
-            Is.EqualTo(Vector128.Create(0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.CompareEqualAll(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void CompareEqualAllTest()
-    {
-        Assert.That(() => VectorUtilities.CompareEqualAll(Vector128.Create(1.0f, 2.0f, 3.0f, 4.0f), Vector128.Create(1.0f, 2.0f, 3.0f, 4.0f)),
-            Is.True
-        );
-
-        Assert.That(() => VectorUtilities.CompareEqualAll(Vector128.Create(1.0f, 2.0f, 3.0f, 4.0f), Vector128.Create(1.0f, -2.0f, 3.0f, -4.0f)),
-            Is.False
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.CompareGreaterThan(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void CompareGreaterThanTest()
-    {
-        Assert.That(() => VectorUtilities.CompareGreaterThan(Vector128.Create(1.0f, 2.0f, 3.0f, 4.0f), Vector128.Create(1.0f, -2.0f, 3.0f, -4.0f)).AsUInt32(),
-            Is.EqualTo(Vector128.Create(0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.CompareGreaterThanOrEqual(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void CompareGreaterThanOrEqualTest()
-    {
-        Assert.That(() => VectorUtilities.CompareGreaterThanOrEqual(Vector128.Create(1.0f, 2.0f, 3.0f, 4.0f), Vector128.Create(1.0f, -2.0f, 3.0f, -4.0f)).AsUInt32(),
-            Is.EqualTo(Vector128.Create(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.CompareLessThan(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void CompareLessThanTest()
-    {
-        Assert.That(() => VectorUtilities.CompareLessThan(Vector128.Create(1.0f, 2.0f, 3.0f, 4.0f), Vector128.Create(1.0f, -2.0f, 3.0f, -4.0f)).AsUInt32(),
-            Is.EqualTo(Vector128<uint>.Zero)
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.CompareGreaterThanOrEqual(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void CompareLessThanOrEqualTest()
-    {
-        Assert.That(() => VectorUtilities.CompareLessThanOrEqual(Vector128.Create(1.0f, 2.0f, 3.0f, 4.0f), Vector128.Create(1.0f, -2.0f, 3.0f, -4.0f)).AsUInt32(),
-            Is.EqualTo(Vector128.Create(0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.CompareNotEqualAny(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void CompareNotEqualAnyTest()
-    {
-        Assert.That(() => VectorUtilities.CompareNotEqualAny(Vector128.Create(1.0f, 2.0f, 3.0f, 4.0f), Vector128.Create(1.0f, 2.0f, 3.0f, 4.0f)),
-            Is.False
-        );
-
-        Assert.That(() => VectorUtilities.CompareNotEqualAny(Vector128.Create(1.0f, 2.0f, 3.0f, 4.0f), Vector128.Create(1.0f, -2.0f, 3.0f, -4.0f)),
-            Is.True
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.CompareTrueAll(Vector128{float})" /> method.</summary>
-    [Test]
-    public static void CompareTrueAllTest()
-    {
-        Assert.That(() => VectorUtilities.CompareTrueAll(Vector128.Create(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF).AsSingle()),
-            Is.True
-        );
-
-        Assert.That(() => VectorUtilities.CompareTrueAll(Vector128.Create(0x00000000, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF).AsSingle()),
-            Is.False
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.CompareTrueAny(Vector128{float})" /> method.</summary>
-    [Test]
-    public static void CompareTrueAnyTest()
-    {
-        Assert.That(() => VectorUtilities.CompareTrueAny(Vector128.Create(0xFFFFFFFF, 0x00000000, 0x00000000, 0x00000000).AsSingle()),
-            Is.True
-        );
-
-        Assert.That(() => VectorUtilities.CompareTrueAny(Vector128.Create(0x00000000, 0x00000000, 0x00000000, 0x00000000).AsSingle()),
-            Is.False
-        );
-    }
-
     /// <summary>Provides validation of the <see cref="VectorUtilities.CreateFromX(Vector128{float})" /> method.</summary>
     [Test]
     public static void CreateFromXTest()
@@ -686,24 +535,6 @@ internal static class VectorUtilitiesTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="VectorUtilities.Divide(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void DivideTest()
-    {
-        Assert.That(() => VectorUtilities.Divide(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f), Vector128.Create(4.0f, 5.0f, 6.0f, 7.0f)),
-            Is.EqualTo(Vector128.Create(0.0f, 0.2f, 0.33333334f, 0.42857143f))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.DotProduct(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void DotProductTest()
-    {
-        Assert.That(() => VectorUtilities.DotProduct(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f), Vector128.Create(4.0f, 5.0f, 6.0f, 7.0f)),
-            Is.EqualTo(Vector128.Create(38.0f, 38.0f, 38.0f, 38.0f))
-        );
-    }
-
     /// <summary>Provides validation of the <see cref="VectorUtilities.ElementwiseSelect(Vector128{float}, Vector128{float}, Vector128{float})" /> method.</summary>
     [Test]
     public static void ElementwiseSelectTest()
@@ -776,37 +607,6 @@ internal static class VectorUtilitiesTests
     {
         Assert.That(() => VectorUtilities.LengthSquared(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f)),
             Is.EqualTo(Vector128.Create(14.0f, 14.0f, 14.0f, 14.0f))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.Max(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void MaxTest()
-    {
-        Assert.That(() => VectorUtilities.Max(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f), Vector128.Create(3.0f, 2.0f, 1.0f, 0.0f)),
-            Is.EqualTo(Vector128.Create(3.0f, 2.0f, 2.0f, 3.0f))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.Min(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void MinTest()
-    {
-        Assert.That(() => VectorUtilities.Min(Vector128.Create(-0.0f, -1.0f, -2.0f, -3.0f), Vector128.Create(-3.0f, -2.0f, -1.0f, -0.0f)),
-            Is.EqualTo(Vector128.Create(-3.0f, -2.0f, -2.0f, -3.0f))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.Multiply(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void MultiplyTest()
-    {
-        Assert.That(() => VectorUtilities.Multiply(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f), Vector128.Create(4.0f, 5.0f, 6.0f, 7.0f)),
-            Is.EqualTo(Vector128.Create(0.0f, 5.0f, 12.0f, 21.0f))
-        );
-
-        Assert.That(() => VectorUtilities.Multiply(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f), 4.0f),
-            Is.EqualTo(Vector128.Create(0.0f, 4.0f, 8.0f, 12.0f))
         );
     }
 
@@ -900,15 +700,6 @@ internal static class VectorUtilitiesTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="VectorUtilities.Negate(Vector128{float})" /> method.</summary>
-    [Test]
-    public static void NegateTest()
-    {
-        Assert.That(() => VectorUtilities.Negate(Vector128.Create(1.0f, -2.0f, 3.0f, -4.0f)),
-            Is.EqualTo(Vector128.Create(-1.0f, 2.0f, -3.0f, 4.0f))
-        );
-    }
-
     /// <summary>Provides validation of the <see cref="VectorUtilities.Normalize(Vector128{float})" /> method.</summary>
     [Test]
     public static void NormalizeTest()
@@ -924,24 +715,6 @@ internal static class VectorUtilitiesTests
     {
         Assert.That(() => VectorUtilities.QuaternionConjugate(Vector128.Create(1.0f, 2.0f, 3.0f, 4.0f)),
             Is.EqualTo(Vector128.Create(-1.0f, -2.0f, -3.0f, 4.0f))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.Sqrt(Vector128{float})" /> method.</summary>
-    [Test]
-    public static void SqrtTest()
-    {
-        Assert.That(() => VectorUtilities.Sqrt(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f)),
-            Is.EqualTo(Vector128.Create(0.0f, 1.0f, 1.4142135f, 1.7320508f))
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="VectorUtilities.Subtract(Vector128{float}, Vector128{float})" /> method.</summary>
-    [Test]
-    public static void SubtractTest()
-    {
-        Assert.That(() => VectorUtilities.Subtract(Vector128.Create(0.0f, 1.0f, 2.0f, 3.0f), Vector128.Create(4.0f, 5.0f, 6.0f, 7.0f)),
-            Is.EqualTo(Vector128.Create(-4.0f, -4.0f, -4.0f, -4.0f))
         );
     }
 }

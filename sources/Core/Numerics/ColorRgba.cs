@@ -81,14 +81,14 @@ public readonly struct ColorRgba
     /// <param name="right">The color to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator ==(ColorRgba left, ColorRgba right) => CompareEqualAll(left._value, right._value);
+    public static bool operator ==(ColorRgba left, ColorRgba right) => Vector128.EqualsAll(left._value, right._value);
 
     /// <summary>Compares two colors to determine equality.</summary>
     /// <param name="left">The color to compare with <paramref name="right" />.</param>
     /// <param name="right">The color to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator !=(ColorRgba left, ColorRgba right) => CompareNotEqualAny(left._value, right._value);
+    public static bool operator !=(ColorRgba left, ColorRgba right) => !Vector128.EqualsAll(left._value, right._value);
 
     /// <inheritdoc />
     public override bool Equals(object? obj) => obj is ColorRgba other && Equals(other);

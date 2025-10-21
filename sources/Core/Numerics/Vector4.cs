@@ -170,14 +170,14 @@ public readonly struct Vector4
     /// <param name="right">The vector to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator ==(Vector4 left, Vector4 right) => VectorUtilities.CompareEqualAll(left._value, right._value);
+    public static bool operator ==(Vector4 left, Vector4 right) => Vector128.EqualsAll(left._value, right._value);
 
     /// <summary>Compares two vectors to determine inequality.</summary>
     /// <param name="left">The vector to compare with <paramref name="right" />.</param>
     /// <param name="right">The vector to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator !=(Vector4 left, Vector4 right) => CompareNotEqualAny(left._value, right._value);
+    public static bool operator !=(Vector4 left, Vector4 right) => !Vector128.EqualsAll(left._value, right._value);
 
     /// <summary>Computes the value of a vector.</summary>
     /// <param name="value">The vector.</param>
@@ -191,7 +191,7 @@ public readonly struct Vector4
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector4 operator -(Vector4 value)
     {
-        var result = Negate(value._value);
+        var result = -value._value;
         return new Vector4(result);
     }
 
@@ -202,7 +202,7 @@ public readonly struct Vector4
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector4 operator +(Vector4 left, Vector4 right)
     {
-        var result = Add(left._value, right._value);
+        var result = left._value + right._value;
         return new Vector4(result);
     }
 
@@ -213,7 +213,7 @@ public readonly struct Vector4
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector4 operator -(Vector4 left, Vector4 right)
     {
-        var result = Subtract(left._value, right._value);
+        var result = left._value - right._value;
         return new Vector4(result);
     }
 
@@ -224,7 +224,7 @@ public readonly struct Vector4
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector4 operator *(Vector4 left, float right)
     {
-        var result = Multiply(left._value, right);
+        var result = left._value * right;
         return new Vector4(result);
     }
 
@@ -235,7 +235,7 @@ public readonly struct Vector4
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector4 operator *(Vector4 left, Vector4 right)
     {
-        var result = Multiply(left._value, right._value);
+        var result = left._value * right._value;
         return new Vector4(result);
     }
 
@@ -253,7 +253,7 @@ public readonly struct Vector4
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector4 operator /(Vector4 left, float right)
     {
-        var result = Divide(left._value, right);
+        var result = left._value / right;
         return new Vector4(result);
     }
 
@@ -264,7 +264,7 @@ public readonly struct Vector4
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector4 operator /(Vector4 left, Vector4 right)
     {
-        var result = Divide(left._value, right._value);
+        var result = left._value / right._value;
         return new Vector4(result);
     }
 
@@ -275,7 +275,7 @@ public readonly struct Vector4
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector4 CompareEqual(Vector4 left, Vector4 right)
     {
-        var result = VectorUtilities.CompareEqual(left._value, right._value);
+        var result = Vector128.Equals(left._value, right._value);
         return new Vector4(result);
     }
 
@@ -313,8 +313,7 @@ public readonly struct Vector4
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float DotProduct(Vector4 left, Vector4 right)
     {
-        var result = VectorUtilities.DotProduct(left._value, right._value);
-        return result.ToScalar();
+        return Vector128.Dot(left._value, right._value);
     }
 
     /// <summary>Determines if any elements in a vector are either <see cref="float.PositiveInfinity" /> or <see cref="float.NegativeInfinity" />.</summary>
@@ -334,7 +333,7 @@ public readonly struct Vector4
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector4 Max(Vector4 left, Vector4 right)
     {
-        var result = VectorUtilities.Max(left._value, right._value);
+        var result = Vector128.Max(left._value, right._value);
         return new Vector4(result);
     }
 
@@ -345,7 +344,7 @@ public readonly struct Vector4
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector4 Min(Vector4 left, Vector4 right)
     {
-        var result = VectorUtilities.Min(left._value, right._value);
+        var result = Vector128.Min(left._value, right._value);
         return new Vector4(result);
     }
 
@@ -395,7 +394,7 @@ public readonly struct Vector4
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector4 Sqrt(Vector4 value)
     {
-        var result = VectorUtilities.Sqrt(value._value);
+        var result = Vector128.Sqrt(value._value);
         return new Vector4(result);
     }
 

@@ -74,226 +74,6 @@ public static class VectorUtilities
         }
     }
 
-    /// <summary>Computes the absolute value of a vector.</summary>
-    /// <param name="value">The vector for which to get its absolute value.</param>
-    /// <returns>The absolute value of <paramref name="value" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Abs(Vector128<float> value)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.And(value, Vector128.Create(0x7FFFFFFF).AsSingle());
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.Abs(value);
-        }
-        else
-        {
-            return SoftwareFallback(value);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> value)
-        {
-            return Vector128.Create(
-                MathF.Abs(value.GetX()),
-                MathF.Abs(value.GetY()),
-                MathF.Abs(value.GetZ()),
-                MathF.Abs(value.GetW())
-            );
-        }
-    }
-
-    /// <summary>Computes the sum of two vectors.</summary>
-    /// <param name="left">The vector to which to add <paramref name="right" />.</param>
-    /// <param name="right">The vector which is added to <paramref name="left" />.</param>
-    /// <returns>The sum of <paramref name="right" /> added to <paramref name="left" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Add(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.Add(left, right);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.Add(left, right);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
-        {
-            return Vector128.Create(
-                left.GetX() + right.GetX(),
-                left.GetY() + right.GetY(),
-                left.GetZ() + right.GetZ(),
-                left.GetW() + right.GetW()
-            );
-        }
-    }
-
-    /// <summary>Computes the bitwise-and two vectors.</summary>
-    /// <param name="left">The vector to bitwise-and with <paramref name="right" />.</param>
-    /// <param name="right">The vector to bitwise-and with <paramref name="left" />.</param>
-    /// <returns>The bitwise-and of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> BitwiseAnd(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.And(left, right);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.And(left, right);
-        }
-        else
-        {
-            var result = SoftwareFallback(left.AsUInt32(), right.AsUInt32());
-            return result.AsSingle();
-        }
-
-        static Vector128<uint> SoftwareFallback(Vector128<uint> left, Vector128<uint> right)
-        {
-            return Vector128.Create(
-                left.GetElement(0) & right.GetElement(0),
-                left.GetElement(1) & right.GetElement(1),
-                left.GetElement(2) & right.GetElement(2),
-                left.GetElement(3) & right.GetElement(3)
-            );
-        }
-    }
-
-    /// <summary>Computes the bitwise-and two vectors.</summary>
-    /// <param name="left">The vector to bitwise-and with <paramref name="right" />.</param>
-    /// <param name="right">The vector to bitwise-and with <paramref name="left" />.</param>
-    /// <returns>The bitwise-and of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> BitwiseAndNot(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.AndNot(right, left);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.BitwiseClear(left, right);
-        }
-        else
-        {
-            var result = SoftwareFallback(left.AsUInt32(), right.AsUInt32());
-            return result.AsSingle();
-        }
-
-        static Vector128<uint> SoftwareFallback(Vector128<uint> left, Vector128<uint> right)
-        {
-            return Vector128.Create(
-                left.GetElement(0) & ~right.GetElement(0),
-                left.GetElement(1) & ~right.GetElement(1),
-                left.GetElement(2) & ~right.GetElement(2),
-                left.GetElement(3) & ~right.GetElement(3)
-            );
-        }
-    }
-
-    /// <summary>Computes the bitwise-or two vectors.</summary>
-    /// <param name="left">The vector to bitwise-or with <paramref name="right" />.</param>
-    /// <param name="right">The vector to bitwise-or with <paramref name="left" />.</param>
-    /// <returns>The bitwise-or of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> BitwiseOr(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.Or(left, right);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.Or(left, right);
-        }
-        else
-        {
-            var result = SoftwareFallback(left.AsUInt32(), right.AsUInt32());
-            return result.AsSingle();
-        }
-
-        static Vector128<uint> SoftwareFallback(Vector128<uint> left, Vector128<uint> right)
-        {
-            return Vector128.Create(
-                left.GetElement(0) | right.GetElement(0),
-                left.GetElement(1) | right.GetElement(1),
-                left.GetElement(2) | right.GetElement(2),
-                left.GetElement(3) | right.GetElement(3)
-            );
-        }
-    }
-
-    /// <summary>Computes the bitwise-xor two vectors.</summary>
-    /// <param name="left">The vector to bitwise-xor with <paramref name="right" />.</param>
-    /// <param name="right">The vector to bitwise-xor with <paramref name="left" />.</param>
-    /// <returns>The bitwise-xor of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> BitwiseXor(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.Xor(left, right);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.Xor(left, right);
-        }
-        else
-        {
-            var result = SoftwareFallback(left.AsUInt32(), right.AsUInt32());
-            return result.AsSingle();
-        }
-
-        static Vector128<uint> SoftwareFallback(Vector128<uint> left, Vector128<uint> right)
-        {
-            return Vector128.Create(
-                left.GetElement(0) ^ right.GetElement(0),
-                left.GetElement(1) ^ right.GetElement(1),
-                left.GetElement(2) ^ right.GetElement(2),
-                left.GetElement(3) ^ right.GetElement(3)
-            );
-        }
-    }
-
-    /// <summary>Compares two vectors to determine which elements equivalent.</summary>
-    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
-    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
-    /// <returns>A vector that contains the element-wise comparison of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> CompareEqual(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.CompareEqual(left, right);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.CompareEqual(left, right);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
-        {
-            return Vector128.Create(
-                (left.GetX() == right.GetX()) ? AllBitsSet : 0.0f,
-                (left.GetY() == right.GetY()) ? AllBitsSet : 0.0f,
-                (left.GetZ() == right.GetZ()) ? AllBitsSet : 0.0f,
-                (left.GetW() == right.GetW()) ? AllBitsSet : 0.0f
-            );
-        }
-    }
-
     /// <summary>Compares two vectors to determine approximate equality.</summary>
     /// <param name="left">The vector to compare with <paramref name="right" />.</param>
     /// <param name="right">The vector to compare with <paramref name="left" />.</param>
@@ -330,37 +110,6 @@ public static class VectorUtilities
         }
     }
 
-    /// <summary>Compares two vectors to determine equality.</summary>
-    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
-    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
-    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool CompareEqualAll(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            var result = Sse.CompareNotEqual(left, right);
-            return Sse.MoveMask(result) == 0x00;
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            var result = AdvSimd.CompareEqual(left, right);
-            return AdvSimd.Arm64.MinAcross(result.AsUInt32()).ToScalar() != 0;
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static bool SoftwareFallback(Vector128<float> left, Vector128<float> right)
-        {
-            return (left.GetX() == right.GetX())
-                && (left.GetY() == right.GetY())
-                && (left.GetZ() == right.GetZ())
-                && (left.GetW() == right.GetW());
-        }
-    }
-
     /// <summary>Compares two vectors to determine if all elements are approximately equal.</summary>
     /// <param name="left">The vector to compare with <paramref name="right" />.</param>
     /// <param name="right">The vector to compare with <paramref name="left" />.</param>
@@ -394,217 +143,6 @@ public static class VectorUtilities
                 && (MathUtilities.Abs(left.GetY() - right.GetY()) <= epsilon.GetY())
                 && (MathUtilities.Abs(left.GetZ() - right.GetZ()) <= epsilon.GetZ())
                 && (MathUtilities.Abs(left.GetW() - right.GetW()) <= epsilon.GetW());
-        }
-    }
-
-    /// <summary>Compares two vectors to determine which elements are greater or equivalent.</summary>
-    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
-    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
-    /// <returns>A vector that contains the element-wise comparison of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> CompareGreaterThan(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.CompareGreaterThan(left, right);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.CompareGreaterThan(left, right);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
-        {
-            return Vector128.Create(
-                (left.GetX() > right.GetX()) ? AllBitsSet : 0.0f,
-                (left.GetY() > right.GetY()) ? AllBitsSet : 0.0f,
-                (left.GetZ() > right.GetZ()) ? AllBitsSet : 0.0f,
-                (left.GetW() > right.GetW()) ? AllBitsSet : 0.0f
-            );
-        }
-    }
-
-    /// <summary>Compares two vectors to determine which elements are greater.</summary>
-    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
-    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
-    /// <returns>A vector that contains the element-wise comparison of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> CompareGreaterThanOrEqual(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.CompareGreaterThanOrEqual(left, right);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.CompareGreaterThanOrEqual(left, right);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
-        {
-            return Vector128.Create(
-                (left.GetX() >= right.GetX()) ? AllBitsSet : 0.0f,
-                (left.GetY() >= right.GetY()) ? AllBitsSet : 0.0f,
-                (left.GetZ() >= right.GetZ()) ? AllBitsSet : 0.0f,
-                (left.GetW() >= right.GetW()) ? AllBitsSet : 0.0f
-            );
-        }
-    }
-
-    /// <summary>Compares two vectors to determine which elements are lesser.</summary>
-    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
-    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
-    /// <returns>A vector that contains the element-wise comparison of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> CompareLessThan(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.CompareLessThan(left, right);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.CompareLessThan(left, right);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
-        {
-            return Vector128.Create(
-                (left.GetX() < right.GetX()) ? AllBitsSet : 0.0f,
-                (left.GetY() < right.GetY()) ? AllBitsSet : 0.0f,
-                (left.GetZ() < right.GetZ()) ? AllBitsSet : 0.0f,
-                (left.GetW() < right.GetW()) ? AllBitsSet : 0.0f
-            );
-        }
-    }
-
-    /// <summary>Compares two vectors to determine which elements are lesser or equivalent.</summary>
-    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
-    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
-    /// <returns>A vector that contains the element-wise comparison of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> CompareLessThanOrEqual(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.CompareLessThanOrEqual(left, right);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.CompareLessThanOrEqual(left, right);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
-        {
-            return Vector128.Create(
-                (left.GetX() <= right.GetX()) ? AllBitsSet : 0.0f,
-                (left.GetY() <= right.GetY()) ? AllBitsSet : 0.0f,
-                (left.GetZ() <= right.GetZ()) ? AllBitsSet : 0.0f,
-                (left.GetW() <= right.GetW()) ? AllBitsSet : 0.0f
-            );
-        }
-    }
-
-    /// <summary>Compares two vectors to determine equality.</summary>
-    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
-    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
-    /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool CompareNotEqualAny(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            var result = Sse.CompareNotEqual(left, right);
-            return Sse.MoveMask(result) != 0x00;
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            var result = AdvSimd.CompareEqual(left, right);
-            return AdvSimd.Arm64.MinAcross(result.AsUInt32()).ToScalar() == 0;
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static bool SoftwareFallback(Vector128<float> left, Vector128<float> right)
-        {
-            return (left.GetX() != right.GetX())
-                || (left.GetY() != right.GetY())
-                || (left.GetZ() != right.GetZ())
-                || (left.GetW() != right.GetW());
-        }
-    }
-
-    /// <summary>Checks a vector to determine if all elements represent <c>true</c>.</summary>
-    /// <param name="value">The vector to check.</param>
-    /// <returns><c>true</c> if all elements in <paramref name="value" /> represent <c>true</c>; otherwise, <c>false</c>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool CompareTrueAll(Vector128<float> value)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.MoveMask(value) == 0x0F;
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.Arm64.MinAcross(value.AsUInt32()).ToScalar() != 0;
-        }
-        else
-        {
-            return SoftwareFallback(value.AsUInt32());
-        }
-
-        static bool SoftwareFallback(Vector128<uint> value)
-        {
-            return (value.GetElement(0) != 0)
-                && (value.GetElement(1) != 0)
-                && (value.GetElement(2) != 0)
-                && (value.GetElement(3) != 0);
-        }
-    }
-
-    /// <summary>Checks a vector to determine if any elements represent <c>true</c>.</summary>
-    /// <param name="value">The vector to check.</param>
-    /// <returns><c>true</c> if any elements in <paramref name="value" /> represent <c>true</c>; otherwise, <c>false</c>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool CompareTrueAny(Vector128<float> value)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.MoveMask(value) != 0x00;
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.Arm64.MaxAcross(value.AsUInt32()).ToScalar() != 0;
-        }
-        else
-        {
-            return SoftwareFallback(value.AsUInt32());
-        }
-
-        static bool SoftwareFallback(Vector128<uint> value)
-        {
-            return (value.GetElement(0) != 0)
-                || (value.GetElement(1) != 0)
-                || (value.GetElement(2) != 0)
-                || (value.GetElement(3) != 0);
         }
     }
 
@@ -2536,9 +2074,9 @@ public static class VectorUtilities
     {
         if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
         {
-            var result = Multiply(CreateFromYZXW(left), CreateFromZXYW(right));
+            var result = CreateFromYZXW(left) * CreateFromZXYW(right);
             result = MultiplyAddNegated(result, CreateFromZXYW(left), CreateFromYZXW(right));
-            return BitwiseAnd(result, Vector128.Create(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000).AsSingle());
+            return result & Vector128.Create(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000).AsSingle();
         }
         else
         {
@@ -2548,102 +2086,6 @@ public static class VectorUtilities
                 (left.GetX() * right.GetY()) - (left.GetY() * right.GetX()),
                 0
             );
-        }
-    }
-
-    /// <summary>Computes the quotient of a vector and a float.</summary>
-    /// <param name="left">The vector which is divided by <paramref name="right" />.</param>
-    /// <param name="right">The float which divides <paramref name="left" />.</param>
-    /// <returns>The quotient of <paramref name="left" /> divided by <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Divide(Vector128<float> left, float right)
-    {
-        if (Sse41.IsSupported)
-        {
-            var scalar = Vector128.Create(right);
-            return Sse.Divide(left, scalar);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            var scalar = Vector128.Create(right);
-            return AdvSimd.Arm64.Divide(left, scalar);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> left, float right)
-        {
-            return Vector128.Create(
-                left.GetX() / right,
-                left.GetY() / right,
-                left.GetZ() / right,
-                left.GetW() / right
-            );
-        }
-    }
-
-    /// <summary>Computes the quotient of two vectors.</summary>
-    /// <param name="left">The vector which is divided by <paramref name="right" />.</param>
-    /// <param name="right">The vector which divides <paramref name="left" />.</param>
-    /// <returns>The quotient of <paramref name="left" /> divided by <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Divide(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.Divide(left, right);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.Arm64.Divide(left, right);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
-        {
-            return Vector128.Create(
-                left.GetX() / right.GetX(),
-                left.GetY() / right.GetY(),
-                left.GetZ() / right.GetZ(),
-                left.GetW() / right.GetW()
-            );
-        }
-    }
-
-    /// <summary>Computes the dot product of two vectors.</summary>
-    /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
-    /// <param name="right">The vector which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The dot product of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> DotProduct(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse41.DotProduct(left, right, 0xFF);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            var tmp = AdvSimd.Multiply(left, right);
-            tmp = AdvSimd.Arm64.AddPairwise(tmp, tmp);
-            return AdvSimd.Arm64.AddPairwise(tmp, tmp);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
-        {
-            var result = (left.GetX() * right.GetX())
-                       + (left.GetY() * right.GetY())
-                       + (left.GetZ() * right.GetZ())
-                       + (left.GetW() * right.GetW());
-            return Vector128.Create(result);
         }
     }
 
@@ -2802,7 +2244,7 @@ public static class VectorUtilities
     /// <param name="value">The vector to check.</param>
     /// <returns><c>true</c> if any elements in <paramref name="value" /> are <see cref="float.NaN" />; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsAnyNaN(Vector128<float> value) => CompareNotEqualAny(value, value);
+    public static bool IsAnyNaN(Vector128<float> value) => !Vector128.EqualsAll(value, value);
 
     /// <summary>Computes the length of a vector.</summary>
     /// <param name="value">The vector whose length is to be computed.</param>
@@ -2811,146 +2253,14 @@ public static class VectorUtilities
     public static Vector128<float> Length(Vector128<float> value)
     {
         var result = LengthSquared(value);
-        return Sqrt(result);
+        return Vector128.Sqrt(result);
     }
 
     /// <summary>Computes the squared length of a vector.</summary>
     /// <param name="value">The vector whose squared length is to be computed.</param>
     /// <returns>The squared length of <paramref name="value" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> LengthSquared(Vector128<float> value) => DotProduct(value, value);
-
-    /// <summary>Compares two vectors to determine the element-wise maximum.</summary>
-    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
-    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
-    /// <returns>The element-wise maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Max(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            // TODO: This isn't correctly taking +0.0 vs -0.0 into account
-            var tmp = Sse.Max(left, right);
-            var msk = Sse.CompareUnordered(left, right);
-            return Sse41.BlendVariable(tmp, left, msk);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.Max(left, right);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
-        {
-            return Vector128.Create(
-                MathUtilities.Max(left.GetX(), right.GetX()),
-                MathUtilities.Max(left.GetY(), right.GetY()),
-                MathUtilities.Max(left.GetZ(), right.GetZ()),
-                MathUtilities.Max(left.GetW(), right.GetW())
-            );
-        }
-    }
-
-    /// <summary>Compares two vectors to determine the element-wise minimum.</summary>
-    /// <param name="left">The vector to compare with <paramref name="right" />.</param>
-    /// <param name="right">The vector to compare with <paramref name="left" />.</param>
-    /// <returns>The element-wise minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Min(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            // TODO: This isn't correctly taking +0.0 vs -0.0 into account
-            var tmp = Sse.Min(left, right);
-            var msk = Sse.CompareUnordered(left, left);
-            return Sse41.BlendVariable(tmp, left, msk);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.Min(left, right);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
-        {
-            return Vector128.Create(
-                MathUtilities.Min(left.GetX(), right.GetX()),
-                MathUtilities.Min(left.GetY(), right.GetY()),
-                MathUtilities.Min(left.GetZ(), right.GetZ()),
-                MathUtilities.Min(left.GetW(), right.GetW())
-            );
-        }
-    }
-
-    /// <summary>Computes the product of a vector and a float.</summary>
-    /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
-    /// <param name="right">The float which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Multiply(Vector128<float> left, float right)
-    {
-        if (Sse41.IsSupported)
-        {
-            var scalar = Vector128.Create(right);
-            return Sse.Multiply(left, scalar);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            var scalar = Vector64.CreateScalar(right);
-            return AdvSimd.MultiplyBySelectedScalar(left, scalar, 0);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> left, float right)
-        {
-            return Vector128.Create(
-                left.GetX() * right,
-                left.GetY() * right,
-                left.GetZ() * right,
-                left.GetW() * right
-            );
-        }
-    }
-
-    /// <summary>Computes the product of two vectors.</summary>
-    /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
-    /// <param name="right">The vector which is used to multiply <paramref name="left" />.</param>
-    /// <returns>The product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Multiply(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.Multiply(left, right);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.Multiply(left, right);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
-        {
-            return Vector128.Create(
-                left.GetX() * right.GetX(),
-                left.GetY() * right.GetY(),
-                left.GetZ() * right.GetZ(),
-                left.GetW() * right.GetW()
-            );
-        }
-    }
+    public static Vector128<float> LengthSquared(Vector128<float> value) => Vector128.Create(Vector128.Dot(value, value));
 
     /// <summary>Computes the product of two vectors and then adds a third.</summary>
     /// <param name="addend">The vector which is added to the product of <paramref name="left" /> and <paramref name="right" />.</param>
@@ -3296,36 +2606,6 @@ public static class VectorUtilities
         }
     }
 
-    /// <summary>Computes the negation of a vector.</summary>
-    /// <param name="value">The vector to negate.</param>
-    /// <returns>The negation of <paramref name="value" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Negate(Vector128<float> value)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.Subtract(Vector128<float>.Zero, value);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.Negate(value);
-        }
-        else
-        {
-            return SoftwareFallback(value);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> value)
-        {
-            return Vector128.Create(
-                -value.GetX(),
-                -value.GetY(),
-                -value.GetZ(),
-                -value.GetW()
-            );
-        }
-    }
-
     /// <summary>Computes the normalized form of a vector.</summary>
     /// <param name="value">The vector to normalize.</param>
     /// <returns>The normalized form of <paramref name="value" />.</returns>
@@ -3333,9 +2613,9 @@ public static class VectorUtilities
     public static Vector128<float> Normalize(Vector128<float> value)
     {
         var length = Length(value);
-        var mask = CompareEqual(length, Vector128<float>.Zero);
+        var mask = Vector128.Equals(length, Vector128<float>.Zero);
 
-        var result = Divide(value, length);
+        var result = value / length;
         return ElementwiseSelect(mask, Vector128<float>.Zero, result);
     }
 
@@ -3346,7 +2626,7 @@ public static class VectorUtilities
     public static Vector128<float> NormalizeEstimate(Vector128<float> value)
     {
         var result = ReciprocalLengthEstimate(value);
-        return Multiply(value, result);
+        return value * result;
     }
 
     /// <summary>Computes the conjugate of a quaternion.</summary>
@@ -3358,7 +2638,7 @@ public static class VectorUtilities
         if (Sse41.IsSupported || AdvSimd.Arm64.IsSupported)
         {
             var multiplier = Vector128.Create(-1.0f, -1.0f, -1.0f, 1.0f);
-            return Multiply(value, multiplier);
+            return value * multiplier;
         }
         else
         {
@@ -3456,67 +2736,6 @@ public static class VectorUtilities
             var (sinZ, cosZ) = MathUtilities.SinCos(value.GetX());
             var (sinW, cosW) = MathUtilities.SinCos(value.GetX());
             return (Vector128.Create(sinX, sinY, sinZ, sinW), Vector128.Create(cosX, cosY, cosZ, cosW));
-        }
-    }
-
-    /// <summary>Computes the square-root of a vector.</summary>
-    /// <param name="value">The vector for which to compute the square-root.</param>
-    /// <returns>The element-wise square-root of <paramref name="value" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Sqrt(Vector128<float> value)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.Sqrt(value);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.Arm64.Sqrt(value);
-        }
-        else
-        {
-            return SoftwareFallback(value);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> value)
-        {
-            return Vector128.Create(
-                MathUtilities.Sqrt(value.GetX()),
-                MathUtilities.Sqrt(value.GetY()),
-                MathUtilities.Sqrt(value.GetZ()),
-                MathUtilities.Sqrt(value.GetW())
-            );
-        }
-    }
-
-    /// <summary>Computes the difference of two vectors.</summary>
-    /// <param name="left">The vector from which to subtract <paramref name="right" />.</param>
-    /// <param name="right">The vector which is subtracted from <paramref name="left" />.</param>
-    /// <returns>The difference of <paramref name="right" /> subtracted from <paramref name="left" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Subtract(Vector128<float> left, Vector128<float> right)
-    {
-        if (Sse41.IsSupported)
-        {
-            return Sse.Subtract(left, right);
-        }
-        else if (AdvSimd.Arm64.IsSupported)
-        {
-            return AdvSimd.Subtract(left, right);
-        }
-        else
-        {
-            return SoftwareFallback(left, right);
-        }
-
-        static Vector128<float> SoftwareFallback(Vector128<float> left, Vector128<float> right)
-        {
-            return Vector128.Create(
-                left.GetX() - right.GetX(),
-                left.GetY() - right.GetY(),
-                left.GetZ() - right.GetZ(),
-                left.GetW() - right.GetW()
-            );
         }
     }
 

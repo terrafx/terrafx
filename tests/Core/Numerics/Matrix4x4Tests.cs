@@ -257,9 +257,9 @@ internal static class Matrix4x4Tests
     {
         Assert.That(() => Matrix4x4.CreateLookAtLH(+Vector3.UnitZ, Vector3.Zero, Vector3.UnitY),
             Is.EqualTo(Matrix4x4.Create(
-                Negate(UnitX),
+                -UnitX,
                 UnitY,
-                Negate(UnitZ),
+                -UnitZ,
                 UnitW.WithZ(+1.0f)
             ))
         );
@@ -285,9 +285,9 @@ internal static class Matrix4x4Tests
     {
         Assert.That(() => Matrix4x4.CreateLookToLH(Vector3.UnitZ, -Vector3.UnitZ, Vector3.UnitY),
             Is.EqualTo(Matrix4x4.Create(
-                Negate(UnitX),
+                -UnitX,
                 UnitY,
-                Negate(UnitZ),
+                -UnitZ,
                 UnitW.WithZ(+1.0f)
             ))
         );
