@@ -55,9 +55,9 @@ public struct AffineTransform
         var pMatrix = (Vector128<float>*)&matrix;
         var zeroW = Vector128.Create(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000).AsSingle();
 
-        pMatrix[0] = BitwiseAnd(pMatrix[0], zeroW);
-        pMatrix[1] = BitwiseAnd(pMatrix[1], zeroW);
-        pMatrix[2] = BitwiseAnd(pMatrix[2], zeroW);
+        pMatrix[0] &= zeroW;
+        pMatrix[1] &= zeroW;
+        pMatrix[2] &= zeroW;
         pMatrix[3] = UnitW;
 
         var canonicalBasis = stackalloc Vector128<float>[3] {
@@ -82,7 +82,7 @@ public struct AffineTransform
 
         if (scale[b] <= epsilon.Y)
         {
-            var abs = Abs(pMatrix[a]);
+            var abs = Vector128.Abs(pMatrix[a]);
             var (aa, bb, cc) = RankDecompose(abs.GetX(), abs.GetY(), abs.GetZ());
             pMatrix[b] = CrossProduct(pMatrix[a], canonicalBasis[cc]);
         }
@@ -101,7 +101,7 @@ public struct AffineTransform
         {
             // switch coordinate system by negating the scale and inverting the basis vector on the x-axis
             scale[a] = -scale[a];
-            pMatrix[a] = Negate(pMatrix[a]);
+            pMatrix[a] = -pMatrix[a];
 
             determinant = -determinant;
         }

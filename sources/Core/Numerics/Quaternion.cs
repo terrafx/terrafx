@@ -166,14 +166,14 @@ public readonly struct Quaternion
     /// <param name="right">The quaternion to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator ==(Quaternion left, Quaternion right) => VectorUtilities.CompareEqualAll(left._value, right._value);
+    public static bool operator ==(Quaternion left, Quaternion right) => Vector128.EqualsAll(left._value, right._value);
 
     /// <summary>Compares two quaternions to determine inequality.</summary>
     /// <param name="left">The quaternion to compare with <paramref name="right" />.</param>
     /// <param name="right">The quaternion to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator !=(Quaternion left, Quaternion right) => CompareNotEqualAny(left._value, right._value);
+    public static bool operator !=(Quaternion left, Quaternion right) => !Vector128.EqualsAll(left._value, right._value);
 
     /// <summary>Computes the product of two quaternions.</summary>
     /// <param name="left">The quaternion to multiply by <paramref name="right" />.</param>
@@ -254,11 +254,11 @@ public readonly struct Quaternion
         x2y2z2w2 = MultiplyAdd(x2y2z2w2, Vector128.Create(-1.0f, -1.0f, +1.0f, +1.0f), r22);
 
         // (4*x*y, 4*x*z, 4*y*z, unused)
-        var xyxzyz = Add(CreateFromYZCB(r0, r1), CreateFromXZWY(CreateFromXXAB(r1, r2)));
+        var xyxzyz = CreateFromYZCB(r0, r1) + CreateFromXZWY(CreateFromXXAB(r1, r2));
 
         // (4*x*w, 4*y*w, 4*z*w, unused)
-        var xwywzw = Subtract(CreateFromYXAA(r2, r1), CreateFromXZWY(CreateFromZZCB(r1, r0)));
-        xwywzw = Multiply(xwywzw, Vector128.Create(-1.0f, +1.0f, -1.0f, +1.0f));
+        var xwywzw = CreateFromYXAA(r2, r1) - CreateFromXZWY(CreateFromZZCB(r1, r0));
+        xwywzw *= Vector128.Create(-1.0f, +1.0f, -1.0f, +1.0f);
 
         // (4*x^2, 4*y^2, 4*x*y, unused)
         // (4*z^2, 4*w^2, 4*z*w, unused)
@@ -280,15 +280,15 @@ public readonly struct Quaternion
         // Select the row of the tensor-product matrix that has the largest magnitude.
 
         // x^2 >= y^2 equivalent to r11 - r00 <= 0
-        var x2gey2 = CompareLessThanOrEqual(Subtract(r11, r00), Vector128<float>.Zero);
+        var x2gey2 = Vector128.LessThanOrEqual(r11 - r00, Vector128<float>.Zero);
         t0 = ElementwiseSelect(x2gey2, tensor0, tensor1);
 
         // z^2 >= w^2 equivalent to r11 + r00 <= 0
-        var z2gew2 = CompareLessThanOrEqual(Add(r11, r00), Vector128<float>.Zero);
+        var z2gew2 = Vector128.LessThanOrEqual(r11 + r00, Vector128<float>.Zero);
         t1 = ElementwiseSelect(z2gew2, tensor2, tensor3);
 
         // x^2 + y^2 >= z^2 + w^2 equivalent to r22 <= 0
-        var x2py2gez2pw2 = CompareLessThanOrEqual(r22, Vector128<float>.Zero);
+        var x2py2gez2pw2 = Vector128.LessThanOrEqual(r22, Vector128<float>.Zero);
         t2 = ElementwiseSelect(x2py2gez2pw2, t0, t1);
 
         var result = VectorUtilities.Normalize(t2);
@@ -302,7 +302,7 @@ public readonly struct Quaternion
     public static Quaternion CreateFromNormalizedAxisAngle(Vector3 normalizedAxis, float angle)
     {
         (var sin, var cos) = MathUtilities.SinCos(angle * 0.5f);
-        var result = Multiply(normalizedAxis.AsVector128(), Vector128.Create(sin));
+        var result = normalizedAxis.AsVector128() * Vector128.Create(sin);
 
         result = result.WithW(cos);
         return new Quaternion(result);
@@ -313,7 +313,7 @@ public readonly struct Quaternion
     /// <returns>A quaternion that represents <paramref name="pitchYawRoll" />.</returns>
     public static Quaternion CreateFromPitchYawRoll(Vector3 pitchYawRoll)
     {
-        var (sin, cos) = SinCos(Multiply(pitchYawRoll.AsVector128(), 0.5f));
+        var (sin, cos) = SinCos(pitchYawRoll.AsVector128() * 0.5f);
 
         var p0 = CreateFromXAAA(sin, cos);
         var y0 = CreateFromBYBB(sin, cos);
@@ -323,11 +323,11 @@ public readonly struct Quaternion
         var y1 = CreateFromBYBB(cos, sin);
         var r1 = CreateFromCCZC(cos, sin);
 
-        var q0 = Multiply(p0, y0);
-        var q1 = Multiply(p1, Vector128.Create(1.0f, -1.0f, -1.0f, 1.0f));
+        var q0 = p0 * y0;
+        var q1 = p1 * Vector128.Create(1.0f, -1.0f, -1.0f, 1.0f);
 
-        q0 = Multiply(q0, r0);
-        q1 = Multiply(q1, y1);
+        q0 *= r0;
+        q1 *= y1;
 
         var result = MultiplyAdd(q0, q1, r1);
         return new Quaternion(result);
@@ -340,8 +340,7 @@ public readonly struct Quaternion
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float DotProduct(Quaternion left, Quaternion right)
     {
-        var result = VectorUtilities.DotProduct(left._value, right._value);
-        return result.ToScalar();
+        return Vector128.Dot(left._value, right._value);
     }
 
     /// <summary>Computes the inverse of a quaternion.</summary>
@@ -353,9 +352,9 @@ public readonly struct Quaternion
     {
         var lengthSq = LengthSquared(value._value);
         var conjugate = QuaternionConjugate(value._value);
-        var condition = CompareLessThanOrEqual(lengthSq, epsilon.Value);
+        var condition = Vector128.LessThanOrEqual(lengthSq, epsilon.Value);
 
-        var result = Divide(conjugate, lengthSq);
+        var result = conjugate / lengthSq;
         result = ElementwiseSelect(condition, Vector128<float>.Zero, result);
         return new Quaternion(result);
     }

@@ -219,7 +219,7 @@ public readonly struct Vector3
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector3 CompareEqual(Vector3 left, Vector3 right)
     {
-        var result = VectorUtilities.CompareEqual(left._value.AsVector128(), right._value.AsVector128());
+        var result = Vector128.Equals(left._value.AsVector128(), right._value.AsVector128());
         return new Vector3(result.AsVector3());
     }
 
@@ -288,7 +288,7 @@ public readonly struct Vector3
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector3 Max(Vector3 left, Vector3 right)
     {
-        var result = VectorUtilities.Max(left._value.AsVector128(), right._value.AsVector128());
+        var result = Vector128.Max(left._value.AsVector128(), right._value.AsVector128());
         return new Vector3(result.AsVector3());
     }
 
@@ -299,7 +299,7 @@ public readonly struct Vector3
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector3 Min(Vector3 left, Vector3 right)
     {
-        var result = VectorUtilities.Min(left._value.AsVector128(), right._value.AsVector128());
+        var result = Vector128.Min(left._value.AsVector128(), right._value.AsVector128());
         return new Vector3(result.AsVector3());
     }
 
@@ -380,7 +380,7 @@ public readonly struct Vector3
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector3 Sqrt(Vector3 value)
     {
-        var result = VectorUtilities.Sqrt(value._value.AsVector128());
+        var result = Vector128.Sqrt(value._value.AsVector128());
         return new Vector3(result.AsVector3());
     }
 
