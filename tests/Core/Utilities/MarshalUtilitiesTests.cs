@@ -57,7 +57,7 @@ internal static class MarshalUtilitiesTests
         );
 
         Assert.That(() => MarshalUtilities.GetAsciiSpan("ABC").ToArray(),
-            Is.EqualTo(new sbyte[] { (sbyte)'A', (sbyte)'B', (sbyte)'C' })
+            Is.EqualTo([(sbyte)'A', (sbyte)'B', (sbyte)'C'])
         );
     }
 
@@ -83,11 +83,11 @@ internal static class MarshalUtilitiesTests
             var pSource = source;
 
             Assert.That(() => MarshalUtilities.GetAsciiSpan(pSource, -1).ToArray(),
-                Is.EqualTo(new sbyte[] { (sbyte)'A', (sbyte)'B', (sbyte)'C' })
+                Is.EqualTo([(sbyte)'A', (sbyte)'B', (sbyte)'C'])
             );
 
             Assert.That(() => MarshalUtilities.GetAsciiSpan(pSource, 2).ToArray(),
-                Is.EqualTo(new sbyte[] { (sbyte)'A', (sbyte)'B' })
+                Is.EqualTo([(sbyte)'A', (sbyte)'B'])
             );
         }
     }
@@ -103,11 +103,11 @@ internal static class MarshalUtilitiesTests
         var source = new sbyte[] { (sbyte)'A', (sbyte)'B', (sbyte)'C' };
 
         Assert.That(() => MarshalUtilities.GetAsciiSpan(in source[0], -1).ToArray(),
-            Is.EqualTo(new sbyte[] { (sbyte)'A', (sbyte)'B', (sbyte)'C' })
+            Is.EqualTo([(sbyte)'A', (sbyte)'B', (sbyte)'C'])
         );
 
         Assert.That(() => MarshalUtilities.GetAsciiSpan(in source[0], 2).ToArray(),
-            Is.EqualTo(new sbyte[] { (sbyte)'A', (sbyte)'B' })
+            Is.EqualTo([(sbyte)'A', (sbyte)'B'])
         );
     }
 
@@ -124,7 +124,7 @@ internal static class MarshalUtilitiesTests
         );
 
         Assert.That(() => MarshalUtilities.GetUtf8Span("ABC").ToArray(),
-            Is.EqualTo(new sbyte[] { (sbyte)'A', (sbyte)'B', (sbyte)'C' })
+            Is.EqualTo([(sbyte)'A', (sbyte)'B', (sbyte)'C'])
         );
     }
 
@@ -150,11 +150,11 @@ internal static class MarshalUtilitiesTests
             var pSource = source;
 
             Assert.That(() => MarshalUtilities.GetUtf8Span(pSource, -1).ToArray(),
-                Is.EqualTo(new sbyte[] { (sbyte)'A', (sbyte)'B', (sbyte)'C' })
+                Is.EqualTo([(sbyte)'A', (sbyte)'B', (sbyte)'C'])
             );
 
             Assert.That(() => MarshalUtilities.GetUtf8Span(pSource, 2).ToArray(),
-                Is.EqualTo(new sbyte[] { (sbyte)'A', (sbyte)'B' })
+                Is.EqualTo([(sbyte)'A', (sbyte)'B'])
             );
         }
     }
@@ -170,11 +170,11 @@ internal static class MarshalUtilitiesTests
         var source = new sbyte[] { (sbyte)'A', (sbyte)'B', (sbyte)'C' };
 
         Assert.That(() => MarshalUtilities.GetUtf8Span(in source[0], -1).ToArray(),
-            Is.EqualTo(new sbyte[] { (sbyte)'A', (sbyte)'B', (sbyte)'C' })
+            Is.EqualTo([(sbyte)'A', (sbyte)'B', (sbyte)'C'])
         );
 
         Assert.That(() => MarshalUtilities.GetUtf8Span(in source[0], 2).ToArray(),
-            Is.EqualTo(new sbyte[] { (sbyte)'A', (sbyte)'B' })
+            Is.EqualTo([(sbyte)'A', (sbyte)'B'])
         );
     }
 
@@ -217,11 +217,11 @@ internal static class MarshalUtilitiesTests
             var pSource = source;
 
             Assert.That(() => MarshalUtilities.GetUtf16Span(pSource, -1).ToArray(),
-                Is.EqualTo(new char[] { 'A', 'B', 'C' })
+                Is.EqualTo(['A', 'B', 'C'])
             );
 
             Assert.That(() => MarshalUtilities.GetUtf16Span(pSource, 2).ToArray(),
-                Is.EqualTo(new char[] { 'A', 'B' })
+                Is.EqualTo(['A', 'B'])
             );
         }
     }
@@ -237,7 +237,7 @@ internal static class MarshalUtilitiesTests
         var source = new char[] { 'A', 'B', 'C' };
 
         Assert.That(() => MarshalUtilities.GetUtf16Span(in source[0], -1).ToArray(),
-            Is.EqualTo(new char[] { 'A', 'B', 'C' })
+            Is.EqualTo(['A', 'B', 'C'])
         );
 
         Assert.That(() => MarshalUtilities.GetUtf16Span(in source[0], 2).ToArray(),

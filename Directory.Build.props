@@ -20,7 +20,7 @@
   <!-- Default settings that explicitly differ from the Sdk.props defaults  -->
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AnalysisLevel>latest-all</AnalysisLevel>
+    <AnalysisLevel>preview-all</AnalysisLevel>
     <BaseIntermediateOutputPath>$(BaseArtifactsPath)obj/$(BaseArtifactsPathSuffix)/</BaseIntermediateOutputPath>
     <DebugType>embedded</DebugType>
     <EnableDefaultNoneItems>false</EnableDefaultNoneItems>
@@ -44,10 +44,10 @@
     <ContinuousIntegrationBuild Condition="'$(GITHUB_RUN_ID)' != ''">true</ContinuousIntegrationBuild>
     <IsAotCompatible>true</IsAotCompatible>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <PackageOutputPath>$(BaseArtifactsPath)pkg/$(Configuration)/</PackageOutputPath>
+    <PackageOutputPath>$(BaseArtifactsPath)pkg/$(Configuration)/$(PACKAGE_PUBLISH_MODE)</PackageOutputPath>
     <Product>TerraFX</Product>
     <VersionPrefix>0.1.0.0</VersionPrefix>
-    <VersionSuffix Condition="'$(EXCLUDE_SUFFIX_FROM_VERSION)' != 'true'">alpha</VersionSuffix>
+    <VersionSuffix Condition="'$(PACKAGE_PUBLISH_MODE)' != 'stable'">alpha</VersionSuffix>
     <VersionSuffix Condition="'$(GITHUB_EVENT_NAME)' == 'pull_request'">pr</VersionSuffix>
   </PropertyGroup>
 
