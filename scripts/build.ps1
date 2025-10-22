@@ -100,7 +100,7 @@ try {
   $RepoRoot = Join-Path -Path $PSScriptRoot -ChildPath ".."
 
   if ($solution -eq "") {
-    $solution = Join-Path -Path $RepoRoot -ChildPath "TerraFX.sln"
+    $solution = Join-Path -Path $RepoRoot -ChildPath "TerraFX.slnx"
   }
 
   $ArtifactsDir = Join-Path -Path $RepoRoot -ChildPath "artifacts"
