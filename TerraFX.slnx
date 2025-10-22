@@ -1,0 +1,86 @@
+<Solution>
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/ISSUE_TEMPLATE/">
+    <File Path=".github/ISSUE_TEMPLATE/bug.md" />
+    <File Path=".github/ISSUE_TEMPLATE/proposal.md" />
+    <File Path=".github/ISSUE_TEMPLATE/regression.md" />
+  </Folder>
+  <Folder Name="/.github/workflows/">
+    <File Path=".github/workflows/ci.yml" />
+  </Folder>
+  <Folder Name="/.root/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="build.cmd" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+    <File Path="exclusion.dic" />
+    <File Path="global.json" />
+    <File Path="LICENSE.md" />
+    <File Path="NuGet.config" />
+    <File Path="pack.cmd" />
+    <File Path="restore.cmd" />
+    <File Path="TerraFX.snk" />
+    <File Path="test.cmd" />
+  </Folder>
+  <Folder Name="/docs/">
+    <File Path="docs/CODEOWNERS" />
+    <File Path="docs/CODE_OF_CONDUCT.md" />
+    <File Path="docs/CONTRIBUTING.md" />
+    <File Path="docs/PULL_REQUEST_TEMPLATE.md" />
+    <File Path="docs/README.md" />
+  </Folder>
+  <Folder Name="/docs/design/">
+    <File Path="docs/design/Audio.md" />
+    <File Path="docs/design/Overview.md" />
+  </Folder>
+  <Folder Name="/docs/project/">
+    <File Path="docs/project/Building.md" />
+    <File Path="docs/project/Roadmap.md" />
+    <File Path="docs/project/Versioning.md" />
+  </Folder>
+  <Folder Name="/docs/samples/">
+    <File Path="docs/samples/Samples.md" />
+  </Folder>
+  <Folder Name="/samples/">
+    <File Path="samples/.editorconfig" />
+    <File Path="samples/Directory.Build.props" />
+    <File Path="samples/Directory.Build.targets" />
+  </Folder>
+  <Folder Name="/samples/TerraFX/">
+    <Project Path="samples/TerraFX/TerraFX.Samples.csproj" />
+  </Folder>
+  <Folder Name="/scripts/">
+    <File Path="scripts/build.ps1" />
+    <File Path="scripts/cibuild.cmd" />
+  </Folder>
+  <Folder Name="/sources/">
+    <File Path="sources/Directory.Build.props" />
+    <File Path="sources/Directory.Build.targets" />
+  </Folder>
+  <Folder Name="/sources/ApplicationModel/">
+    <Project Path="sources/ApplicationModel/TerraFX.ApplicationModel.csproj" />
+  </Folder>
+  <Folder Name="/sources/Core/">
+    <Project Path="sources/Core/TerraFX.csproj" />
+  </Folder>
+  <Folder Name="/sources/Graphics/">
+    <Project Path="sources/Graphics/TerraFX.Graphics.csproj" />
+  </Folder>
+  <Folder Name="/sources/UI/">
+    <Project Path="sources/UI/TerraFX.UI.csproj" />
+  </Folder>
+  <Folder Name="/sources/WinForms/">
+    <Project Path="sources/WinForms/TerraFX.WinForms.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <File Path="tests/.editorconfig" />
+    <File Path="tests/Directory.Build.props" />
+    <File Path="tests/Directory.Build.targets" />
+  </Folder>
+  <Folder Name="/tests/Core/">
+    <Project Path="tests/Core/TerraFX.UnitTests.csproj" />
+  </Folder>
+</Solution>
