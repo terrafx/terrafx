@@ -1,14 +1,17 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
+using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_FLAGS;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_TYPE;
 using static TerraFX.Interop.DirectX.D3D12_SRV_DIMENSION;
 using static TerraFX.Interop.Windows.Windows;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -16,8 +19,14 @@ using static TerraFX.Utilities.UnsafeUtilities;
 namespace TerraFX.Graphics;
 
 /// <summary>A set of descriptors for a graphics pipeline.</summary>
-public sealed unsafe class GraphicsPipelineDescriptorSet : GraphicsPipelineObject
+public sealed unsafe class GraphicsPipelineDescriptorSet : IDisposable, INameable
 {
+    private readonly GraphicsAdapter _adapter;
+    private readonly GraphicsDevice _device;
+    private readonly GraphicsPipeline _pipeline;
+    private readonly GraphicsRenderPass _renderPass;
+    private readonly GraphicsService _service;
+
     private ComPtr<ID3D12DescriptorHeap> _d3d12CbvSrvUavDescriptorHeap;
     private readonly uint _d3d12CbvSrvUavDescriptorHeapVersion;
 
@@ -26,8 +35,26 @@ public sealed unsafe class GraphicsPipelineDescriptorSet : GraphicsPipelineObjec
 
     private readonly GraphicsResourceView[] _resourceViews;
 
-    internal GraphicsPipelineDescriptorSet(GraphicsPipeline pipeline, in GraphicsPipelineDescriptorSetCreateOptions createOptions) : base(pipeline)
+    private string _name;
+    private VolatileState _state;
+
+    internal GraphicsPipelineDescriptorSet(GraphicsPipeline pipeline, in GraphicsPipelineDescriptorSetCreateOptions createOptions)
     {
+        AssertNotNull(pipeline);
+        _pipeline = pipeline;
+
+        var renderPass = pipeline.RenderPass;
+        _renderPass = renderPass;
+
+        var device = renderPass.Device;
+        _device = device;
+
+        var adapter = device.Adapter;
+        _adapter = adapter;
+
+        var service = adapter.Service;
+        _service = service;
+
         if (createOptions.TakeResourceViewsOwnership)
         {
             _resourceViews = createOptions.ResourceViews;
@@ -45,7 +72,10 @@ public sealed unsafe class GraphicsPipelineDescriptorSet : GraphicsPipelineObjec
         var d3d12SamplerDescriptorHeap = CreateD3D12SamplerDescriptorHeap(out _d3d12SamplerDescriptorHeapVersion);
         _d3d12SamplerDescriptorHeap.Attach(d3d12SamplerDescriptorHeap);
 
+        _name = GetType().Name;
         SetNameUnsafe(Name);
+
+        _ = _state.Transition(VolatileState.Initialized);
 
         ID3D12DescriptorHeap* CreateD3D12CbvSrvUavDescriptorHeap(out uint d3d12CbvSrvUavDescriptorHeapVersion)
         {
@@ -198,8 +228,42 @@ public sealed unsafe class GraphicsPipelineDescriptorSet : GraphicsPipelineObjec
     /// <summary>Finalizes an instance of the <see cref="GraphicsPipelineDescriptorSet" /> class.</summary>
     ~GraphicsPipelineDescriptorSet() => Dispose(isDisposing: false);
 
+    /// <summary>Gets the adapter for which the object was created.</summary>
+    public GraphicsAdapter Adapter => _adapter;
+
+    /// <summary>Gets the device for which the object was created.</summary>
+    public GraphicsDevice Device => _device;
+
+    /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
+    public bool IsDisposed => _state.IsDisposedOrDisposing;
+
+    /// <inheritdoc />
+    [AllowNull]
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? GetType().Name;
+            SetNameUnsafe(_name);
+        }
+    }
+
+    /// <summary>Gets the pipeline for which the object was created.</summary>
+    public GraphicsPipeline Pipeline => _pipeline;
+
+    /// <summary>Gets the render pass for which the object was created.</summary>
+    public GraphicsRenderPass RenderPass => _renderPass;
+
     /// <summary>Gets the resource views for the pipeline descriptor.</summary>
     public ReadOnlySpan<GraphicsResourceView> ResourceViews => _resourceViews;
+
+    /// <summary>Gets the service for which the object was created.</summary>
+    public GraphicsService Service => _service;
 
     internal ID3D12DescriptorHeap* D3D12CbvSrvUavDescriptorHeap => _d3d12CbvSrvUavDescriptorHeap;
 
@@ -210,14 +274,31 @@ public sealed unsafe class GraphicsPipelineDescriptorSet : GraphicsPipelineObjec
     internal uint D3D12SamplerDescriptorHeapVersion => _d3d12SamplerDescriptorHeapVersion;
 
     /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
+    public void Dispose()
     {
+        _ = _state.BeginDispose();
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+        _state.EndDispose();
+    }
+
+    /// <inheritdoc />
+    public override string ToString() => _name;
+
+    private void Dispose(bool isDisposing)
+    {
+        if (isDisposing)
+        {
+            // Nothing to handle
+        }
+
         _ = _d3d12CbvSrvUavDescriptorHeap.Reset();
         _ = _d3d12SamplerDescriptorHeap.Reset();
     }
 
-    /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
+    private void SetNameUnsafe(string value)
     {
         D3D12CbvSrvUavDescriptorHeap->SetD3D12Name(value);
         D3D12SamplerDescriptorHeap->SetD3D12Name(value);

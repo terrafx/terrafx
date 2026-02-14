@@ -10,16 +10,20 @@ namespace TerraFX;
 
 /// <summary>Represents a type and memory safe way to read a contiguous region of unmanaged memory.</summary>
 /// <typeparam name="T">The type of items contained in the span.</typeparam>
-/// <remarks>Initializes a new instance of the <see cref="UnmanagedReadOnlySpan{T}" /> struct.</remarks>
-/// <param name="span">The underlying span for the readonly span.</param>
 [DebuggerDisplay("IsEmpty = {IsEmpty}; Length = {Length}")]
 [DebuggerTypeProxy(typeof(UnmanagedReadOnlySpan<>.DebugView))]
-public readonly unsafe partial struct UnmanagedReadOnlySpan<T>(UnmanagedSpan<T> span)
-    : IEnumerable<T>,
+public readonly unsafe partial struct UnmanagedReadOnlySpan<T> : IEnumerable<T>,
       IEquatable<UnmanagedReadOnlySpan<T>>
     where T : unmanaged
 {
-    internal readonly UnmanagedSpan<T> _value = span;
+    internal readonly UnmanagedSpan<T> _value;
+
+    /// <summary>Initializes a new instance of the <see cref="UnmanagedReadOnlySpan{T}" /> struct.</summary>
+    /// <param name="span">The underlying span for the readonly span.</param>
+    public UnmanagedReadOnlySpan(UnmanagedSpan<T> span)
+    {
+        _value = span;
+    }
 
     /// <summary>Initializes a new instance of the <see cref="UnmanagedReadOnlySpan{T}" /> struct.</summary>
     /// <inheritdoc cref="UnmanagedSpan{T}.UnmanagedSpan(T*)" />

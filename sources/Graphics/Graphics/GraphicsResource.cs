@@ -4,6 +4,7 @@
 // The original code is Copyright © Microsoft. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
@@ -14,6 +15,7 @@ using static TerraFX.Interop.DirectX.D3D12_RESOURCE_FLAGS;
 using static TerraFX.Interop.DirectX.D3D12_RESOURCE_STATES;
 using static TerraFX.Interop.DirectX.D3D12_TEXTURE_LAYOUT;
 using static TerraFX.Interop.Windows.Windows;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -21,8 +23,12 @@ using static TerraFX.Utilities.UnsafeUtilities;
 namespace TerraFX.Graphics;
 
 /// <summary>A graphics resource bound to a graphics device.</summary>
-public abstract unsafe class GraphicsResource : GraphicsDeviceObject
+public abstract unsafe class GraphicsResource : IDisposable, INameable
 {
+    private readonly GraphicsAdapter _adapter;
+    private readonly GraphicsDevice _device;
+    private readonly GraphicsService _service;
+
     private readonly GraphicsCpuAccess _cpuAccess;
 
     private readonly D3D12_RESOURCE_STATES _d3d12DefaultResourceState;
@@ -38,6 +44,9 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
 
     private GraphicsMemoryHeap _memoryHeap;
     private readonly GraphicsMemoryRegion _memoryRegion;
+
+    private protected string _name;
+    private protected VolatileState _state;
 
     private protected GraphicsResource(GraphicsDevice device, in GraphicsBufferCreateOptions createOptions) : this(device, GraphicsResourceKind.Buffer, createOptions.CpuAccess)
     {
@@ -153,8 +162,17 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
         SetNameUnsafe(Name);
     }
 
-    private GraphicsResource(GraphicsDevice device, GraphicsResourceKind kind, GraphicsCpuAccess cpuAccess) : base(device)
+    private GraphicsResource(GraphicsDevice device, GraphicsResourceKind kind, GraphicsCpuAccess cpuAccess)
     {
+        AssertNotNull(device);
+        _device = device;
+
+        var adapter = device.Adapter;
+        _adapter = adapter;
+
+        var service = adapter.Service;
+        _service = service;
+
         _cpuAccess = cpuAccess;
 
         _d3d12DefaultResourceState = cpuAccess switch {
@@ -171,16 +189,28 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
         _mappedMutex = new ValueMutex();
 
         _memoryHeap = null!;
+
+        _name = GetType().Name;
+        _ = _state.Transition(VolatileState.Initialized);
     }
 
     /// <summary>Finalizes an instance of the <see cref="GraphicsResource" /> class.</summary>
     ~GraphicsResource() => Dispose(isDisposing: false);
+
+    /// <summary>Gets the adapter for which the object was created.</summary>
+    public GraphicsAdapter Adapter => _adapter;
 
     /// <summary>Gets the length, in bytes, of the resource.</summary>
     public nuint ByteLength => _memoryRegion.ByteLength;
 
     /// <summary>Gets the CPU access capabilities of the resource.</summary>
     public GraphicsCpuAccess CpuAccess => _cpuAccess;
+
+    /// <summary>Gets the device for which the object was created.</summary>
+    public GraphicsDevice Device => _device;
+
+    /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
+    public bool IsDisposed => _state.IsDisposedOrDisposing;
 
     /// <summary>Gets <c>true</c> if the resource is mapped; otherwise, <c>false</c>.</summary>
     public bool IsMapped => _mappedAddress is not null;
@@ -197,11 +227,41 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     /// <summary>Gets the memory region in which the resource exists.</summary>
     public ref readonly GraphicsMemoryRegion MemoryRegion => ref _memoryRegion;
 
+    /// <inheritdoc />
+    [AllowNull]
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? GetType().Name;
+            SetNameUnsafe(_name);
+        }
+    }
+
+    /// <summary>Gets the service for which the object was created.</summary>
+    public GraphicsService Service => _service;
+
     internal D3D12_RESOURCE_STATES D3D12DefaultResourceState => _d3d12DefaultResourceState;
 
     internal ID3D12Resource* D3D12Resource => _d3d12Resource;
 
     internal uint D3D12ResourceVersion => _d3d12ResourceVersion;
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _ = _state.BeginDispose();
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+        _state.EndDispose();
+    }
 
     /// <summary>Maps the resource into CPU memory.</summary>
     /// <typeparam name="T">The type of data contained by the resource.</typeparam>
@@ -210,7 +270,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     public UnmanagedSpan<T> Map<T>()
         where T : unmanaged
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         var mappedAddress = MapUnsafe(subresource: 0);
         return new UnmanagedSpan<T>((T*)mappedAddress, ByteLength / SizeOf<T>());
@@ -225,7 +285,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     public UnmanagedSpan<T> Map<T>(nuint start)
         where T : unmanaged
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         var byteStart = SizeOf<T>() * start;
         ThrowIfNotInBounds(byteStart, ByteLength);
@@ -247,7 +307,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     public UnmanagedSpan<T> Map<T>(nuint start, nuint length)
         where T : unmanaged
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         var byteStart = SizeOf<T>() * start;
         ThrowIfNotInBounds(byteStart, ByteLength);
@@ -266,7 +326,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     public UnmanagedSpan<T> MapForRead<T>()
         where T : unmanaged
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         var mappedAddress = MapForReadUnsafe(subresource: 0);
         return new UnmanagedSpan<T>((T*)mappedAddress, ByteLength / SizeOf<T>());
@@ -281,7 +341,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     public UnmanagedSpan<T> MapForRead<T>(nuint start)
         where T : unmanaged
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         var byteStart = SizeOf<T>() * start;
         ThrowIfNotInBounds(byteStart, ByteLength);
@@ -303,7 +363,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     public UnmanagedSpan<T> MapForRead<T>(nuint start, nuint length)
         where T : unmanaged
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         var byteStart = SizeOf<T>() * start;
         ThrowIfNotInBounds(byteStart, ByteLength);
@@ -315,13 +375,16 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
         return new UnmanagedSpan<T>((T*)(mappedAddress + byteStart), byteLength / SizeOf<T>());
     }
 
+    /// <inheritdoc />
+    public override string ToString() => _name;
+
     /// <summary>Unmaps the resource from CPU memory.</summary>
     /// <remarks>This overload should be used when no memory was written.</remarks>
     /// <exception cref="InvalidOperationException">The resource is not already mapped.</exception>
     /// <exception cref="ObjectDisposedException">The resource has been disposed.</exception>
     public void Unmap()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         UnmapUnsafe(subresource: 0);
     }
 
@@ -331,7 +394,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     /// <exception cref="ObjectDisposedException">The resource has been disposed.</exception>
     public void UnmapAndWrite()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         UnmapAndWriteUnsafe(subresource: 0);
     }
 
@@ -344,7 +407,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     public void UnmapAndWrite<T>(nuint start)
         where T : unmanaged
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         var byteStart = SizeOf<T>() * start;
         ThrowIfNotInBounds(byteStart, ByteLength);
@@ -365,7 +428,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     public void UnmapAndWrite<T>(nuint start, nuint length)
         where T : unmanaged
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         var byteStart = SizeOf<T>() * start;
         ThrowIfNotInBounds(byteStart, ByteLength);
@@ -377,7 +440,7 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
     }
 
     /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
+    protected virtual void Dispose(bool isDisposing)
     {
         _mappedAddress = null;
         _mappedCount = 0;
@@ -388,9 +451,6 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
 
         _ = _d3d12Resource.Reset();
     }
-
-    /// <inheritdoc />
-    protected override void SetNameUnsafe(string value) => D3D12Resource->SetD3D12Name(value);
 
     internal byte* MapForReadUnsafe(uint subresource)
     {
@@ -519,4 +579,6 @@ public abstract unsafe class GraphicsResource : GraphicsDeviceObject
             D3D12Resource->Unmap(subresource, &writtenRange);
         }
     }
+
+    private void SetNameUnsafe(string value) => D3D12Resource->SetD3D12Name(value);
 }

@@ -112,7 +112,7 @@ public sealed unsafe class GraphicsTexture : GraphicsResource
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public GraphicsTextureView CreateView(ushort mipLevelStart, ushort mipLevelCount)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotInBounds(mipLevelStart, MipLevelCount);
         ThrowIfNotInInsertBounds(mipLevelCount, MipLevelCount - mipLevelStart);
@@ -133,7 +133,7 @@ public sealed unsafe class GraphicsTexture : GraphicsResource
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public GraphicsTextureView CreateView(in GraphicsTextureViewCreateOptions createOptions)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotInBounds(createOptions.MipLevelStart, MipLevelCount);
         ThrowIfNotInInsertBounds(createOptions.MipLevelCount, MipLevelCount - createOptions.MipLevelStart);

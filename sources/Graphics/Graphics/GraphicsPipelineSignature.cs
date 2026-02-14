@@ -1,9 +1,12 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
+using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Interop.DirectX.D3D_ROOT_SIGNATURE_VERSION;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_RANGE_TYPE;
@@ -12,6 +15,7 @@ using static TerraFX.Interop.DirectX.D3D12_ROOT_SIGNATURE_FLAGS;
 using static TerraFX.Interop.DirectX.D3D12_SHADER_VISIBILITY;
 using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.Windows.Windows;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -19,8 +23,12 @@ using static TerraFX.Utilities.UnsafeUtilities;
 namespace TerraFX.Graphics;
 
 /// <summary>A graphics pipeline signature which details the inputs given and resources available to a graphics pipeline.</summary>
-public sealed unsafe class GraphicsPipelineSignature : GraphicsDeviceObject
+public sealed unsafe class GraphicsPipelineSignature : IDisposable, INameable
 {
+    private readonly GraphicsAdapter _adapter;
+    private readonly GraphicsDevice _device;
+    private readonly GraphicsService _service;
+
     private ComPtr<ID3D12RootSignature> _d3d12RootSignature;
     private readonly uint _d3d12RootSignatureVersion;
 
@@ -28,8 +36,20 @@ public sealed unsafe class GraphicsPipelineSignature : GraphicsDeviceObject
 
     private readonly UnmanagedArray<GraphicsPipelineResource> _resources;
 
-    internal GraphicsPipelineSignature(GraphicsDevice device, in GraphicsPipelineSignatureCreateOptions createOptions) : base(device)
+    private string _name;
+    private VolatileState _state;
+
+    internal GraphicsPipelineSignature(GraphicsDevice device, in GraphicsPipelineSignatureCreateOptions createOptions)
     {
+        AssertNotNull(device);
+        _device = device;
+
+        var adapter = device.Adapter;
+        _adapter = adapter;
+
+        var service = adapter.Service;
+        _service = service;
+
         device.AddPipelineSignature(this);
 
         if (createOptions.TakeInputsOwnership)
@@ -57,7 +77,9 @@ public sealed unsafe class GraphicsPipelineSignature : GraphicsDeviceObject
         var d3d12RootSignature = CreateD3D12RootSignature(device, in createOptions, out _d3d12RootSignatureVersion);
         _d3d12RootSignature.Attach(d3d12RootSignature);
 
+        _name = GetType().Name;
         SetNameUnsafe(Name);
+        _ = _state.Transition(VolatileState.Initialized);
 
         static ID3D12RootSignature* CreateD3D12RootSignature(GraphicsDevice device, in GraphicsPipelineSignatureCreateOptions createOptions, out uint d3d12RootSignatureVersion)
         {
@@ -247,23 +269,68 @@ public sealed unsafe class GraphicsPipelineSignature : GraphicsDeviceObject
     /// <summary>Finalizes an instance of the <see cref="GraphicsPipelineSignature" /> class.</summary>
     ~GraphicsPipelineSignature() => Dispose(isDisposing: false);
 
+    /// <summary>Gets the adapter for which the object was created.</summary>
+    public GraphicsAdapter Adapter => _adapter;
+
+    /// <summary>Gets the device for which the object was created.</summary>
+    public GraphicsDevice Device => _device;
+
     /// <summary>Gets the inputs given to the graphics pipeline or <see cref="UnmanagedReadOnlySpan.Empty{T}()" /> if none exist.</summary>
     public UnmanagedReadOnlySpan<GraphicsPipelineInput> Inputs => _inputs;
 
+    /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
+    public bool IsDisposed => _state.IsDisposedOrDisposing;
+
+    /// <inheritdoc />
+    [AllowNull]
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? GetType().Name;
+            SetNameUnsafe(_name);
+        }
+    }
+
     /// <summary>Gets the resources given to the graphics pipeline or <see cref="UnmanagedReadOnlySpan.Empty{T}()" /> if none exist.</summary>
     public UnmanagedReadOnlySpan<GraphicsPipelineResource> Resources => _resources;
+
+    /// <summary>Gets the service for which the object was created.</summary>
+    public GraphicsService Service => _service;
 
     internal ID3D12RootSignature* D3D12RootSignature => _d3d12RootSignature;
 
     internal uint D3D12RootSignatureVersion => _d3d12RootSignatureVersion;
 
     /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
+    public void Dispose()
     {
+        _ = _state.BeginDispose();
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+        _state.EndDispose();
+    }
+
+    /// <inheritdoc />
+    public override string ToString() => _name;
+
+    private void Dispose(bool isDisposing)
+    {
+        if (isDisposing)
+        {
+            // Nothing to handle
+        }
+
         _ = _d3d12RootSignature.Reset();
         _ = Device.RemovePipelineSignature(this);
     }
 
-    /// <inheritdoc />
-    protected override void SetNameUnsafe(string value) => D3D12RootSignature->SetD3D12Name(value);
+    private void SetNameUnsafe(string value) => D3D12RootSignature->SetD3D12Name(value);
 }

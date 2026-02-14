@@ -6,7 +6,7 @@ namespace TerraFX.Graphics.Advanced;
 
 /// <summary>The options used when creating a graphics buffer view.</summary>
 [StructLayout(LayoutKind.Auto)]
-public unsafe struct GraphicsBufferViewCreateOptions
+public struct GraphicsBufferViewCreateOptions
 {
     /// <summary>The number of bytes per element in the buffer view.</summary>
     public uint BytesPerElement;

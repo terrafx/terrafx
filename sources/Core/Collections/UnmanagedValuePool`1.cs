@@ -13,7 +13,7 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
 [DebuggerTypeProxy(typeof(UnmanagedValuePool<>.DebugView))]
-public unsafe partial struct UnmanagedValuePool<T>
+public partial struct UnmanagedValuePool<T>
     : IDisposable,
       IEnumerable<T>,
       IEquatable<UnmanagedValuePool<T>>

@@ -6,7 +6,7 @@ namespace TerraFX.Graphics.Advanced;
 
 /// <summary>The options used when creating a graphics render pass.</summary>
 [StructLayout(LayoutKind.Auto)]
-public unsafe struct GraphicsRenderPassCreateOptions
+public struct GraphicsRenderPassCreateOptions
 {
     /// <summary>The minimum number of render targets for the render pass.</summary>
     public uint MinimumRenderTargetCount;

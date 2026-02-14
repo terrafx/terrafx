@@ -6,7 +6,7 @@ using TerraFX.Collections;
 namespace TerraFX.Utilities;
 
 /// <summary>Provides a set of methods to supplement the collections namespace.</summary>
-public static unsafe class CollectionsUtilities
+public static class CollectionsUtilities
 {
     /// <summary>Disposes the items in an array.</summary>
     /// <typeparam name="TDisposable">The type of the items in the array.</typeparam>

@@ -118,7 +118,7 @@ public static unsafe class UnmanagedValueStack
         {
             ThrowIfNotInBounds(index, stack._count);
         }
-        return item!;
+        return item;
     }
 
     /// <summary>Pops the item from the top of the stack.</summary>
@@ -190,7 +190,7 @@ public static unsafe class UnmanagedValueStack
         }
         else
         {
-            item = default!;
+            item = default;
             return false;
         }
     }
@@ -212,7 +212,7 @@ public static unsafe class UnmanagedValueStack
         }
         else
         {
-            item = default!;
+            item = default;
             return false;
         }
     }
@@ -229,7 +229,7 @@ public static unsafe class UnmanagedValueStack
 
         if (count == 0)
         {
-            item = default!;
+            item = default;
             return false;
         }
 

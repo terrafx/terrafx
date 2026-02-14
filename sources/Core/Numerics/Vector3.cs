@@ -484,7 +484,6 @@ public readonly struct Vector3
             return false;
         }
 
-
         numWritten += partLength;
         destination = destination.Slice(partLength);
 

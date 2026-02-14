@@ -9,9 +9,14 @@ namespace TerraFX;
 
 public unsafe partial struct UnmanagedArray<T, TData>
 {
-    internal sealed class DebugView(UnmanagedArray<T, TData> array)
+    internal sealed class DebugView
     {
-        private readonly UnmanagedArray<T, TData> _array = array;
+        private readonly UnmanagedArray<T, TData> _array;
+
+        public DebugView(UnmanagedArray<T, TData> array)
+        {
+            _array = array;
+        }
 
         public nuint Alignment => _array.Alignment;
 

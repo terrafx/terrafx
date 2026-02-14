@@ -1,10 +1,12 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 using TerraFX.Numerics;
+using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_FLAGS;
 using static TerraFX.Interop.DirectX.D3D12_DESCRIPTOR_HEAP_TYPE;
 using static TerraFX.Interop.DirectX.DXGI;
@@ -12,14 +14,20 @@ using static TerraFX.Interop.DirectX.DXGI_ALPHA_MODE;
 using static TerraFX.Interop.DirectX.DXGI_SCALING;
 using static TerraFX.Interop.DirectX.DXGI_SWAP_EFFECT;
 using static TerraFX.Interop.Windows.Windows;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics;
 
 /// <summary>A swapchain which manages framebuffers for a graphics device.</summary>
-public sealed unsafe class GraphicsSwapchain : GraphicsRenderPassObject
+public sealed unsafe class GraphicsSwapchain : IDisposable, INameable
 {
+    private readonly GraphicsAdapter _adapter;
+    private readonly GraphicsDevice _device;
+    private readonly GraphicsRenderPass _renderPass;
+    private readonly GraphicsService _service;
+
     private int _currentRenderTargetIndex;
 
     private ComPtr<ID3D12DescriptorHeap> _d3d12DsvDescriptorHeap;
@@ -43,8 +51,23 @@ public sealed unsafe class GraphicsSwapchain : GraphicsRenderPassObject
 
     private readonly IGraphicsSurface _surface;
 
-    internal GraphicsSwapchain(GraphicsRenderPass renderPass, in GraphicsSwapchainCreateOptions createOptions) : base(renderPass)
+    private string _name;
+    private VolatileState _state;
+
+    internal GraphicsSwapchain(GraphicsRenderPass renderPass, in GraphicsSwapchainCreateOptions createOptions)
     {
+        AssertNotNull(renderPass);
+        _renderPass = renderPass;
+
+        var device = renderPass.Device;
+        _device = device;
+
+        var adapter = device.Adapter;
+        _adapter = adapter;
+
+        var service = adapter.Service;
+        _service = service;
+
         _minimumRenderTargetCount = createOptions.MinimumRenderTargetCount;
 
         _fence = Device.CreateFence(isSignaled: false);
@@ -64,10 +87,13 @@ public sealed unsafe class GraphicsSwapchain : GraphicsRenderPassObject
         _renderTargets = new GraphicsRenderTarget[renderTargetCount];
         InitializeRenderTargets();
 
+        _name = GetType().Name;
         SetNameUnsafe(Name);
+
         _currentRenderTargetIndex = GetCurrentRenderTargetIndex();
 
         Surface.SizeChanged += OnGraphicsSurfaceSizeChanged;
+        _ = _state.Transition(VolatileState.Initialized);
 
         IDXGISwapChain1* CreateDxgiSwapchain(out uint renderTargetCount, out uint dxgiSwapchainVersion)
         {
@@ -174,20 +200,51 @@ public sealed unsafe class GraphicsSwapchain : GraphicsRenderPassObject
     /// <summary>Finalizes an instance of the <see cref="GraphicsSwapchain" /> class.</summary>
     ~GraphicsSwapchain() => Dispose(isDisposing: false);
 
+    /// <summary>Gets the adapter for which the object was created.</summary>
+    public GraphicsAdapter Adapter => _adapter;
+
     /// <summary>Gets the current render target of the swapchain.</summary>
     public GraphicsRenderTarget CurrentRenderTarget => _renderTargets[_currentRenderTargetIndex];
 
     /// <summary>Gets the index of the current render target.</summary>
     public int CurrentRenderTargetIndex => _currentRenderTargetIndex;
 
+    /// <summary>Gets the device for which the object was created.</summary>
+    public GraphicsDevice Device => _device;
+
     /// <summary>Gets the fence used to synchronize the swapchain.</summary>
     public GraphicsFence Fence => _fence;
+
+    /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
+    public bool IsDisposed => _state.IsDisposedOrDisposing;
+
+    /// <inheritdoc />
+    [AllowNull]
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? GetType().Name;
+            SetNameUnsafe(_name);
+        }
+    }
+
+    /// <summary>Gets the render pass for which the object was created.</summary>
+    public GraphicsRenderPass RenderPass => _renderPass;
 
     /// <summary>Gets the render targets for the swapchain.</summary>
     public ReadOnlySpan<GraphicsRenderTarget> RenderTargets => _renderTargets;
 
     /// <summary>Gets the format for the render targets of the swapchain.</summary>
     public GraphicsFormat RenderTargetFormat => _renderTargetFormat;
+
+    /// <summary>Gets the service for which the object was created.</summary>
+    public GraphicsService Service => _service;
 
     /// <summary>Gets the surface on which the swapchain can render.</summary>
     public IGraphicsSurface Surface => _surface;
@@ -206,16 +263,40 @@ public sealed unsafe class GraphicsSwapchain : GraphicsRenderPassObject
 
     internal uint DxgiSwapchainVersion => _dxgiSwapchainVersion;
 
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _ = _state.BeginDispose();
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+        _state.EndDispose();
+    }
+
     /// <summary>Presents the current framebuffer.</summary>
     /// <exception cref="ObjectDisposedException">The swapchain has been disposed.</exception>
     public void Present()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         PresentUnsafe();
     }
 
     /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
+    public override string ToString() => _name;
+
+    private void CleanupRenderTargets()
+    {
+        var renderTargets = _renderTargets;
+
+        for (var index = 0; index < renderTargets.Length; index++)
+        {
+            renderTargets[index].Dispose();
+            renderTargets[index] = null!;
+        }
+    }
+
+    private void Dispose(bool isDisposing)
     {
         if (isDisposing)
         {
@@ -233,24 +314,6 @@ public sealed unsafe class GraphicsSwapchain : GraphicsRenderPassObject
         _ = _d3d12DsvDescriptorHeap.Reset();
         _ = _d3d12RtvDescriptorHeap.Reset();
         _ = _dxgiSwapchain.Reset();
-    }
-
-    /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
-        DxgiSwapchain->SetDxgiName(value);
-        D3D12RtvDescriptorHeap->SetD3D12Name(value);
-    }
-
-    private void CleanupRenderTargets()
-    {
-        var renderTargets = _renderTargets;
-
-        for (var index = 0; index < renderTargets.Length; index++)
-        {
-            renderTargets[index].Dispose();
-            renderTargets[index] = null!;
-        }
     }
 
     private int GetCurrentRenderTargetIndex()
@@ -320,5 +383,11 @@ public sealed unsafe class GraphicsSwapchain : GraphicsRenderPassObject
 
         ThrowExternalExceptionIfFailed(DxgiSwapchain->Present(SyncInterval: 1, Flags: 0));
         _currentRenderTargetIndex = GetCurrentRenderTargetIndex();
+    }
+
+    private void SetNameUnsafe(string value)
+    {
+        DxgiSwapchain->SetDxgiName(value);
+        D3D12RtvDescriptorHeap->SetD3D12Name(value);
     }
 }

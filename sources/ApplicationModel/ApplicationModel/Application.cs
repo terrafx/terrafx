@@ -1,16 +1,17 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
-using TerraFX.Advanced;
 using TerraFX.Graphics;
+using TerraFX.Threading;
 using TerraFX.UI;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.ApplicationModel;
 
 /// <summary>A multimedia-based application.</summary>
-public sealed class Application : DisposableObject
+public sealed class Application : IDisposable, INameable
 {
     private GraphicsService _graphicsService;
     private readonly UIService _uiService;
@@ -19,12 +20,18 @@ public sealed class Application : DisposableObject
 
     private readonly Thread _parentThread;
 
+    private string _name;
+    private VolatileState _state;
+
     /// <summary>Initializes a new instance of the <see cref="Application" /> class.</summary>
-    public Application() : base(name: null)
+    public Application()
     {
         _graphicsService = new GraphicsService();
         _parentThread = Thread.CurrentThread;
         _uiService = UIService.Instance;
+
+        _name = GetType().Name;
+        _ = _state.Transition(VolatileState.Initialized);
     }
 
     /// <summary>Occurs when the event loop for the current instance becomes idle.</summary>
@@ -33,14 +40,43 @@ public sealed class Application : DisposableObject
     /// <summary>Gets the graphics service for the instance.</summary>
     public GraphicsService GraphicsService => _graphicsService;
 
+    /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
+    public bool IsDisposed => _state.IsDisposedOrDisposing;
+
     /// <summary>Gets a value that indicates whether the event loop for the instance is running.</summary>
     public bool IsRunning => _isRunning;
+
+    /// <inheritdoc />
+    [AllowNull]
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? GetType().Name;
+        }
+    }
 
     /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
     public Thread ParentThread => _parentThread;
 
     /// <summary>Gets the UI service for the instance.</summary>
     public UIService UIService => _uiService;
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _ = _state.BeginDispose();
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+        _state.EndDispose();
+    }
 
     /// <summary>Requests that the instance exits the event loop.</summary>
     /// <remarks>
@@ -55,25 +91,22 @@ public sealed class Application : DisposableObject
     /// <remarks>This method does nothing if an exit is requested before the first iteration of the event loop has started.</remarks>
     public void Run()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         ThrowIfNotThread(_parentThread);
 
         RunUnsafe();
     }
 
     /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
+    public override string ToString() => _name;
+
+    private void Dispose(bool isDisposing)
     {
         if (isDisposing)
         {
             _graphicsService.Dispose();
             _graphicsService = null!;
         }
-    }
-
-    /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
     }
 
     private void OnDispatcherExitRequested(object? sender, EventArgs e) => RequestExit();

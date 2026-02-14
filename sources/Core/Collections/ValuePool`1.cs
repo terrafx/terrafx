@@ -13,7 +13,7 @@ namespace TerraFX.Collections;
 /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
 [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
 [DebuggerTypeProxy(typeof(ValuePool<>.DebugView))]
-public unsafe partial struct ValuePool<T>
+public partial struct ValuePool<T>
     : IEnumerable<T>,
       IEquatable<ValuePool<T>>
 {

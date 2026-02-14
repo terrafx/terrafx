@@ -7,7 +7,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Utilities;
 
-internal static unsafe partial class Win32Utilities
+internal static partial class Win32Utilities
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowExternalExceptionIfFalse(BOOL value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)

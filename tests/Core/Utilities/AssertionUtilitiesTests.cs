@@ -100,7 +100,7 @@ internal static class AssertionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="AssertionUtilities.AssertNotNull{T}(UnmanagedArray{T})" /> method.</summary>
     [Test]
-    public static unsafe void AssertNotNullUnmanagedArrayTest()
+    public static void AssertNotNullUnmanagedArrayTest()
     {
         Assert.That(() => AssertionUtilities.AssertNotNull(UnmanagedArray.Empty<int>()),
             Throws.Nothing
@@ -113,7 +113,7 @@ internal static class AssertionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="AssertionUtilities.AssertThread(Thread)" /> method.</summary>
     [Test]
-    public static unsafe void AssertThreadTest()
+    public static void AssertThreadTest()
     {
         Assert.That(() => AssertionUtilities.AssertThread(Thread.CurrentThread),
             Throws.Nothing
@@ -126,7 +126,7 @@ internal static class AssertionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="AssertionUtilities.Fail" /> method.</summary>
     [Test]
-    public static unsafe void FailTest()
+    public static void FailTest()
     {
         Assert.That(() => AssertionUtilities.Fail(),
             Configuration.IsDebug ? Throws.InstanceOf<UnreachableException>() : Throws.Nothing

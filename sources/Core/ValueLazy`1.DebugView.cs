@@ -7,9 +7,14 @@ namespace TerraFX;
 
 public partial struct ValueLazy<T>
 {
-    internal sealed class DebugView(ValueLazy<T> lazy)
+    internal sealed class DebugView
     {
-        private readonly ValueLazy<T> _lazy = lazy;
+        private readonly ValueLazy<T> _lazy;
+
+        public DebugView(ValueLazy<T> lazy)
+        {
+            _lazy = lazy;
+        }
 
         public bool IsValueCreated => _lazy.IsValueCreated;
 

@@ -10,9 +10,14 @@ namespace TerraFX.Collections;
 
 public partial struct ValueList<T>
 {
-    internal sealed class DebugView(ValueList<T> list)
+    internal sealed class DebugView
     {
-        private readonly ValueList<T> _list = list;
+        private readonly ValueList<T> _list;
+
+        public DebugView(ValueList<T> list)
+        {
+            _list = list;
+        }
 
         public int Capacity => _list.Capacity;
 

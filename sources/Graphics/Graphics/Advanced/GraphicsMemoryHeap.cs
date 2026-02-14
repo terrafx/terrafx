@@ -3,33 +3,55 @@
 // This file includes code based on the MemoryBlock class from https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator/
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
+using System;
+using System.Diagnostics.CodeAnalysis;
 using TerraFX.Interop.DirectX;
+using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12;
 using static TerraFX.Interop.DirectX.D3D12_HEAP_FLAGS;
 using static TerraFX.Interop.Windows.Windows;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 
 namespace TerraFX.Graphics.Advanced;
 
 /// <inheritdoc />
-public sealed unsafe class GraphicsMemoryHeap : GraphicsDeviceObject
+public sealed unsafe class GraphicsMemoryHeap : IDisposable, INameable
 {
+    private readonly GraphicsAdapter _adapter;
+    private readonly GraphicsDevice _device;
     private readonly GraphicsMemoryManager _memoryManager;
+    private readonly GraphicsService _service;
 
     private ID3D12Heap* _d3d12Heap;
     private readonly uint _d3d12HeapVersion;
 
     private readonly nuint _byteLength;
 
-    internal GraphicsMemoryHeap(GraphicsMemoryManager memoryManager, in GraphicsMemoryHeapCreateOptions createOptions) : base(memoryManager.Device)
+    private string _name;
+    private VolatileState _state;
+
+    internal GraphicsMemoryHeap(GraphicsMemoryManager memoryManager, in GraphicsMemoryHeapCreateOptions createOptions)
     {
+        AssertNotNull(memoryManager);
         _memoryManager = memoryManager;
+
+        var device = memoryManager.Device;
+        _device = device;
+
+        var adapter = device.Adapter;
+        _adapter = adapter;
+
+        var service = adapter.Service;
+        _service = service;
 
         _d3d12Heap = CreateD3D12Heap(in createOptions, out _d3d12HeapVersion);
 
         _byteLength = createOptions.ByteLength;
 
+        _name = GetType().Name;
         SetNameUnsafe(Name);
+        _ = _state.Transition(VolatileState.Initialized);
 
         ID3D12Heap* CreateD3D12Heap(in GraphicsMemoryHeapCreateOptions createOptions, out uint d3d12HeapVersion)
         {
@@ -56,23 +78,68 @@ public sealed unsafe class GraphicsMemoryHeap : GraphicsDeviceObject
     /// <summary>Finalizes an instance of the <see cref="GraphicsMemoryHeap" /> class.</summary>
     ~GraphicsMemoryHeap() => Dispose(isDisposing: true);
 
+    /// <summary>Gets the adapter for which the object was created.</summary>
+    public GraphicsAdapter Adapter => _adapter;
+
     /// <summary>Gets the length, in bytes, of the memory heap.</summary>
     public nuint ByteLength => _byteLength;
 
+    /// <summary>Gets the device for which the object was created.</summary>
+    public GraphicsDevice Device => _device;
+
+    /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
+    public bool IsDisposed => _state.IsDisposedOrDisposing;
+
     /// <summary>Gets the memory manager which created the memory heap.</summary>
     public GraphicsMemoryManager MemoryManager => _memoryManager;
+
+    /// <inheritdoc />
+    [AllowNull]
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? GetType().Name;
+            SetNameUnsafe(_name);
+        }
+    }
+
+    /// <summary>Gets the service for which the object was created.</summary>
+    public GraphicsService Service => _service;
 
     internal ID3D12Heap* D3D12Heap => _d3d12Heap;
 
     internal uint D3D12HeapVersion => _d3d12HeapVersion;
 
     /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
+    public void Dispose()
     {
+        _ = _state.BeginDispose();
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+        _state.EndDispose();
+    }
+
+    /// <inheritdoc />
+    public override string ToString() => _name;
+
+    private void Dispose(bool isDisposing)
+    {
+        if (isDisposing)
+        {
+            // Nothing to handle
+        }
+
         ReleaseIfNotNull(_d3d12Heap);
         _d3d12Heap = null;
     }
 
-    /// <inheritdoc />
-    protected override void SetNameUnsafe(string value) => _d3d12Heap->SetD3D12Name(value);
+    private void SetNameUnsafe(string value) => _d3d12Heap->SetD3D12Name(value);
 }

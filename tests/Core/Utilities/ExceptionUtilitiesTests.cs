@@ -822,7 +822,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotZero(int, string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowIfNotZeroInt32Test()
+    public static void ThrowIfNotZeroInt32Test()
     {
         Assert.That(() => ExceptionUtilities.ThrowIfNotZero(0, "value"),
             Throws.Nothing
@@ -838,7 +838,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotZero(long, string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowIfNotZeroInt64Test()
+    public static void ThrowIfNotZeroInt64Test()
     {
         Assert.That(() => ExceptionUtilities.ThrowIfNotZero(0L, "value"),
             Throws.Nothing
@@ -854,7 +854,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotZero(nint, string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowIfNotZeroNIntTest()
+    public static void ThrowIfNotZeroNIntTest()
     {
         Assert.That(() => ExceptionUtilities.ThrowIfNotZero((nint)0, "value"),
             Throws.Nothing
@@ -870,7 +870,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotZero(uint, string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowIfNotZeroUInt32Test()
+    public static void ThrowIfNotZeroUInt32Test()
     {
         Assert.That(() => ExceptionUtilities.ThrowIfNotZero(0U, "value"),
             Throws.Nothing
@@ -886,7 +886,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotZero(ulong, string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowIfNotZeroUInt64Test()
+    public static void ThrowIfNotZeroUInt64Test()
     {
         Assert.That(() => ExceptionUtilities.ThrowIfNotZero(0UL, "value"),
             Throws.Nothing
@@ -902,7 +902,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotZero(nuint, string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowIfNotZeroNUIntTest()
+    public static void ThrowIfNotZeroNUIntTest()
     {
         Assert.That(() => ExceptionUtilities.ThrowIfNotZero((nuint)0, "value"),
             Throws.Nothing
@@ -950,7 +950,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNull{T}(UnmanagedArray{T}, string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowIfNullUnmanagedArrayTest()
+    public static void ThrowIfNullUnmanagedArrayTest()
     {
         Assert.That(() => ExceptionUtilities.ThrowIfNull(UnmanagedArray.Empty<int>(), "value"),
             Throws.Nothing
@@ -970,7 +970,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfZero(int, string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowIfZeroInt32Test()
+    public static void ThrowIfZeroInt32Test()
     {
         Assert.That(() => ExceptionUtilities.ThrowIfZero(1, "value"),
             Throws.Nothing
@@ -986,7 +986,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfZero(long, string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowIfZeroInt64Test()
+    public static void ThrowIfZeroInt64Test()
     {
         Assert.That(() => ExceptionUtilities.ThrowIfZero(1L, "value"),
             Throws.Nothing
@@ -1002,7 +1002,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfZero(nint, string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowIfZeroNIntTest()
+    public static void ThrowIfZeroNIntTest()
     {
         Assert.That(() => ExceptionUtilities.ThrowIfZero((nint)1, "value"),
             Throws.Nothing
@@ -1018,7 +1018,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfZero(uint, string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowIfZeroUInt32Test()
+    public static void ThrowIfZeroUInt32Test()
     {
         Assert.That(() => ExceptionUtilities.ThrowIfZero(1U, "value"),
             Throws.Nothing
@@ -1034,7 +1034,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfZero(ulong, string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowIfZeroUInt64Test()
+    public static void ThrowIfZeroUInt64Test()
     {
         Assert.That(() => ExceptionUtilities.ThrowIfZero(1UL, "value"),
             Throws.Nothing
@@ -1050,7 +1050,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfZero(nuint, string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowIfZeroNUIntTest()
+    public static void ThrowIfZeroNUIntTest()
     {
         Assert.That(() => ExceptionUtilities.ThrowIfZero((nuint)1, "value"),
             Throws.Nothing
@@ -1066,7 +1066,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowInvalidOperationException(string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowInvalidOperationExceptionTest()
+    public static void ThrowInvalidOperationExceptionTest()
     {
         Assert.That(() => ExceptionUtilities.ThrowInvalidOperationException("message"),
             Throws.InvalidOperationException
@@ -1076,7 +1076,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIOException(string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowIOExceptionTest()
+    public static void ThrowIOExceptionTest()
     {
         Assert.That(() => ExceptionUtilities.ThrowIOException("message"),
                     Throws.InstanceOf<IOException>()
@@ -1086,7 +1086,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIOException(string, Exception?)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowIOExceptionExceptionTest()
+    public static void ThrowIOExceptionExceptionTest()
     {
 #pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
@@ -1100,7 +1100,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIOException(string, int)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowIOExceptionWithHrExceptionTest()
+    public static void ThrowIOExceptionWithHrExceptionTest()
     {
 #pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
@@ -1114,7 +1114,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowKeyNotFoundException{TKey}(TKey, string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowKeyNotFoundExceptionTest()
+    public static void ThrowKeyNotFoundExceptionTest()
     {
         Assert.That(() => ExceptionUtilities.ThrowKeyNotFoundException("key", "collection"),
             Throws.InstanceOf<KeyNotFoundException>()
@@ -1124,7 +1124,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowKeyNotFoundException{TKey}(TKey, string, Exception?)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowKeyNotFoundExceptionExceptionTest()
+    public static void ThrowKeyNotFoundExceptionExceptionTest()
     {
 #pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
@@ -1138,7 +1138,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowNotImplementedException()" /> method.</summary>
     [Test]
-    public static unsafe void ThrowNotImplementedExceptionTest()
+    public static void ThrowNotImplementedExceptionTest()
     {
         Assert.That(ExceptionUtilities.ThrowNotImplementedException,
             Throws.InstanceOf<NotImplementedException>()
@@ -1147,7 +1147,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowNotImplementedException(Exception?)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowNotImplementedExceptionExceptionTest()
+    public static void ThrowNotImplementedExceptionExceptionTest()
     {
 #pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
@@ -1160,7 +1160,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowObjectDisposedException(string)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowObjectDisposedExceptionTest()
+    public static void ThrowObjectDisposedExceptionTest()
     {
         Assert.That(() => ExceptionUtilities.ThrowObjectDisposedException("value"),
             Throws.InstanceOf<ObjectDisposedException>()
@@ -1170,7 +1170,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(ulong)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowOutOfMemoryExceptionUInt64Test()
+    public static void ThrowOutOfMemoryExceptionUInt64Test()
     {
         Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException(42UL),
             Throws.InstanceOf<OutOfMemoryException>()
@@ -1180,7 +1180,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(ulong, Exception?)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowOutOfMemoryExceptionUInt64ExceptionTest()
+    public static void ThrowOutOfMemoryExceptionUInt64ExceptionTest()
     {
 #pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
@@ -1194,7 +1194,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(nuint)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowOutOfMemoryExceptionNUIntTest()
+    public static void ThrowOutOfMemoryExceptionNUIntTest()
     {
         Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException(42),
             Throws.InstanceOf<OutOfMemoryException>()
@@ -1204,7 +1204,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(nuint, Exception?)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowOutOfMemoryExceptionNUIntExceptionTest()
+    public static void ThrowOutOfMemoryExceptionNUIntExceptionTest()
     {
 #pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
@@ -1218,7 +1218,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(ulong, ulong)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowOutOfMemoryExceptionUInt64UInt64Test()
+    public static void ThrowOutOfMemoryExceptionUInt64UInt64Test()
     {
         Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException(42UL, 24UL),
             Throws.InstanceOf<OutOfMemoryException>()
@@ -1228,7 +1228,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(ulong, ulong, Exception?)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowOutOfMemoryExceptionUInt64UInt64ExceptionTest()
+    public static void ThrowOutOfMemoryExceptionUInt64UInt64ExceptionTest()
     {
 #pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
@@ -1242,7 +1242,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(nuint, nuint)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowOutOfMemoryExceptionNUIntNUIntTest()
+    public static void ThrowOutOfMemoryExceptionNUIntNUIntTest()
     {
         Assert.That(() => ExceptionUtilities.ThrowOutOfMemoryException(42, 24),
             Throws.InstanceOf<OutOfMemoryException>()
@@ -1252,7 +1252,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowOutOfMemoryException(nuint, nuint, Exception?)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowOutOfMemoryExceptionNUIntNUIntExceptionTest()
+    public static void ThrowOutOfMemoryExceptionNUIntNUIntExceptionTest()
     {
 #pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
@@ -1266,7 +1266,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowTimeoutException(string, int)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowTimeoutExceptionInt32Test()
+    public static void ThrowTimeoutExceptionInt32Test()
     {
         Assert.That(() => ExceptionUtilities.ThrowTimeoutException("method", 42),
             Throws.InstanceOf<TimeoutException>()
@@ -1277,7 +1277,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowTimeoutException(string, int, Exception?)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowTimeoutExceptionInt32ExceptionTest()
+    public static void ThrowTimeoutExceptionInt32ExceptionTest()
     {
 #pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();
@@ -1292,7 +1292,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowTimeoutException(string, TimeSpan)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowTimeoutExceptionTimeSpanTest()
+    public static void ThrowTimeoutExceptionTimeSpanTest()
     {
         Assert.That(() => ExceptionUtilities.ThrowTimeoutException("method", TimeSpan.FromMilliseconds(42)),
             Throws.InstanceOf<TimeoutException>()
@@ -1303,7 +1303,7 @@ internal static class ExceptionUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowTimeoutException(string, TimeSpan, Exception?)" /> method.</summary>
     [Test]
-    public static unsafe void ThrowTimeoutExceptionTimeSpanExceptionTest()
+    public static void ThrowTimeoutExceptionTimeSpanExceptionTest()
     {
 #pragma warning disable CA2201 // Do not raise reserved exception types
         var innerException = new Exception();

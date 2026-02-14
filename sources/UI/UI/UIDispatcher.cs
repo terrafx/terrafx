@@ -6,7 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using TerraFX.Interop.Windows;
 using TerraFX.Threading;
-using TerraFX.UI.Advanced;
 using static TerraFX.Interop.Windows.PM;
 using static TerraFX.Interop.Windows.Windows;
 using static TerraFX.Interop.Windows.WM;
@@ -16,34 +15,65 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.UI;
 
 /// <summary>Provides a means of dispatching events for a thread.</summary>
-public sealed unsafe class UIDispatcher : UIServiceObject
+public sealed unsafe class UIDispatcher : IDisposable, INameable
 {
+    private readonly UIService _service;
     private readonly Thread _parentThread;
 
     private readonly Dictionary<HWND, UIWindow> _windows;
     private readonly ValueReaderWriterLock _windowsLock;
 
-    internal UIDispatcher(UIService service, Thread parentThread) : base(service)
+    private string _name;
+    private VolatileState _state;
+
+    internal UIDispatcher(UIService service, Thread parentThread)
     {
+        AssertNotNull(service);
         ThrowIfNull(parentThread);
+
+        _service = service;
         _parentThread = parentThread;
 
         _windows = [];
         _windowsLock = new ValueReaderWriterLock();
+
+        _name = GetType().Name;
+        _ = _state.Transition(VolatileState.Initialized);
     }
 
     /// <summary>Occurs when an exit event is dispatched from the queue.</summary>
     public event EventHandler? ExitRequested;
 
+    /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
+    public bool IsDisposed => _state.IsDisposedOrDisposing;
+
+    /// <inheritdoc />
+    [AllowNull]
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? GetType().Name;
+        }
+    }
+
     /// <summary>Gets the thread that was used to create the dispatcher.</summary>
     public Thread ParentThread => _parentThread;
+
+    /// <summary>Gets the service for which the object was created.</summary>
+    public UIService Service => _service;
 
     /// <summary>Gets the windows created for the dispatcher.</summary>
     public IEnumerable<UIWindow> Windows
     {
         get
         {
-            ThrowIfDisposed();
+            ThrowIfDisposedOrDisposing(_state, _name);
             return _windows.Values;
         }
     }
@@ -53,7 +83,7 @@ public sealed unsafe class UIDispatcher : UIServiceObject
     /// <exception cref="ObjectDisposedException">The dispatcher has been disposed.</exception>
     public UIWindow CreateWindow()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         ThrowIfNotThread(ParentThread);
         return CreateWindowUnsafe();
     }
@@ -68,9 +98,20 @@ public sealed unsafe class UIDispatcher : UIServiceObject
     /// </remarks>
     public void DispatchPending()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         ThrowIfNotThread(ParentThread);
         DispatchPendingUnsafe();
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _ = _state.BeginDispose();
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+        _state.EndDispose();
     }
 
     /// <summary>Requests that the dispatcher exit by posting the appropriate event to the dispatch queue.</summary>
@@ -78,10 +119,13 @@ public sealed unsafe class UIDispatcher : UIServiceObject
     /// <exception cref="ObjectDisposedException">The dispatcher has been disposed.</exception>
     public void RequestExit()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         ThrowIfNotThread(ParentThread);
         RequestExitUnsafe();
     }
+
+    /// <inheritdoc />
+    public override string ToString() => _name;
 
     /// <summary>Tries to get the window associated with a window handle.</summary>
     /// <param name="hWnd">The window handle for which to get the associated window.</param>
@@ -91,29 +135,6 @@ public sealed unsafe class UIDispatcher : UIServiceObject
     {
         using var readerLock = new DisposableReaderLock(_windowsLock, isExternallySynchronized: false);
         return _windows.TryGetValue(hWnd, out window);
-    }
-
-    /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
-    {
-        if (isDisposing)
-        {
-            DisposeWindows(_windows);
-        }
-
-        static void DisposeWindows(Dictionary<HWND, UIWindow> windows)
-        {
-            foreach (var window in windows)
-            {
-                window.Value.Dispose();
-            }
-            windows.Clear();
-        }
-    }
-
-    /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
     }
 
     internal void AddWindow(HWND hWnd, UIWindow window)
@@ -155,6 +176,23 @@ public sealed unsafe class UIDispatcher : UIServiceObject
             {
                 RaiseExitRequested();
             }
+        }
+    }
+
+    private void Dispose(bool isDisposing)
+    {
+        if (isDisposing)
+        {
+            DisposeWindows(_windows);
+        }
+
+        static void DisposeWindows(Dictionary<HWND, UIWindow> windows)
+        {
+            foreach (var window in windows)
+            {
+                window.Value.Dispose();
+            }
+            windows.Clear();
         }
     }
 

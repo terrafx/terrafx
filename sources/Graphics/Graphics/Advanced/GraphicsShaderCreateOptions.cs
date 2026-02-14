@@ -6,7 +6,7 @@ namespace TerraFX.Graphics.Advanced;
 
 /// <summary>The options used when creating a graphics shader.</summary>
 [StructLayout(LayoutKind.Auto)]
-public unsafe struct GraphicsShaderCreateOptions
+public struct GraphicsShaderCreateOptions
 {
     /// <summary>The bytecode for the shader.</summary>
     public UnmanagedArray<byte> Bytecode;

@@ -1,15 +1,18 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
+using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12_INDEX_BUFFER_STRIP_CUT_VALUE;
 using static TerraFX.Interop.DirectX.D3D12_INPUT_CLASSIFICATION;
 using static TerraFX.Interop.DirectX.D3D12_PIPELINE_STATE_FLAGS;
 using static TerraFX.Interop.DirectX.D3D12_PRIMITIVE_TOPOLOGY_TYPE;
 using static TerraFX.Interop.DirectX.DXGI_FORMAT;
 using static TerraFX.Interop.Windows.Windows;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
@@ -18,8 +21,13 @@ using static TerraFX.Utilities.UnsafeUtilities;
 namespace TerraFX.Graphics;
 
 /// <summary>A graphics pipeline which defines how a graphics primitive should be rendered.</summary>
-public sealed unsafe class GraphicsPipeline : GraphicsRenderPassObject
+public sealed unsafe class GraphicsPipeline : IDisposable, INameable
 {
+    private readonly GraphicsAdapter _adapter;
+    private readonly GraphicsDevice _device;
+    private readonly GraphicsRenderPass _renderPass;
+    private readonly GraphicsService _service;
+
     private ComPtr<ID3D12PipelineState> _d3d12PipelineState;
     private readonly uint _d3d12PipelineStateVersion;
 
@@ -27,8 +35,23 @@ public sealed unsafe class GraphicsPipeline : GraphicsRenderPassObject
     private GraphicsPipelineSignature _signature;
     private GraphicsShader? _vertexShader;
 
-    internal GraphicsPipeline(GraphicsRenderPass renderPass, in GraphicsPipelineCreateOptions createOptions) : base(renderPass)
+    private string _name;
+    private VolatileState _state;
+
+    internal GraphicsPipeline(GraphicsRenderPass renderPass, in GraphicsPipelineCreateOptions createOptions)
     {
+        AssertNotNull(renderPass);
+        _renderPass = renderPass;
+
+        var device = renderPass.Device;
+        _device = device;
+
+        var adapter = device.Adapter;
+        _adapter = adapter;
+
+        var service = adapter.Service;
+        _service = service;
+
         _signature = createOptions.Signature;
         _pixelShader = createOptions.PixelShader;
         _vertexShader = createOptions.VertexShader;
@@ -36,7 +59,10 @@ public sealed unsafe class GraphicsPipeline : GraphicsRenderPassObject
         var d3d12PipelineState = CreateD3D12PipelineState(out _d3d12PipelineStateVersion);
         _d3d12PipelineState.Attach(d3d12PipelineState);
 
+        _name = GetType().Name;
         SetNameUnsafe(Name);
+
+        _ = _state.Transition(VolatileState.Initialized);
 
         ID3D12PipelineState* CreateD3D12PipelineState(out uint d3d12PipelineStateVersion)
         {
@@ -178,14 +204,45 @@ public sealed unsafe class GraphicsPipeline : GraphicsRenderPassObject
     /// <summary>Finalizes an instance of the <see cref="GraphicsPipeline" /> class.</summary>
     ~GraphicsPipeline() => Dispose(isDisposing: false);
 
+    /// <summary>Gets the adapter for which the object was created.</summary>
+    public GraphicsAdapter Adapter => _adapter;
+
+    /// <summary>Gets the device for which the object was created.</summary>
+    public GraphicsDevice Device => _device;
+
     /// <summary>Gets <c>true</c> if the pipeline has a pixel shader; otherwise, <c>false</c>.</summary>
     public bool HasPixelShader => _pixelShader is not null;
 
     /// <summary>Gets <c>true</c> if the pipeline has a vertex shader; otherwise, <c>false</c>.</summary>
     public bool HasVertexShader => _vertexShader is not null;
 
+    /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
+    public bool IsDisposed => _state.IsDisposedOrDisposing;
+
+    /// <inheritdoc />
+    [AllowNull]
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? GetType().Name;
+            SetNameUnsafe(_name);
+        }
+    }
+
     /// <summary>Gets the pixel shader for the pipeline or <c>null</c> if none exists.</summary>
     public GraphicsShader? PixelShader => _pixelShader;
+
+    /// <summary>Gets the render pass for which the object was created.</summary>
+    public GraphicsRenderPass RenderPass => _renderPass;
+
+    /// <summary>Gets the service for which the object was created.</summary>
+    public GraphicsService Service => _service;
 
     /// <summary>Gets the signature of the pipeline.</summary>
     public GraphicsPipelineSignature Signature => _signature;
@@ -205,7 +262,7 @@ public sealed unsafe class GraphicsPipeline : GraphicsRenderPassObject
     /// <exception cref="ObjectDisposedException">The pipeline has been disposed.</exception>
     public GraphicsPipelineDescriptorSet CreateDescriptorSet(ReadOnlySpan<GraphicsResourceView> resourceViews)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         ThrowIfZero(resourceViews.Length);
 
         var createOptions = new GraphicsPipelineDescriptorSetCreateOptions {
@@ -223,7 +280,7 @@ public sealed unsafe class GraphicsPipeline : GraphicsRenderPassObject
     /// <exception cref="ObjectDisposedException">The pipeline has been disposed.</exception>
     public GraphicsPipelineDescriptorSet CreateDescriptorSet(in GraphicsPipelineDescriptorSetCreateOptions createOptions)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         ThrowIfNull(createOptions.ResourceViews);
         ThrowIfZero(createOptions.ResourceViews.Length);
 
@@ -231,7 +288,22 @@ public sealed unsafe class GraphicsPipeline : GraphicsRenderPassObject
     }
 
     /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
+    public void Dispose()
+    {
+        _ = _state.BeginDispose();
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+        _state.EndDispose();
+    }
+
+    /// <inheritdoc />
+    public override string ToString() => _name;
+
+    private GraphicsPipelineDescriptorSet CreateDescriptorSetUnsafe(in GraphicsPipelineDescriptorSetCreateOptions createOptions) => new GraphicsPipelineDescriptorSet(this, in createOptions);
+
+    private void Dispose(bool isDisposing)
     {
         if (isDisposing)
         {
@@ -243,8 +315,5 @@ public sealed unsafe class GraphicsPipeline : GraphicsRenderPassObject
         _ = _d3d12PipelineState.Reset();
     }
 
-    /// <inheritdoc />
-    protected override void SetNameUnsafe(string value) => D3D12PipelineState->SetD3D12Name(value);
-
-    private GraphicsPipelineDescriptorSet CreateDescriptorSetUnsafe(in GraphicsPipelineDescriptorSetCreateOptions createOptions) => new GraphicsPipelineDescriptorSet(this, in createOptions);
+    private void SetNameUnsafe(string value) => D3D12PipelineState->SetD3D12Name(value);
 }

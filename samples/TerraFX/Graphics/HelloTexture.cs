@@ -8,12 +8,16 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
-internal sealed class HelloTexture(string name) : HelloWindow(name)
+internal sealed class HelloTexture : HelloWindow
 {
     private GraphicsPrimitive _trianglePrimitive = null!;
     private GraphicsTexture _texture2D = null!;
     private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
+
+    public HelloTexture(string name) : base(name)
+    {
+    }
 
     public override void Cleanup()
     {

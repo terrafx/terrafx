@@ -4,7 +4,6 @@
 // This file includes code based on the ValueDictionary<TKey, TValue> class from https://github.com/dotnet/runtime/
 // The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
-
 namespace TerraFX.Collections;
 
 public partial struct ValueDictionary<TKey, TValue>

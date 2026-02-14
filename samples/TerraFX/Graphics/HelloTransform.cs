@@ -9,13 +9,17 @@ using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
-internal sealed class HelloTransform(string name) : HelloWindow(name)
+internal sealed class HelloTransform : HelloWindow
 {
     private GraphicsBuffer _constantBuffer = null!;
     private GraphicsPrimitive _trianglePrimitive = null!;
     private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
     private float _trianglePrimitiveTranslationX;
+
+    public HelloTransform(string name) : base(name)
+    {
+    }
 
     public override void Cleanup()
     {
@@ -65,7 +69,7 @@ internal sealed class HelloTransform(string name) : HelloWindow(name)
         base.Draw(renderContext);
     }
 
-    protected override unsafe void Update(TimeSpan delta)
+    protected override void Update(TimeSpan delta)
     {
         const float TranslationSpeed = 1.0f;
         const float OffsetBounds = 1.25f;
@@ -91,7 +95,7 @@ internal sealed class HelloTransform(string name) : HelloWindow(name)
         constantBufferView.UnmapAndWrite();
     }
 
-    private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsCopyContext copyContext)
+    private GraphicsPrimitive CreateTrianglePrimitive(GraphicsCopyContext copyContext)
     {
         var renderPass = RenderPass;
         var surface = renderPass.Surface;

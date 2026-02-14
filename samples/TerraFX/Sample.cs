@@ -17,11 +17,16 @@ using GC = System.GC;
 
 namespace TerraFX.Samples;
 
-internal abstract unsafe class Sample(string name) : IDisposable
+internal abstract unsafe class Sample : IDisposable
 {
     private readonly string _assemblyPath = Path.GetDirectoryName(AppContext.BaseDirectory)!;
-    private readonly string _name = name;
+    private readonly string _name;
     private TimeSpan _timeout;
+
+    public Sample(string name)
+    {
+        _name = name;
+    }
 
     ~Sample() => Dispose(isDisposing: false);
 

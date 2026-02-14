@@ -2,18 +2,26 @@
 
 using System;
 using System.Diagnostics;
-using TerraFX.Graphics.Advanced;
+using System.Diagnostics.CodeAnalysis;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
+using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12_COMMAND_LIST_FLAGS;
 using static TerraFX.Interop.Windows.Windows;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics;
 
 /// <summary>Represents a graphics context, which can be used for executing commands.</summary>
-public abstract unsafe class GraphicsContext : GraphicsCommandQueueObject
+public abstract unsafe class GraphicsContext : IDisposable, INameable
 {
+    private readonly GraphicsAdapter _adapter;
+    private readonly GraphicsCommandQueue _commandQueue;
+    private readonly GraphicsDevice _device;
+    private readonly GraphicsService _service;
+
     private ComPtr<ID3D12CommandAllocator> _d3d12CommandAllocator;
     private readonly uint _d3d12CommandAllocatorVersion;
 
@@ -24,8 +32,23 @@ public abstract unsafe class GraphicsContext : GraphicsCommandQueueObject
 
     private readonly GraphicsContextKind _kind;
 
-    private protected GraphicsContext(GraphicsCommandQueue commandQueue, GraphicsContextKind kind) : base(commandQueue)
+    private protected string _name;
+    private protected VolatileState _state;
+
+    private protected GraphicsContext(GraphicsCommandQueue commandQueue, GraphicsContextKind kind)
     {
+        AssertNotNull(commandQueue);
+        _commandQueue = commandQueue;
+
+        var device = commandQueue.Device;
+        _device = device;
+
+        var adapter = device.Adapter;
+        _adapter = adapter;
+
+        var service = adapter.Service;
+        _service = service;
+
         // No need for a CommandQueue.AddContext(this) as it will be done by the underlying pool
 
         var d3d12CommandListType = kind.AsD3D12CommandListType();
@@ -39,7 +62,10 @@ public abstract unsafe class GraphicsContext : GraphicsCommandQueueObject
         _kind = kind;
         _fence = Device.CreateFence(isSignaled: true);
 
+        _name = GetType().Name;
         SetNameUnsafe(Name);
+
+        _ = _state.Transition(VolatileState.Initialized);
 
         ID3D12CommandAllocator* CreateD3D12CommandAllocator(D3D12_COMMAND_LIST_TYPE d3d12CommandListType, out uint d3d12CommandAllocatorVersion)
         {
@@ -75,11 +101,42 @@ public abstract unsafe class GraphicsContext : GraphicsCommandQueueObject
     /// <summary>Finalizes an instance of the <see cref="GraphicsContext" /> class.</summary>
     ~GraphicsContext() => Dispose(isDisposing: false);
 
+    /// <summary>Gets the adapter for which the object was created.</summary>
+    public GraphicsAdapter Adapter => _adapter;
+
+    /// <summary>Gets the command queue for which the object was created.</summary>
+    public GraphicsCommandQueue CommandQueue => _commandQueue;
+
+    /// <summary>Gets the device for which the object was created.</summary>
+    public GraphicsDevice Device => _device;
+
     /// <summary>Gets the fence used by the context for synchronization.</summary>
     public GraphicsFence Fence => _fence;
 
+    /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
+    public bool IsDisposed => _state.IsDisposedOrDisposing;
+
     /// <summary>Gets the context kind.</summary>
     public GraphicsContextKind Kind => _kind;
+
+    /// <inheritdoc />
+    [AllowNull]
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? GetType().Name;
+            SetNameUnsafe(_name);
+        }
+    }
+
+    /// <summary>Gets the service for which the object was created.</summary>
+    public GraphicsService Service => _service;
 
     internal ID3D12CommandAllocator* D3D12CommandAllocator => _d3d12CommandAllocator;
 
@@ -93,15 +150,26 @@ public abstract unsafe class GraphicsContext : GraphicsCommandQueueObject
     /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
     public void Close()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         CloseUnsafe();
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _ = _state.BeginDispose();
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+        _state.EndDispose();
     }
 
     /// <summary>Executes the graphics context.</summary>
     /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
     public void Execute()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         ExecuteUnsafe();
     }
 
@@ -109,12 +177,16 @@ public abstract unsafe class GraphicsContext : GraphicsCommandQueueObject
     /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
     public void Reset()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         ResetUnsafe();
     }
 
     /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
+    public override string ToString() => _name;
+
+    private void CloseUnsafe() => ThrowExternalExceptionIfFailed(D3D12GraphicsCommandList->Close());
+
+    private void Dispose(bool isDisposing)
     {
         if (isDisposing)
         {
@@ -132,15 +204,6 @@ public abstract unsafe class GraphicsContext : GraphicsCommandQueueObject
         _ = CommandQueue.RemoveContext(this);
     }
 
-    /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
-        D3D12CommandAllocator->SetD3D12Name(value);
-        D3D12GraphicsCommandList->SetD3D12Name(value);
-    }
-
-    private void CloseUnsafe() => ThrowExternalExceptionIfFailed(D3D12GraphicsCommandList->Close());
-
     private void ExecuteUnsafe() => CommandQueue.ExecuteContextUnsafe(this);
 
     private void ResetUnsafe()
@@ -153,5 +216,11 @@ public abstract unsafe class GraphicsContext : GraphicsCommandQueueObject
         ThrowExternalExceptionIfFailed(d3d12CommandAllocator->Reset());
 
         ThrowExternalExceptionIfFailed(D3D12GraphicsCommandList->Reset(d3d12CommandAllocator, pInitialState: null));
+    }
+
+    private void SetNameUnsafe(string value)
+    {
+        D3D12CommandAllocator->SetD3D12Name(value);
+        D3D12GraphicsCommandList->SetD3D12Name(value);
     }
 }

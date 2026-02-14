@@ -13,9 +13,14 @@ namespace TerraFX.Collections;
 
 public unsafe partial struct UnmanagedValueDictionary<TKey, TValue>
 {
-    internal sealed class DebugView(UnmanagedValueDictionary<TKey, TValue> dictionary)
+    internal sealed class DebugView
     {
-        private readonly UnmanagedValueDictionary<TKey, TValue> _dictionary = dictionary;
+        private readonly UnmanagedValueDictionary<TKey, TValue> _dictionary;
+
+        public DebugView(UnmanagedValueDictionary<TKey, TValue> dictionary)
+        {
+            _dictionary = dictionary;
+        }
 
         public nuint Capacity => _dictionary.Capacity;
 

@@ -6,7 +6,7 @@ namespace TerraFX.Graphics.Advanced;
 
 /// <summary>The options used when creating a graphics texture view.</summary>
 [StructLayout(LayoutKind.Auto)]
-public unsafe struct GraphicsTextureViewCreateOptions
+public struct GraphicsTextureViewCreateOptions
 {
     /// <summary>The number of mip levels in the texture view.</summary>
     public ushort MipLevelCount;

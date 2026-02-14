@@ -7,12 +7,16 @@ using TerraFX.Numerics;
 
 namespace TerraFX.Samples.Graphics;
 
-internal sealed class HelloQuad(string name) : HelloWindow(name)
+internal sealed class HelloQuad : HelloWindow
 {
     private GraphicsBuffer _indexBuffer = null!;
     private GraphicsPrimitive _quadPrimitive = null!;
     private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
+
+    public HelloQuad(string name) : base(name)
+    {
+    }
 
     public override void Cleanup()
     {
@@ -61,7 +65,7 @@ internal sealed class HelloQuad(string name) : HelloWindow(name)
         base.Draw(renderContext);
     }
 
-    private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsCopyContext copyContext)
+    private GraphicsPrimitive CreateQuadPrimitive(GraphicsCopyContext copyContext)
     {
         var renderPass = RenderPass;
         var surface = renderPass.Surface;

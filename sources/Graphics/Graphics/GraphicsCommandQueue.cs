@@ -1,11 +1,13 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Graphics.Advanced;
+using System.Diagnostics.CodeAnalysis;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
+using TerraFX.Threading;
 using static TerraFX.Interop.DirectX.D3D12_COMMAND_QUEUE_FLAGS;
 using static TerraFX.Interop.Windows.Windows;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -14,8 +16,12 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Graphics;
 
 /// <summary>Represents a queue of graphics commands.</summary>
-public abstract unsafe class GraphicsCommandQueue : GraphicsDeviceObject
+public abstract unsafe class GraphicsCommandQueue : IDisposable, INameable
 {
+    private readonly GraphicsAdapter _adapter;
+    private readonly GraphicsDevice _device;
+    private readonly GraphicsService _service;
+
     private ComPtr<ID3D12CommandQueue> _d3d12CommandQueue;
     private readonly uint _d3d12CommandQueueVersion;
 
@@ -23,8 +29,20 @@ public abstract unsafe class GraphicsCommandQueue : GraphicsDeviceObject
 
     private GraphicsFence _waitForIdleFence;
 
-    private protected GraphicsCommandQueue(GraphicsDevice device, GraphicsContextKind kind) : base(device)
+    private string _name;
+    private VolatileState _state;
+
+    private protected GraphicsCommandQueue(GraphicsDevice device, GraphicsContextKind kind)
     {
+        AssertNotNull(device);
+        _device = device;
+
+        var adapter = device.Adapter;
+        _adapter = adapter;
+
+        var service = adapter.Service;
+        _service = service;
+
         var d3d12CommandListType = kind.AsD3D12CommandListType();
 
         var d3d12CommandQueue = CreateD3D12CommandQueue(d3d12CommandListType, out _d3d12CommandQueueVersion);
@@ -34,7 +52,9 @@ public abstract unsafe class GraphicsCommandQueue : GraphicsDeviceObject
 
         _waitForIdleFence = device.CreateFence(isSignaled: false);
 
+        _name = GetType().Name;
         SetNameUnsafe(Name);
+        _ = _state.Transition(VolatileState.Initialized);
 
         ID3D12CommandQueue* CreateD3D12CommandQueue(D3D12_COMMAND_LIST_TYPE d3d12CommandListType, out uint d3d12CommandQueueVersion)
         {
@@ -55,12 +75,51 @@ public abstract unsafe class GraphicsCommandQueue : GraphicsDeviceObject
     /// <summary>Finalizes an instance of the <see cref="GraphicsCommandQueue" /> class.</summary>
     ~GraphicsCommandQueue() => Dispose(isDisposing: false);
 
+    /// <summary>Gets the adapter for which the object was created.</summary>
+    public GraphicsAdapter Adapter => _adapter;
+
+    /// <summary>Gets the device for which the object was created.</summary>
+    public GraphicsDevice Device => _device;
+
+    /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
+    public bool IsDisposed => _state.IsDisposedOrDisposing;
+
     /// <summary>Gets the kind of contexts in the command queue.</summary>
     public GraphicsContextKind Kind => _kind;
+
+    /// <inheritdoc />
+    [AllowNull]
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? GetType().Name;
+            SetNameUnsafe(_name);
+        }
+    }
+
+    /// <summary>Gets the service for which the object was created.</summary>
+    public GraphicsService Service => _service;
 
     internal ID3D12CommandQueue* D3D12CommandQueue => _d3d12CommandQueue;
 
     internal uint D3D12CommandQueueVersion => _d3d12CommandQueueVersion;
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _ = _state.BeginDispose();
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+        _state.EndDispose();
+    }
 
     /// <summary>Executes a graphics context.</summary>
     /// <param name="context">The graphics context to execute.</param>
@@ -70,7 +129,7 @@ public abstract unsafe class GraphicsCommandQueue : GraphicsDeviceObject
     /// <exception cref="ObjectDisposedException">The command queue has been disposed.</exception>
     public void ExecuteContext(GraphicsContext context)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         ThrowIfNull(context);
 
         if (context.Kind != Kind)
@@ -91,7 +150,7 @@ public abstract unsafe class GraphicsCommandQueue : GraphicsDeviceObject
     /// <exception cref="ObjectDisposedException">The command queue has been disposed.</exception>
     public GraphicsContext RentContext()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         return RentContextUnsafe();
     }
 
@@ -103,7 +162,7 @@ public abstract unsafe class GraphicsCommandQueue : GraphicsDeviceObject
     /// <exception cref="ObjectDisposedException">The command queue has been disposed.</exception>
     public void ReturnContext(GraphicsContext context)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         ThrowIfNull(context);
 
         if (context.Kind != Kind)
@@ -126,7 +185,7 @@ public abstract unsafe class GraphicsCommandQueue : GraphicsDeviceObject
     /// <exception cref="ObjectDisposedException">The command queue has been disposed.</exception>
     public void SignalFence(GraphicsFence fence)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         ThrowIfNull(fence);
 
         if (fence.Device != Device)
@@ -137,6 +196,9 @@ public abstract unsafe class GraphicsCommandQueue : GraphicsDeviceObject
         SignalFenceUnsafe(fence);
     }
 
+    /// <inheritdoc />
+    public override string ToString() => _name;
+
     /// <summary>Enqueues a GPU side wait for a graphics fence.</summary>
     /// <param name="fence">The graphics fence for which to wait.</param>
     /// <exception cref="ArgumentNullException"><paramref name="fence" /> is <c>null</c>.</exception>
@@ -144,7 +206,7 @@ public abstract unsafe class GraphicsCommandQueue : GraphicsDeviceObject
     /// <exception cref="ObjectDisposedException">The command queue has been disposed.</exception>
     public void WaitForFence(GraphicsFence fence)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         ThrowIfNull(fence);
 
         if (fence.Device != Device)
@@ -159,12 +221,12 @@ public abstract unsafe class GraphicsCommandQueue : GraphicsDeviceObject
     /// <exception cref="ObjectDisposedException">The command queue has been disposed.</exception>
     public void WaitForIdle()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         WaitForIdleUnsafe();
     }
 
     /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
+    protected virtual void Dispose(bool isDisposing)
     {
         if (isDisposing)
         {
@@ -173,9 +235,6 @@ public abstract unsafe class GraphicsCommandQueue : GraphicsDeviceObject
         }
         _ = _d3d12CommandQueue.Reset();
     }
-
-    /// <inheritdoc />
-    protected override void SetNameUnsafe(string value) => D3D12CommandQueue->SetD3D12Name(value);
 
     internal void ExecuteContextUnsafe(GraphicsContext context)
     {
@@ -192,6 +251,8 @@ public abstract unsafe class GraphicsCommandQueue : GraphicsDeviceObject
     private protected abstract GraphicsContext RentContextUnsafe();
 
     private protected abstract void ReturnContextUnsafe(GraphicsContext context);
+
+    private void SetNameUnsafe(string value) => D3D12CommandQueue->SetD3D12Name(value);
 
     private void SignalFenceUnsafe(GraphicsFence fence) => ThrowExternalExceptionIfFailed(D3D12CommandQueue->Signal(fence.D3D12Fence, Value: 1));
 

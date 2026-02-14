@@ -498,8 +498,6 @@ internal static class ValueStackTests
         );
     }
 
-
-
     /// <summary>Provides validation of the <see cref="ValueStack.TrimExcess{T}(ref ValueStack{T}, float)" /> method.</summary>
     [Test]
     public static void TrimExcessTest()

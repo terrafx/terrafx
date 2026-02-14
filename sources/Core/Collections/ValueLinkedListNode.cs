@@ -6,7 +6,7 @@
 namespace TerraFX.Collections;
 
 /// <summary>Provides functionality for the <see cref="ValueLinkedListNode{T}" /> class.</summary>
-public static unsafe class ValueLinkedListNode
+public static class ValueLinkedListNode
 {
     internal static void Invalidate<T>(this ValueLinkedListNode<T> node)
     {

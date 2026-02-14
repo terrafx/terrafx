@@ -6,7 +6,7 @@ namespace TerraFX.Graphics.Advanced;
 
 /// <summary>The options used when creating a graphics texture.</summary>
 [StructLayout(LayoutKind.Auto)]
-public unsafe struct GraphicsTextureCreateOptions
+public struct GraphicsTextureCreateOptions
 {
     /// <summary>The flags that modify how the graphics texture is allocated.</summary>
     public GraphicsMemoryAllocationFlags AllocationFlags;

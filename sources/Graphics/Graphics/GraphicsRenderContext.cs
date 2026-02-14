@@ -2,7 +2,6 @@
 
 using System;
 using System.Threading;
-using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 using TerraFX.Numerics;
@@ -26,7 +25,7 @@ public sealed unsafe class GraphicsRenderContext : GraphicsContext
     {
     }
 
-    /// <inheritdoc cref="GraphicsCommandQueueObject.CommandQueue" />
+    /// <inheritdoc cref="GraphicsContext.CommandQueue" />
     public new GraphicsRenderCommandQueue CommandQueue => base.CommandQueue.As<GraphicsRenderCommandQueue>();
 
 #pragma warning disable CA1822 // Mark members as static

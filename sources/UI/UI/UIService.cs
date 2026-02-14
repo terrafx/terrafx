@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
-using TerraFX.Advanced;
 using TerraFX.Interop.Windows;
 using TerraFX.Threading;
 using static TerraFX.Interop.Windows.COLOR;
@@ -20,7 +19,7 @@ using static TerraFX.Utilities.Win32Utilities;
 namespace TerraFX.UI;
 
 /// <summary>Provides access to a UI subsystem.</summary>
-public sealed unsafe class UIService : DisposableObject
+public sealed unsafe class UIService : IDisposable, INameable
 {
     /// <summary>Gets the raw tick frequency of the underlying hardware timer used by <see cref="CurrentTimestamp" />.</summary>
     public static double TickFrequency { get; } = GetTickFrequency();
@@ -33,12 +32,18 @@ public sealed unsafe class UIService : DisposableObject
     private readonly Dictionary<Thread, UIDispatcher> _dispatchers;
     private readonly ValueReaderWriterLock _dispatchersLock;
 
-    private UIService() : base(name: null)
+    private string _name;
+    private VolatileState _state;
+
+    private UIService()
     {
         _classAtom = CreateClassAtom();
 
         _dispatchers = [];
         _dispatchersLock = new ValueReaderWriterLock();
+
+        _name = GetType().Name;
+        _ = _state.Transition(VolatileState.Initialized);
 
         static ushort CreateClassAtom()
         {
@@ -130,11 +135,29 @@ public sealed unsafe class UIService : DisposableObject
     /// <remarks>This will create a new dispatcher if one does not already exist.</remarks>
     public UIDispatcher DispatcherForCurrentThread => GetDispatcher(Thread.CurrentThread);
 
+    /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
+    public bool IsDisposed => _state.IsDisposedOrDisposing;
+
+    /// <inheritdoc />
+    [AllowNull]
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? GetType().Name;
+        }
+    }
+
     internal ushort ClassAtom
     {
         get
         {
-            ThrowIfDisposed();
+            ThrowIfDisposedOrDisposing(_state, _name);
             return _classAtom;
         }
     }
@@ -171,6 +194,17 @@ public sealed unsafe class UIService : DisposableObject
         return TicksPerSecond / frequency.QuadPart;
     }
 
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _ = _state.BeginDispose();
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+        _state.EndDispose();
+    }
+
     /// <summary>Gets the dispatcher associated with a thread, creating one if it does not exist.</summary>
     /// <param name="thread">The thread for which the dispatcher should be retrieved.</param>
     /// <returns>The dispatcher associated with <paramref name="thread" />.</returns>
@@ -192,6 +226,9 @@ public sealed unsafe class UIService : DisposableObject
         }
     }
 
+    /// <inheritdoc />
+    public override string ToString() => _name;
+
     /// <summary>Gets the dispatcher associated with a thread or <c>null</c> if one does not exist.</summary>
     /// <param name="thread">The thread for which the dispatcher should be retrieved.</param>
     /// <param name="dispatcher">The dispatcher associated with <paramref name="thread" />.</param>
@@ -204,8 +241,7 @@ public sealed unsafe class UIService : DisposableObject
         return _dispatchers.TryGetValue(thread, out dispatcher);
     }
 
-    /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
+    private void Dispose(bool isDisposing)
     {
         if (isDisposing)
         {
@@ -229,10 +265,5 @@ public sealed unsafe class UIService : DisposableObject
             }
             dispatchers.Clear();
         }
-    }
-
-    /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
     }
 }

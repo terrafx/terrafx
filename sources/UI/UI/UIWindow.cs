@@ -1,12 +1,13 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Graphics;
 using TerraFX.Interop.Windows;
 using TerraFX.Numerics;
-using TerraFX.UI.Advanced;
+using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Interop.Windows.GWL;
 using static TerraFX.Interop.Windows.HWND;
@@ -22,8 +23,12 @@ using static TerraFX.Utilities.Win32Utilities;
 namespace TerraFX.UI;
 
 /// <summary>Defines a window.</summary>
-public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
+public sealed unsafe class UIWindow : IDisposable, IGraphicsSurface, INameable
 {
+    private readonly UIDispatcher _dispatcher;
+    private readonly Thread _parentThread;
+    private readonly UIService _service;
+
     private readonly UIFlowDirection _flowDirection;
     private readonly HWND _handle;
     private readonly UIReadingDirection _readingDirection;
@@ -33,15 +38,25 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     private uint _extendedStyle;
     private bool _isActive;
     private uint _style;
-    private string _title = null!;
+    private string _title = "";
     private UIWindowState _windowState;
 
+    private string _name;
+    private VolatileState _state;
+
     internal UIWindow(UIDispatcher dispatcher)
-        : base(dispatcher)
     {
+        _dispatcher = dispatcher;
+
+        _parentThread = dispatcher.ParentThread;
+        _service = dispatcher.Service;
+
         _flowDirection = UI.UIFlowDirection.TopToBottom;
         _handle = CreateHandle(this, Service.ClassAtom);
         _readingDirection = UI.UIReadingDirection.LeftToRight;
+
+        _name = GetType().Name;
+        _ = _state.Transition(VolatileState.Initialized);
 
         static HWND CreateHandle(UIWindow window, ushort classAtom)
         {
@@ -109,11 +124,17 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     /// <summary>Gets the size of the client area for the window.</summary>
     public Vector2 ClientSize => ClientBounds.Size;
 
+    /// <summary>Gets the dispatcher for which the object was created.</summary>
+    public UIDispatcher Dispatcher => _dispatcher;
+
     /// <summary>Gets flow direction for the window.</summary>
     public UIFlowDirection FlowDirection => _flowDirection;
 
     /// <summary>Gets <c>true</c> if the window is active; otherwise, <c>false</c>.</summary>
     public bool IsActive => _isActive;
+
+    /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
+    public bool IsDisposed => _state.IsDisposedOrDisposing;
 
     /// <summary>Gets <c>true</c> if the window is enabled; otherwise, <c>false</c>.</summary>
     public bool IsEnabled => (_style & WS_DISABLED) == 0;
@@ -124,8 +145,29 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     /// <summary>Gets the location of the window.</summary>
     public Vector2 Location => Bounds.Location;
 
+    /// <inheritdoc />
+    [AllowNull]
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? GetType().Name;
+        }
+    }
+
     /// <summary>Gets the reading direction for the window.</summary>
     public UIReadingDirection ReadingDirection => _readingDirection;
+
+    /// <summary>Gets the thread that was used to create <see cref="Dispatcher" />.</summary>
+    public Thread ParentThread => _parentThread;
+
+    /// <summary>Gets the service for which the object was created.</summary>
+    public UIService Service => _service;
 
     /// <summary>Gets the size of the window.</summary>
     public Vector2 Size => Bounds.Size;
@@ -140,7 +182,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     {
         get
         {
-            ThrowIfDisposed();
+            ThrowIfDisposedOrDisposing(_state, _name);
             return _handle;
         }
     }
@@ -167,7 +209,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     /// <exception cref="ObjectDisposedException">The window has been disposed.</exception>
     public void Close()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         _ = SendMessageW(_handle, WM_CLOSE, wParam: 0u, lParam: 0);
     }
 
@@ -175,7 +217,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     /// <exception cref="ObjectDisposedException">The window has been disposed.</exception>
     public void Disable()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         if (IsEnabled)
         {
@@ -183,11 +225,22 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
         }
     }
 
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _ = _state.BeginDispose();
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+        _state.EndDispose();
+    }
+
     /// <summary>Enables the window.</summary>
     /// <exception cref="ObjectDisposedException">The window has been disposed.</exception>
     public void Enable()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         if (!IsEnabled)
         {
@@ -199,7 +252,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     /// <exception cref="ObjectDisposedException">The window has been disposed.</exception>
     public void Hide()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         if (WindowState != UIWindowState.Hidden)
         {
@@ -211,7 +264,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     /// <exception cref="ObjectDisposedException">The window has been disposed.</exception>
     public void Maximize()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         if (WindowState != UIWindowState.Maximized)
         {
@@ -223,7 +276,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     /// <exception cref="ObjectDisposedException">The window has been disposed.</exception>
     public void Minimize()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         if (WindowState != UIWindowState.Minimized)
         {
@@ -236,7 +289,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     /// <exception cref="ObjectDisposedException">The window has been disposed.</exception>
     public void Relocate(Vector2 location)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         if (_bounds.Location != location)
         {
@@ -256,7 +309,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     /// <exception cref="ObjectDisposedException">The window has been disposed.</exception>
     public void RelocateClient(Vector2 location)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         if (_clientBounds.Location != location)
         {
@@ -280,7 +333,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     /// <exception cref="ObjectDisposedException">The window has been disposed.</exception>
     public void Resize(Vector2 size)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         if (_bounds.Size != size)
         {
@@ -300,7 +353,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     /// <exception cref="ObjectDisposedException">The window has been disposed.</exception>
     public void ResizeClient(Vector2 size)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         if (_clientBounds.Size != size)
         {
@@ -323,7 +376,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     /// <exception cref="ObjectDisposedException">The window has been disposed.</exception>
     public void Restore()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         if (WindowState != UIWindowState.Normal)
         {
@@ -336,7 +389,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     /// <exception cref="ObjectDisposedException">The window has been disposed.</exception>
     public void SetTitle(string title)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         if (_title != title)
         {
@@ -353,7 +406,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
     /// <exception cref="ObjectDisposedException">The window has been disposed.</exception>
     public void Show()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         if (WindowState == UIWindowState.Hidden)
         {
@@ -361,32 +414,13 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
         }
     }
 
+    /// <inheritdoc />
+    public override string ToString() => _name;
+
     /// <summary>Tries to activate the window.</summary>
     /// <returns><c>true</c> if the window was successfully activated; otherwise, <c>false</c>.</returns>
     /// <exception cref="ObjectDisposedException">The window has been disposed.</exception>
     public bool TryActivate() => _isActive || (SetForegroundWindow(_handle) != FALSE);
-
-    /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
-    {
-        // We are only allowed to dispose of the window handle from the parent
-        // thread. So, if we are on the wrong thread, we will close the window
-        // and call DisposeHandle from the appropriate thread.
-
-        if (Thread.CurrentThread != ParentThread)
-        {
-            Close();
-        }
-        else
-        {
-            DisposeHandle(_handle);
-        }
-    }
-
-    /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
-    }
 
     internal LRESULT ProcessWindowMessage(uint msg, WPARAM wParam, LPARAM lParam)
     {
@@ -479,6 +513,27 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
         }
     }
 
+    private void Dispose(bool isDisposing)
+    {
+        if (isDisposing)
+        {
+            // Nothing to handle
+        }
+
+        // We are only allowed to dispose of the window handle from the parent
+        // thread. So, if we are on the wrong thread, we will close the window
+        // and call DisposeHandle from the appropriate thread.
+
+        if (Thread.CurrentThread != ParentThread)
+        {
+            Close();
+        }
+        else
+        {
+            DisposeHandle(_handle);
+        }
+    }
+
     private LRESULT HandleWmActivate(WPARAM wParam)
     {
         _isActive = LOWORD(wParam) != WA_INACTIVE;
@@ -523,7 +578,7 @@ public sealed unsafe class UIWindow : UIDispatcherObject, IGraphicsSurface
         // Otherwise, this was triggered externally and we should just switch the state to
         // be disposed.
 
-        MarkDisposed();
+        _ = _state.Transition(VolatileState.Disposed);
         _ = Dispatcher.RemoveWindow(_handle);
 
         return 0;

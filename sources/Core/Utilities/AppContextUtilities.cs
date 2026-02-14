@@ -6,7 +6,7 @@ using System.Linq;
 namespace TerraFX.Utilities;
 
 /// <summary>Provides a set of methods to supplement <see cref="AppContext" />.</summary>
-public static unsafe class AppContextUtilities
+public static class AppContextUtilities
 {
     /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>
     /// <param name="name">The name of the app context data to get.</param>

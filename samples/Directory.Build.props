@@ -23,11 +23,12 @@
 
   <PropertyGroup>
     <!--
-      CA1303: Do not pass literals as localized parameters
-      CA1508: Avoid dead conditional code
-      CA2213: Disposable fields should be disposed
+       CA1303: Do not pass literals as localized parameters
+       CA1508: Avoid dead conditional code
+       CA2213: Disposable fields should be disposed
+      IDE0370: Suppression is unnecessary
     -->
-    <NoWarn>$(NoWarn);CA1303;CA1508;CA2213</NoWarn>
+    <NoWarn>$(NoWarn);CA1303;CA1508;CA2213;IDE0370</NoWarn>
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.props" />

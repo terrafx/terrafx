@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Xml.Linq;
 using TerraFX.Advanced;
 using TerraFX.Collections;
 using TerraFX.Graphics.Advanced;
@@ -108,7 +109,7 @@ public sealed unsafe class GraphicsBuffer : GraphicsResource
     /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
     public void DisposeAllViews()
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         DisposeAllViewsUnsafe();
     }
 
@@ -122,7 +123,7 @@ public sealed unsafe class GraphicsBuffer : GraphicsResource
     /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
     public bool TryCreateBufferView(in GraphicsBufferViewCreateOptions createOptions, [NotNullWhen(true)] out GraphicsBufferView? bufferView)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfZero(createOptions.BytesPerElement);
         ThrowIfZero(createOptions.ElementCount);
@@ -146,7 +147,7 @@ public sealed unsafe class GraphicsBuffer : GraphicsResource
     /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
     public bool TryCreateBufferView(uint elementCount, uint bytesPerElement, [NotNullWhen(true)] out GraphicsBufferView? bufferView)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfZero(bytesPerElement);
         ThrowIfZero(elementCount);
@@ -173,7 +174,7 @@ public sealed unsafe class GraphicsBuffer : GraphicsResource
     /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
     public bool TryCreateBufferView<T>(uint elementCount, [NotNullWhen(true)] out GraphicsBufferView? bufferView)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfZero(elementCount);
 

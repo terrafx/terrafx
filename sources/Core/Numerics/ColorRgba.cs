@@ -6,7 +6,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
-using static TerraFX.Utilities.VectorUtilities;
 
 namespace TerraFX.Numerics;
 
@@ -145,7 +144,6 @@ public readonly struct ColorRgba
             charsWritten = 0;
             return false;
         }
-
 
         numWritten += partLength;
         destination = destination.Slice(partLength);

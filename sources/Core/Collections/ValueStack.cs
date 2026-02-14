@@ -169,7 +169,7 @@ public static class ValueStack
         }
         else
         {
-            item = default!;
+            item = default;
             return false;
         }
     }
@@ -190,7 +190,7 @@ public static class ValueStack
         }
         else
         {
-            item = default!;
+            item = default;
             return false;
         }
     }

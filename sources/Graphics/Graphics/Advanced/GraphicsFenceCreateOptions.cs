@@ -6,7 +6,7 @@ namespace TerraFX.Graphics.Advanced;
 
 /// <summary>The options used when creating a graphics fence.</summary>
 [StructLayout(LayoutKind.Auto)]
-public unsafe struct GraphicsFenceCreateOptions
+public struct GraphicsFenceCreateOptions
 {
     /// <summary><c>true</c> if the fence is signaled by default; otherwise, <c>false</c>.</summary>
     public bool IsSignaled;

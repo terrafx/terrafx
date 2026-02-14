@@ -8,13 +8,19 @@ namespace TerraFX.ApplicationModel;
 
 /// <summary>Represents the event args that occur during an <see cref="Application.Idle" /> event.</summary>
 /// <remarks>This is a struct, rather than derived from <see cref="EventArgs" />, to prevent unnecessary heap allocations.</remarks>
-/// <remarks>Initializes a new instance of the <see cref="ApplicationIdleEventArgs" /> class.</remarks>
-/// <param name="delta">The delta between the current and previous <see cref="Application.Idle" /> events.</param>
-/// <param name="framesPerSecond">The number of frames per second.</param>
-public readonly struct ApplicationIdleEventArgs(TimeSpan delta, uint framesPerSecond)
+public readonly struct ApplicationIdleEventArgs
 {
-    private readonly TimeSpan _delta = delta;
-    private readonly uint _framesPerSecond = framesPerSecond;
+    private readonly TimeSpan _delta;
+    private readonly uint _framesPerSecond;
+
+    /// <summary>Initializes a new instance of the <see cref="ApplicationIdleEventArgs" /> struct.</summary>
+    /// <param name="delta">The delta between the current and previous <see cref="Application.Idle" /> events.</param>
+    /// <param name="framesPerSecond">The number of frames per second.</param>
+    public ApplicationIdleEventArgs(TimeSpan delta, uint framesPerSecond)
+    {
+        _delta = delta;
+        _framesPerSecond = framesPerSecond;
+    }
 
     /// <summary>Gets the delta between the current and previous <see cref="Application.Idle" /> events.</summary>
     public TimeSpan Delta => _delta;

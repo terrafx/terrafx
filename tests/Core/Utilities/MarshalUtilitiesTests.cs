@@ -94,7 +94,7 @@ internal static class MarshalUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="MarshalUtilities.GetAsciiSpan(ref readonly sbyte, int)" /> method.</summary>
     [Test]
-    public static unsafe void GetAsciiSpanFromSByteReferenceTest()
+    public static void GetAsciiSpanFromSByteReferenceTest()
     {
         Assert.That(() => MarshalUtilities.GetAsciiSpan(in UnsafeUtilities.NullRef<sbyte>(), -1).ToArray(),
             Is.EqualTo(Array.Empty<sbyte>())
@@ -161,7 +161,7 @@ internal static class MarshalUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="MarshalUtilities.GetUtf8Span(ref readonly sbyte, int)" /> method.</summary>
     [Test]
-    public static unsafe void GetUtf8SpanFromSByteReferenceTest()
+    public static void GetUtf8SpanFromSByteReferenceTest()
     {
         Assert.That(() => MarshalUtilities.GetUtf8Span(in UnsafeUtilities.NullRef<sbyte>(), -1).ToArray(),
             Is.EqualTo(Array.Empty<sbyte>())
@@ -228,7 +228,7 @@ internal static class MarshalUtilitiesTests
 
     /// <summary>Provides validation of the <see cref="MarshalUtilities.GetUtf16Span(ref readonly char, int)" /> method.</summary>
     [Test]
-    public static unsafe void GetUtf16SpanFromSByteReferenceTest()
+    public static void GetUtf16SpanFromSByteReferenceTest()
     {
         Assert.That(() => MarshalUtilities.GetUtf16Span(in UnsafeUtilities.NullRef<char>(), -1).ToArray(),
             Is.EqualTo(Array.Empty<char>())

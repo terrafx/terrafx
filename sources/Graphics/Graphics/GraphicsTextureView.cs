@@ -84,7 +84,7 @@ public sealed unsafe class GraphicsTextureView : GraphicsResourceView
     /// <summary>Gets the width, in pixels, of the texture view.</summary>
     public uint PixelWidth => _pixelWidth;
 
-    /// <inheritdoc cref="GraphicsResourceObject.Resource" />
+    /// <inheritdoc cref="GraphicsResourceView.Resource" />
     public new GraphicsTexture Resource => base.Resource.As<GraphicsTexture>();
 
     internal UnmanagedReadOnlySpan<D3D12_PLACED_SUBRESOURCE_FOOTPRINT> D3D12PlacedSubresourceFootprints => _d3d12PlacedSubresourceFootprints;
@@ -92,11 +92,11 @@ public sealed unsafe class GraphicsTextureView : GraphicsResourceView
     /// <inheritdoc />
     protected override void Dispose(bool isDisposing) => _ = Resource.RemoveTextureView(this);
 
-    private protected override unsafe byte* MapForReadUnsafe() => Resource.MapForReadUnsafe(D3D12SubresourceIndex);
+    private protected override byte* MapForReadUnsafe() => Resource.MapForReadUnsafe(D3D12SubresourceIndex);
 
-    private protected override unsafe byte* MapForReadUnsafe(nuint byteStart, nuint byteLength) => Resource.MapForReadUnsafe(D3D12SubresourceIndex, byteStart, byteLength);
+    private protected override byte* MapForReadUnsafe(nuint byteStart, nuint byteLength) => Resource.MapForReadUnsafe(D3D12SubresourceIndex, byteStart, byteLength);
 
-    private protected override unsafe byte* MapUnsafe() => Resource.MapUnsafe(D3D12SubresourceIndex);
+    private protected override byte* MapUnsafe() => Resource.MapUnsafe(D3D12SubresourceIndex);
 
     private protected override void UnmapAndWriteUnsafe() => Resource.UnmapAndWriteUnsafe(D3D12SubresourceIndex);
 

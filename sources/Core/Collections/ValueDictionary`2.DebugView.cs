@@ -11,9 +11,14 @@ namespace TerraFX.Collections;
 
 public partial struct ValueDictionary<TKey, TValue>
 {
-    internal sealed class DebugView(ValueDictionary<TKey, TValue> dictionary)
+    internal sealed class DebugView
     {
-        private readonly ValueDictionary<TKey, TValue> _dictionary = dictionary;
+        private readonly ValueDictionary<TKey, TValue> _dictionary;
+
+        public DebugView(ValueDictionary<TKey, TValue> dictionary)
+        {
+            _dictionary = dictionary;
+        }
 
         public int Capacity => _dictionary.Capacity;
 

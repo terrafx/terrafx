@@ -1,7 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
@@ -15,7 +14,7 @@ public sealed unsafe class GraphicsCopyContext : GraphicsContext
     {
     }
 
-    /// <inheritdoc cref="GraphicsCommandQueueObject.CommandQueue" />
+    /// <inheritdoc cref="GraphicsContext.CommandQueue" />
     public new GraphicsCopyCommandQueue CommandQueue => base.CommandQueue.As<GraphicsCopyCommandQueue>();
 
     /// <summary>Copies the contents from a buffer view to a buffer view.</summary>
@@ -27,7 +26,7 @@ public sealed unsafe class GraphicsCopyContext : GraphicsContext
     /// <exception cref="ObjectDisposedException">The copy context has been disposed.</exception>
     public void Copy(GraphicsBufferView destination, GraphicsBufferView source)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNull(destination);
         ThrowIfNull(source);
@@ -46,7 +45,7 @@ public sealed unsafe class GraphicsCopyContext : GraphicsContext
     /// <exception cref="ObjectDisposedException">The copy context has been disposed.</exception>
     public void Copy(GraphicsTextureView destination, GraphicsBufferView source)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNull(destination);
         ThrowIfNull(source);

@@ -4,10 +4,12 @@
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using TerraFX.Advanced;
 using TerraFX.Collections;
 using TerraFX.Interop.DirectX;
 using TerraFX.Threading;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.AppContextUtilities;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -16,7 +18,7 @@ using static TerraFX.Utilities.MathUtilities;
 namespace TerraFX.Graphics.Advanced;
 
 /// <summary>Provides a way to manage memory for a graphics device.</summary>
-public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
+public sealed unsafe class GraphicsMemoryManager : IDisposable, INameable
 {
     /// <summary><c>true</c> if the memory manager should be externally synchronized; otherwise, <c>false</c>.</summary>
     /// <remarks>This defaults to <c>false</c> causing the manager to be internally synchronized using a multimedia safe locking mechanism.</remarks>
@@ -53,6 +55,10 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
         defaultValue: 32U * 1024U * 1024U
     );
 
+    private readonly GraphicsAdapter _adapter;
+    private readonly GraphicsDevice _device;
+    private readonly GraphicsService _service;
+
     private readonly GraphicsMemoryAllocatorCreateFunc _createMemoryAllocator;
     private readonly D3D12_HEAP_FLAGS _d3d12HeapFlags;
     private readonly D3D12_HEAP_TYPE _d3d12HeapType;
@@ -63,8 +69,20 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
 
     private GraphicsMemoryManagerInfo _memoryManagerInfo;
 
-    internal GraphicsMemoryManager(GraphicsDevice device, in GraphicsMemoryManagerCreateOptions createOptions) : base(device)
+    private string _name;
+    private VolatileState _state;
+
+    internal GraphicsMemoryManager(GraphicsDevice device, in GraphicsMemoryManagerCreateOptions createOptions)
     {
+        AssertNotNull(device);
+        _device = device;
+
+        var adapter = device.Adapter;
+        _adapter = adapter;
+
+        var service = adapter.Service;
+        _service = service;
+
         _createMemoryAllocator = createOptions.CreateMemoryAllocator.IsNotNull ? createOptions.CreateMemoryAllocator : new GraphicsMemoryAllocatorCreateFunc(&GraphicsMemoryAllocator.CreateDefault);
 
         _d3d12HeapFlags = createOptions.D3D12HeapFlags;
@@ -80,16 +98,46 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
             var memoryAllocatorByteLength = GetAdjustedMemoryAllocatorByteLength(MaximumSharedMemoryAllocatorByteLength);
             _ = AddMemoryAllocator(memoryAllocatorByteLength, isDedicated: false);
         }
+
+        _name = GetType().Name;
+        _ = _state.Transition(VolatileState.Initialized);
     }
+
+    /// <summary>Gets the adapter for which the object was created.</summary>
+    public GraphicsAdapter Adapter => _adapter;
 
     /// <summary>Gets the length, in bytes, of the manager.</summary>
     public ulong ByteLength => _memoryManagerInfo.ByteLength;
 
+    /// <summary>Gets the device for which the object was created.</summary>
+    public GraphicsDevice Device => _device;
+
+    /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
+    public bool IsDisposed => _state.IsDisposedOrDisposing;
+
     /// <summary>Gets the minimum length, in bytes, of the manager.</summary>
     public nuint MinimumByteLength => _memoryManagerInfo.MinimumByteLength;
 
+    /// <inheritdoc />
+    [AllowNull]
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? GetType().Name;
+        }
+    }
+
     /// <summary>Gets the total number of operations performed by the manager.</summary>
     public ulong OperationCount => _memoryManagerInfo.OperationCount;
+
+    /// <summary>Gets the service for which the object was created.</summary>
+    public GraphicsService Service => _service;
 
     /// <summary>Gets the total length, in bytes, of allocated memory regions.</summary>
     public ulong TotalAllocatedMemoryRegionByteLength => ByteLength - TotalFreeMemoryRegionByteLength;
@@ -128,6 +176,20 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
         }
         return memoryRegion;
     }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _ = _state.BeginDispose();
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+        _state.EndDispose();
+    }
+
+    /// <inheritdoc />
+    public override string ToString() => _name;
 
     /// <summary>Tries to allocate a memory region in the manager.</summary>
     /// <param name="allocationOptions">The options to use when allocating the memory.</param>
@@ -169,13 +231,17 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
     /// <exception cref="ObjectDisposedException">The memory manager has been disposed.</exception>
     public bool TrySetMinimumByteLength(nuint minimumByteLength)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         return TrySetMinimumByteLengthUnsafe(minimumByteLength);
     }
 
-    /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
+    private void Dispose(bool isDisposing)
     {
+        if (isDisposing)
+        {
+            // Nothing to handle
+        }
+
         var memoryAllocators = _memoryAllocators.AsSpanUnsafe(0, _memoryAllocators.Count);
 
         for (var index = 0; index < memoryAllocators.Length; index++)
@@ -185,11 +251,6 @@ public sealed unsafe class GraphicsMemoryManager : GraphicsDeviceObject
         }
 
         _mutex.Dispose();
-    }
-
-    /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
     }
 
     private GraphicsMemoryAllocator AddMemoryAllocator(nuint byteLength, bool isDedicated)

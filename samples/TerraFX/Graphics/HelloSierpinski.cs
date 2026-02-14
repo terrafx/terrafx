@@ -10,10 +10,10 @@ using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
-internal class HelloSierpinski(string name, int recursionDepth, SierpinskiShape shape) : HelloWindow(name)
+internal class HelloSierpinski : HelloWindow
 {
-    private readonly int _recursionDepth = recursionDepth;
-    private readonly SierpinskiShape _sierpinskiShape = shape;
+    private readonly int _recursionDepth;
+    private readonly SierpinskiShape _sierpinskiShape;
 
     private GraphicsBuffer _constantBuffer = null!;
     private GraphicsBuffer _indexBuffer = null!;
@@ -22,6 +22,12 @@ internal class HelloSierpinski(string name, int recursionDepth, SierpinskiShape 
     private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
     private float _texturePosition;
+
+    public HelloSierpinski(string name, int recursionDepth, SierpinskiShape shape) : base(name)
+    {
+        _recursionDepth = recursionDepth;
+        _sierpinskiShape = shape;
+    }
 
     public override void Cleanup()
     {
@@ -70,7 +76,7 @@ internal class HelloSierpinski(string name, int recursionDepth, SierpinskiShape 
         _uploadBuffer.DisposeAllViews();
     }
 
-    protected override unsafe void Update(TimeSpan delta)
+    protected override void Update(TimeSpan delta)
     {
         const float RotationSpeed = 0.5f;
 

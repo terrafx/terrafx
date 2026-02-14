@@ -6,7 +6,7 @@ namespace TerraFX.Graphics;
 
 /// <summary>The options used when creating a graphics pipeline.</summary>
 [StructLayout(LayoutKind.Auto)]
-public unsafe struct GraphicsPipelineCreateOptions
+public struct GraphicsPipelineCreateOptions
 {
     /// <summary>The pixel shader for the pipeline or <c>null</c> if none exists.</summary>
     public GraphicsShader? PixelShader;

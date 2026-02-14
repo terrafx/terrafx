@@ -2,10 +2,11 @@
 
 using System;
 using System.Collections.Generic;
-using TerraFX.Advanced;
+using System.Diagnostics.CodeAnalysis;
 using TerraFX.Collections;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
+using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Interop.DirectX.DirectX;
 using static TerraFX.Interop.DirectX.DXGI;
@@ -15,11 +16,12 @@ using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AppContextUtilities;
 using static TerraFX.Utilities.CollectionsUtilities;
 using static TerraFX.Utilities.D3D12Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics;
 
 /// <summary>Provides the base access required for interacting with a graphics subsystem.</summary>
-public sealed unsafe class GraphicsService : DisposableObject
+public sealed unsafe class GraphicsService : IDisposable, INameable
 {
     /// <summary>Gets <c>true</c> if debug mode should be enabled for the service; otherwise, <c>false</c>.</summary>
     /// <remarks>This defaults to <see cref="IsDebug" /> causing it to be enabled for debug builds and disabled for release builds by default.</remarks>
@@ -40,13 +42,19 @@ public sealed unsafe class GraphicsService : DisposableObject
     private ComPtr<IDXGIFactory3> _dxgiFactory;
     private readonly uint _dxgiFactoryVersion;
 
+    private string _name;
+    private VolatileState _state;
+
     /// <summary>Initializes a new instance of the <see cref="GraphicsService" /> class.</summary>
-    public GraphicsService() : base(name: null)
+    public GraphicsService()
     {
         var dxgiFactory = CreateDxgiFactory(out _dxgiFactoryVersion);
         _dxgiFactory.Attach(dxgiFactory);
 
         _adapters = GetAdapters(dxgiFactory);
+
+        _name = GetType().Name;
+        _ = _state.Transition(VolatileState.Initialized);
 
         static IDXGIFactory3* CreateDxgiFactory(out uint dxgiFactoryVersion)
         {
@@ -126,8 +134,26 @@ public sealed unsafe class GraphicsService : DisposableObject
     {
         get
         {
-            ThrowIfDisposed();
+            ThrowIfDisposedOrDisposing(_state, _name);
             return _adapters;
+        }
+    }
+
+    /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
+    public bool IsDisposed => _state.IsDisposedOrDisposing;
+
+    /// <inheritdoc />
+    [AllowNull]
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? GetType().Name;
         }
     }
 
@@ -148,7 +174,20 @@ public sealed unsafe class GraphicsService : DisposableObject
     }
 
     /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
+    public void Dispose()
+    {
+        _ = _state.BeginDispose();
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+        _state.EndDispose();
+    }
+
+    /// <inheritdoc />
+    public override string ToString() => _name;
+
+    private void Dispose(bool isDisposing)
     {
         if (isDisposing)
         {
@@ -158,10 +197,5 @@ public sealed unsafe class GraphicsService : DisposableObject
         _ = _dxgiFactory.Reset();
 
         ReportLiveObjects();
-    }
-
-    /// <inheritdoc />
-    protected override void SetNameUnsafe(string value)
-    {
     }
 }

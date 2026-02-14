@@ -208,7 +208,7 @@ public static unsafe class UnmanagedValueQueue
         {
             ThrowIfNotInBounds(index, queue._count);
         }
-        return item!;
+        return item;
     }
 
     /// <summary>Removes the first occurrence of an item from the queue.</summary>
@@ -292,7 +292,7 @@ public static unsafe class UnmanagedValueQueue
 
         if (count == 0)
         {
-            item = default!;
+            item = default;
             return false;
         }
 
@@ -325,7 +325,7 @@ public static unsafe class UnmanagedValueQueue
         }
         else
         {
-            item = default!;
+            item = default;
             return false;
         }
     }
@@ -351,7 +351,7 @@ public static unsafe class UnmanagedValueQueue
         }
         else
         {
-            item = default!;
+            item = default;
             return false;
         }
     }

@@ -9,9 +9,14 @@ namespace TerraFX.Collections;
 
 public partial struct UnmanagedValueStack<T>
 {
-    internal sealed class DebugView(UnmanagedValueStack<T> stack)
+    internal sealed class DebugView
     {
-        private readonly UnmanagedValueStack<T> _stack = stack;
+        private readonly UnmanagedValueStack<T> _stack;
+
+        public DebugView(UnmanagedValueStack<T> stack)
+        {
+            _stack = stack;
+        }
 
         public nuint Count => _stack._count;
 

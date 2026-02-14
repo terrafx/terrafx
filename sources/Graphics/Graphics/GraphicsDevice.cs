@@ -4,6 +4,8 @@
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Xml.Linq;
 using TerraFX.Collections;
 using TerraFX.Graphics.Advanced;
 using TerraFX.Interop.DirectX;
@@ -26,8 +28,11 @@ using static TerraFX.Utilities.UnsafeUtilities;
 namespace TerraFX.Graphics;
 
 /// <summary>A graphics device which provides state management and isolation for a graphics adapter.</summary>
-public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
+public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
 {
+    private readonly GraphicsAdapter _adapter;
+    private readonly GraphicsService _service;
+
     private ValueList<GraphicsBuffer> _buffers;
     private readonly ValueMutex _buffersMutex;
 
@@ -64,8 +69,17 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     private ValueList<GraphicsTexture> _textures;
     private readonly ValueMutex _texturesMutex;
 
-    internal GraphicsDevice(GraphicsAdapter adapter, in GraphicsDeviceCreateOptions createOptions) : base(adapter)
+    private string _name;
+    private VolatileState _state;
+
+    internal GraphicsDevice(GraphicsAdapter adapter, in GraphicsDeviceCreateOptions createOptions)
     {
+        AssertNotNull(adapter);
+        _adapter = adapter;
+
+        var service = adapter.Service;
+        _service = service;
+
         adapter.AddDevice(this);
 
         var d3d12Device = CreateD3D12Device(out _d3d12DeviceVersion);
@@ -129,7 +143,10 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
         _memoryBudgetInfo = new MemoryBudgetInfo();
         UpdateMemoryBudgetInfo(ref _memoryBudgetInfo, totalOperationCount: 0);
 
+        _name = GetType().Name;
         SetNameUnsafe(Name);
+
+        _ = _state.Transition(VolatileState.Initialized);
 
         ID3D12Device* CreateD3D12Device(out uint d3d12DeviceVersion)
         {
@@ -206,6 +223,9 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <summary>Finalizes an instance of the <see cref="GraphicsDevice" /> class.</summary>
     ~GraphicsDevice() => Dispose(isDisposing: false);
 
+    /// <summary>Gets the adapter for which the object was created.</summary>
+    public GraphicsAdapter Adapter => _adapter;
+
     /// <summary>Gets the compute command queue for the device.</summary>
     public GraphicsComputeCommandQueue ComputeCommandQueue => _computeQueue;
 
@@ -215,11 +235,33 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <summary>Gets <c>true</c> if the hardware is using a cache-coherent Unified Memory Architecture; otherwise, <c>false</c>.</summary>
     public bool IsCacheCoherentUma => _featureFlags.HasFlag(FeatureFlags.CacheCoherentUma);
 
+    /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
+    public bool IsDisposed => _state.IsDisposedOrDisposing;
+
     /// <summary>Gets <c>true</c> if the hardware is using a Unified Memory Architecture; otherwise, <c>false</c>.</summary>
     public bool IsUma => _featureFlags.HasFlag(FeatureFlags.Uma);
 
+    /// <inheritdoc />
+    [AllowNull]
+    public string Name
+    {
+        get
+        {
+            return _name;
+        }
+
+        set
+        {
+            _name = value ?? GetType().Name;
+            SetNameUnsafe(_name);
+        }
+    }
+
     /// <summary>Gets the render command queue for the device.</summary>
     public GraphicsRenderCommandQueue RenderCommandQueue => _renderQueue;
+
+    /// <summary>Gets the service for which the object was created.</summary>
+    public GraphicsService Service => _service;
 
     internal uint D3D12CbvSrvUavDescriptorSize => _d3d12CbvSrvUavDescriptorSize;
 
@@ -244,7 +286,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
     public GraphicsBuffer CreateBuffer(in GraphicsBufferCreateOptions createOptions)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(createOptions.AllocationFlags);
         ThrowIfNotDefined(createOptions.Kind);
@@ -262,7 +304,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
     public GraphicsBuffer CreateConstantBuffer(nuint byteLength)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         ThrowIfZero(byteLength);
 
         var createOptions = new GraphicsBufferCreateOptions {
@@ -285,7 +327,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
     public GraphicsBuffer CreateConstantBuffer(nuint byteLength, GraphicsCpuAccess cpuAccess)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(cpuAccess);
         ThrowIfZero(byteLength);
@@ -305,7 +347,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public GraphicsFence CreateFence(bool isSignaled)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         var createOptions = new GraphicsFenceCreateOptions {
             IsSignaled = isSignaled,
@@ -318,7 +360,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <returns>The created graphics fence.</returns>
     public GraphicsFence CreateFence(in GraphicsFenceCreateOptions createOptions)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         return CreateFenceUnsafe(in createOptions);
     }
 
@@ -330,7 +372,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
     public GraphicsBuffer CreateIndexBuffer(nuint byteLength)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         ThrowIfZero(byteLength);
 
         var createOptions = new GraphicsBufferCreateOptions {
@@ -352,7 +394,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
     public GraphicsBuffer CreateIndexBuffer(nuint byteLength, GraphicsCpuAccess cpuAccess)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(cpuAccess);
         ThrowIfZero(byteLength);
@@ -374,7 +416,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <remarks>Ownership of <paramref name="inputs" /> is given to the created pipeline signature.</remarks>
     public GraphicsPipelineSignature CreatePipelineSignature(UnmanagedArray<GraphicsPipelineInput> inputs)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         var createOptions = new GraphicsPipelineSignatureCreateOptions {
             Inputs = inputs,
@@ -393,7 +435,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <remarks>Ownership of <paramref name="inputs" /> is given to the created pipeline signature.</remarks>
     public GraphicsPipelineSignature CreatePipelineSignature(UnmanagedArray<GraphicsPipelineInput> inputs, UnmanagedArray<GraphicsPipelineResource> resources)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         var createOptions = new GraphicsPipelineSignatureCreateOptions {
             Inputs = inputs,
@@ -410,7 +452,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public GraphicsPipelineSignature CreatePipelineSignature(in GraphicsPipelineSignatureCreateOptions createOptions)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         return CreatePipelineSignatureUnsafe(in createOptions);
     }
 
@@ -424,7 +466,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <remarks>Ownership of <paramref name="bytecode" /> is given to the created pixel shader.</remarks>
     public GraphicsShader CreatePixelShader(UnmanagedArray<byte> bytecode, string entryPointName)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfZero(bytecode.Length);
         ThrowIfNull(entryPointName);
@@ -448,7 +490,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public GraphicsRenderPass CreateRenderPass(IGraphicsSurface surface, GraphicsFormat renderTargetFormat)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(renderTargetFormat);
         ThrowIfNull(surface);
@@ -470,7 +512,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public GraphicsRenderPass CreateRenderPass(in GraphicsRenderPassCreateOptions createOptions)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(createOptions.RenderTargetFormat);
         ThrowIfNull(createOptions.Surface);
@@ -487,7 +529,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public GraphicsShader CreateShader(in GraphicsShaderCreateOptions createOptions)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfZero(createOptions.Bytecode.Length);
         ThrowIfNull(createOptions.EntryPointName);
@@ -506,7 +548,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
     public GraphicsTexture CreateTexture1D(GraphicsFormat format, uint pixelWidth)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(format);
         ThrowIfZero(pixelWidth);
@@ -536,7 +578,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
     public GraphicsTexture CreateTexture1D(GraphicsFormat format, uint pixelWidth, GraphicsCpuAccess cpuAccess)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(cpuAccess);
         ThrowIfNotDefined(format);
@@ -567,7 +609,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
     public GraphicsTexture CreateTexture2D(GraphicsFormat format, uint pixelWidth, uint pixelHeight)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(format);
         ThrowIfZero(pixelHeight);
@@ -600,7 +642,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
     public GraphicsTexture CreateTexture2D(GraphicsFormat format, uint pixelWidth, uint pixelHeight, GraphicsCpuAccess cpuAccess)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(cpuAccess);
         ThrowIfNotDefined(format);
@@ -634,7 +676,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
     public GraphicsTexture CreateTexture3D(GraphicsFormat format, uint pixelWidth, uint pixelHeight, ushort pixelDepth)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfZero(pixelDepth);
         ThrowIfNotDefined(format);
@@ -670,7 +712,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
     public GraphicsTexture CreateTexture3D(GraphicsFormat format, uint pixelWidth, uint pixelHeight, ushort pixelDepth, GraphicsCpuAccess cpuAccess)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(cpuAccess);
         ThrowIfZero(pixelDepth);
@@ -705,7 +747,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
     public GraphicsTexture CreateTexture(in GraphicsTextureCreateOptions createOptions)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(createOptions.AllocationFlags);
         ThrowIfNotDefined(createOptions.CpuAccess);
@@ -726,7 +768,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
     public GraphicsBuffer CreateUploadBuffer(nuint byteLength)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         ThrowIfZero(byteLength);
 
         var createOptions = new GraphicsBufferCreateOptions {
@@ -747,7 +789,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
     public GraphicsBuffer CreateVertexBuffer(nuint byteLength)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
         ThrowIfZero(byteLength);
 
         var createOptions = new GraphicsBufferCreateOptions {
@@ -769,7 +811,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <exception cref="OutOfMemoryException">There was not a large enough free memory region to complete the allocation.</exception>
     public GraphicsBuffer CreateVertexBuffer(nuint byteLength, GraphicsCpuAccess cpuAccess)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(cpuAccess);
         ThrowIfZero(byteLength);
@@ -794,7 +836,7 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     /// <remarks>Ownership of <paramref name="bytecode" /> is given to the created vertex shader.</remarks>
     public GraphicsShader CreateVertexShader(UnmanagedArray<byte> bytecode, string entryPointName)
     {
-        ThrowIfDisposed();
+        ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfZero(bytecode.Length);
         ThrowIfNull(entryPointName);
@@ -809,34 +851,18 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     }
 
     /// <inheritdoc />
-    protected override void Dispose(bool isDisposing)
+    public void Dispose()
     {
-        if (isDisposing)
+        _ = _state.BeginDispose();
         {
-            _buffers.Dispose();
-            _pipelineSignatures.Dispose();
-            _renderPasses.Dispose();
-            _shaders.Dispose();
-            _textures.Dispose();
-
-            _computeQueue.Dispose();
-            _copyQueue.Dispose();
-            _renderQueue.Dispose();
-
-            foreach (var memoryManager in _memoryManagers)
-            {
-                memoryManager.Dispose();
-            }
-
-            _fences.Dispose();
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
         }
-
-        _ = _d3d12Device.Reset();
-        _ = Adapter.RemoveDevice(this);
+        _state.EndDispose();
     }
 
     /// <inheritdoc />
-    protected override void SetNameUnsafe(string value) => D3D12Device->SetD3D12Name(value);
+    public override string ToString() => _name;
 
     internal void AddBuffer(GraphicsBuffer buffer) => _buffers.Add(buffer, _buffersMutex);
 
@@ -908,6 +934,32 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
     private GraphicsShader CreateShaderUnsafe(in GraphicsShaderCreateOptions createOptions) => new GraphicsShader(this, in createOptions);
 
     private GraphicsTexture CreateTextureUnsafe(in GraphicsTextureCreateOptions createOptions) => new GraphicsTexture(this, in createOptions);
+
+    private void Dispose(bool isDisposing)
+    {
+        if (isDisposing)
+        {
+            _buffers.Dispose();
+            _pipelineSignatures.Dispose();
+            _renderPasses.Dispose();
+            _shaders.Dispose();
+            _textures.Dispose();
+
+            _computeQueue.Dispose();
+            _copyQueue.Dispose();
+            _renderQueue.Dispose();
+
+            foreach (var memoryManager in _memoryManagers)
+            {
+                memoryManager.Dispose();
+            }
+
+            _fences.Dispose();
+        }
+
+        _ = _d3d12Device.Reset();
+        _ = Adapter.RemoveDevice(this);
+    }
 
     private GraphicsMemoryBudget GetMemoryBudgetNoLock(GraphicsMemoryManager memoryManager, in MemoryBudgetInfo memoryBudgetInfo)
     {
@@ -1077,6 +1129,8 @@ public sealed unsafe partial class GraphicsDevice : GraphicsAdapterObject
                  + _memoryManagers[memoryManagerKindIndex + 0].ByteLength;
         }
     }
+
+    private void SetNameUnsafe(string value) => D3D12Device->SetD3D12Name(value);
 
     private void UpdateMemoryBudgetInfo(ref MemoryBudgetInfo memoryBudgetInfo, ulong totalOperationCount)
     {

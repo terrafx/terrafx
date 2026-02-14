@@ -10,13 +10,17 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Samples.Graphics;
 
-internal class HelloWindow(string name) : Sample(name)
+internal class HelloWindow : Sample
 {
     private GraphicsDevice _graphicsDevice = null!;
     private GraphicsRenderPass _renderPass = null!;
     private UIWindow _window = null!;
     private TimeSpan _elapsedTime;
     private uint _secondsOfLastFpsUpdate;
+
+    public HelloWindow(string name) : base(name)
+    {
+    }
 
     public GraphicsDevice GraphicsDevice => _graphicsDevice;
 

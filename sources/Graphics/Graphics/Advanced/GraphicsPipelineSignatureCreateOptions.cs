@@ -6,7 +6,7 @@ namespace TerraFX.Graphics.Advanced;
 
 /// <summary>The options used when creating a graphics pipeline signature.</summary>
 [StructLayout(LayoutKind.Auto)]
-public unsafe struct GraphicsPipelineSignatureCreateOptions
+public struct GraphicsPipelineSignatureCreateOptions
 {
     /// <summary>The pipeline inputs for the pipeline signature.</summary>
     public UnmanagedArray<GraphicsPipelineInput> Inputs;

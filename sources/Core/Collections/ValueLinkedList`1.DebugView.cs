@@ -10,9 +10,14 @@ namespace TerraFX.Collections;
 
 public partial struct ValueLinkedList<T>
 {
-    internal sealed class DebugView(ValueLinkedList<T> linkedList)
+    internal sealed class DebugView
     {
-        private readonly ValueLinkedList<T> _linkedList = linkedList;
+        private readonly ValueLinkedList<T> _linkedList;
+
+        public DebugView(ValueLinkedList<T> linkedList)
+        {
+            _linkedList = linkedList;
+        }
 
         public int Count => _linkedList._count;
 

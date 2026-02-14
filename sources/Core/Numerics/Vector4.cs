@@ -311,10 +311,7 @@ public readonly struct Vector4
     /// <param name="right">The quaternion which is used to multiply <paramref name="left" />.</param>
     /// <returns>The dot product of <paramref name="left" /> and <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float DotProduct(Vector4 left, Vector4 right)
-    {
-        return Vector128.Dot(left._value, right._value);
-    }
+    public static float DotProduct(Vector4 left, Vector4 right) => Vector128.Dot(left._value, right._value);
 
     /// <summary>Determines if any elements in a vector are either <see cref="float.PositiveInfinity" /> or <see cref="float.NegativeInfinity" />.</summary>
     /// <param name="value">The vector to check.</param>

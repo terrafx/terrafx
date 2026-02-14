@@ -6,7 +6,7 @@ namespace TerraFX.Graphics.Advanced;
 
 /// <summary>The options used when allocating memory.</summary>
 [StructLayout(LayoutKind.Auto)]
-public unsafe struct GraphicsMemoryAllocationOptions
+public struct GraphicsMemoryAllocationOptions
 {
     /// <summary>The alignment, in bytes, of the memory allocation.</summary>
     public nuint ByteAlignment;

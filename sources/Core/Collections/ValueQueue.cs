@@ -329,7 +329,7 @@ public static class ValueQueue
         }
         else
         {
-            item = default!;
+            item = default;
             return false;
         }
     }
@@ -354,7 +354,7 @@ public static class ValueQueue
         }
         else
         {
-            item = default!;
+            item = default;
             return false;
         }
     }

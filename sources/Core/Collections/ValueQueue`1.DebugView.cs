@@ -10,9 +10,14 @@ namespace TerraFX.Collections;
 
 public partial struct ValueQueue<T>
 {
-    internal sealed class DebugView(ValueQueue<T> queue)
+    internal sealed class DebugView
     {
-        private readonly ValueQueue<T> _queue = queue;
+        private readonly ValueQueue<T> _queue;
+
+        public DebugView(ValueQueue<T> queue)
+        {
+            _queue = queue;
+        }
 
         public int Capacity => _queue.Capacity;
 

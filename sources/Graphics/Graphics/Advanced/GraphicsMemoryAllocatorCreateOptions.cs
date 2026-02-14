@@ -7,7 +7,7 @@ namespace TerraFX.Graphics.Advanced;
 
 /// <summary>The options used when creating a graphics memory allocator.</summary>
 [StructLayout(LayoutKind.Auto)]
-public unsafe struct GraphicsMemoryAllocatorCreateOptions
+public struct GraphicsMemoryAllocatorCreateOptions
 {
     /// <summary>The length, in bytes, of the memory being managed.</summary>
     public nuint ByteLength;

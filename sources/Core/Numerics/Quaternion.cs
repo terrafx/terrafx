@@ -338,10 +338,7 @@ public readonly struct Quaternion
     /// <param name="right">The quaternion which is used to multiply <paramref name="left" />.</param>
     /// <returns>The dot product of <paramref name="left" /> multiplied by <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float DotProduct(Quaternion left, Quaternion right)
-    {
-        return Vector128.Dot(left._value, right._value);
-    }
+    public static float DotProduct(Quaternion left, Quaternion right) => Vector128.Dot(left._value, right._value);
 
     /// <summary>Computes the inverse of a quaternion.</summary>
     /// <param name="value">The quaternion to invert.</param>

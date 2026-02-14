@@ -9,7 +9,7 @@ using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
-internal sealed class HelloInstancing(string name) : HelloWindow(name)
+internal sealed class HelloInstancing : HelloWindow
 {
     private const uint InstanceCount = 128;
 
@@ -22,6 +22,10 @@ internal sealed class HelloInstancing(string name) : HelloWindow(name)
     private UnmanagedArray<AffineTransform> _trianglePrimitivePerSecondDelta;
     private GraphicsBuffer _uploadBuffer = null!;
     private GraphicsBuffer _vertexBuffer = null!;
+
+    public HelloInstancing(string name) : base(name)
+    {
+    }
 
     public override void Cleanup()
     {
@@ -104,7 +108,7 @@ internal sealed class HelloInstancing(string name) : HelloWindow(name)
         base.Draw(renderContext);
     }
 
-    protected override unsafe void Update(TimeSpan delta)
+    protected override void Update(TimeSpan delta)
     {
         var offsetBoundsX = 1.25f;
         var offsetBoundsY = _aspectRatio / 1.25f;
@@ -147,7 +151,7 @@ internal sealed class HelloInstancing(string name) : HelloWindow(name)
         constantBufferView.UnmapAndWrite();
     }
 
-    private unsafe GraphicsPrimitive CreateInstancedTrianglePrimitive(GraphicsCopyContext copyContext, uint instanceCount)
+    private GraphicsPrimitive CreateInstancedTrianglePrimitive(GraphicsCopyContext copyContext, uint instanceCount)
     {
         var renderPass = RenderPass;
         var surface = renderPass.Surface;

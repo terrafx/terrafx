@@ -14,7 +14,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Advanced;
 
 /// <summary>An allocator for graphics memory.</summary>
-public abstract unsafe partial class GraphicsMemoryAllocator
+public abstract partial class GraphicsMemoryAllocator
 {
     /// <summary>The minimum length, in bytes, of free memory regions to keep on either side of an allocated region.</summary>
     /// <remarks>This defaults to <c>0</c> so that no free regions are preserved around allocations.</remarks>
@@ -30,7 +30,7 @@ public abstract unsafe partial class GraphicsMemoryAllocator
         defaultValue: 4096U
     );
 
-    private readonly GraphicsDeviceObject _deviceObject;
+    private readonly IDisposable _deviceObject;
 
     private GraphicsMemoryAllocatorInfo _memoryAllocatorInfo;
 
@@ -40,13 +40,13 @@ public abstract unsafe partial class GraphicsMemoryAllocator
     /// <returns>A new memory allocator that uses a system provided default algorithm.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="deviceObject" /> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><see cref="GraphicsMemoryAllocatorCreateOptions.ByteLength" /> is <c>zero</c>.</exception>
-    public static GraphicsMemoryAllocator CreateDefault(GraphicsDeviceObject deviceObject, in GraphicsMemoryAllocatorCreateOptions memoryAllocatorCreateOptions)
+    public static GraphicsMemoryAllocator CreateDefault(IDisposable deviceObject, in GraphicsMemoryAllocatorCreateOptions memoryAllocatorCreateOptions)
         => new DefaultMemoryAllocator(deviceObject, in memoryAllocatorCreateOptions);
 
     /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryAllocator" /> class.</summary>
     /// <param name="deviceObject">The device object for which the allocator is managing memory.</param>
     /// <exception cref="ArgumentNullException"><paramref name="deviceObject" /> is <c>null</c>.</exception>
-    protected GraphicsMemoryAllocator(GraphicsDeviceObject deviceObject)
+    protected GraphicsMemoryAllocator(IDisposable deviceObject)
     {
         ThrowIfNull(deviceObject);
         _deviceObject = deviceObject;
@@ -56,7 +56,7 @@ public abstract unsafe partial class GraphicsMemoryAllocator
     public nuint ByteLength => MemoryAllocatorInfo.ByteLength;
 
     /// <summary>Gets the device object for which the memory allocator is managing memory.</summary>
-    public GraphicsDeviceObject DeviceObject => _deviceObject;
+    public IDisposable DeviceObject => _deviceObject;
 
     /// <summary>Gets <c>true</c> if the allocator is dedicated to a single allocation; otherwise, <c>false</c>.</summary>
     public bool IsDedicated => MemoryAllocatorInfo.IsDedicated;
