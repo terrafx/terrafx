@@ -225,7 +225,7 @@ public static class ValueStack
 
     internal static void Resize<T>(this ref ValueStack<T> stack, int capacity, int currentCapacity)
     {
-        var newCapacity = Max(capacity, currentCapacity * 2);
+        var newCapacity = int.Max(capacity, currentCapacity * 2);
         var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
 
         stack.CopyTo(newItems);

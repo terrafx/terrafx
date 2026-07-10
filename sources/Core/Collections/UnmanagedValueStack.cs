@@ -246,7 +246,7 @@ public static unsafe class UnmanagedValueStack
     {
         var items = stack._items;
 
-        var newCapacity = Max(capacity, currentCapacity * 2);
+        var newCapacity = nuint.Max(capacity, currentCapacity * 2);
         var alignment = !items.IsNull ? items.Alignment : 0;
 
         var newItems = new UnmanagedArray<T>(newCapacity, alignment);

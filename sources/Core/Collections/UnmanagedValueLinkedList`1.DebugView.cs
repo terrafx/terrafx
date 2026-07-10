@@ -30,7 +30,7 @@ public partial struct UnmanagedValueLinkedList<T>
             {
                 ref readonly var linkedList = ref _linkedList;
 
-                var count = Min(linkedList._count, MaxArrayLength);
+                var count = nuint.Min(linkedList._count, MaxArrayLength);
                 var items = GC.AllocateUninitializedArray<T>((int)count);
 
                 fixed (T* pItems = items)

@@ -295,7 +295,7 @@ public static unsafe class UnmanagedValueList
     {
         var items = list._items;
 
-        var newCapacity = Max(capacity, currentCapacity * 2);
+        var newCapacity = nuint.Max(capacity, currentCapacity * 2);
         var alignment = !items.IsNull ? items.Alignment : 0;
 
         var newItems = new UnmanagedArray<T>(newCapacity, alignment);

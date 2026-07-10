@@ -253,8 +253,8 @@ public static class MathUtilities
 
         var result = value;
 
-        result = Max(result, min);
-        result = Min(result, max);
+        result = byte.Max(result, min);
+        result = byte.Min(result, max);
 
         return result;
     }
@@ -297,8 +297,8 @@ public static class MathUtilities
 
         var result = value;
 
-        result = Max(result, min);
-        result = Min(result, max);
+        result = short.Max(result, min);
+        result = short.Min(result, max);
 
         return result;
     }
@@ -319,8 +319,8 @@ public static class MathUtilities
 
         var result = value;
 
-        result = Max(result, min);
-        result = Min(result, max);
+        result = int.Max(result, min);
+        result = int.Min(result, max);
 
         return result;
     }
@@ -341,8 +341,8 @@ public static class MathUtilities
 
         var result = value;
 
-        result = Max(result, min);
-        result = Min(result, max);
+        result = long.Max(result, min);
+        result = long.Min(result, max);
 
         return result;
     }
@@ -363,8 +363,8 @@ public static class MathUtilities
 
         var result = value;
 
-        result = Max(result, min);
-        result = Min(result, max);
+        result = nint.Max(result, min);
+        result = nint.Min(result, max);
 
         return result;
     }
@@ -385,8 +385,8 @@ public static class MathUtilities
 
         var result = value;
 
-        result = Max(result, min);
-        result = Min(result, max);
+        result = sbyte.Max(result, min);
+        result = sbyte.Min(result, max);
 
         return result;
     }
@@ -429,8 +429,8 @@ public static class MathUtilities
 
         var result = value;
 
-        result = Max(result, min);
-        result = Min(result, max);
+        result = ushort.Max(result, min);
+        result = ushort.Min(result, max);
 
         return result;
     }
@@ -451,8 +451,8 @@ public static class MathUtilities
 
         var result = value;
 
-        result = Max(result, min);
-        result = Min(result, max);
+        result = uint.Max(result, min);
+        result = uint.Min(result, max);
 
         return result;
     }
@@ -473,8 +473,8 @@ public static class MathUtilities
 
         var result = value;
 
-        result = Max(result, min);
-        result = Min(result, max);
+        result = ulong.Max(result, min);
+        result = ulong.Min(result, max);
 
         return result;
     }
@@ -495,8 +495,8 @@ public static class MathUtilities
 
         var result = value;
 
-        result = Max(result, min);
-        result = Min(result, max);
+        result = nuint.Max(result, min);
+        result = nuint.Min(result, max);
 
         return result;
     }
@@ -613,13 +613,6 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static (nuint quotient, nuint remainder) DivRem(nuint dividend, nuint divisor) => Math.DivRem(dividend, divisor);
 
-    /// <summary>Computes the maximum of two 32-bit signed integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static byte Max(byte left, byte right) => (left > right) ? left : right;
-
     /// <summary>Computes the maximum of two 64-bit floats.</summary>
     /// <param name="left">The float to compare with <paramref name="right" />.</param>
     /// <param name="right">The float to compare with <paramref name="left" />.</param>
@@ -652,41 +645,6 @@ public static class MathUtilities
         }
     }
 
-    /// <summary>Computes the maximum of two 16-bit signed integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static short Max(short left, short right) => (left > right) ? left : right;
-
-    /// <summary>Computes the maximum of two 32-bit signed integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Max(int left, int right) => (left > right) ? left : right;
-
-    /// <summary>Computes the maximum of two 64-bit signed integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static long Max(long left, long right) => (left > right) ? left : right;
-
-    /// <summary>Computes the maximum of two signed native integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static nint Max(nint left, nint right) => (left > right) ? left : right;
-
-    /// <summary>Computes the maximum of two 8-bit signed integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static sbyte Max(sbyte left, sbyte right) => (left > right) ? left : right;
-
     /// <summary>Computes the maximum of two 32-bit floats.</summary>
     /// <param name="left">The float to compare with <paramref name="right" />.</param>
     /// <param name="right">The float to compare with <paramref name="left" />.</param>
@@ -718,41 +676,6 @@ public static class MathUtilities
             return MathF.Max(left, right);
         }
     }
-
-    /// <summary>Computes the maximum of two 16-bit unsigned integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ushort Max(ushort left, ushort right) => (left > right) ? left : right;
-
-    /// <summary>Computes the maximum of two 32-bit unsigned integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint Max(uint left, uint right) => (left > right) ? left : right;
-
-    /// <summary>Computes the maximum of two 64-bit unsigned integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ulong Max(ulong left, ulong right) => (left > right) ? left : right;
-
-    /// <summary>Computes the maximum of two unsigned native integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static nuint Max(nuint left, nuint right) => (left > right) ? left : right;
-
-    /// <summary>Computes the minimum of two 8-bit unsigned integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static byte Min(byte left, byte right) => (left < right) ? left : right;
 
     /// <summary>Computes the minimum of two 64-bit floats.</summary>
     /// <param name="left">The float to compare with <paramref name="right" />.</param>
@@ -787,41 +710,6 @@ public static class MathUtilities
         }
     }
 
-    /// <summary>Computes the minimum of two 16-bit signed integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static short Min(short left, short right) => (left < right) ? left : right;
-
-    /// <summary>Computes the minimum of two 32-bit signed integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Min(int left, int right) => (left < right) ? left : right;
-
-    /// <summary>Computes the minimum of two 64-bit signed integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static long Min(long left, long right) => (left < right) ? left : right;
-
-    /// <summary>Computes the minimum of two signed native integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static nint Min(nint left, nint right) => (left < right) ? left : right;
-
-    /// <summary>Computes the minimum of two 8-bit signed integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static sbyte Min(sbyte left, sbyte right) => (left < right) ? left : right;
-
     /// <summary>Computes the minimum of two 32-bit floats.</summary>
     /// <param name="left">The float to compare with <paramref name="right" />.</param>
     /// <param name="right">The float to compare with <paramref name="left" />.</param>
@@ -854,34 +742,6 @@ public static class MathUtilities
             return MathF.Min(left, right);
         }
     }
-
-    /// <summary>Computes the minimum of two 16-bit unsigned integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ushort Min(ushort left, ushort right) => (left < right) ? left : right;
-
-    /// <summary>Computes the minimum of two 32-bit unsigned integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint Min(uint left, uint right) => (left < right) ? left : right;
-
-    /// <summary>Computes the minimum of two 64-bit unsigned integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ulong Min(ulong left, ulong right) => (left < right) ? left : right;
-
-    /// <summary>Computes the minimum of two unsigned native integers.</summary>
-    /// <param name="left">The integer to compare with <paramref name="right" />.</param>
-    /// <param name="right">The integer to compare with <paramref name="left" />.</param>
-    /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static nuint Min(nuint left, nuint right) => (left < right) ? left : right;
 
     /// <summary>Computes an estimate of the reciprocal of a given 64-bit float.</summary>
     /// <param name="value">The float for which to compute the reciprocal.</param>

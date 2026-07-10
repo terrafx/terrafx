@@ -27,7 +27,7 @@ public partial struct UnmanagedValueStack<T>
             {
                 ref readonly var stack = ref _stack;
 
-                var count = Min(stack._count, MaxArrayLength);
+                var count = nuint.Min(stack._count, MaxArrayLength);
                 var items = GC.AllocateUninitializedArray<T>((int)count);
 
                 fixed (T* pItems = items)

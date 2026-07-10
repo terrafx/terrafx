@@ -361,7 +361,7 @@ public static unsafe class UnmanagedValueQueue
     {
         var items = queue._items;
 
-        var newCapacity = Max(capacity, currentCapacity * 2);
+        var newCapacity = nuint.Max(capacity, currentCapacity * 2);
         var alignment = !items.IsNull ? items.Alignment : 0;
 
         var newItems = new UnmanagedArray<T>(newCapacity, alignment);

@@ -412,7 +412,7 @@ public sealed unsafe class GraphicsMemoryManager : IDisposable, INameable
 
                     if (smallerMemoryAllocatorByteLength > largestMemoryAllocatorByteLength && smallerMemoryAllocatorByteLength >= byteLength * 2)
                     {
-                        memoryAllocatorByteLength = Max(smallerMemoryAllocatorByteLength, MinimumMemoryAllocatorByteLength);
+                        memoryAllocatorByteLength = nuint.Max(smallerMemoryAllocatorByteLength, MinimumMemoryAllocatorByteLength);
                     }
                     else
                     {
@@ -438,7 +438,7 @@ public sealed unsafe class GraphicsMemoryManager : IDisposable, INameable
 
                 if (memoryAllocatorByteLength < MaximumSharedMemoryAllocatorByteLength)
                 {
-                    result = Max(result, memoryAllocatorByteLength);
+                    result = nuint.Max(result, memoryAllocatorByteLength);
                 }
                 else if (memoryAllocatorByteLength == MaximumSharedMemoryAllocatorByteLength)
                 {

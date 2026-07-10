@@ -27,7 +27,7 @@ public partial struct UnmanagedValuePool<T>
             {
                 ref readonly var poolAvailableItems = ref _pool._availableItems;
 
-                var availableCount = Min(poolAvailableItems.Count, MaxArrayLength);
+                var availableCount = nuint.Min(poolAvailableItems.Count, MaxArrayLength);
                 var availableItems = GC.AllocateUninitializedArray<T>((int)availableCount);
 
                 fixed (T* pItems = availableItems)
@@ -50,7 +50,7 @@ public partial struct UnmanagedValuePool<T>
             {
                 ref readonly var poolItems = ref _pool._items;
 
-                var count = Min(poolItems.Count, MaxArrayLength);
+                var count = nuint.Min(poolItems.Count, MaxArrayLength);
                 var items = GC.AllocateUninitializedArray<T>((int)count);
 
                 fixed (T* pItems = items)

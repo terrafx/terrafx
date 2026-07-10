@@ -235,7 +235,7 @@ public static class ValueList
 
     internal static void Resize<T>(this ref ValueList<T> list, int capacity, int currentCapacity)
     {
-        var newCapacity = Max(capacity, currentCapacity * 2);
+        var newCapacity = int.Max(capacity, currentCapacity * 2);
         var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
 
         list.CopyTo(newItems);
