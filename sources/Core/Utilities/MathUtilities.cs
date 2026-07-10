@@ -94,7 +94,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint AlignDown(uint address, uint alignment)
     {
-        Assert(IsPow2(alignment));
+        Assert(uint.IsPow2(alignment));
         return address & ~(alignment - 1);
     }
 
@@ -106,7 +106,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong AlignDown(ulong address, ulong alignment)
     {
-        Assert(IsPow2(alignment));
+        Assert(ulong.IsPow2(alignment));
         return address & ~(alignment - 1);
     }
 
@@ -118,7 +118,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nuint AlignDown(nuint address, nuint alignment)
     {
-        Assert(IsPow2(alignment));
+        Assert(nuint.IsPow2(alignment));
         return address & ~(alignment - 1);
     }
 
@@ -130,7 +130,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint AlignUp(uint address, uint alignment)
     {
-        Assert(IsPow2(alignment));
+        Assert(uint.IsPow2(alignment));
         return (address + (alignment - 1)) & ~(alignment - 1);
     }
 
@@ -142,7 +142,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong AlignUp(ulong address, ulong alignment)
     {
-        Assert(IsPow2(alignment));
+        Assert(ulong.IsPow2(alignment));
         return (address + (alignment - 1)) & ~(alignment - 1);
     }
 
@@ -154,7 +154,7 @@ public static class MathUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nuint AlignUp(nuint address, nuint alignment)
     {
-        Assert(IsPow2(alignment));
+        Assert(nuint.IsPow2(alignment));
         return (address + (alignment - 1)) & ~(alignment - 1);
     }
 
@@ -882,25 +882,6 @@ public static class MathUtilities
     /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nuint Min(nuint left, nuint right) => (left < right) ? left : right;
-
-    /// <summary>Determines whether a given value is a power of two.</summary>
-    /// <param name="value">The value to check.</param>
-    /// <returns><c>true</c> if <paramref name="value" /> is a power of two; otherwise, <c>false</c>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsPow2(uint value) => BitOperations.IsPow2(value);
-
-    /// <summary>Determines whether a given value is a power of two.</summary>
-    /// <param name="value">The value to check.</param>
-    /// <returns><c>true</c> if <paramref name="value" /> is a power of two; otherwise, <c>false</c>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsPow2(ulong value) => BitOperations.IsPow2(value);
-
-    /// <summary>Determines whether a given value is a power of two.</summary>
-    /// <param name="value">The value to check.</param>
-    /// <returns><c>true</c> if <paramref name="value" /> is a power of two; otherwise, <c>false</c>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsPow2(nuint value)
-        => Is64BitProcess ? BitOperations.IsPow2(value) : BitOperations.IsPow2((uint)value);
 
     /// <summary>Computes an estimate of the reciprocal of a given 64-bit float.</summary>
     /// <param name="value">The float for which to compute the reciprocal.</param>

@@ -277,7 +277,7 @@ public static unsafe partial class ExceptionUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNotPow2(uint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
-        if (!MathUtilities.IsPow2(value))
+        if (!uint.IsPow2(value))
         {
             AssertNotNull(valueExpression);
             var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotPow2Message, value);
@@ -292,7 +292,7 @@ public static unsafe partial class ExceptionUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNotPow2(ulong value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
-        if (!MathUtilities.IsPow2(value))
+        if (!ulong.IsPow2(value))
         {
             AssertNotNull(valueExpression);
             var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotPow2Message, value);
@@ -307,7 +307,7 @@ public static unsafe partial class ExceptionUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNotPow2(nuint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
-        if (!MathUtilities.IsPow2(value))
+        if (!nuint.IsPow2(value))
         {
             AssertNotNull(valueExpression);
             var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotPow2Message, value);
