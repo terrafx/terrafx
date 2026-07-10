@@ -629,7 +629,7 @@ public static class UnmanagedValueDictionary
     {
         var size = HashUtilities.GetPrime(capacity);
 
-        var buckets = new UnmanagedArray<int>((uint)size);
+        var buckets = new UnmanagedArray<int>((uint)size, zero: true);
         var entries = new UnmanagedArray<UnmanagedValueDictionary<TKey, TValue>.Entry>((uint)size);
 
         dictionary._freeList = -1;
@@ -652,7 +652,7 @@ public static class UnmanagedValueDictionary
         Assert((uint)newCapacity >= entries.Length);
 
         var newEntries = new UnmanagedArray<UnmanagedValueDictionary<TKey, TValue>.Entry>((uint)newCapacity);
-        var newBuckets = new UnmanagedArray<int>((uint)newCapacity);
+        var newBuckets = new UnmanagedArray<int>((uint)newCapacity, zero: true);
 
         if (Environment.Is64BitProcess)
         {
@@ -660,7 +660,11 @@ public static class UnmanagedValueDictionary
         }
 
         var count = dictionary._count;
-        entries.AsUnmanagedSpan(0, (uint)count).CopyTo(newEntries);
+
+        if (count != 0)
+        {
+            entries.AsUnmanagedSpan(0, (uint)count).CopyTo(newEntries);
+        }
 
         for (var i = 0; i < count; i++)
         {
