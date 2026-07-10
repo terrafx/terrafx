@@ -61,6 +61,7 @@ public partial class GraphicsMemoryAllocator
             _freeMemoryRegionsByByteLength.Add(memoryRegionNode);
             _freeMemoryRegionCount = 1;
 
+            UpdateLargestFreeMemoryRegionByteLength();
             Validate();
         }
 
@@ -95,6 +96,7 @@ public partial class GraphicsMemoryAllocator
             {
                 memoryRegion = default;
             }
+            UpdateLargestFreeMemoryRegionByteLength();
             Validate();
 
             return wasMemoryRegionAllocated;
@@ -115,6 +117,7 @@ public partial class GraphicsMemoryAllocator
                 freedRegion = true;
             }
 
+            UpdateLargestFreeMemoryRegionByteLength();
             Validate();
             return freedRegion;
         }
@@ -357,6 +360,17 @@ public partial class GraphicsMemoryAllocator
 
             MemoryAllocatorInfo.TotalFreeMemoryRegionByteLength -= byteLength;
             return true;
+        }
+
+        private void UpdateLargestFreeMemoryRegionByteLength()
+        {
+            // The free list is sorted ascending by byte length, so the largest allocatable
+            // free region is its last element. Sub-registration-threshold fragments are not
+            // present in the list and are intentionally not reported as allocatable.
+            var count = _freeMemoryRegionsByByteLength.Count;
+            MemoryAllocatorInfo.LargestFreeMemoryRegionByteLength = (count > 0)
+                ? _freeMemoryRegionsByByteLength[count - 1].ValueRef.ByteLength
+                : 0;
         }
 
         private void UnregisterFreeMemoryRegion(ValueLinkedListNode<GraphicsMemoryRegion> memoryRegionNode)

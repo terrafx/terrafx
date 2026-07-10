@@ -83,4 +83,7 @@
   <Folder Name="/tests/Core/">
     <Project Path="tests/Core/TerraFX.UnitTests.csproj" />
   </Folder>
+  <Folder Name="/tests/Graphics/">
+    <Project Path="tests/Graphics/TerraFX.Graphics.UnitTests.csproj" />
+  </Folder>
 </Solution>

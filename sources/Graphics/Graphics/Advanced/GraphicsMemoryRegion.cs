@@ -61,14 +61,7 @@ public readonly struct GraphicsMemoryRegion : IDisposable, IEquatable<GraphicsMe
     public override bool Equals(object? obj) => obj is GraphicsMemoryRegion other && Equals(other);
 
     /// <inheritdoc />
-    public bool Equals(GraphicsMemoryRegion other)
-    {
-        return ByteAlignment.Equals(other.ByteAlignment)
-            && ByteLength.Equals(other.ByteLength)
-            && ByteOffset.Equals(other.ByteOffset)
-            && IsAllocated.Equals(other.IsAllocated)
-            && MemoryAllocator.Equals(other.MemoryAllocator);
-    }
+    public bool Equals(GraphicsMemoryRegion other) => this == other;
 
     /// <inheritdoc />
     public override int GetHashCode() => HashCode.Combine(ByteAlignment, ByteLength, ByteOffset, IsAllocated, MemoryAllocator);
