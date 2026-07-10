@@ -168,7 +168,11 @@ public sealed unsafe class GraphicsService : IDisposable, INameable
     {
         IDXGIDebug* dxgiDebug = null;
 
-        if (EnableDebugMode && DXGIGetDebugInterface(__uuidof<IDXGIDebug>(), (void**)&dxgiDebug).SUCCEEDED)
+        // DXGIGetDebugInterface1 is exported from dxgi.dll (available since Windows 8.1) rather than
+        // dxgidebug.dll, which ships with the Graphics Tools optional feature and isn't always installed
+        // (for example, on some arm64 machines and CI runners). When the debug layer is unavailable this
+        // simply returns a failing HRESULT instead of throwing a DllNotFoundException.
+        if (EnableDebugMode && DXGIGetDebugInterface1(Flags: 0, __uuidof<IDXGIDebug>(), (void**)&dxgiDebug).SUCCEEDED)
         {
             _ = dxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
         }
