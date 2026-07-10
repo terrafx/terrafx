@@ -45,8 +45,7 @@ public sealed unsafe class GraphicsService : IDisposable, INameable
     private string _name;
     private VolatileState _state;
 
-    /// <summary>Initializes a new instance of the <see cref="GraphicsService" /> class.</summary>
-    public GraphicsService()
+    private GraphicsService()
     {
         var dxgiFactory = CreateDxgiFactory(out _dxgiFactoryVersion);
         _dxgiFactory.Attach(dxgiFactory);
@@ -127,6 +126,10 @@ public sealed unsafe class GraphicsService : IDisposable, INameable
 
     /// <summary>Finalizes an instance of the <see cref="GraphicsService" /> class.</summary>
     ~GraphicsService() => Dispose(isDisposing: false);
+
+    /// <summary>Creates a new instance of the <see cref="GraphicsService" /> class.</summary>
+    /// <returns>A new instance of the <see cref="GraphicsService" /> class.</returns>
+    public static GraphicsService Create() => new GraphicsService();
 
     /// <summary>Gets the adapters available to the service.</summary>
     /// <exception cref="ObjectDisposedException">The service has been disposed.</exception>
