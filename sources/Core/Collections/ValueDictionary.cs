@@ -503,7 +503,7 @@ public static class ValueDictionary
 
         lastIndex = -1;
 
-        if (buckets is not null)
+        if (buckets.Length != 0)
         {
             var entries = dictionary._entries;
             var comparer = dictionary._comparer;
@@ -577,7 +577,7 @@ public static class ValueDictionary
             existing = true;
             return ref entry;
         }
-        else if (dictionary._buckets is null)
+        else if (dictionary._buckets.Length == 0)
         {
             dictionary.Initialize(capacity: 0);
         }

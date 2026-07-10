@@ -486,7 +486,7 @@ public static class UnmanagedValueDictionary
 
         lastIndex = -1;
 
-        if (!buckets.IsNull)
+        if (buckets.Length != 0)
         {
             var entries = dictionary._entries;
             var comparer = dictionary._comparer;
@@ -561,7 +561,7 @@ public static class UnmanagedValueDictionary
             existing = true;
             return ref entry;
         }
-        else if (dictionary._buckets.IsNull)
+        else if (dictionary._buckets.Length == 0)
         {
             dictionary.Initialize(capacity: 0);
         }
