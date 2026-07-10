@@ -11,6 +11,7 @@ jobs:
   windows-x64:
     runs-on: ${{ matrix.os }}-latest
     strategy:
+      fail-fast: false
       matrix:
         architecture: [ x64 ]
         configuration: [ debug, release ]
@@ -36,6 +37,7 @@ jobs:
   windows-arm64:
     runs-on: ${{ matrix.os }}-11-arm
     strategy:
+      fail-fast: false
       matrix:
         architecture: [ arm64 ]
         configuration: [ debug, release ]
