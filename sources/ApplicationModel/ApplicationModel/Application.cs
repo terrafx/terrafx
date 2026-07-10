@@ -26,7 +26,7 @@ public sealed class Application : IDisposable, INameable
     /// <summary>Initializes a new instance of the <see cref="Application" /> class.</summary>
     public Application()
     {
-        _graphicsService = new GraphicsService();
+        _graphicsService = GraphicsService.Create();
         _parentThread = Thread.CurrentThread;
         _uiService = UIService.Instance;
 
