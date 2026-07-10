@@ -71,8 +71,14 @@ fix it as part of your change.
 ## Tests
 
 - NUnit 4 via `Microsoft.NET.Test.Sdk` + `NUnit3TestAdapter`. Run with
-  `test.cmd -configuration Release` (or `dotnet test`). Results (`trx`) land in
+  `test.cmd -configuration Debug|Release` (or `dotnet test`). Results (`trx`) land in
   `artifacts/tst/`.
+- **Run both `Debug` and `Release` locally, and run `Debug` first.** CI runs both,
+  and `Debug` intentionally catches more: it enables `CheckForOverflowUnderflow=true`
+  (so intentional integer wrapping must be marked `unchecked` or it throws) and the
+  `[Conditional("DEBUG")]` asserts (`AssertionUtilities.Assert*`), both of which are
+  no-ops under `Release`. A suite that is green in `Release` can still surface real
+  bugs in `Debug`, so don't consider a change validated until `Debug` is green too.
 - When you fix a bug in `Core`, add/extend a regression test under the matching
   `tests/Core/<Area>/` folder following the existing `*Tests.cs` patterns.
 
