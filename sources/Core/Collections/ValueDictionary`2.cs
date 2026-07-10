@@ -57,7 +57,7 @@ public partial struct ValueDictionary<TKey, TValue>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is <c>negative</c>.</exception>
     public ValueDictionary(int capacity, IEqualityComparer<TKey>? comparer)
     {
-        ThrowIfNegative(capacity);
+        ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 
         _buckets = [];
         _entries = [];

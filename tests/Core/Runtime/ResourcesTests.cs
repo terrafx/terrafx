@@ -230,17 +230,6 @@ internal static class ResourcesTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="Resources.ValueIsNegativeMessage" /> property.</summary>
-    [TestCase("en", "'{0}' is negative")]
-    public static void ValueIsNegativeMessageTest(string cultureName, string expectedMessage)
-    {
-        Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
-
-        Assert.That(Resources.ValueIsNegativeMessage.Format,
-            Is.EqualTo(expectedMessage)
-        );
-    }
-
     /// <summary>Provides validation of the <see cref="Resources.ValueIsNotInSignedBoundsMessage" /> property.</summary>
     [TestCase("en", "'{0}' is negative or greater than or equal to '{1}'")]
     public static void ValueIsNotInSignedBoundsMessageTest(string cultureName, string expectedMessage)
@@ -314,17 +303,6 @@ internal static class ResourcesTests
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
         Assert.That(Resources.ValueIsNullMessage.Format,
-            Is.EqualTo(expectedMessage)
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="Resources.ValueIsZeroMessage" /> property.</summary>
-    [TestCase("en", "'{0}' is zero")]
-    public static void ValueIsZeroMessageTest(string cultureName, string expectedMessage)
-    {
-        Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
-
-        Assert.That(Resources.ValueIsZeroMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }

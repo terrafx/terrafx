@@ -186,9 +186,6 @@
   <data name="UnsupportedValueMessage" xml:space="preserve">
     <value>'{0}' has an unsupported value of '{1}'</value>
   </data>
-  <data name="ValueIsNegativeMessage" xml:space="preserve">
-    <value>'{0}' is negative</value>
-  </data>
   <data name="ValueIsNotDefinedMessage" xml:space="preserve">
     <value>'{0}' is not defined</value>
   </data>
@@ -212,8 +209,5 @@
   </data>
   <data name="ValueIsNullMessage" xml:space="preserve">
     <value>'{0}' is null</value>
-  </data>
-  <data name="ValueIsZeroMessage" xml:space="preserve">
-    <value>'{0}' is zero</value>
   </data>
 </root>

@@ -63,7 +63,7 @@ internal static class HashUtilities
 
     public static int GetPrime(int min)
     {
-        ThrowIfNegative(min);
+        ArgumentOutOfRangeException.ThrowIfNegative(min);
 
         var primes = Primes;
 

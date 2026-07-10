@@ -140,7 +140,7 @@ public sealed unsafe class GraphicsRenderContext : GraphicsContext
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBufferViews" /> is <c>empty</c> or greater than <see cref="MaxBoundVertexBufferViewCount" />.</exception>
     public void BindVertexBufferViews(ReadOnlySpan<GraphicsBufferView> vertexBufferViews, uint firstBindingSlot)
     {
-        ThrowIfZero(vertexBufferViews.Length);
+        ArgumentOutOfRangeException.ThrowIfZero(vertexBufferViews.Length);
         ThrowIfNotInInsertBounds(vertexBufferViews.Length, D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT);
 
         var d3d12VertexBufferViews = stackalloc D3D12_VERTEX_BUFFER_VIEW[D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT];
@@ -169,8 +169,8 @@ public sealed unsafe class GraphicsRenderContext : GraphicsContext
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="instanceCount" /> is <c>zero</c>.</exception>
     public void Draw(uint verticesPerInstance, uint instanceCount = 1, uint vertexStart = 0, uint instanceStart = 0)
     {
-        ThrowIfZero(verticesPerInstance);
-        ThrowIfZero(instanceCount);
+        ArgumentOutOfRangeException.ThrowIfZero(verticesPerInstance);
+        ArgumentOutOfRangeException.ThrowIfZero(instanceCount);
 
         D3D12GraphicsCommandList->DrawInstanced(verticesPerInstance, instanceCount, vertexStart, instanceStart);
     }
@@ -185,8 +185,8 @@ public sealed unsafe class GraphicsRenderContext : GraphicsContext
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="instanceCount" /> is <c>zero</c>.</exception>
     public void DrawIndexed(uint indicesPerInstance, uint instanceCount = 1, uint indexStart = 0, int vertexStart = 0, uint instanceStart = 0)
     {
-        ThrowIfZero(indicesPerInstance);
-        ThrowIfZero(instanceCount);
+        ArgumentOutOfRangeException.ThrowIfZero(indicesPerInstance);
+        ArgumentOutOfRangeException.ThrowIfZero(instanceCount);
 
         D3D12GraphicsCommandList->DrawIndexedInstanced(indicesPerInstance, instanceCount, indexStart, vertexStart, instanceStart);
     }

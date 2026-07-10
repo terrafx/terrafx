@@ -263,7 +263,7 @@ public sealed unsafe class GraphicsPipeline : IDisposable, INameable
     public GraphicsPipelineDescriptorSet CreateDescriptorSet(ReadOnlySpan<GraphicsResourceView> resourceViews)
     {
         ThrowIfDisposedOrDisposing(_state, _name);
-        ThrowIfZero(resourceViews.Length);
+        ArgumentOutOfRangeException.ThrowIfZero(resourceViews.Length);
 
         var createOptions = new GraphicsPipelineDescriptorSetCreateOptions {
             ResourceViews = resourceViews.ToArray(),
@@ -282,7 +282,7 @@ public sealed unsafe class GraphicsPipeline : IDisposable, INameable
     {
         ThrowIfDisposedOrDisposing(_state, _name);
         ThrowIfNull(createOptions.ResourceViews);
-        ThrowIfZero(createOptions.ResourceViews.Length);
+        ArgumentOutOfRangeException.ThrowIfZero(createOptions.ResourceViews.Length);
 
         return CreateDescriptorSetUnsafe(in createOptions);
     }

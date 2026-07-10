@@ -35,7 +35,7 @@ public partial struct ValueList<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is <c>negative</c>.</exception>
     public ValueList(int capacity)
     {
-        ThrowIfNegative(capacity);
+        ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 
         _items = (capacity != 0) ? GC.AllocateUninitializedArray<T>(capacity) : [];
     }

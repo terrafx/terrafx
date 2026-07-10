@@ -202,7 +202,7 @@ public sealed unsafe class GraphicsMemoryManager : IDisposable, INameable
     public bool TryAllocate(in GraphicsMemoryAllocationOptions allocationOptions, out GraphicsMemoryRegion memoryRegion)
     {
         ThrowIfNotPow2(allocationOptions.ByteAlignment);
-        ThrowIfZero(allocationOptions.ByteLength);
+        ArgumentOutOfRangeException.ThrowIfZero(allocationOptions.ByteLength);
         ThrowIfNotDefined(allocationOptions.AllocationFlags);
 
         return TryAllocateUnsafe(in allocationOptions, out memoryRegion);
@@ -219,7 +219,7 @@ public sealed unsafe class GraphicsMemoryManager : IDisposable, INameable
     public bool TryAllocate(in GraphicsMemoryAllocationOptions allocationOptions, Span<GraphicsMemoryRegion> memoryRegions)
     {
         ThrowIfNotPow2(allocationOptions.ByteAlignment);
-        ThrowIfZero(allocationOptions.ByteLength);
+        ArgumentOutOfRangeException.ThrowIfZero(allocationOptions.ByteLength);
         ThrowIfNotDefined(allocationOptions.AllocationFlags);
 
         return TryAllocateUnsafe(in allocationOptions, memoryRegions);

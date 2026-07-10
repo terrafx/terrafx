@@ -76,9 +76,6 @@ public static partial class Resources
     /// <summary>Gets a localized composite format string similar to <c>'{0}' has an unsupported value of '{1}'</c>.</summary>
     public static CompositeFormat UnsupportedValueMessage { get; } = CompositeFormat.Parse(GetString(nameof(UnsupportedValueMessage)));
 
-    /// <summary>Gets a localized composite format string similar to <c>'{0}' is negative</c>.</summary>
-    public static CompositeFormat ValueIsNegativeMessage { get; } = CompositeFormat.Parse(GetString(nameof(ValueIsNegativeMessage)));
-
     /// <summary>Gets a localized composite format string similar to <c>'{0}' is not defined</c>.</summary>
     public static CompositeFormat ValueIsNotDefinedMessage { get; } = CompositeFormat.Parse(GetString(nameof(ValueIsNotDefinedMessage)));
 
@@ -102,7 +99,4 @@ public static partial class Resources
 
     /// <summary>Gets a localized composite format string similar to <c>'{0}' is null</c>.</summary>
     public static CompositeFormat ValueIsNullMessage { get; } = CompositeFormat.Parse(GetString(nameof(ValueIsNullMessage)));
-
-    /// <summary>Gets a localized composite format string similar to <c>'{0}' is zero</c>.</summary>
-    public static CompositeFormat ValueIsZeroMessage { get; } = CompositeFormat.Parse(GetString(nameof(ValueIsZeroMessage)));
 }

@@ -25,7 +25,7 @@ public partial class GraphicsMemoryAllocator
 
         public DefaultMemoryAllocator(IDisposable deviceObject, in GraphicsMemoryAllocatorCreateOptions createOptions) : base(deviceObject)
         {
-            ThrowIfZero(createOptions.ByteLength);
+            ArgumentOutOfRangeException.ThrowIfZero(createOptions.ByteLength);
 
             MemoryAllocatorInfo.ByteLength = createOptions.ByteLength;
             MemoryAllocatorInfo.IsDedicated = createOptions.IsDedicated;
