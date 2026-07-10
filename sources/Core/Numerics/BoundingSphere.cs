@@ -78,9 +78,9 @@ public struct BoundingSphere
             && (left._radius == right._radius);
     }
 
-    /// <summary>Compares two bounding boxes instances to determine inequality.</summary>
-    /// <param name="left">The bounding box to compare with <paramref name="right" />.</param>
-    /// <param name="right">The bounding box to compare with <paramref name="left" />.</param>
+    /// <summary>Compares two bounding spheres instances to determine inequality.</summary>
+    /// <param name="left">The bounding sphere to compare with <paramref name="right" />.</param>
+    /// <param name="right">The bounding sphere to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator !=(BoundingSphere left, BoundingSphere right)

@@ -41,7 +41,7 @@ public static unsafe class AssertionUtilities
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not defined by <typeparamref name="TEnum" />.</exception>
     [Conditional("DEBUG")]
     public static void AssertIsDefined<TEnum>(TEnum value)
-        where TEnum : struct, Enum => Assert(!Enum.IsDefined(value));
+        where TEnum : struct, Enum => Assert(Enum.IsDefined(value));
 
     /// <summary>Asserts that the state is not <see cref="VolatileState.Disposed" /> or <see cref="VolatileState.Disposing" />.</summary>
     /// <param name="state">The state to assert.</param>

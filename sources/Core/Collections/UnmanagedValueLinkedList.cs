@@ -307,7 +307,7 @@ public static unsafe class UnmanagedValueLinkedList
     public static void CopyTo<T>(this ref readonly UnmanagedValueLinkedList<T> list, UnmanagedSpan<T> destination)
         where T : unmanaged
     {
-        ThrowIfNotInInsertBounds(destination.Length, list._count);
+        ThrowIfNotInInsertBounds(list._count, destination.Length);
 
         var first = list._first;
         var current = first;

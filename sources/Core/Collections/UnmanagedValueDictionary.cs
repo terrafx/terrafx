@@ -466,9 +466,9 @@ public static class UnmanagedValueDictionary
         where TKey : unmanaged
         where TValue : unmanaged
     {
-        var i = Environment.Is64BitProcess
+        var i = unchecked(Environment.Is64BitProcess
               ? HashUtilities.FastMod((uint)hashCode, (uint)buckets.Length, dictionary._fastModMultiplier)
-              : (uint)hashCode % (uint)buckets.Length;
+              : (uint)hashCode % (uint)buckets.Length);
 
         return ref buckets.GetReferenceUnsafe(i);
     }
@@ -486,7 +486,7 @@ public static class UnmanagedValueDictionary
 
         lastIndex = -1;
 
-        if (!buckets.IsNull)
+        if (buckets.Length != 0)
         {
             var entries = dictionary._entries;
             var comparer = dictionary._comparer;
@@ -498,7 +498,7 @@ public static class UnmanagedValueDictionary
                 var hashCode = key.GetHashCode();
                 var collisionCount = 0u;
 
-                for (var i = dictionary.GetBucketReference(buckets, hashCode) - 1; (uint)i < entries.Length; i = entry.Next)
+                for (var i = dictionary.GetBucketReference(buckets, hashCode) - 1; unchecked((uint)i < entries.Length); i = entry.Next)
                 {
                     entry = ref entries.GetReferenceUnsafe((uint)i);
 
@@ -525,7 +525,7 @@ public static class UnmanagedValueDictionary
                 var hashCode = comparer.GetHashCode(key);
                 var collisionCount = 0u;
 
-                for (var i = dictionary.GetBucketReference(buckets, hashCode) - 1; (uint)i < entries.Length; i = entry.Next)
+                for (var i = dictionary.GetBucketReference(buckets, hashCode) - 1; unchecked((uint)i < entries.Length); i = entry.Next)
                 {
                     entry = ref entries.GetReferenceUnsafe((uint)i);
 
@@ -561,7 +561,7 @@ public static class UnmanagedValueDictionary
             existing = true;
             return ref entry;
         }
-        else if (dictionary._buckets.IsNull)
+        else if (dictionary._buckets.Length == 0)
         {
             dictionary.Initialize(capacity: 0);
         }
@@ -629,7 +629,7 @@ public static class UnmanagedValueDictionary
     {
         var size = HashUtilities.GetPrime(capacity);
 
-        var buckets = new UnmanagedArray<int>((uint)size);
+        var buckets = new UnmanagedArray<int>((uint)size, zero: true);
         var entries = new UnmanagedArray<UnmanagedValueDictionary<TKey, TValue>.Entry>((uint)size);
 
         dictionary._freeList = -1;
@@ -652,7 +652,7 @@ public static class UnmanagedValueDictionary
         Assert((uint)newCapacity >= entries.Length);
 
         var newEntries = new UnmanagedArray<UnmanagedValueDictionary<TKey, TValue>.Entry>((uint)newCapacity);
-        var newBuckets = new UnmanagedArray<int>((uint)newCapacity);
+        var newBuckets = new UnmanagedArray<int>((uint)newCapacity, zero: true);
 
         if (Environment.Is64BitProcess)
         {
@@ -660,7 +660,11 @@ public static class UnmanagedValueDictionary
         }
 
         var count = dictionary._count;
-        entries.AsUnmanagedSpan(0, (uint)count).CopyTo(newEntries);
+
+        if (count != 0)
+        {
+            entries.AsUnmanagedSpan(0, (uint)count).CopyTo(newEntries);
+        }
 
         for (var i = 0; i < count; i++)
         {

@@ -283,7 +283,7 @@ public static class ValueLinkedList
     /// <exception cref="ArgumentOutOfRangeException"><see cref="ValueLinkedList{T}.Count" /> is greater than <paramref name="destination" />.</exception>
     public static void CopyTo<T>(this ref readonly ValueLinkedList<T> list, Span<T> destination)
     {
-        ThrowIfNotInInsertBounds(destination.Length, list._count);
+        ThrowIfNotInInsertBounds(list._count, destination.Length);
 
         var first = list._first;
         var current = first;

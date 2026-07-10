@@ -107,7 +107,7 @@ internal static class HashUtilities
 
     /// <summary>Returns approximate reciprocal of the divisor: ceil(2**64 / divisor).</summary>
     /// <remarks>This should only be used on 64-bit.</remarks>
-    public static ulong GetFastModMultiplier(uint divisor) => (ulong.MaxValue / divisor) + 1;
+    public static ulong GetFastModMultiplier(uint divisor) => unchecked((ulong.MaxValue / divisor) + 1);
 
     /// <summary>Performs a mod operation using the multiplier pre-computed with <see cref="GetFastModMultiplier"/>.</summary>
     /// <remarks>This should only be used on 64-bit.</remarks>
@@ -119,8 +119,9 @@ internal static class HashUtilities
         Assert(divisor <= int.MaxValue);
 
         // This is equivalent of (uint)Math.BigMul(multiplier * value, divisor, out _). This version
-        // is faster than BigMul currently because we only need the high bits.
-        var highBits = (uint)(((((multiplier * value) >> 32) + 1) * divisor) >> 32);
+        // is faster than BigMul currently because we only need the high bits. The multiplication
+        // intentionally wraps, so it is kept unchecked for the DEBUG configuration.
+        var highBits = unchecked((uint)(((((multiplier * value) >> 32) + 1) * divisor) >> 32));
 
         Assert(highBits == (value % divisor));
         return highBits;
