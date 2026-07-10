@@ -851,7 +851,8 @@ public static unsafe class MemoryUtilities
 
                 case 0:
                 {
-                    SmallCopy(destination, source, length);
+                    var offset = blocks * 32;
+                    SmallCopy((void*)((nuint)destination + offset), (void*)((nuint)source + offset), length);
                     break;
                 }
 
