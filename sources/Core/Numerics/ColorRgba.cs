@@ -305,7 +305,7 @@ public readonly struct ColorRgba
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ColorRgba WithGreen(float green)
     {
-        var result = _value.WithElement(0, green);
+        var result = _value.WithElement(1, green);
         return new ColorRgba(result);
     }
 
@@ -315,7 +315,7 @@ public readonly struct ColorRgba
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ColorRgba WithBlue(float blue)
     {
-        var result = _value.WithElement(0, blue);
+        var result = _value.WithElement(2, blue);
         return new ColorRgba(result);
     }
 
@@ -325,7 +325,7 @@ public readonly struct ColorRgba
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ColorRgba WithAlpha(float alpha)
     {
-        var result = _value.WithElement(0, alpha);
+        var result = _value.WithElement(3, alpha);
         return new ColorRgba(result);
     }
 }
