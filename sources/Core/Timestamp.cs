@@ -50,7 +50,7 @@ public readonly struct Timestamp : IComparable,
     /// <param name="left">The timestamp to compare with <paramref name="right" />.</param>
     /// <param name="right">The timestamp to compare with <paramref name="left" />.</param>
     /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
-    public static bool operator !=(Timestamp left, Timestamp right) => left._ticks == right._ticks;
+    public static bool operator !=(Timestamp left, Timestamp right) => left._ticks != right._ticks;
 
     /// <summary>Compares two timestamps to determine relative sort-order.</summary>
     /// <param name="left">The timestamp to compare with <paramref name="right" />.</param>
@@ -76,8 +76,8 @@ public readonly struct Timestamp : IComparable,
     /// <returns><c>true</c> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
     public static bool operator <=(Timestamp left, Timestamp right) => left._ticks <= right._ticks;
 
-    /// <summary>Computes the value of a quaternion.</summary>
-    /// <param name="value">The quaternion.</param>
+    /// <summary>Computes the value of a timestamp.</summary>
+    /// <param name="value">The timestamp.</param>
     /// <returns><paramref name="value" /></returns>
     public static Timestamp operator +(Timestamp value) => value;
 
@@ -85,16 +85,6 @@ public readonly struct Timestamp : IComparable,
     /// <param name="value">The timestamp to negate.</param>
     /// <returns>The negation of <paramref name="value" />.</returns>
     public static Timestamp operator -(Timestamp value) => new Timestamp(-value._ticks);
-
-    /// <summary>Computes the sum of two timestamps.</summary>
-    /// <param name="left">The timestamp to which to add <paramref name="right" />.</param>
-    /// <param name="right">The timestamp which is added to <paramref name="left" />.</param>
-    /// <returns>The sum of <paramref name="right" /> added to <paramref name="left" />.</returns>
-    public static TimeSpan operator +(Timestamp left, Timestamp right)
-    {
-        var deltaTicks = unchecked(left._ticks + right._ticks);
-        return new TimeSpan(deltaTicks);
-    }
 
     /// <summary>Computes the difference of two timestamps.</summary>
     /// <param name="left">The timestamp from which to subtract <paramref name="right" />.</param>
