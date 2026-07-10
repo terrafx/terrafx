@@ -515,7 +515,7 @@ public static class ValueDictionary
                 var hashCode = key.GetHashCode();
                 var collisionCount = 0;
 
-                for (var i = dictionary.GetBucketReference(buckets, hashCode) - 1; i < entries.Length; i = entry.Next)
+                for (var i = dictionary.GetBucketReference(buckets, hashCode) - 1; (uint)i < (uint)entries.Length; i = entry.Next)
                 {
                     entry = ref entries.GetReferenceUnsafe(i);
 
@@ -542,7 +542,7 @@ public static class ValueDictionary
                 var hashCode = comparer.GetHashCode(key);
                 var collisionCount = 0;
 
-                for (var i = dictionary.GetBucketReference(buckets, hashCode) - 1; i < entries.Length; i = entry.Next)
+                for (var i = dictionary.GetBucketReference(buckets, hashCode) - 1; (uint)i < (uint)entries.Length; i = entry.Next)
                 {
                     entry = ref entries.GetReferenceUnsafe(i);
 
