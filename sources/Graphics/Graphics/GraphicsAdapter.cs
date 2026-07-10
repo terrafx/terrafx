@@ -9,6 +9,7 @@ using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 using TerraFX.Threading;
 using TerraFX.Utilities;
+using static TerraFX.Interop.DirectX.DXGI_ADAPTER_FLAG;
 using static TerraFX.Interop.DirectX.DXGI_MEMORY_SEGMENT_GROUP;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.CollectionsUtilities;
@@ -64,6 +65,9 @@ public sealed unsafe class GraphicsAdapter : IDisposable, INameable
 
     /// <summary>Gets <c>true</c> if the object has been disposed; otherwise, <c>false</c>.</summary>
     public bool IsDisposed => _state.IsDisposedOrDisposing;
+
+    /// <summary>Gets <c>true</c> if the adapter is a software adapter, such as WARP; otherwise, <c>false</c>.</summary>
+    public bool IsSoftware => (_dxgiAdapterDesc.Flags & (uint)DXGI_ADAPTER_FLAG_SOFTWARE) != 0;
 
     /// <inheritdoc />
     [AllowNull]
