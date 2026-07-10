@@ -75,7 +75,7 @@ public partial struct ValueList<T>
     /// <remarks>By default ownership of <paramref name="array" /> is given to the value list.</remarks>
     public ValueList(T[] array, bool takeOwnership = true)
     {
-        ThrowIfNull(array);
+        ArgumentNullException.ThrowIfNull(array);
 
         if (takeOwnership)
         {

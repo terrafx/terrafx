@@ -6,7 +6,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Utilities;
 

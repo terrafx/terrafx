@@ -26,7 +26,7 @@ internal sealed class EmptyWindow : Sample
 
     public override void Initialize(Application application, TimeSpan timeout)
     {
-        ExceptionUtilities.ThrowIfNull(application);
+        ArgumentNullException.ThrowIfNull(application);
 
         var uiService = application.UIService;
 
@@ -40,7 +40,7 @@ internal sealed class EmptyWindow : Sample
 
     protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
     {
-        ExceptionUtilities.ThrowIfNull(sender);
+        ArgumentNullException.ThrowIfNull(sender);
 
         _elapsedTime += eventArgs.Delta;
 

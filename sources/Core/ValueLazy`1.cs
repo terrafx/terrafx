@@ -105,7 +105,7 @@ public partial struct ValueLazy<T> : IEquatable<ValueLazy<T>>
     /// <param name="action">The action to call, if the value was created, which performs the appropriate disposal.</param>
     public void Dispose(Action<T> action)
     {
-        ThrowIfNull(action);
+        ArgumentNullException.ThrowIfNull(action);
 
         var priorState = _state.BeginDispose();
 
@@ -133,7 +133,7 @@ public partial struct ValueLazy<T> : IEquatable<ValueLazy<T>>
     public void Reset(Func<T> factory)
     {
         ThrowIfDisposedOrDisposing(_state, nameof(ValueLazy<>));
-        ThrowIfNull(factory);
+        ArgumentNullException.ThrowIfNull(factory);
 
         _factory = factory;
         _ = _state.Transition(to: Initialized);

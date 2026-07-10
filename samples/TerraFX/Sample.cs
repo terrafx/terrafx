@@ -48,14 +48,14 @@ internal abstract unsafe class Sample : IDisposable
 
     public virtual void Initialize(Application application, TimeSpan timeout)
     {
-        ThrowIfNull(application);
+        ArgumentNullException.ThrowIfNull(application);
         _timeout = timeout;
         application.Idle += OnIdle;
     }
 
     protected GraphicsShader CompileShader(GraphicsDevice graphicsDevice, GraphicsShaderKind kind, string shaderName, string entryPointName)
     {
-        ThrowIfNull(graphicsDevice);
+        ArgumentNullException.ThrowIfNull(graphicsDevice);
 
         GraphicsShader? graphicsShader = null;
 

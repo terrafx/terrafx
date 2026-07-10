@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using TerraFX.Threading;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics;
 
@@ -113,7 +112,7 @@ public sealed class GraphicsPrimitive : IDisposable, INameable
     /// <exception cref="ArgumentNullException"><paramref name="renderContext" /> is <c>null</c>.</exception>
     public void Draw(GraphicsRenderContext renderContext, uint instanceCount = 1)
     {
-        ThrowIfNull(renderContext);
+        ArgumentNullException.ThrowIfNull(renderContext);
 
         renderContext.BindPipeline(Pipeline);
 

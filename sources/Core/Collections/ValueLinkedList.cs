@@ -251,7 +251,7 @@ public static class ValueLinkedList
     /// <returns><c>true</c> if <paramref name="node" /> was found in the linked list; otherwise, <c>false</c>.</returns>
     public static bool Contains<T>(this ref readonly ValueLinkedList<T> list, ValueLinkedListNode<T> node)
     {
-        ThrowIfNull(node);
+        ArgumentNullException.ThrowIfNull(node);
 
         if (node.HasParent)
         {
@@ -458,7 +458,7 @@ public static class ValueLinkedList
     {
         var first = list._first;
 
-        ThrowIfNull(first);
+        ArgumentNullException.ThrowIfNull(first);
         list.InternalRemoveNode(first);
     }
 
@@ -469,7 +469,7 @@ public static class ValueLinkedList
     {
         var last = list.Last;
 
-        ThrowIfNull(last);
+        ArgumentNullException.ThrowIfNull(last);
         list.InternalRemoveNode(last);
     }
 
@@ -539,7 +539,7 @@ public static class ValueLinkedList
 
     internal static void ValidateNewNode<T>([NotNull] ValueLinkedListNode<T> node)
     {
-        ThrowIfNull(node);
+        ArgumentNullException.ThrowIfNull(node);
 
         if (node.HasParent)
         {
@@ -549,7 +549,7 @@ public static class ValueLinkedList
 
     internal static void ValidateNode<T>(this ref readonly ValueLinkedList<T> list, [NotNull] ValueLinkedListNode<T> node)
     {
-        ThrowIfNull(node);
+        ArgumentNullException.ThrowIfNull(node);
 
         if (node.HasParent)
         {

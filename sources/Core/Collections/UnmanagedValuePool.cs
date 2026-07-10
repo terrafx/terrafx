@@ -2,7 +2,6 @@
 
 using System;
 using TerraFX.Threading;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections;
 
@@ -59,7 +58,7 @@ public static unsafe class UnmanagedValuePool
     public static T Rent<T>(this ref UnmanagedValuePool<T> pool, delegate*<T> createItem)
         where T : unmanaged
     {
-        ThrowIfNull(createItem);
+        ArgumentNullException.ThrowIfNull(createItem);
 
         if (!pool._availableItems.TryDequeue(out var item))
         {
@@ -92,7 +91,7 @@ public static unsafe class UnmanagedValuePool
     public static T Rent<T, TArg>(this ref UnmanagedValuePool<T> pool, delegate*<TArg, T> createItem, TArg arg)
         where T : unmanaged
     {
-        ThrowIfNull(createItem);
+        ArgumentNullException.ThrowIfNull(createItem);
 
         if (!pool._availableItems.TryDequeue(out var item))
         {

@@ -8,7 +8,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections;
 
@@ -76,7 +75,7 @@ public partial struct ValueQueue<T>
     /// <remarks>By default ownership of <paramref name="array" /> is given to the value queue.</remarks>
     public ValueQueue(T[] array, bool takeOwnership = true)
     {
-        ThrowIfNull(array);
+        ArgumentNullException.ThrowIfNull(array);
 
         if (takeOwnership)
         {

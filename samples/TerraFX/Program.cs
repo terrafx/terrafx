@@ -10,7 +10,6 @@ using TerraFX.ApplicationModel;
 using TerraFX.Numerics;
 using TerraFX.Samples.Graphics;
 using TerraFX.Samples.UI;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Samples;
 
@@ -54,7 +53,7 @@ internal static class Program
 
     public static void Main(string[] args)
     {
-        ThrowIfNull(args);
+        ArgumentNullException.ThrowIfNull(args);
 
         Environment.CurrentDirectory = Path.GetDirectoryName(AppContext.BaseDirectory)!;
 

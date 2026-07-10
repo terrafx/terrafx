@@ -29,7 +29,7 @@ public sealed unsafe class UIDispatcher : IDisposable, INameable
     internal UIDispatcher(UIService service, Thread parentThread)
     {
         AssertNotNull(service);
-        ThrowIfNull(parentThread);
+        ArgumentNullException.ThrowIfNull(parentThread);
 
         _service = service;
         _parentThread = parentThread;

@@ -98,7 +98,7 @@ public partial struct ValueDictionary<TKey, TValue>
     public ValueDictionary(IEnumerable<KeyValuePair<TKey, TValue>> source, IEqualityComparer<TKey>? comparer) :
         this(capacity: (source is not null) && source.TryGetNonEnumeratedCount(out var count) ? count : 0, comparer)
     {
-        ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(source);
 
         foreach ((var key, var value) in source)
         {

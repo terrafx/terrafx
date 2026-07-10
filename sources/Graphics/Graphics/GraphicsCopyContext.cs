@@ -28,8 +28,8 @@ public sealed unsafe class GraphicsCopyContext : GraphicsContext
     {
         ThrowIfDisposedOrDisposing(_state, _name);
 
-        ThrowIfNull(destination);
-        ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(destination);
+        ArgumentNullException.ThrowIfNull(source);
 
         ThrowIfNotInInsertBounds(source.ByteLength, destination.ByteLength);
 
@@ -47,8 +47,8 @@ public sealed unsafe class GraphicsCopyContext : GraphicsContext
     {
         ThrowIfDisposedOrDisposing(_state, _name);
 
-        ThrowIfNull(destination);
-        ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(destination);
+        ArgumentNullException.ThrowIfNull(source);
 
         CopyUnsafe(destination, source);
     }

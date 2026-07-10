@@ -3,9 +3,9 @@
 // This file includes code based on the IDictionaryDebugView<K, V> class from https://github.com/dotnet/runtime/
 // The original code is Copyright Â© .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections;
 
@@ -17,7 +17,7 @@ public partial class PropertySet
 
         public DebugView(PropertySet propertySet)
         {
-            ThrowIfNull(propertySet);
+            ArgumentNullException.ThrowIfNull(propertySet);
             _propertySet = propertySet;
         }
 

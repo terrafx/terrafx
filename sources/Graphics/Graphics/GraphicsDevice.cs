@@ -469,7 +469,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
         ThrowIfDisposedOrDisposing(_state, _name);
 
         ArgumentOutOfRangeException.ThrowIfZero(bytecode.Length);
-        ThrowIfNull(entryPointName);
+        ArgumentNullException.ThrowIfNull(entryPointName);
 
         var createOptions = new GraphicsShaderCreateOptions {
             Bytecode = bytecode,
@@ -493,7 +493,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
         ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(renderTargetFormat);
-        ThrowIfNull(surface);
+        ArgumentNullException.ThrowIfNull(surface);
 
         var createOptions = new GraphicsRenderPassCreateOptions {
             MinimumRenderTargetCount = 0,
@@ -515,7 +515,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
         ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(createOptions.RenderTargetFormat);
-        ThrowIfNull(createOptions.Surface);
+        ArgumentNullException.ThrowIfNull(createOptions.Surface);
 
         return CreateRenderPassUnsafe(in createOptions);
     }
@@ -532,7 +532,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
         ThrowIfDisposedOrDisposing(_state, _name);
 
         ArgumentOutOfRangeException.ThrowIfZero(createOptions.Bytecode.Length);
-        ThrowIfNull(createOptions.EntryPointName);
+        ArgumentNullException.ThrowIfNull(createOptions.EntryPointName);
         ThrowIfNotDefined(createOptions.ShaderKind);
 
         return CreateShaderUnsafe(in createOptions);
@@ -839,7 +839,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
         ThrowIfDisposedOrDisposing(_state, _name);
 
         ArgumentOutOfRangeException.ThrowIfZero(bytecode.Length);
-        ThrowIfNull(entryPointName);
+        ArgumentNullException.ThrowIfNull(entryPointName);
 
         var createOptions = new GraphicsShaderCreateOptions {
             Bytecode = bytecode,

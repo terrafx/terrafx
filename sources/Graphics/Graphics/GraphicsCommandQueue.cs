@@ -130,7 +130,7 @@ public abstract unsafe class GraphicsCommandQueue : IDisposable, INameable
     public void ExecuteContext(GraphicsContext context)
     {
         ThrowIfDisposedOrDisposing(_state, _name);
-        ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(context);
 
         if (context.Kind != Kind)
         {
@@ -163,7 +163,7 @@ public abstract unsafe class GraphicsCommandQueue : IDisposable, INameable
     public void ReturnContext(GraphicsContext context)
     {
         ThrowIfDisposedOrDisposing(_state, _name);
-        ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(context);
 
         if (context.Kind != Kind)
         {
@@ -186,7 +186,7 @@ public abstract unsafe class GraphicsCommandQueue : IDisposable, INameable
     public void SignalFence(GraphicsFence fence)
     {
         ThrowIfDisposedOrDisposing(_state, _name);
-        ThrowIfNull(fence);
+        ArgumentNullException.ThrowIfNull(fence);
 
         if (fence.Device != Device)
         {
@@ -207,7 +207,7 @@ public abstract unsafe class GraphicsCommandQueue : IDisposable, INameable
     public void WaitForFence(GraphicsFence fence)
     {
         ThrowIfDisposedOrDisposing(_state, _name);
-        ThrowIfNull(fence);
+        ArgumentNullException.ThrowIfNull(fence);
 
         if (fence.Device != Device)
         {

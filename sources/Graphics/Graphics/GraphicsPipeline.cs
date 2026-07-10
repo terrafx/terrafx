@@ -281,7 +281,7 @@ public sealed unsafe class GraphicsPipeline : IDisposable, INameable
     public GraphicsPipelineDescriptorSet CreateDescriptorSet(in GraphicsPipelineDescriptorSetCreateOptions createOptions)
     {
         ThrowIfDisposedOrDisposing(_state, _name);
-        ThrowIfNull(createOptions.ResourceViews);
+        ArgumentNullException.ThrowIfNull(createOptions.ResourceViews);
         ArgumentOutOfRangeException.ThrowIfZero(createOptions.ResourceViews.Length);
 
         return CreateDescriptorSetUnsafe(in createOptions);

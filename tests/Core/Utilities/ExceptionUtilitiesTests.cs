@@ -868,38 +868,6 @@ internal static class ExceptionUtilitiesTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNull{T}(T, string)" /> method.</summary>
-    [Test]
-    public static void ThrowIfNullObjectTest()
-    {
-        Assert.That(() => ExceptionUtilities.ThrowIfNull("", "value"),
-            Throws.Nothing
-        );
-
-        Assert.That(() => ExceptionUtilities.ThrowIfNull<object>(null, "value"),
-            Throws.ArgumentNullException
-                  .And.Message.Contains("'value'")
-                  .And.Message.Contains("null")
-                  .And.Property(nameof(ArgumentNullException.ParamName)).EqualTo("value")
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNull(void*, string)" /> method.</summary>
-    [Test]
-    public static unsafe void ThrowIfNullPointerTest()
-    {
-        Assert.That(() => ExceptionUtilities.ThrowIfNull((void*)1, "value"),
-            Throws.Nothing
-        );
-
-        Assert.That(() => ExceptionUtilities.ThrowIfNull(null, "value"),
-            Throws.ArgumentNullException
-                  .And.Message.Contains("'value'")
-                  .And.Message.Contains("null")
-                  .And.Property(nameof(ArgumentNullException.ParamName)).EqualTo("value")
-        );
-    }
-
     /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNull{T}(UnmanagedArray{T}, string)" /> method.</summary>
     [Test]
     public static void ThrowIfNullUnmanagedArrayTest()

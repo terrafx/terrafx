@@ -4,7 +4,6 @@ using System;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Samples.Graphics;
 
@@ -62,7 +61,7 @@ internal sealed class HelloTexture : HelloWindow
 
     protected override void Draw(GraphicsRenderContext renderContext)
     {
-        ThrowIfNull(renderContext);
+        ArgumentNullException.ThrowIfNull(renderContext);
         _trianglePrimitive.Draw(renderContext);
         base.Draw(renderContext);
     }

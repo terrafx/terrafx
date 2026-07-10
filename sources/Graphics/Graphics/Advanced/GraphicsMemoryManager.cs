@@ -152,7 +152,7 @@ public sealed unsafe class GraphicsMemoryManager : IDisposable, INameable
     private static void OnAllocatorFree(in GraphicsMemoryRegion memoryRegion)
     {
         var memoryAllocator = memoryRegion.MemoryAllocator;
-        ThrowIfNull(memoryAllocator);
+        ArgumentNullException.ThrowIfNull(memoryAllocator);
 
         if (memoryAllocator.DeviceObject is GraphicsMemoryHeap memoryHeap)
         {

@@ -48,7 +48,7 @@ public abstract partial class GraphicsMemoryAllocator
     /// <exception cref="ArgumentNullException"><paramref name="deviceObject" /> is <c>null</c>.</exception>
     protected GraphicsMemoryAllocator(IDisposable deviceObject)
     {
-        ThrowIfNull(deviceObject);
+        ArgumentNullException.ThrowIfNull(deviceObject);
         _deviceObject = deviceObject;
     }
 

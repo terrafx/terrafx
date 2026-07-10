@@ -54,7 +54,7 @@ public static unsafe class ValuePool
     /// <exception cref="ArgumentNullException"><paramref name="createItem" /> is <c>null</c>.</exception>
     public static T Rent<T>(this ref ValuePool<T> pool, delegate*<T> createItem)
     {
-        ThrowIfNull(createItem);
+        ArgumentNullException.ThrowIfNull(createItem);
 
         if (!pool._availableItems.TryDequeue(out var item))
         {
@@ -85,7 +85,7 @@ public static unsafe class ValuePool
     /// <exception cref="ArgumentNullException"><paramref name="createItem" /> is <c>null</c>.</exception>
     public static T Rent<T, TArg>(this ref ValuePool<T> pool, delegate*<TArg, T> createItem, TArg arg)
     {
-        ThrowIfNull(createItem);
+        ArgumentNullException.ThrowIfNull(createItem);
 
         if (!pool._availableItems.TryDequeue(out var item))
         {

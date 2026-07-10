@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
 using static TerraFX.Interop.Windows.Windows;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.WinForms;
 
@@ -21,7 +20,7 @@ public sealed unsafe class WinFormsGraphicsSurface : IGraphicsSurface
     /// <param name="control">The control that will be used as the underlying surface.</param>
     public WinFormsGraphicsSurface(Control control)
     {
-        ThrowIfNull(control);
+        ArgumentNullException.ThrowIfNull(control);
 
         _control = control;
         _control.ClientSizeChanged += HandleControlClientSizeChanged;
