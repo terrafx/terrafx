@@ -480,9 +480,9 @@ public static class ValueDictionary
     internal static ref int GetBucketReference<TKey, TValue>(this scoped ref readonly ValueDictionary<TKey, TValue> dictionary, Span<int> buckets, int hashCode)
         where TKey : notnull
     {
-        var i = Environment.Is64BitProcess
+        var i = unchecked(Environment.Is64BitProcess
               ? HashUtilities.FastMod((uint)hashCode, (uint)buckets.Length, dictionary._fastModMultiplier)
-              : (uint)hashCode % (uint)buckets.Length;
+              : (uint)hashCode % (uint)buckets.Length);
 
         return ref buckets.GetReferenceUnsafe(i);
     }
@@ -515,7 +515,7 @@ public static class ValueDictionary
                 var hashCode = key.GetHashCode();
                 var collisionCount = 0;
 
-                for (var i = dictionary.GetBucketReference(buckets, hashCode) - 1; (uint)i < (uint)entries.Length; i = entry.Next)
+                for (var i = dictionary.GetBucketReference(buckets, hashCode) - 1; unchecked((uint)i < (uint)entries.Length); i = entry.Next)
                 {
                     entry = ref entries.GetReferenceUnsafe(i);
 
@@ -542,7 +542,7 @@ public static class ValueDictionary
                 var hashCode = comparer.GetHashCode(key);
                 var collisionCount = 0;
 
-                for (var i = dictionary.GetBucketReference(buckets, hashCode) - 1; (uint)i < (uint)entries.Length; i = entry.Next)
+                for (var i = dictionary.GetBucketReference(buckets, hashCode) - 1; unchecked((uint)i < (uint)entries.Length); i = entry.Next)
                 {
                     entry = ref entries.GetReferenceUnsafe(i);
 

@@ -466,9 +466,9 @@ public static class UnmanagedValueDictionary
         where TKey : unmanaged
         where TValue : unmanaged
     {
-        var i = Environment.Is64BitProcess
+        var i = unchecked(Environment.Is64BitProcess
               ? HashUtilities.FastMod((uint)hashCode, (uint)buckets.Length, dictionary._fastModMultiplier)
-              : (uint)hashCode % (uint)buckets.Length;
+              : (uint)hashCode % (uint)buckets.Length);
 
         return ref buckets.GetReferenceUnsafe(i);
     }
@@ -498,7 +498,7 @@ public static class UnmanagedValueDictionary
                 var hashCode = key.GetHashCode();
                 var collisionCount = 0u;
 
-                for (var i = dictionary.GetBucketReference(buckets, hashCode) - 1; (uint)i < entries.Length; i = entry.Next)
+                for (var i = dictionary.GetBucketReference(buckets, hashCode) - 1; unchecked((uint)i < entries.Length); i = entry.Next)
                 {
                     entry = ref entries.GetReferenceUnsafe((uint)i);
 
@@ -525,7 +525,7 @@ public static class UnmanagedValueDictionary
                 var hashCode = comparer.GetHashCode(key);
                 var collisionCount = 0u;
 
-                for (var i = dictionary.GetBucketReference(buckets, hashCode) - 1; (uint)i < entries.Length; i = entry.Next)
+                for (var i = dictionary.GetBucketReference(buckets, hashCode) - 1; unchecked((uint)i < entries.Length); i = entry.Next)
                 {
                     entry = ref entries.GetReferenceUnsafe((uint)i);
 
