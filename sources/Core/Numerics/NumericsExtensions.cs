@@ -34,7 +34,7 @@ public static class NumericsExtensions
     /// <param name="translation">The new translation for the affine transform.</param>
     /// <returns><paramref name="self" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ref AffineTransform SetRotation(this ref AffineTransform self, Vector3 translation)
+    public static ref AffineTransform SetTranslation(this ref AffineTransform self, Vector3 translation)
     {
         self.Translation = translation;
         return ref self;
