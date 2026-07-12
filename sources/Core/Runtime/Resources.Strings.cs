@@ -61,12 +61,6 @@ public static partial class Resources
     /// <summary>Gets a localized composite format string similar to <c>'{0}' is disposed or being disposed</c>.</summary>
     public static CompositeFormat ObjectDisposedOrDisposingMessage { get; } = CompositeFormat.Parse(GetString(nameof(ObjectDisposedOrDisposingMessage)));
 
-    /// <summary>Gets a localized composite format string similar to <c>'{0}' is not currently being disposed</c>.</summary>
-    public static CompositeFormat ObjectNotDisposingMessage { get; } = CompositeFormat.Parse(GetString(nameof(ObjectNotDisposingMessage)));
-
-    /// <summary>Gets a localized string similar to <c>The previous state was not 'Disposing'</c>.</summary>
-    public static string PreviousStateNotDisposingMessage { get; } = GetString(nameof(PreviousStateNotDisposingMessage));
-
     /// <summary>Gets a localized composite format string similar to <c>Transitioning the state from '{0}' to '{1}' failed</c>.</summary>
     public static CompositeFormat StateTransitionFailureMessage { get; } = CompositeFormat.Parse(GetString(nameof(StateTransitionFailureMessage)));
 
@@ -82,14 +76,8 @@ public static partial class Resources
     /// <summary>Gets a localized composite format string similar to <c>'{0}' is negative or greater than or equal to '{1}'</c>.</summary>
     public static CompositeFormat ValueIsNotInSignedBoundsMessage { get; } = CompositeFormat.Parse(GetString(nameof(ValueIsNotInSignedBoundsMessage)));
 
-    /// <summary>Gets a localized composite format string similar to <c>'{0}' is negative or greater than '{1}'</c>.</summary>
-    public static CompositeFormat ValueIsNotInSignedInsertBoundsMessage { get; } = CompositeFormat.Parse(GetString(nameof(ValueIsNotInSignedInsertBoundsMessage)));
-
     /// <summary>Gets a localized composite format string similar to <c>'{0}' is greater than or equal to '{1}'</c>.</summary>
     public static CompositeFormat ValueIsNotInUnsignedBoundsMessage { get; } = CompositeFormat.Parse(GetString(nameof(ValueIsNotInUnsignedBoundsMessage)));
-
-    /// <summary>Gets a localized composite format string similar to <c>'{0}' is greater than '{1}'</c>.</summary>
-    public static CompositeFormat ValueIsNotInUnsignedInsertBoundsMessage { get; } = CompositeFormat.Parse(GetString(nameof(ValueIsNotInUnsignedInsertBoundsMessage)));
 
     /// <summary>Gets a localized composite format string similar to <c>'{0}' is not a power of two</c>.</summary>
     public static CompositeFormat ValueIsNotPow2Message { get; } = CompositeFormat.Parse(GetString(nameof(ValueIsNotPow2Message)));

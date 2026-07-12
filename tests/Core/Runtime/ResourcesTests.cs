@@ -186,28 +186,6 @@ internal static class ResourcesTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="Resources.ObjectNotDisposingMessage" /> property.</summary>
-    [TestCase("en", "'{0}' is not currently being disposed")]
-    public static void ObjectNotDisposingMessageTest(string cultureName, string expectedMessage)
-    {
-        Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
-
-        Assert.That(Resources.ObjectNotDisposingMessage.Format,
-            Is.EqualTo(expectedMessage)
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="Resources.PreviousStateNotDisposingMessage" /> property.</summary>
-    [TestCase("en", "The previous state was not 'Disposing'")]
-    public static void PreviousStateNotDisposingMessageTest(string cultureName, string expectedMessage)
-    {
-        Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
-
-        Assert.That(Resources.PreviousStateNotDisposingMessage,
-            Is.EqualTo(expectedMessage)
-        );
-    }
-
     /// <summary>Provides validation of the <see cref="Resources.StateTransitionFailureMessage" /> property.</summary>
     [TestCase("en", "Transitioning the state from '{0}' to '{1}' failed")]
     public static void StateTransitionFailureMessageTest(string cultureName, string expectedMessage)
@@ -241,17 +219,6 @@ internal static class ResourcesTests
         );
     }
 
-    /// <summary>Provides validation of the <see cref="Resources.ValueIsNotInSignedBoundsMessage" /> property.</summary>
-    [TestCase("en", "'{0}' is negative or greater than '{1}'")]
-    public static void ValueIsNotInSignedInsertBoundsMessage(string cultureName, string expectedMessage)
-    {
-        Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
-
-        Assert.That(Resources.ValueIsNotInSignedInsertBoundsMessage.Format,
-            Is.EqualTo(expectedMessage)
-        );
-    }
-
     /// <summary>Provides validation of the <see cref="Resources.ValueIsNotInUnsignedBoundsMessage" /> property.</summary>
     [TestCase("en", "'{0}' is greater than or equal to '{1}'")]
     public static void ValueIsNotInUnsignedBoundsMessageTest(string cultureName, string expectedMessage)
@@ -259,17 +226,6 @@ internal static class ResourcesTests
         Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
         Assert.That(Resources.ValueIsNotInUnsignedBoundsMessage.Format,
-            Is.EqualTo(expectedMessage)
-        );
-    }
-
-    /// <summary>Provides validation of the <see cref="Resources.ValueIsNotInUnsignedBoundsMessage" /> property.</summary>
-    [TestCase("en", "'{0}' is greater than '{1}'")]
-    public static void ValueIsNotInUnsignedInsertBoundsMessage(string cultureName, string expectedMessage)
-    {
-        Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
-
-        Assert.That(Resources.ValueIsNotInUnsignedInsertBoundsMessage.Format,
             Is.EqualTo(expectedMessage)
         );
     }
