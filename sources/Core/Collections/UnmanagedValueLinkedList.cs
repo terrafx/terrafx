@@ -455,7 +455,7 @@ public static unsafe class UnmanagedValueLinkedList
     {
         var first = list._first;
 
-        ThrowIfNull(first);
+        ArgumentNullException.ThrowIfNull(first);
         list.InternalRemoveNode(first);
     }
 
@@ -467,7 +467,7 @@ public static unsafe class UnmanagedValueLinkedList
     {
         var last = list.Last;
 
-        ThrowIfNull(last);
+        ArgumentNullException.ThrowIfNull(last);
         list.InternalRemoveNode(last);
     }
 
@@ -541,7 +541,7 @@ public static unsafe class UnmanagedValueLinkedList
     internal static void ValidateNewNode<T>(UnmanagedValueLinkedListNode<T>* node)
         where T : unmanaged
     {
-        ThrowIfNull(node);
+        ArgumentNullException.ThrowIfNull(node);
 
         if (node->HasParent)
         {
@@ -552,7 +552,7 @@ public static unsafe class UnmanagedValueLinkedList
     internal static void ValidateNode<T>(this ref readonly UnmanagedValueLinkedList<T> list, UnmanagedValueLinkedListNode<T>* node)
         where T : unmanaged
     {
-        ThrowIfNull(node);
+        ArgumentNullException.ThrowIfNull(node);
 
         if (node->HasParent)
         {

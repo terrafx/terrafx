@@ -361,7 +361,7 @@ public static class ValueQueue
 
     internal static void Resize<T>(this ref ValueQueue<T> queue, int capacity, int currentCapacity)
     {
-        var newCapacity = Max(capacity, currentCapacity * 2);
+        var newCapacity = int.Max(capacity, currentCapacity * 2);
         var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
 
         queue.CopyTo(newItems);

@@ -125,8 +125,8 @@ public sealed unsafe class GraphicsBuffer : GraphicsResource
     {
         ThrowIfDisposedOrDisposing(_state, _name);
 
-        ThrowIfZero(createOptions.BytesPerElement);
-        ThrowIfZero(createOptions.ElementCount);
+        ArgumentOutOfRangeException.ThrowIfZero(createOptions.BytesPerElement);
+        ArgumentOutOfRangeException.ThrowIfZero(createOptions.ElementCount);
 
         if ((Kind == GraphicsBufferKind.Index) && (createOptions.BytesPerElement != 2) && (createOptions.BytesPerElement != 4))
         {
@@ -149,8 +149,8 @@ public sealed unsafe class GraphicsBuffer : GraphicsResource
     {
         ThrowIfDisposedOrDisposing(_state, _name);
 
-        ThrowIfZero(bytesPerElement);
-        ThrowIfZero(elementCount);
+        ArgumentOutOfRangeException.ThrowIfZero(bytesPerElement);
+        ArgumentOutOfRangeException.ThrowIfZero(elementCount);
 
         if ((Kind == GraphicsBufferKind.Index) && (bytesPerElement != 2) && (bytesPerElement != 4))
         {
@@ -176,7 +176,7 @@ public sealed unsafe class GraphicsBuffer : GraphicsResource
     {
         ThrowIfDisposedOrDisposing(_state, _name);
 
-        ThrowIfZero(elementCount);
+        ArgumentOutOfRangeException.ThrowIfZero(elementCount);
 
         var bytesPerElement = SizeOf<T>();
 

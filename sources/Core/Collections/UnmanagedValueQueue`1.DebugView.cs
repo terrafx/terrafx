@@ -27,7 +27,7 @@ public partial struct UnmanagedValueQueue<T>
             {
                 ref readonly var queue = ref _queue;
 
-                var count = Min(queue._count, MaxArrayLength);
+                var count = nuint.Min(queue._count, MaxArrayLength);
                 var items = GC.AllocateUninitializedArray<T>((int)count);
 
                 fixed (T* pItems = items)

@@ -57,7 +57,7 @@ public partial struct ValueDictionary<TKey, TValue>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is <c>negative</c>.</exception>
     public ValueDictionary(int capacity, IEqualityComparer<TKey>? comparer)
     {
-        ThrowIfNegative(capacity);
+        ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 
         _buckets = [];
         _entries = [];
@@ -98,7 +98,7 @@ public partial struct ValueDictionary<TKey, TValue>
     public ValueDictionary(IEnumerable<KeyValuePair<TKey, TValue>> source, IEqualityComparer<TKey>? comparer) :
         this(capacity: (source is not null) && source.TryGetNonEnumeratedCount(out var count) ? count : 0, comparer)
     {
-        ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(source);
 
         foreach ((var key, var value) in source)
         {

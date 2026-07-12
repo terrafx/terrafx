@@ -8,7 +8,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections;
 
@@ -29,7 +28,7 @@ public partial struct ValueLinkedList<T>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c>.</exception>
     public ValueLinkedList(IEnumerable<T> source)
     {
-        ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(source);
 
         foreach (var value in source)
         {

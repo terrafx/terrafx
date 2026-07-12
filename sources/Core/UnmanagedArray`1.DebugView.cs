@@ -31,7 +31,7 @@ public unsafe partial struct UnmanagedArray<T>
             {
                 var array = _array;
 
-                var count = Min(array.Length, MaxArrayLength);
+                var count = nuint.Min(array.Length, MaxArrayLength);
                 var items = GC.AllocateUninitializedArray<T>((int)count);
 
                 fixed (T* pItems = items)

@@ -6,7 +6,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Utilities;
 
@@ -63,7 +62,7 @@ internal static class HashUtilities
 
     public static int GetPrime(int min)
     {
-        ThrowIfNegative(min);
+        ArgumentOutOfRangeException.ThrowIfNegative(min);
 
         var primes = Primes;
 

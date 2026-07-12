@@ -236,7 +236,7 @@ public sealed unsafe class UIService : IDisposable, INameable
     /// <exception cref="ArgumentNullException"><paramref name="thread" /> is <c>null</c>.</exception>
     public bool TryGetDispatcher(Thread thread, [MaybeNullWhen(false)] out UIDispatcher dispatcher)
     {
-        ThrowIfNull(thread);
+        ArgumentNullException.ThrowIfNull(thread);
         using var readerLock = new DisposableReaderLock(_dispatchersLock, isExternallySynchronized: false);
         return _dispatchers.TryGetValue(thread, out dispatcher);
     }

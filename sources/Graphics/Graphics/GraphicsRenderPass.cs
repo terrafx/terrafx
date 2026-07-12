@@ -100,7 +100,7 @@ public sealed class GraphicsRenderPass : IDisposable, INameable
     /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
     public GraphicsPipeline CreatePipeline(in GraphicsPipelineCreateOptions createOptions)
     {
-        ThrowIfNull(createOptions.Signature);
+        ArgumentNullException.ThrowIfNull(createOptions.Signature);
 
         if (createOptions.Signature.Device != Device)
         {

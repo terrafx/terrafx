@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
 
 namespace TerraFX.Collections;
@@ -33,7 +32,7 @@ public unsafe partial struct UnmanagedValueLinkedList<T>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c>.</exception>
     public UnmanagedValueLinkedList(IEnumerable<T> source)
     {
-        ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(source);
 
         foreach (var value in source)
         {

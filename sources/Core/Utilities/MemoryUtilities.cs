@@ -240,7 +240,7 @@ public static unsafe class MemoryUtilities
         {
             return;
         }
-        ThrowIfNull(destination);
+        ArgumentNullException.ThrowIfNull(destination);
 
         ClearUnsafe(destination, size);
     }
@@ -490,8 +490,8 @@ public static unsafe class MemoryUtilities
             return;
         }
 
-        ThrowIfNull(source);
-        ThrowIfNull(destination);
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(destination);
 
         CopyUnsafe(destination, source, size);
     }
@@ -1236,7 +1236,7 @@ public static unsafe class MemoryUtilities
             index = 0;
             return false;
         }
-        ThrowIfNull(items);
+        ArgumentNullException.ThrowIfNull(items);
 
         return TryGetIndexOfUnsafe(items, length, item, out index);
     }

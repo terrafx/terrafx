@@ -44,7 +44,7 @@ public sealed unsafe class GraphicsRenderContext : GraphicsContext
     /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
     public void BeginRenderPass(GraphicsRenderPass renderPass, ColorRgba renderTargetClearColor)
     {
-        ThrowIfNull(renderPass);
+        ArgumentNullException.ThrowIfNull(renderPass);
 
         if (Interlocked.CompareExchange(ref _renderPass, renderPass, null) is not null)
         {
@@ -69,7 +69,7 @@ public sealed unsafe class GraphicsRenderContext : GraphicsContext
     /// <exception cref="ArgumentNullException"><paramref name="indexBufferView" /> is <c>null</c>.</exception>
     public void BindIndexBufferView(GraphicsBufferView indexBufferView)
     {
-        ThrowIfNull(indexBufferView);
+        ArgumentNullException.ThrowIfNull(indexBufferView);
 
         var d3d12IndexBufferView = new D3D12_INDEX_BUFFER_VIEW {
             BufferLocation = indexBufferView.D3D12GpuVirtualAddress,
@@ -85,7 +85,7 @@ public sealed unsafe class GraphicsRenderContext : GraphicsContext
     /// <exception cref="ArgumentNullException"><paramref name="pipeline" /> is <c>null</c>.</exception>
     public void BindPipeline(GraphicsPipeline pipeline)
     {
-        ThrowIfNull(pipeline);
+        ArgumentNullException.ThrowIfNull(pipeline);
         var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
 
         d3d12GraphicsCommandList->SetPipelineState(pipeline.D3D12PipelineState);
@@ -97,7 +97,7 @@ public sealed unsafe class GraphicsRenderContext : GraphicsContext
     /// <exception cref="ArgumentNullException"><paramref name="pipelineDescriptorSet" /> is <c>null</c>.</exception>
     public void BindPipelineDescriptorSet(GraphicsPipelineDescriptorSet pipelineDescriptorSet)
     {
-        ThrowIfNull(pipelineDescriptorSet);
+        ArgumentNullException.ThrowIfNull(pipelineDescriptorSet);
         var d3d12GraphicsCommandList = D3D12GraphicsCommandList;
 
         var d3d12CbvSrvUavDescriptorHeap = pipelineDescriptorSet.D3D12CbvSrvUavDescriptorHeap;
@@ -122,7 +122,7 @@ public sealed unsafe class GraphicsRenderContext : GraphicsContext
     /// <exception cref="ArgumentNullException"><paramref name="vertexBufferView" /> is <c>null</c>.</exception>
     public void BindVertexBufferView(GraphicsBufferView vertexBufferView, uint bindingSlot = 0)
     {
-        ThrowIfNull(vertexBufferView);
+        ArgumentNullException.ThrowIfNull(vertexBufferView);
 
         var d3d12VertexBufferView = new D3D12_VERTEX_BUFFER_VIEW {
             BufferLocation = vertexBufferView.D3D12GpuVirtualAddress,
@@ -140,7 +140,7 @@ public sealed unsafe class GraphicsRenderContext : GraphicsContext
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBufferViews" /> is <c>empty</c> or greater than <see cref="MaxBoundVertexBufferViewCount" />.</exception>
     public void BindVertexBufferViews(ReadOnlySpan<GraphicsBufferView> vertexBufferViews, uint firstBindingSlot)
     {
-        ThrowIfZero(vertexBufferViews.Length);
+        ArgumentOutOfRangeException.ThrowIfZero(vertexBufferViews.Length);
         ThrowIfNotInInsertBounds(vertexBufferViews.Length, D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT);
 
         var d3d12VertexBufferViews = stackalloc D3D12_VERTEX_BUFFER_VIEW[D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT];
@@ -148,7 +148,7 @@ public sealed unsafe class GraphicsRenderContext : GraphicsContext
         for (var index = 0; index < vertexBufferViews.Length; index++)
         {
             var vertexBufferView = vertexBufferViews[index];
-            ThrowIfNull(vertexBufferView);
+            ArgumentNullException.ThrowIfNull(vertexBufferView);
 
             d3d12VertexBufferViews[index] = new D3D12_VERTEX_BUFFER_VIEW {
                 BufferLocation = vertexBufferView.D3D12GpuVirtualAddress,
@@ -169,8 +169,8 @@ public sealed unsafe class GraphicsRenderContext : GraphicsContext
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="instanceCount" /> is <c>zero</c>.</exception>
     public void Draw(uint verticesPerInstance, uint instanceCount = 1, uint vertexStart = 0, uint instanceStart = 0)
     {
-        ThrowIfZero(verticesPerInstance);
-        ThrowIfZero(instanceCount);
+        ArgumentOutOfRangeException.ThrowIfZero(verticesPerInstance);
+        ArgumentOutOfRangeException.ThrowIfZero(instanceCount);
 
         D3D12GraphicsCommandList->DrawInstanced(verticesPerInstance, instanceCount, vertexStart, instanceStart);
     }
@@ -185,8 +185,8 @@ public sealed unsafe class GraphicsRenderContext : GraphicsContext
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="instanceCount" /> is <c>zero</c>.</exception>
     public void DrawIndexed(uint indicesPerInstance, uint instanceCount = 1, uint indexStart = 0, int vertexStart = 0, uint instanceStart = 0)
     {
-        ThrowIfZero(indicesPerInstance);
-        ThrowIfZero(instanceCount);
+        ArgumentOutOfRangeException.ThrowIfZero(indicesPerInstance);
+        ArgumentOutOfRangeException.ThrowIfZero(instanceCount);
 
         D3D12GraphicsCommandList->DrawIndexedInstanced(indicesPerInstance, instanceCount, indexStart, vertexStart, instanceStart);
     }

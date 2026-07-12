@@ -152,7 +152,7 @@ public sealed unsafe class GraphicsMemoryManager : IDisposable, INameable
     private static void OnAllocatorFree(in GraphicsMemoryRegion memoryRegion)
     {
         var memoryAllocator = memoryRegion.MemoryAllocator;
-        ThrowIfNull(memoryAllocator);
+        ArgumentNullException.ThrowIfNull(memoryAllocator);
 
         if (memoryAllocator.DeviceObject is GraphicsMemoryHeap memoryHeap)
         {
@@ -202,7 +202,7 @@ public sealed unsafe class GraphicsMemoryManager : IDisposable, INameable
     public bool TryAllocate(in GraphicsMemoryAllocationOptions allocationOptions, out GraphicsMemoryRegion memoryRegion)
     {
         ThrowIfNotPow2(allocationOptions.ByteAlignment);
-        ThrowIfZero(allocationOptions.ByteLength);
+        ArgumentOutOfRangeException.ThrowIfZero(allocationOptions.ByteLength);
         ThrowIfNotDefined(allocationOptions.AllocationFlags);
 
         return TryAllocateUnsafe(in allocationOptions, out memoryRegion);
@@ -219,7 +219,7 @@ public sealed unsafe class GraphicsMemoryManager : IDisposable, INameable
     public bool TryAllocate(in GraphicsMemoryAllocationOptions allocationOptions, Span<GraphicsMemoryRegion> memoryRegions)
     {
         ThrowIfNotPow2(allocationOptions.ByteAlignment);
-        ThrowIfZero(allocationOptions.ByteLength);
+        ArgumentOutOfRangeException.ThrowIfZero(allocationOptions.ByteLength);
         ThrowIfNotDefined(allocationOptions.AllocationFlags);
 
         return TryAllocateUnsafe(in allocationOptions, memoryRegions);
@@ -412,7 +412,7 @@ public sealed unsafe class GraphicsMemoryManager : IDisposable, INameable
 
                     if (smallerMemoryAllocatorByteLength > largestMemoryAllocatorByteLength && smallerMemoryAllocatorByteLength >= byteLength * 2)
                     {
-                        memoryAllocatorByteLength = Max(smallerMemoryAllocatorByteLength, MinimumMemoryAllocatorByteLength);
+                        memoryAllocatorByteLength = nuint.Max(smallerMemoryAllocatorByteLength, MinimumMemoryAllocatorByteLength);
                     }
                     else
                     {
@@ -438,7 +438,7 @@ public sealed unsafe class GraphicsMemoryManager : IDisposable, INameable
 
                 if (memoryAllocatorByteLength < MaximumSharedMemoryAllocatorByteLength)
                 {
-                    result = Max(result, memoryAllocatorByteLength);
+                    result = nuint.Max(result, memoryAllocatorByteLength);
                 }
                 else if (memoryAllocatorByteLength == MaximumSharedMemoryAllocatorByteLength)
                 {

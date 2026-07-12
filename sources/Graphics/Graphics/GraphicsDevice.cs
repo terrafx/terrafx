@@ -291,7 +291,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
         ThrowIfNotDefined(createOptions.AllocationFlags);
         ThrowIfNotDefined(createOptions.Kind);
         ThrowIfNotDefined(createOptions.CpuAccess);
-        ThrowIfZero(createOptions.ByteLength);
+        ArgumentOutOfRangeException.ThrowIfZero(createOptions.ByteLength);
 
         return CreateBufferUnsafe(in createOptions);
     }
@@ -305,7 +305,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
     public GraphicsBuffer CreateConstantBuffer(nuint byteLength)
     {
         ThrowIfDisposedOrDisposing(_state, _name);
-        ThrowIfZero(byteLength);
+        ArgumentOutOfRangeException.ThrowIfZero(byteLength);
 
         var createOptions = new GraphicsBufferCreateOptions {
             AllocationFlags = GraphicsMemoryAllocationFlags.None,
@@ -330,7 +330,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
         ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(cpuAccess);
-        ThrowIfZero(byteLength);
+        ArgumentOutOfRangeException.ThrowIfZero(byteLength);
 
         var createOptions = new GraphicsBufferCreateOptions {
             AllocationFlags = GraphicsMemoryAllocationFlags.None,
@@ -373,7 +373,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
     public GraphicsBuffer CreateIndexBuffer(nuint byteLength)
     {
         ThrowIfDisposedOrDisposing(_state, _name);
-        ThrowIfZero(byteLength);
+        ArgumentOutOfRangeException.ThrowIfZero(byteLength);
 
         var createOptions = new GraphicsBufferCreateOptions {
             AllocationFlags = GraphicsMemoryAllocationFlags.None,
@@ -397,7 +397,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
         ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(cpuAccess);
-        ThrowIfZero(byteLength);
+        ArgumentOutOfRangeException.ThrowIfZero(byteLength);
 
         var createOptions = new GraphicsBufferCreateOptions {
             AllocationFlags = GraphicsMemoryAllocationFlags.None,
@@ -468,8 +468,8 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
     {
         ThrowIfDisposedOrDisposing(_state, _name);
 
-        ThrowIfZero(bytecode.Length);
-        ThrowIfNull(entryPointName);
+        ArgumentOutOfRangeException.ThrowIfZero(bytecode.Length);
+        ArgumentNullException.ThrowIfNull(entryPointName);
 
         var createOptions = new GraphicsShaderCreateOptions {
             Bytecode = bytecode,
@@ -493,7 +493,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
         ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(renderTargetFormat);
-        ThrowIfNull(surface);
+        ArgumentNullException.ThrowIfNull(surface);
 
         var createOptions = new GraphicsRenderPassCreateOptions {
             MinimumRenderTargetCount = 0,
@@ -515,7 +515,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
         ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(createOptions.RenderTargetFormat);
-        ThrowIfNull(createOptions.Surface);
+        ArgumentNullException.ThrowIfNull(createOptions.Surface);
 
         return CreateRenderPassUnsafe(in createOptions);
     }
@@ -531,8 +531,8 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
     {
         ThrowIfDisposedOrDisposing(_state, _name);
 
-        ThrowIfZero(createOptions.Bytecode.Length);
-        ThrowIfNull(createOptions.EntryPointName);
+        ArgumentOutOfRangeException.ThrowIfZero(createOptions.Bytecode.Length);
+        ArgumentNullException.ThrowIfNull(createOptions.EntryPointName);
         ThrowIfNotDefined(createOptions.ShaderKind);
 
         return CreateShaderUnsafe(in createOptions);
@@ -551,7 +551,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
         ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(format);
-        ThrowIfZero(pixelWidth);
+        ArgumentOutOfRangeException.ThrowIfZero(pixelWidth);
 
         var createOptions = new GraphicsTextureCreateOptions {
             AllocationFlags = GraphicsMemoryAllocationFlags.None,
@@ -582,7 +582,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
 
         ThrowIfNotDefined(cpuAccess);
         ThrowIfNotDefined(format);
-        ThrowIfZero(pixelWidth);
+        ArgumentOutOfRangeException.ThrowIfZero(pixelWidth);
 
         var createOptions = new GraphicsTextureCreateOptions {
             AllocationFlags = GraphicsMemoryAllocationFlags.None,
@@ -612,8 +612,8 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
         ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(format);
-        ThrowIfZero(pixelHeight);
-        ThrowIfZero(pixelWidth);
+        ArgumentOutOfRangeException.ThrowIfZero(pixelHeight);
+        ArgumentOutOfRangeException.ThrowIfZero(pixelWidth);
 
         var createOptions = new GraphicsTextureCreateOptions {
             AllocationFlags = GraphicsMemoryAllocationFlags.None,
@@ -646,8 +646,8 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
 
         ThrowIfNotDefined(cpuAccess);
         ThrowIfNotDefined(format);
-        ThrowIfZero(pixelHeight);
-        ThrowIfZero(pixelWidth);
+        ArgumentOutOfRangeException.ThrowIfZero(pixelHeight);
+        ArgumentOutOfRangeException.ThrowIfZero(pixelWidth);
 
         var createOptions = new GraphicsTextureCreateOptions {
             AllocationFlags = GraphicsMemoryAllocationFlags.None,
@@ -678,10 +678,10 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
     {
         ThrowIfDisposedOrDisposing(_state, _name);
 
-        ThrowIfZero(pixelDepth);
+        ArgumentOutOfRangeException.ThrowIfZero(pixelDepth);
         ThrowIfNotDefined(format);
-        ThrowIfZero(pixelHeight);
-        ThrowIfZero(pixelWidth);
+        ArgumentOutOfRangeException.ThrowIfZero(pixelHeight);
+        ArgumentOutOfRangeException.ThrowIfZero(pixelWidth);
 
         var createOptions = new GraphicsTextureCreateOptions {
             AllocationFlags = GraphicsMemoryAllocationFlags.None,
@@ -715,10 +715,10 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
         ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(cpuAccess);
-        ThrowIfZero(pixelDepth);
+        ArgumentOutOfRangeException.ThrowIfZero(pixelDepth);
         ThrowIfNotDefined(format);
-        ThrowIfZero(pixelHeight);
-        ThrowIfZero(pixelWidth);
+        ArgumentOutOfRangeException.ThrowIfZero(pixelHeight);
+        ArgumentOutOfRangeException.ThrowIfZero(pixelWidth);
 
         var createOptions = new GraphicsTextureCreateOptions {
             AllocationFlags = GraphicsMemoryAllocationFlags.None,
@@ -751,11 +751,11 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
 
         ThrowIfNotDefined(createOptions.AllocationFlags);
         ThrowIfNotDefined(createOptions.CpuAccess);
-        ThrowIfZero(createOptions.PixelDepth);
+        ArgumentOutOfRangeException.ThrowIfZero(createOptions.PixelDepth);
         ThrowIfNotDefined(createOptions.PixelFormat);
-        ThrowIfZero(createOptions.PixelHeight);
+        ArgumentOutOfRangeException.ThrowIfZero(createOptions.PixelHeight);
         ThrowIfNotDefined(createOptions.Kind);
-        ThrowIfZero(createOptions.PixelWidth);
+        ArgumentOutOfRangeException.ThrowIfZero(createOptions.PixelWidth);
 
         return CreateTextureUnsafe(in createOptions);
     }
@@ -769,7 +769,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
     public GraphicsBuffer CreateUploadBuffer(nuint byteLength)
     {
         ThrowIfDisposedOrDisposing(_state, _name);
-        ThrowIfZero(byteLength);
+        ArgumentOutOfRangeException.ThrowIfZero(byteLength);
 
         var createOptions = new GraphicsBufferCreateOptions {
             AllocationFlags = GraphicsMemoryAllocationFlags.None,
@@ -790,7 +790,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
     public GraphicsBuffer CreateVertexBuffer(nuint byteLength)
     {
         ThrowIfDisposedOrDisposing(_state, _name);
-        ThrowIfZero(byteLength);
+        ArgumentOutOfRangeException.ThrowIfZero(byteLength);
 
         var createOptions = new GraphicsBufferCreateOptions {
             AllocationFlags = GraphicsMemoryAllocationFlags.None,
@@ -814,7 +814,7 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
         ThrowIfDisposedOrDisposing(_state, _name);
 
         ThrowIfNotDefined(cpuAccess);
-        ThrowIfZero(byteLength);
+        ArgumentOutOfRangeException.ThrowIfZero(byteLength);
 
         var createOptions = new GraphicsBufferCreateOptions {
             AllocationFlags = GraphicsMemoryAllocationFlags.None,
@@ -838,8 +838,8 @@ public sealed unsafe partial class GraphicsDevice : IDisposable, INameable
     {
         ThrowIfDisposedOrDisposing(_state, _name);
 
-        ThrowIfZero(bytecode.Length);
-        ThrowIfNull(entryPointName);
+        ArgumentOutOfRangeException.ThrowIfZero(bytecode.Length);
+        ArgumentNullException.ThrowIfNull(entryPointName);
 
         var createOptions = new GraphicsShaderCreateOptions {
             Bytecode = bytecode,

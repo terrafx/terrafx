@@ -33,7 +33,7 @@ public unsafe partial struct UnmanagedValueDictionary<TKey, TValue>
             {
                 ref readonly var dictionary = ref _dictionary;
 
-                var count = Min((uint)dictionary._count, MaxArrayLength);
+                var count = nuint.Min((uint)dictionary._count, MaxArrayLength);
                 var items = GC.AllocateUninitializedArray<KeyValuePair<TKey, TValue>>((int)count);
 
                 fixed (KeyValuePair<TKey, TValue>* pItems = items)

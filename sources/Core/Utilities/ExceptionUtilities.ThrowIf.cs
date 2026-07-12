@@ -1,7 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -23,51 +22,6 @@ public static unsafe partial class ExceptionUtilities
         if (state.IsDisposedOrDisposing)
         {
             ThrowObjectDisposedException(valueName);
-        }
-    }
-
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>negative</c>.</summary>
-    /// <param name="value">The value to be checked if it is <c>negative</c>.</param>
-    /// <param name="valueExpression">The expression of the value being checked.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>negative</c>.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNegative(int value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
-    {
-        if (value < 0)
-        {
-            AssertNotNull(valueExpression);
-            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNegativeMessage, valueExpression);
-            ThrowArgumentOutOfRangeException(valueExpression, value, message);
-        }
-    }
-
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>negative</c>.</summary>
-    /// <param name="value">The value to be checked if it is <c>negative</c>.</param>
-    /// <param name="valueExpression">The expression of the value being checked.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>negative</c>.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNegative(long value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
-    {
-        if (value < 0)
-        {
-            AssertNotNull(valueExpression);
-            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNegativeMessage, valueExpression);
-            ThrowArgumentOutOfRangeException(valueExpression, value, message);
-        }
-    }
-
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>negative</c>.</summary>
-    /// <param name="value">The value to be checked if it is <c>negative</c>.</param>
-    /// <param name="valueExpression">The expression of the value being checked.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>negative</c>.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNegative(nint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
-    {
-        if (value < 0)
-        {
-            AssertNotNull(valueExpression);
-            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNegativeMessage, valueExpression);
-            ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
 
@@ -322,7 +276,7 @@ public static unsafe partial class ExceptionUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNotPow2(uint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
-        if (!MathUtilities.IsPow2(value))
+        if (!uint.IsPow2(value))
         {
             AssertNotNull(valueExpression);
             var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotPow2Message, value);
@@ -337,7 +291,7 @@ public static unsafe partial class ExceptionUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNotPow2(ulong value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
-        if (!MathUtilities.IsPow2(value))
+        if (!ulong.IsPow2(value))
         {
             AssertNotNull(valueExpression);
             var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotPow2Message, value);
@@ -352,7 +306,7 @@ public static unsafe partial class ExceptionUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNotPow2(nuint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
     {
-        if (!MathUtilities.IsPow2(value))
+        if (!nuint.IsPow2(value))
         {
             AssertNotNull(valueExpression);
             var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsNotPow2Message, value);
@@ -463,22 +417,6 @@ public static unsafe partial class ExceptionUtilities
         }
     }
 
-    /// <summary>Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <c>null</c>.</summary>
-    /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
-    /// <param name="value">The value to be checked for <c>null</c>.</param>
-    /// <param name="valueExpression">The expression of the value being checked.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNull<T>([NotNull] T? value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
-        where T : class
-    {
-        if (value is null)
-        {
-            AssertNotNull(valueExpression);
-            ThrowArgumentNullException(valueExpression);
-        }
-    }
-
     /// <summary>Throws an <see cref="ArgumentNullException" /> if <paramref name="array" /> is <c>null</c>.</summary>
     /// <typeparam name="T">The type of items in <paramref name="array" />.</typeparam>
     /// <param name="array">The array to be checked for <c>null</c>.</param>
@@ -510,110 +448,6 @@ public static unsafe partial class ExceptionUtilities
         {
             AssertNotNull(valueExpression);
             ThrowArgumentNullException(valueExpression);
-        }
-    }
-
-    /// <summary>Throws a <see cref="ArgumentNullException" /> if <paramref name="value" /> is <c>null</c>.</summary>
-    /// <param name="value">The value to be checked for <c>null</c>.</param>
-    /// <param name="valueExpression">The expression of the value being checked.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNull(void* value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
-    {
-        if (value == null)
-        {
-            AssertNotNull(valueExpression);
-            ThrowArgumentNullException(valueExpression);
-        }
-    }
-
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>zero</c>.</summary>
-    /// <param name="value">The value to be checked if it is <c>zero</c>.</param>
-    /// <param name="valueExpression">The expression of the value being checked.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfZero(int value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
-    {
-        if (value == 0)
-        {
-            AssertNotNull(valueExpression);
-            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsZeroMessage, valueExpression);
-            ThrowArgumentOutOfRangeException(valueExpression, value, message);
-        }
-    }
-
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>zero</c>.</summary>
-    /// <param name="value">The value to be checked if it is <c>zero</c>.</param>
-    /// <param name="valueExpression">The expression of the value being checked.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfZero(long value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
-    {
-        if (value == 0)
-        {
-            AssertNotNull(valueExpression);
-            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsZeroMessage, valueExpression);
-            ThrowArgumentOutOfRangeException(valueExpression, value, message);
-        }
-    }
-
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>zero</c>.</summary>
-    /// <param name="value">The value to be checked if it is <c>zero</c>.</param>
-    /// <param name="valueExpression">The expression of the value being checked.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfZero(nint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
-    {
-        if (value == 0)
-        {
-            AssertNotNull(valueExpression);
-            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsZeroMessage, valueExpression);
-            ThrowArgumentOutOfRangeException(valueExpression, value, message);
-        }
-    }
-
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>zero</c>.</summary>
-    /// <param name="value">The value to be checked if it is <c>zero</c>.</param>
-    /// <param name="valueExpression">The expression of the value being checked.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfZero(uint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
-    {
-        if (value == 0)
-        {
-            AssertNotNull(valueExpression);
-            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsZeroMessage, valueExpression);
-            ThrowArgumentOutOfRangeException(valueExpression, value, message);
-        }
-    }
-
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>zero</c>.</summary>
-    /// <param name="value">The value to be checked if it is <c>zero</c>.</param>
-    /// <param name="valueExpression">The expression of the value being checked.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfZero(ulong value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
-    {
-        if (value == 0)
-        {
-            AssertNotNull(valueExpression);
-            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsZeroMessage, valueExpression);
-            ThrowArgumentOutOfRangeException(valueExpression, value, message);
-        }
-    }
-
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>zero</c>.</summary>
-    /// <param name="value">The value to be checked if it is <c>zero</c>.</param>
-    /// <param name="valueExpression">The expression of the value being checked.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfZero(nuint value, [CallerArgumentExpression(nameof(value))] string? valueExpression = null)
-    {
-        if (value == 0)
-        {
-            AssertNotNull(valueExpression);
-            var message = string.Format(CultureInfo.InvariantCulture, Resources.ValueIsZeroMessage, valueExpression);
-            ThrowArgumentOutOfRangeException(valueExpression, value, message);
         }
     }
 }

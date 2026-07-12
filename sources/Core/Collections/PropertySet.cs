@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using TerraFX.Threading;
 using TerraFX.Utilities;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections;
 
@@ -41,7 +40,7 @@ public sealed partial class PropertySet : IPropertySet
     /// <exception cref="ArgumentNullException"><paramref name="items" /> is <c>null</c>.</exception>
     public PropertySet(IEnumerable<KeyValuePair<string, object>> items)
     {
-        ThrowIfNull(items);
+        ArgumentNullException.ThrowIfNull(items);
         _items = [.. items];
     }
 
@@ -50,7 +49,7 @@ public sealed partial class PropertySet : IPropertySet
     /// <exception cref="ArgumentNullException"><paramref name="items" /> is <c>null</c>.</exception>
     public PropertySet(IDictionary<string, object> items)
     {
-        ThrowIfNull(items);
+        ArgumentNullException.ThrowIfNull(items);
         _items = [.. items];
     }
 

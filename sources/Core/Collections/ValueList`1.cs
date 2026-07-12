@@ -35,7 +35,7 @@ public partial struct ValueList<T>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is <c>negative</c>.</exception>
     public ValueList(int capacity)
     {
-        ThrowIfNegative(capacity);
+        ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 
         _items = (capacity != 0) ? GC.AllocateUninitializedArray<T>(capacity) : [];
     }
@@ -75,7 +75,7 @@ public partial struct ValueList<T>
     /// <remarks>By default ownership of <paramref name="array" /> is given to the value list.</remarks>
     public ValueList(T[] array, bool takeOwnership = true)
     {
-        ThrowIfNull(array);
+        ArgumentNullException.ThrowIfNull(array);
 
         if (takeOwnership)
         {

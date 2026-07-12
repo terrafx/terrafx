@@ -171,12 +171,6 @@
   <data name="ObjectDisposedOrDisposingMessage" xml:space="preserve">
     <value>'{0}' is disposed or being disposed</value>
   </data>
-  <data name="ObjectNotDisposingMessage" xml:space="preserve">
-    <value>'{0}' is not currently being disposed</value>
-  </data>
-  <data name="PreviousStateNotDisposingMessage" xml:space="preserve">
-    <value>The previous state was not 'Disposing'</value>
-  </data>
   <data name="StateTransitionFailureMessage" xml:space="preserve">
     <value>Transitioning the state from '{0}' to '{1}' failed</value>
   </data>
@@ -186,23 +180,14 @@
   <data name="UnsupportedValueMessage" xml:space="preserve">
     <value>'{0}' has an unsupported value of '{1}'</value>
   </data>
-  <data name="ValueIsNegativeMessage" xml:space="preserve">
-    <value>'{0}' is negative</value>
-  </data>
   <data name="ValueIsNotDefinedMessage" xml:space="preserve">
     <value>'{0}' is not defined</value>
   </data>
   <data name="ValueIsNotInSignedBoundsMessage" xml:space="preserve">
     <value>'{0}' is negative or greater than or equal to '{1}'</value>
   </data>
-  <data name="ValueIsNotInSignedInsertBoundsMessage" xml:space="preserve">
-    <value>'{0}' is negative or greater than '{1}'</value>
-  </data>
   <data name="ValueIsNotInUnsignedBoundsMessage" xml:space="preserve">
     <value>'{0}' is greater than or equal to '{1}'</value>
-  </data>
-  <data name="ValueIsNotInUnsignedInsertBoundsMessage" xml:space="preserve">
-    <value>'{0}' is greater than '{1}'</value>
   </data>
   <data name="ValueIsNotPow2Message" xml:space="preserve">
     <value>'{0}' is not a power of two</value>
@@ -212,8 +197,5 @@
   </data>
   <data name="ValueIsNullMessage" xml:space="preserve">
     <value>'{0}' is null</value>
-  </data>
-  <data name="ValueIsZeroMessage" xml:space="preserve">
-    <value>'{0}' is zero</value>
   </data>
 </root>

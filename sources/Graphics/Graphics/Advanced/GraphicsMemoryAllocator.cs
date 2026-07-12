@@ -48,7 +48,7 @@ public abstract partial class GraphicsMemoryAllocator
     /// <exception cref="ArgumentNullException"><paramref name="deviceObject" /> is <c>null</c>.</exception>
     protected GraphicsMemoryAllocator(IDisposable deviceObject)
     {
-        ThrowIfNull(deviceObject);
+        ArgumentNullException.ThrowIfNull(deviceObject);
         _deviceObject = deviceObject;
     }
 
@@ -122,7 +122,7 @@ public abstract partial class GraphicsMemoryAllocator
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="byteAlignment" /> is not zero or a <c>power of two</c>.</exception>
     public bool TryAllocate(nuint byteLength, [Optional] nuint byteAlignment, out GraphicsMemoryRegion memoryRegion)
     {
-        ThrowIfZero(byteLength);
+        ArgumentOutOfRangeException.ThrowIfZero(byteLength);
 
         if (byteAlignment == 0)
         {
